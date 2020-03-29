@@ -1,0 +1,65 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'maven-publish'
+
+group 'fr.flowarg'
+version '1.0.0'
+archivesBaseName = "flowupdater"
+
+repositories {
+	maven {
+		name "Flow's Maven repository"
+		url 'https://flowarg.github.io/maven/'
+	}
+	jcenter()
+	mavenCentral()
+}
+
+task sourcesJar(type: Jar) {
+	classifier = 'sources'
+	from sourceSets.main.allSource
+}
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			pom {
+				groupId = project.group
+				version = project.version
+				artifactId = 'flowupdater'
+				name = project.name
+				description = 'FlowUpdater is a library for automatically update minecraft versions !'
+				url = 'https://github.com/FlowArg/FlowUpdater'
+
+				issueManagement {
+					system = 'github'
+					url = 'https://github.com/FlowArg/FlowUpdater/issues'
+				}
+
+				licenses {
+					license {
+						name = 'LICENSE'
+						url = 'https://github.com/FlowArg/FlowUpdater/blob/master/LICENSE'
+						distribution = 'repo'
+					}
+				}
+			}
+		}
+	}
+	repositories {
+		maven {
+			url "https://flowarg.github.io/maven/"
+		}
+	}
+}
+
+dependencies {
+    implementation 'org.apache.commons:commons-lang3:3.9'
+	implementation 'com.google.guava:guava:21.0'
+	implementation 'com.google.code.gson:gson:2.8.6'
+	implementation 'commons-io:commons-io:2.6'
+	implementation 'org.jetbrains:annotations:18.0.0'
+	implementation 'com.google.errorprone:error_prone_annotations:2.3.4'
+	implementation 'fr.flowarg:flowmultitools:1.0.1'
+	implementation 'org.codehaus.plexus:plexus-archiver:2.2'
+}
