@@ -11,10 +11,10 @@ import java.io.IOException;
 
 public class FlowArgMinecraftUpdater
 {
-    private IVersion version;
-    private Reader reader;
+    private final IVersion version;
+    private final Reader reader;
     private static File LOG_FILE = new File("/updater/latest.log");
-    private static final Logger LOGGER = new Logger("[FlowUpdater] ", LOG_FILE);
+    private static Logger LOGGER = new Logger("[FlowUpdater] ", LOG_FILE);
 
     public FlowArgMinecraftUpdater(@NotNull IVersion version, @NotNull Reader reader)
     {
@@ -43,22 +43,22 @@ public class FlowArgMinecraftUpdater
     {
         return this.reader;
     }
-
     public IVersion getVersion()
     {
         return this.version;
     }
-
     public static File getLogFile()
     {
         return LOG_FILE;
     }
-
     public static void setLogFile(File logFile)
     {
         LOG_FILE = logFile;
     }
-
+    public static void setLogger(Logger logger)
+    {
+        LOGGER = logger;
+    }
     public static Logger getLogger()
     {
         return LOGGER;
