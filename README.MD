@@ -27,8 +27,8 @@ updater.update(new File("/your/path/"), false);
 Replace false by true if you want to download the server Jar.
 
 ### Add to dependencies
-It's very simple !
-in your block `repositories`, add this lines :
+It's very simple ago !
+In your block `repositories`, add this lines :
 ```groovy
 repositories {
     maven {
@@ -46,3 +46,20 @@ dependencies {
 ```
 
 And all it's done !
+
+### Informations
+This library use content of another library : [FlowMultitools](https://github.com/FlowArg/FlowMultitools).
+You must add to dependency this library (read the README of of FlowMultitools).
+If gradle doesn't import dependencies of FlowMultitools, add there manually :
+```groovy
+dependencies {
+    compile 'fr.flowarg:flowupdater:1.0.0'
+    compile 'org.apache.commons:commons-lang3:3.9'
+	compile 'com.google.guava:guava:21.0'
+	compile 'com.google.code.gson:gson:2.8.6'
+	compile 'commons-io:commons-io:2.6'
+	compile 'org.jetbrains:annotations:18.0.0'
+	compile 'com.google.errorprone:error_prone_annotations:2.3.4'
+	compile 'org.codehaus.plexus:plexus-archiver:2.2'
+}
+```
