@@ -13,15 +13,18 @@ public class FlowArgMinecraftUpdater
 {
     private final IVersion version;
     private final Reader reader;
-    private static File LOG_FILE = new File("/updater/latest.log");
+    private static File LOG_FILE = new File("updater/latest.log");
     private static Logger LOGGER = new Logger("[FlowUpdater] ", LOG_FILE);
 
     public FlowArgMinecraftUpdater(@NotNull IVersion version, @NotNull Reader reader)
     {
         try
         {
-            LOG_FILE.getParentFile().mkdirs();
-            LOG_FILE.createNewFile();
+            if(!LOG_FILE.exists())
+            {
+                LOG_FILE.getParentFile().mkdirs();
+                LOG_FILE.createNewFile();
+            }
         } catch (IOException e)
         {
             e.printStackTrace();
