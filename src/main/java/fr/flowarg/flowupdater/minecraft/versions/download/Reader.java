@@ -21,33 +21,43 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class Reader
 {
     private IVersion version;
+    private boolean isSilent;
 
-    public Reader(IVersion version)
+    public Reader(IVersion version, boolean silent)
     {
         this.version = version;
+        this.isSilent = silent;
     }
 
     public void read() throws IOException
     {
-        FlowArgMinecraftUpdater.getLogger().info("Reading libraries information...");
+        if(!this.isSilent)
+            FlowArgMinecraftUpdater.getLogger().info("Reading libraries information...");
         long start = System.currentTimeMillis();
         this.getLibraries();
 
-        FlowArgMinecraftUpdater.getLogger().info("Reading assets information...");
+        if(!this.isSilent)
+            FlowArgMinecraftUpdater.getLogger().info("Reading assets information...");
         this.getAssetsIndex();
 
-        FlowArgMinecraftUpdater.getLogger().info("Reading jars for client/server game...");
+        if(!this.isSilent)
+            FlowArgMinecraftUpdater.getLogger().info("Reading jars for client/server game...");
         this.getClientServerJars();
 
-        FlowArgMinecraftUpdater.getLogger().info("Reading natives...");
+        if(!this.isSilent)
+            FlowArgMinecraftUpdater.getLogger().info("Reading natives...");
         this.getNatives();
 
-        FlowArgMinecraftUpdater.getLogger().info("Reading assets...");
+        if(!this.isSilent)
+            FlowArgMinecraftUpdater.getLogger().info("Reading assets...");
         this.getAssets();
 
-        long end = System.currentTimeMillis();
-        FlowArgMinecraftUpdater.getLogger().warn("Parsing of the json file took " + (end - start) + " milliseconds...");
-    }
+        if(!this.isSilent)
+        {
+            final long end = System.currentTimeMillis();
+            FlowArgMinecraftUpdater.getLogger().warn("Parsing of the json file took " + (end - start) + " milliseconds...");
+        }
+    } 
 
     private void getLibraries()
     {
@@ -70,7 +80,8 @@ public class Reader
                         final String name = path.replace(path, "/libraries/" + path.substring(path.lastIndexOf('/') + 1));
                         final String sha1 = obj.get("sha1").getAsString();
 
-                        FlowArgMinecraftUpdater.getLogger().info("Reading " + name + " from " + url + "... SHA1 is : " + sha1);
+                        if(!this.isSilent)
+                            FlowArgMinecraftUpdater.getLogger().info("Reading " + name + " from " + url + "... SHA1 is : " + sha1);
                         Downloader.getLibraryDownloadable().add(new Downloadable(url, size, sha1, name));
                     }
                 }
@@ -86,7 +97,8 @@ public class Reader
         final String name = url.replace(url, "/assets/indexes/" + url.substring(url.lastIndexOf('/') + 1));
         final String sha1 = assetIndex.get("sha1").getAsString();
 
-        FlowArgMinecraftUpdater.getLogger().info("Reading assets index from " + url + "... SHA1 is : " + sha1);
+        if(!this.isSilent)
+            FlowArgMinecraftUpdater.getLogger().info("Reading assets index from " + url + "... SHA1 is : " + sha1);
         Downloader.getLibraryDownloadable().add(new Downloadable(url, size, sha1, name));
     }
 
@@ -104,8 +116,10 @@ public class Reader
         final String serverName = serverURL.replace(serverURL, serverURL.substring(serverURL.lastIndexOf('/') + 1));
         final String serverSha1 = server.get("sha1").getAsString();
 
-        FlowArgMinecraftUpdater.getLogger().info("Reading client jar from " + clientURL + "... SHA1 is : " + this.version.getClient().get("sha1").getAsString());
-        FlowArgMinecraftUpdater.getLogger().info("Reading server jar from " + serverURL + "... SHA1 is : " + this.version.getServer().get("sha1").getAsString());
+        if(!this.isSilent)
+            FlowArgMinecraftUpdater.getLogger().info("Reading client jar from " + clientURL + "... SHA1 is : " + this.version.getClient().get("sha1").getAsString());
+        if(!this.isSilent)
+            FlowArgMinecraftUpdater.getLogger().info("Reading server jar from " + serverURL + "... SHA1 is : " + this.version.getServer().get("sha1").getAsString());
 
         Downloader.getLibraryDownloadable().add(new Downloadable(clientURL, clientSize, clientSha1, clientName));
         Downloader.getLibraryDownloadable().add(new Downloadable(serverURL, serverSize, serverSha1, serverName));
@@ -132,7 +146,8 @@ public class Reader
                     final String name = path.replace(path, "/natives/" + path.substring(path.lastIndexOf('/') + 1));
                     final String sha1 = macObj.get("sha1").getAsString();
 
-                    FlowArgMinecraftUpdater.getLogger().info("Reading " + name + " from " + url + "... SHA1 is : " + sha1);
+                    if(!this.isSilent)
+                        FlowArgMinecraftUpdater.getLogger().info("Reading " + name + " from " + url + "... SHA1 is : " + sha1);
                     Downloader.getLibraryDownloadable().add(new Downloadable(url, size, sha1, name));
                 } else if (osxObj != null && Platform.isOnMac())
                 {
@@ -142,7 +157,8 @@ public class Reader
                     final String name = path.replace(path, "/natives/" + path.substring(path.lastIndexOf('/') + 1));
                     final String sha1 = osxObj.get("sha1").getAsString();
 
-                    FlowArgMinecraftUpdater.getLogger().info("Reading " + name + " from " + url + "... SHA1 is : " + sha1);
+                    if(!this.isSilent)
+                        FlowArgMinecraftUpdater.getLogger().info("Reading " + name + " from " + url + "... SHA1 is : " + sha1);
                     Downloader.getLibraryDownloadable().add(new Downloadable(url, size, sha1, name));
                 } else if (windowsObj != null && Platform.isOnWindows())
                 {
@@ -155,7 +171,8 @@ public class Reader
                     if (name.contains("-3.2.1-") && name.contains("lwjgl")) return;
                     if (name.contains("-2.9.2-") && name.contains("lwjgl")) return;
 
-                    FlowArgMinecraftUpdater.getLogger().info("Reading " + name + " from " + url + "... SHA1 is : " + sha1);
+                    if(!this.isSilent)
+                        FlowArgMinecraftUpdater.getLogger().info("Reading " + name + " from " + url + "... SHA1 is : " + sha1);
                     Downloader.getLibraryDownloadable().add(new Downloadable(url, size, sha1, name));
                 } else if (linuxObj != null && Platform.isOnLinux())
                 {
@@ -168,7 +185,8 @@ public class Reader
                     if (name.contains("-3.2.1-") && name.contains("lwjgl")) return;
                     if (name.contains("-2.9.2-") && name.contains("lwjgl")) return;
 
-                    FlowArgMinecraftUpdater.getLogger().info("Reading " + name + " from " + url + "... SHA1 is : " + sha1);
+                    if(!this.isSilent)
+                        FlowArgMinecraftUpdater.getLogger().info("Reading " + name + " from " + url + "... SHA1 is : " + sha1);
                     Downloader.getLibraryDownloadable().add(new Downloadable(url, size, sha1, name));
                 }
             }
