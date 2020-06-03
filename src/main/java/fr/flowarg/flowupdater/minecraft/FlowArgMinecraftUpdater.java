@@ -37,7 +37,7 @@ public class FlowArgMinecraftUpdater
     public void update(File dir, boolean downloadServer, boolean readSilently) throws IOException
     {
         LOGGER.info(String.format("Reading data about %s Minecraft version...", version.getName()));
-        this.reader.read(readSilently);
+        this.reader.read();
 
         final Downloader downloader = new Downloader(dir);
         downloader.download(downloadServer);
