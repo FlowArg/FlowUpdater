@@ -39,7 +39,7 @@ public class FlowArgMinecraftUpdater
         LOGGER.info(String.format("Reading data about %s Minecraft version...", version.getName()));
         this.reader.read(readSilently);
 
-        final Downloader downloader = new Downloader(dir, silentUpdate);
+        final Downloader downloader = new Downloader(dir);
         downloader.download(downloadServer);
     }
 
