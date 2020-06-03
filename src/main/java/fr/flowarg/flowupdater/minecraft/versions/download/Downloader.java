@@ -23,13 +23,15 @@ public class Downloader
     private final File natives;
     private final File assets;
     private File dir;
+    private final boolean silentUpdate;
 
-    public Downloader(File dir)
+    public Downloader(File dir, boolean silentUpdate)
     {
         this.dir       = dir;
         this.libraries = new File(this.dir, "/libraries/");
         this.natives   = new File(this.dir, "/natives/");
         this.assets    = new File(this.dir, "/assets/");
+        this.silentUpdate = silentUpdate;
     }
 
     public static Set<Downloadable> getLibraryDownloadable()
@@ -82,7 +84,10 @@ public class Downloader
 
     private void download(@NotNull URL in, @NotNull File out) throws IOException
     {
-        FlowArgMinecraftUpdater.getLogger().info(String.format("[Downloader] Downloading %s from %s...", out.getName(), in.toExternalForm()));
+        if(!silentUpdate)
+        {
+            FlowArgMinecraftUpdater.getLogger().info(String.format("[Downloader] Downloading %s from %s...", out.getName(), in.toExternalForm()));
+        }
         FileUtils.copyURLToFile(in, out);
     }
 
