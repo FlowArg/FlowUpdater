@@ -15,7 +15,7 @@ public class FlowArgMinecraftUpdater
     private final Reader reader;
     private static File LOG_FILE = new File("updater/latest.log");
     private static Logger LOGGER = new Logger("[FlowUpdater] ", LOG_FILE);
-    private boolean silentUpdate = false;
+    private boolean silentRead = false;
 
     public FlowArgMinecraftUpdater(@NotNull IVersion version, @NotNull Reader reader)
     {
@@ -34,18 +34,13 @@ public class FlowArgMinecraftUpdater
         this.reader = reader;
     }
 
-    public void update(File dir, boolean downloadServer) throws IOException
+    public void update(File dir, boolean downloadServer, boolean readSilently) throws IOException
     {
         LOGGER.info(String.format("Reading data about %s Minecraft version...", version.getName()));
-        this.reader.read();
+        this.reader.read(readSilently);
 
         final Downloader downloader = new Downloader(dir, silentUpdate);
         downloader.download(downloadServer);
-    }
-    
-    public void isSilent(boolean silent)
-    {
-        silentUpdate = silent;
     }
 
     public Reader getReader()
