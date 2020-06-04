@@ -22,33 +22,43 @@ public class VanillaReader
 {
     private final IVersion version;
     private final Logger   logger;
+    private boolean isSilent;
 
-    public VanillaReader(IVersion version, Logger logger)
+    public VanillaReader(IVersion version, Logger logger, boolean isSilent)
     {
         this.version = version;
         this.logger = logger;
+        this.isSilent = isSilent;
     }
 
     public void read() throws IOException
     {
-        this.logger.info("Reading libraries information...");
+        if(!this.isSilent)
+            FlowArgMinecraftUpdater.getLogger().info("Reading libraries information...");
         long start = System.currentTimeMillis();
         this.getLibraries();
 
-        this.logger.info("Reading assets information...");
+        if(!this.isSilent)
+            FlowArgMinecraftUpdater.getLogger().info("Reading assets information...");
         this.getAssetsIndex();
 
-        this.logger.info("Reading jars for client/server game...");
+        if(!this.isSilent)
+            FlowArgMinecraftUpdater.getLogger().info("Reading jars for client/server game...");
         this.getClientServerJars();
 
-        this.logger.info("Reading natives...");
+        if(!this.isSilent)
+            FlowArgMinecraftUpdater.getLogger().info("Reading natives...");
         this.getNatives();
 
-        this.logger.info("Reading assets...");
+        if(!this.isSilent)
+            FlowArgMinecraftUpdater.getLogger().info("Reading assets...");
         this.getAssets();
 
-        long end = System.currentTimeMillis();
-        this.logger.warn("Parsing of the json file took " + (end - start) + " milliseconds...");
+        if(!this.isSilent)
+        {
+            final long end = System.currentTimeMillis();
+            FlowArgMinecraftUpdater.getLogger().warn("Parsing of the json file took " + (end - start) + " milliseconds...");
+        }
     }
 
     private void getLibraries()
@@ -72,7 +82,8 @@ public class VanillaReader
                         final String name = path.replace(path, "/libraries/" + path.substring(path.lastIndexOf('/') + 1));
                         final String sha1 = obj.get("sha1").getAsString();
 
-                        this.logger.info("Reading " + name + " from " + url + "... SHA1 is : " + sha1);
+                        if(!this.isSilent)
+                            this.logger.info("Reading " + name + " from " + url + "... SHA1 is : " + sha1);
                         VanillaDownloader.getLibraryDownloadable().add(new Downloadable(url, size, sha1, name));
                     }
                 }
@@ -88,7 +99,8 @@ public class VanillaReader
         final String name = url.replace(url, "/assets/indexes/" + url.substring(url.lastIndexOf('/') + 1));
         final String sha1 = assetIndex.get("sha1").getAsString();
 
-        this.logger.info("Reading assets index from " + url + "... SHA1 is : " + sha1);
+        if(!this.isSilent)
+            this.logger.info("Reading assets index from " + url + "... SHA1 is : " + sha1);
         VanillaDownloader.getLibraryDownloadable().add(new Downloadable(url, size, sha1, name));
     }
 
@@ -106,9 +118,12 @@ public class VanillaReader
         final String serverName = serverURL.replace(serverURL, serverURL.substring(serverURL.lastIndexOf('/') + 1));
         final String serverSha1 = server.get("sha1").getAsString();
 
-        this.logger.info("Reading client jar from " + clientURL + "... SHA1 is : " + this.version.getMinecraftClient().get("sha1").getAsString());
-        this.logger.info("Reading server jar from " + serverURL + "... SHA1 is : " + this.version.getMinecraftServer().get("sha1").getAsString());
-
+        if(!this.isSilent)
+        {
+            this.logger.info("Reading client jar from " + clientURL + "... SHA1 is : " + this.version.getMinecraftClient().get("sha1").getAsString());
+            this.logger.info("Reading server jar from " + serverURL + "... SHA1 is : " + this.version.getMinecraftServer().get("sha1").getAsString());
+        }
+        
         VanillaDownloader.getLibraryDownloadable().add(new Downloadable(clientURL, clientSize, clientSha1, clientName));
         VanillaDownloader.getLibraryDownloadable().add(new Downloadable(serverURL, serverSize, serverSha1, serverName));
     }
@@ -170,7 +185,8 @@ public class VanillaReader
                     if (name.contains("-3.2.1-") && name.contains("lwjgl")) return;
                     if (name.contains("-2.9.2-") && name.contains("lwjgl")) return;
 
-                    this.logger.info("Reading " + name + " from " + url + "... SHA1 is : " + sha1);
+                    if(!this.isSilent)
+                        this.logger.info("Reading " + name + " from " + url + "... SHA1 is : " + sha1);
                     VanillaDownloader.getLibraryDownloadable().add(new Downloadable(url, size, sha1, name));
                 }
             }
@@ -197,7 +213,7 @@ public class VanillaReader
 
     private boolean checkRules(@NotNull JsonObject obj)
     {
-        AtomicBoolean canDownload = new AtomicBoolean(true);
+        final AtomicBoolean canDownload = new AtomicBoolean(true);
 
         if (obj.get("rules") != null)
         {
