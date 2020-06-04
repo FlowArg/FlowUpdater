@@ -1,15 +1,5 @@
 package fr.flowarg.flowupdater.minecraft.versions.download;
 
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import fr.flowarg.flowcompat.Platform;
-import fr.flowarg.flowlogger.Logger;
-import fr.flowarg.flowupdater.minecraft.versions.IVersion;
-import fr.flowarg.flowupdater.minecraft.versions.download.assets.AssetDownloadable;
-import fr.flowarg.flowupdater.minecraft.versions.download.assets.AssetIndex;
-import org.apache.commons.io.IOUtils;
-import org.jetbrains.annotations.NotNull;
-
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -17,6 +7,18 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.apache.commons.io.IOUtils;
+import org.jetbrains.annotations.NotNull;
+
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+
+import fr.flowarg.flowcompat.Platform;
+import fr.flowarg.flowlogger.Logger;
+import fr.flowarg.flowupdater.minecraft.versions.IVersion;
+import fr.flowarg.flowupdater.minecraft.versions.download.assets.AssetDownloadable;
+import fr.flowarg.flowupdater.minecraft.versions.download.assets.AssetIndex;
 
 public class VanillaReader
 {
@@ -34,30 +36,30 @@ public class VanillaReader
     public void read() throws IOException
     {
         if(!this.isSilent)
-            FlowArgMinecraftUpdater.getLogger().info("Reading libraries information...");
+            this.logger.info("Reading libraries information...");
         long start = System.currentTimeMillis();
         this.getLibraries();
 
         if(!this.isSilent)
-            FlowArgMinecraftUpdater.getLogger().info("Reading assets information...");
+        	this.logger.info("Reading assets information...");
         this.getAssetsIndex();
 
         if(!this.isSilent)
-            FlowArgMinecraftUpdater.getLogger().info("Reading jars for client/server game...");
+        	this.logger.info("Reading jars for client/server game...");
         this.getClientServerJars();
 
         if(!this.isSilent)
-            FlowArgMinecraftUpdater.getLogger().info("Reading natives...");
+        	this.logger.info("Reading natives...");
         this.getNatives();
 
         if(!this.isSilent)
-            FlowArgMinecraftUpdater.getLogger().info("Reading assets...");
+        	this.logger.info("Reading assets...");
         this.getAssets();
 
         if(!this.isSilent)
         {
             final long end = System.currentTimeMillis();
-            FlowArgMinecraftUpdater.getLogger().warn("Parsing of the json file took " + (end - start) + " milliseconds...");
+            this.logger.warn("Parsing of the json file took " + (end - start) + " milliseconds...");
         }
     }
 

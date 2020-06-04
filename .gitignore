@@ -7,6 +7,10 @@ build
 /updater/
 /run/
 /.idea/
+bin
+.project
+.settings
+.classpath
 
 src/main/resources/
 src/test/resources/

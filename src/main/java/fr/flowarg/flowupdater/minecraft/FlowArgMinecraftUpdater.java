@@ -21,7 +21,7 @@ public class FlowArgMinecraftUpdater
     @Nullable
     private ForgeVersion forgeVersion;
 
-    public FlowArgMinecraftUpdater(@NotNull IVersion version, @Nullable VanillaReader vanillaReader, Logger logger)
+    public FlowArgMinecraftUpdater(@NotNull IVersion version, @Nullable VanillaReader vanillaReader, Logger logger, boolean silentUpdate)
     {
         this.logger  = logger;
         this.logFile = this.logger.getLogFile();
@@ -38,22 +38,37 @@ public class FlowArgMinecraftUpdater
         }
         this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", version.getName(), "1.1.0"));
         this.version       = version;
-        this.vanillaReader = vanillaReader == null ? new VanillaReader(this.version, this.logger) : vanillaReader;
+        this.vanillaReader = vanillaReader == null ? new VanillaReader(this.version, this.logger, silentUpdate) : vanillaReader;
     }
 
     public FlowArgMinecraftUpdater(@NotNull IVersion version, @NotNull VanillaReader vanillaReader)
     {
-        this(version, vanillaReader, new Logger("[FlowUpdater]", new File("updater/latest.log")));
+        this(version, vanillaReader, new Logger("[FlowUpdater]", new File("updater/latest.log")), false);
     }
 
     public FlowArgMinecraftUpdater(@NotNull IVersion version)
     {
-        this(version, null, new Logger("[FlowUpdater]", new File("updater/latest.log")));
+        this(version, null, new Logger("[FlowUpdater]", new File("updater/latest.log")), false);
     }
 
     public FlowArgMinecraftUpdater(@NotNull IVersion version, Logger logger)
     {
-        this(version, null, logger);
+        this(version, null, logger, false);
+    }
+    
+    public FlowArgMinecraftUpdater(@NotNull IVersion version, @NotNull VanillaReader vanillaReader, boolean silentUpdate)
+    {
+        this(version, vanillaReader, new Logger("[FlowUpdater]", new File("updater/latest.log")), silentUpdate);
+    }
+
+    public FlowArgMinecraftUpdater(@NotNull IVersion version, boolean silentUpdate)
+    {
+        this(version, null, new Logger("[FlowUpdater]", new File("updater/latest.log")), silentUpdate);
+    }
+
+    public FlowArgMinecraftUpdater(@NotNull IVersion version, Logger logger, boolean silentUpdate)
+    {
+        this(version, null, logger, silentUpdate);
     }
 
     public void update(File dir, boolean downloadServer) throws IOException

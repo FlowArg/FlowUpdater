@@ -4,6 +4,7 @@ import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.Logger;
 
 import java.io.*;
+import java.lang.ProcessBuilder.Redirect;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -44,7 +45,7 @@ public class ForgeVersion
             try (BufferedInputStream stream = new BufferedInputStream(this.installerUrl.openStream()))
             {
                 this.logger.info("Downloading new forge installer...");
-                final File tempDir          = new File(System.getenv("TEMP") + File.separator + "flowupdater");
+                final File tempDir          = new File(dirToInstall + File.separator + ".flowupdater");
                 final File tempInstallerDir = new File(tempDir, "installer/");
                 final File install          = new File(tempDir, "forge-installer.jar");
                 final File patches          = new File(tempDir, "patches.jar");
@@ -67,11 +68,18 @@ public class ForgeVersion
                 this.packPatchedInstaller(tempDir, tempInstallerDir);
                 patches.delete();
                 this.logger.info("Launching forge installer...");
-                final Process process = Runtime.getRuntime().exec(String.format("java.exe -Xmx512M -jar \"%s\" --installClient \"%s\"", patchedInstaller.getAbsolutePath(), dirToInstall.getAbsolutePath()));
+                
+                final ProcessBuilder processBuilder = new ProcessBuilder("java", "-jar", patchedInstaller.getAbsolutePath(), "--installClient", dirToInstall.getAbsolutePath());
+                
+                processBuilder.redirectOutput(Redirect.INHERIT);
+                final Process process = processBuilder.start();
                 process.waitFor();
+                
+                
                 this.logger.info("Successfully installed Forge !");
                 FileUtils.deleteDirectory(tempDir);
-            } catch (IOException | InterruptedException e)
+            }
+            catch (IOException | InterruptedException e)
             {
                 this.logger.printStackTrace(e);
             }
@@ -122,6 +130,8 @@ public class ForgeVersion
                 jar.getInputStream(entry).close();
             }
         }
+        
+        jar.close();
     }
 
     private void cleaningInstaller(File tempInstallerDir)

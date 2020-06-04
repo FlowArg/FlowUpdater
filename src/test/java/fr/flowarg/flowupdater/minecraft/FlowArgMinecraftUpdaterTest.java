@@ -16,9 +16,9 @@ public class FlowArgMinecraftUpdaterTest
         {
             final IVersion.Builder builder = new IVersion.Builder("1.15.2");
             final IVersion version = builder.build(false);
-            final FlowArgMinecraftUpdater updater = new FlowArgMinecraftUpdater(version);
+            final FlowArgMinecraftUpdater updater = new FlowArgMinecraftUpdater(version, true);
             updater.setForgeVersion(new ForgeVersion("1.15.2-31.1.0", version, updater.getLogger()));
-            updater.update(new File("C:/Users/coutu/Desktop/Test"), false);
+            updater.update(new File("/home/flow/Bureau/test/"), false);
         } catch (IOException e)
         {
             e.printStackTrace();

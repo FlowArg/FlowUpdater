@@ -41,6 +41,7 @@ public class PatcherUtils
                 zos.write(buffer, 0, read);
 
             zos.closeEntry();
+            bis.close();
         }
     }
 
@@ -56,5 +57,6 @@ public class PatcherUtils
             zos.write(buffer, 0, read);
 
         zos.closeEntry();
+        bis.close();
     }
 }
