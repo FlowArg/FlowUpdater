@@ -16,7 +16,7 @@ repositories {
 }
 
 task sourcesJar(type: Jar) {
-	classifier = 'sources'
+	classifier 'sources'
 	from sourceSets.main.allSource
 }
 
@@ -58,8 +58,9 @@ dependencies {
 	implementation 'com.google.guava:guava:21.0'
 	implementation 'com.google.code.gson:gson:2.8.6'
 	implementation 'commons-io:commons-io:2.6'
-	implementation 'org.jetbrains:annotations:18.0.0'
+	implementation 'org.jetbrains:annotations:19.0.0'
 	implementation 'com.google.errorprone:error_prone_annotations:2.3.4'
-	implementation 'fr.flowarg:flowmultitools:1.0.1'
+	implementation 'fr.flowarg:flowmultitools:1.0.2'
 	implementation 'org.codehaus.plexus:plexus-archiver:2.2'
+	testImplementation 'junit:junit:4.12'
 }

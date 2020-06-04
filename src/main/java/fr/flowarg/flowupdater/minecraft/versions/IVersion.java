@@ -1,7 +1,6 @@
 package fr.flowarg.flowupdater.minecraft.versions;
 
 import com.google.gson.*;
-import fr.flowarg.flowupdater.minecraft.FlowArgMinecraftUpdater;
 
 import java.io.*;
 import java.net.URL;
@@ -11,11 +10,11 @@ public interface IVersion
 {
     String getName();
 
-    JsonArray getLibrariesJson();
-    JsonObject getClient();
-    JsonObject getServer();
+    JsonArray getMinecraftLibrariesJson();
+    JsonObject getMinecraftClient();
+    JsonObject getMinecraftServer();
 
-    JsonObject getAssetsIndex();
+    JsonObject getMinecraftAssetsIndex();
 
     class Builder
     {
@@ -76,25 +75,25 @@ public interface IVersion
                 }
 
                 @Override
-                public JsonArray getLibrariesJson()
+                public JsonArray getMinecraftLibrariesJson()
                 {
                     return JSON.getAsJsonObject().getAsJsonArray("libraries");
                 }
 
                 @Override
-                public JsonObject getClient()
+                public JsonObject getMinecraftClient()
                 {
                     return JSON.getAsJsonObject().getAsJsonObject("downloads").getAsJsonObject("client");
                 }
 
                 @Override
-                public JsonObject getServer()
+                public JsonObject getMinecraftServer()
                 {
                     return JSON.getAsJsonObject().getAsJsonObject("downloads").getAsJsonObject("server");
                 }
 
                 @Override
-                public JsonObject getAssetsIndex()
+                public JsonObject getMinecraftAssetsIndex()
                 {
                     return JSON.getAsJsonObject().getAsJsonObject("assetIndex");
                 }

@@ -1,69 +1,112 @@
 package fr.flowarg.flowupdater.minecraft;
 
 import fr.flowarg.flowlogger.Logger;
+import fr.flowarg.flowupdater.minecraft.versions.ForgeVersion;
 import fr.flowarg.flowupdater.minecraft.versions.IVersion;
-import fr.flowarg.flowupdater.minecraft.versions.download.Downloader;
-import fr.flowarg.flowupdater.minecraft.versions.download.Reader;
+import fr.flowarg.flowupdater.minecraft.versions.download.VanillaDownloader;
+import fr.flowarg.flowupdater.minecraft.versions.download.VanillaReader;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
 
 public class FlowArgMinecraftUpdater
 {
-    private final IVersion version;
-    private final Reader reader;
-    private static File LOG_FILE = new File("updater/latest.log");
-    private static Logger LOGGER = new Logger("[FlowUpdater] ", LOG_FILE);
+    private final IVersion      version;
+    private final VanillaReader vanillaReader;
 
-    public FlowArgMinecraftUpdater(@NotNull IVersion version, @NotNull Reader reader)
+    private File         logFile;
+    private Logger       logger;
+    @Nullable
+    private ForgeVersion forgeVersion;
+
+    public FlowArgMinecraftUpdater(@NotNull IVersion version, @Nullable VanillaReader vanillaReader, Logger logger)
     {
+        this.logger  = logger;
+        this.logFile = this.logger.getLogFile();
         try
         {
-            if(!LOG_FILE.exists())
+            if (!this.logFile.exists())
             {
-                LOG_FILE.getParentFile().mkdirs();
-                LOG_FILE.createNewFile();
+                this.logFile.getParentFile().mkdirs();
+                this.logFile.createNewFile();
             }
         } catch (IOException e)
         {
             e.printStackTrace();
         }
-        this.version = version;
-        this.reader = reader;
+        this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", version.getName(), "1.1.0"));
+        this.version       = version;
+        this.vanillaReader = vanillaReader == null ? new VanillaReader(this.version, this.logger) : vanillaReader;
+    }
+
+    public FlowArgMinecraftUpdater(@NotNull IVersion version, @NotNull VanillaReader vanillaReader)
+    {
+        this(version, vanillaReader, new Logger("[FlowUpdater]", new File("updater/latest.log")));
+    }
+
+    public FlowArgMinecraftUpdater(@NotNull IVersion version)
+    {
+        this(version, null, new Logger("[FlowUpdater]", new File("updater/latest.log")));
+    }
+
+    public FlowArgMinecraftUpdater(@NotNull IVersion version, Logger logger)
+    {
+        this(version, null, logger);
     }
 
     public void update(File dir, boolean downloadServer) throws IOException
     {
-        LOGGER.info(String.format("Reading data about %s Minecraft version...", version.getName()));
-        this.reader.read();
+        this.logger.info(String.format("Reading data about %s Minecraft version...", version.getName()));
+        this.vanillaReader.read();
 
-        final Downloader downloader = new Downloader(dir);
-        downloader.download(downloadServer);
+        if (!dir.exists())
+            dir.mkdirs();
+        final VanillaDownloader vanillaDownloader = new VanillaDownloader(dir, this.logger);
+        vanillaDownloader.download(downloadServer);
+
+        if (this.getForgeVersion() != null)
+            this.getForgeVersion().install(dir);
     }
 
-    public Reader getReader()
+    public VanillaReader getVanillaReader()
     {
-        return this.reader;
+        return this.vanillaReader;
     }
+
     public IVersion getVersion()
     {
         return this.version;
     }
-    public static File getLogFile()
+
+    public File getLogFile()
     {
-        return LOG_FILE;
+        return this.logFile;
     }
-    public static void setLogFile(File logFile)
+
+    public void setLogFile(File logFile)
     {
-        LOG_FILE = logFile;
+        this.logFile = logFile;
     }
-    public static void setLogger(Logger logger)
+
+    public void setLogger(Logger logger)
     {
-        LOGGER = logger;
+        this.logger = logger;
     }
-    public static Logger getLogger()
+
+    public Logger getLogger()
     {
-        return LOGGER;
+        return this.logger;
+    }
+
+    public @Nullable ForgeVersion getForgeVersion()
+    {
+        return this.forgeVersion;
+    }
+
+    public void setForgeVersion(@NotNull ForgeVersion forgeVersion)
+    {
+        this.forgeVersion = forgeVersion;
     }
 }

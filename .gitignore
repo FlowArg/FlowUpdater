@@ -4,5 +4,11 @@
 # Ignore Gradle build output directory
 build
 /out/
+/updater/
+/run/
 /.idea/
 
+src/main/resources/
+src/test/resources/
+forge-installer.jar.log
+forge-installer-patched.jar.log
