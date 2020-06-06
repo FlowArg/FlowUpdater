@@ -13,14 +13,14 @@ import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-public class ForgeVersion
+public class NewForgeVersion implements IForgeVersion
 {
     private Logger   logger;
     private String   forgeVersion;
     private IVersion vanilla;
     private URL      installerUrl;
 
-    public ForgeVersion(String forgeVersion, IVersion vanilla, Logger logger)
+    public NewForgeVersion(String forgeVersion, IVersion vanilla, Logger logger)
     {
         try
         {
@@ -36,6 +36,7 @@ public class ForgeVersion
         }
     }
 
+    @Override
     public void install(final File dirToInstall)
     {
         if (this.forgeVersion.startsWith("1.15") ||

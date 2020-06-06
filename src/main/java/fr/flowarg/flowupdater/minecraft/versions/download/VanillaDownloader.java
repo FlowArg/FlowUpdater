@@ -28,14 +28,16 @@ public class VanillaDownloader
     private final File libraries;
     private final Logger logger;
     private File dir;
+    private IProgressCallback callback;
 
-    public VanillaDownloader(File dir, Logger logger)
+    public VanillaDownloader(File dir, Logger logger, IProgressCallback callback)
     {
         this.dir       = dir;
         this.natives   = new File(this.dir, "/natives/");
         this.assets    = new File(this.dir, "/assets/");
         this.libraries = new File(this.dir, "/libraries/");
-        this.logger = logger;
+        this.logger    = logger;
+        this.callback  = callback;
         
         this.dir.mkdirs();
         this.assets.mkdirs();
@@ -55,11 +57,15 @@ public class VanillaDownloader
     public void download(boolean downloadServer) throws IOException
     {
         this.logger.info("[Downloader] Checking library files...");
+        this.callback.step(Step.DL_LIBS);
         this.checkAllLibraries(downloadServer);
 
+        this.logger.info("[Downloader] Extracting natives...");
+        this.callback.step(Step.EXTRACT_NATIVES);
         this.extractNatives();
 
         this.logger.info("[Downloader] Checking assets...");
+        this.callback.step(Step.DL_ASSETS);
         this.downloadAssets();
 
         LIBRARY_DOWNLOADABLE.clear();
@@ -115,7 +121,6 @@ public class VanillaDownloader
 
     private void extractNatives() throws IOException
     {
-        this.logger.info("[Downloader] Extracting natives...");
         for (File minecraftNative : Objects.requireNonNull(this.natives.listFiles()))
         {
             if (!minecraftNative.isDirectory() && minecraftNative.getName().endsWith(".jar"))

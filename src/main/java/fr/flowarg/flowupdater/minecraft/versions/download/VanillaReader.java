@@ -25,16 +25,19 @@ public class VanillaReader
     private final IVersion version;
     private final Logger   logger;
     private boolean isSilent;
+    private IProgressCallback callback;
 
-    public VanillaReader(IVersion version, Logger logger, boolean isSilent)
+    public VanillaReader(IVersion version, Logger logger, boolean isSilent, IProgressCallback callback)
     {
         this.version = version;
         this.logger = logger;
         this.isSilent = isSilent;
+        this.callback = callback;
     }
 
     public void read() throws IOException
     {
+    	this.callback.step(Step.READ);
         if(!this.isSilent)
             this.logger.info("Reading libraries information...");
         long start = System.currentTimeMillis();
