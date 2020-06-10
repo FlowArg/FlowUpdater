@@ -16,10 +16,10 @@ public class FlowArgMinecraftUpdaterTest
     {
         try
         {
-            final IVersion.Builder builder = new IVersion.Builder("1.6.4");
+            final IVersion.Builder builder = new IVersion.Builder("1.7.10");
             final IVersion version = builder.build(false);
             final FlowArgMinecraftUpdater updater = SlimUpdaterBuilder.build(version, true);
-            updater.setForgeVersion(new OldForgeVersion("1.6.4-9.11.1.1345", version, updater.getLogger()));
+            updater.setForgeVersion(new OldForgeVersion("1.7.10-10.13.4.1614", version, updater.getLogger()));
             updater.update(new File("/home/flow/Bureau/test/"), false);
         }
         catch (IOException e)

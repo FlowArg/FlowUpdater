@@ -1,12 +1,18 @@
 package fr.flowarg.flowupdater.minecraft.versions;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public class PatcherUtils
+public class ZipUtils
 {
-    public static final PatcherUtils INSTANCE = new PatcherUtils();
+    public static final ZipUtils INSTANCE = new ZipUtils();
+    
+    private ZipUtils() {}
 
     public void compressFiles(File[] listFiles, File destZipFile) throws IOException
     {

@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.io.IOUtils;
-import org.jetbrains.annotations.NotNull;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -26,13 +25,15 @@ public class VanillaReader
     private final Logger   logger;
     private boolean isSilent;
     private IProgressCallback callback;
+    private DownloadInfos infos;
 
-    public VanillaReader(IVersion version, Logger logger, boolean isSilent, IProgressCallback callback)
+    public VanillaReader(IVersion version, Logger logger, boolean isSilent, IProgressCallback callback, DownloadInfos infos)
     {
         this.version = version;
         this.logger = logger;
         this.isSilent = isSilent;
         this.callback = callback;
+        this.infos = infos;
     }
 
     public void read() throws IOException
@@ -89,7 +90,7 @@ public class VanillaReader
 
                         if(!this.isSilent)
                             this.logger.info("Reading " + name + " from " + url + "... SHA1 is : " + sha1);
-                        VanillaDownloader.getLibraryDownloadable().add(new Downloadable(url, size, sha1, name));
+                        this.infos.getLibraryDownloadables().add(new Downloadable(url, size, sha1, name));
                     }
                 }
             }
@@ -106,7 +107,7 @@ public class VanillaReader
 
         if(!this.isSilent)
             this.logger.info("Reading assets index from " + url + "... SHA1 is : " + sha1);
-        VanillaDownloader.getLibraryDownloadable().add(new Downloadable(url, size, sha1, name));
+        this.infos.getLibraryDownloadables().add(new Downloadable(url, size, sha1, name));
     }
 
     private void getClientServerJars()
@@ -129,8 +130,8 @@ public class VanillaReader
             this.logger.info("Reading server jar from " + serverURL + "... SHA1 is : " + this.version.getMinecraftServer().get("sha1").getAsString());
         }
         
-        VanillaDownloader.getLibraryDownloadable().add(new Downloadable(clientURL, clientSize, clientSha1, clientName));
-        VanillaDownloader.getLibraryDownloadable().add(new Downloadable(serverURL, serverSize, serverSha1, serverName));
+        this.infos.getLibraryDownloadables().add(new Downloadable(clientURL, clientSize, clientSha1, clientName));
+        this.infos.getLibraryDownloadables().add(new Downloadable(serverURL, serverSize, serverSha1, serverName));
     }
 
     private void getNatives()
@@ -155,7 +156,7 @@ public class VanillaReader
                     final String sha1 = macObj.get("sha1").getAsString();
 
                     this.logger.info("Reading " + name + " from " + url + "... SHA1 is : " + sha1);
-                    VanillaDownloader.getLibraryDownloadable().add(new Downloadable(url, size, sha1, name));
+                    this.infos.getLibraryDownloadables().add(new Downloadable(url, size, sha1, name));
                 } else if (osxObj != null && Platform.isOnMac())
                 {
                     final String url = osxObj.get("url").getAsString();
@@ -165,7 +166,7 @@ public class VanillaReader
                     final String sha1 = osxObj.get("sha1").getAsString();
 
                     this.logger.info("Reading " + name + " from " + url + "... SHA1 is : " + sha1);
-                    VanillaDownloader.getLibraryDownloadable().add(new Downloadable(url, size, sha1, name));
+                    this.infos.getLibraryDownloadables().add(new Downloadable(url, size, sha1, name));
                 } else if (windowsObj != null && Platform.isOnWindows())
                 {
                     final String url = windowsObj.get("url").getAsString();
@@ -178,7 +179,7 @@ public class VanillaReader
                     if (name.contains("-2.9.2-") && name.contains("lwjgl")) return;
 
                     this.logger.info("Reading " + name + " from " + url + "... SHA1 is : " + sha1);
-                    VanillaDownloader.getLibraryDownloadable().add(new Downloadable(url, size, sha1, name));
+                    this.infos.getLibraryDownloadables().add(new Downloadable(url, size, sha1, name));
                 } else if (linuxObj != null && Platform.isOnLinux())
                 {
                     final String url = linuxObj.get("url").getAsString();
@@ -192,7 +193,7 @@ public class VanillaReader
 
                     if(!this.isSilent)
                         this.logger.info("Reading " + name + " from " + url + "... SHA1 is : " + sha1);
-                    VanillaDownloader.getLibraryDownloadable().add(new Downloadable(url, size, sha1, name));
+                    this.infos.getLibraryDownloadables().add(new Downloadable(url, size, sha1, name));
                 }
             }
         });
@@ -213,10 +214,10 @@ public class VanillaReader
 
         for (final Map.Entry<AssetDownloadable, String> entry : index.getUniqueObjects().entrySet())
             toDownload.add(new AssetDownloadable(entry.getKey().getHash(), entry.getKey().getSize()));
-        VanillaDownloader.getAssetDownloadables().addAll(toDownload);
+        this.infos.getAssetDownloadables().addAll(toDownload);
     }
 
-    private boolean checkRules(@NotNull JsonObject obj)
+    private boolean checkRules(JsonObject obj)
     {
         final AtomicBoolean canDownload = new AtomicBoolean(true);
 

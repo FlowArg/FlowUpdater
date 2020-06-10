@@ -1,17 +1,16 @@
 package fr.flowarg.flowupdater.minecraft.versions;
 
-import fr.flowarg.flowio.FileUtils;
-import fr.flowarg.flowlogger.Logger;
-
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.IOException;
 import java.lang.ProcessBuilder.Redirect;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.Enumeration;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
+
+import fr.flowarg.flowio.FileUtils;
+import fr.flowarg.flowlogger.Logger;
 
 public class NewForgeVersion implements IForgeVersion
 {
@@ -63,9 +62,9 @@ public class NewForgeVersion implements IForgeVersion
                 Files.copy(new URL("https://flowarg.github.io/minecraft/launcher/patches.jar").openStream(), patches.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
                 this.logger.info("Applying patches...");
-                this.unzipJar(tempInstallerDir, install);
+                FileUtils.unzipJar(tempInstallerDir.getAbsolutePath(), install.getAbsolutePath());
                 this.cleaningInstaller(tempInstallerDir);
-                this.unzipJar(tempInstallerDir, patches);
+                FileUtils.unzipJar(tempInstallerDir.getAbsolutePath(), patches.getAbsolutePath());
                 this.packPatchedInstaller(tempDir, tempInstallerDir);
                 patches.delete();
                 this.logger.info("Launching forge installer...");
@@ -76,7 +75,6 @@ public class NewForgeVersion implements IForgeVersion
                 final Process process = processBuilder.start();
                 process.waitFor();
                 
-                
                 this.logger.info("Successfully installed Forge !");
                 FileUtils.deleteDirectory(tempDir);
             }
@@ -85,54 +83,6 @@ public class NewForgeVersion implements IForgeVersion
                 this.logger.printStackTrace(e);
             }
         }
-    }
-
-    private void unzipJar(final File destinationDir, final File jarFile) throws IOException
-    {
-        final JarFile jar = new JarFile(jarFile);
-
-        for (Enumeration<JarEntry> enums = jar.entries(); enums.hasMoreElements(); )
-        {
-            final JarEntry entry = enums.nextElement();
-
-            final String fileName = destinationDir + File.separator + entry.getName();
-            final File   file     = new File(fileName);
-
-            if (fileName.endsWith("/")) file.mkdirs();
-        }
-
-        for (Enumeration<JarEntry> enums = jar.entries(); enums.hasMoreElements(); )
-        {
-            final JarEntry entry = enums.nextElement();
-
-            final String fileName = destinationDir + File.separator + entry.getName();
-            final File   file     = new File(fileName);
-
-            if (!fileName.endsWith("/"))
-            {
-                if (fileName.endsWith(".lzma"))
-                {
-                    new File(destinationDir, "data").mkdir();
-                    final InputStream stream = jar.getInputStream(entry);
-                    Files.copy(stream, new File(destinationDir, entry.getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
-                    stream.close();
-                }
-                else
-                {
-                    final InputStream      is  = jar.getInputStream(entry);
-                    final FileOutputStream fos = new FileOutputStream(file);
-
-                    while (is.available() > 0)
-                        fos.write(is.read());
-
-                    fos.close();
-                    is.close();
-                }
-                jar.getInputStream(entry).close();
-            }
-        }
-        
-        jar.close();
     }
 
     private void cleaningInstaller(File tempInstallerDir)
@@ -147,7 +97,7 @@ public class NewForgeVersion implements IForgeVersion
     private void packPatchedInstaller(final File tempDir, final File tempInstallerDir) throws IOException
     {
         final File output = new File(tempDir, "forge-installer-patched.zip");
-        PatcherUtils.INSTANCE.compressFiles(tempInstallerDir.listFiles(), output);
+        ZipUtils.INSTANCE.compressFiles(tempInstallerDir.listFiles(), output);
         Files.move(output.toPath(), new File(output.getAbsolutePath().replace(".zip", ".jar")).toPath(), StandardCopyOption.REPLACE_EXISTING);
         tempInstallerDir.delete();
     }

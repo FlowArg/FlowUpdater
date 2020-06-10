@@ -10,19 +10,13 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
-import java.util.Set;
-
-import org.jetbrains.annotations.NotNull;
-
-import com.google.common.collect.Sets;
 
 import fr.flowarg.flowlogger.Logger;
 import fr.flowarg.flowupdater.minecraft.versions.download.assets.AssetDownloadable;
 
 public class VanillaDownloader
 {
-    private static final Set<Downloadable> LIBRARY_DOWNLOADABLE = Sets.newHashSet();
-    private static final Set<AssetDownloadable> ASSET_DOWNLOADABLES = Sets.newHashSet();
+    private DownloadInfos downloadInfos;
     private final File natives;
     private final File assets;
     private final File libraries;
@@ -30,46 +24,40 @@ public class VanillaDownloader
     private File dir;
     private IProgressCallback callback;
 
-    public VanillaDownloader(File dir, Logger logger, IProgressCallback callback)
+    public VanillaDownloader(File dir, Logger logger, IProgressCallback callback, DownloadInfos infos)
     {
-        this.dir       = dir;
-        this.natives   = new File(this.dir, "/natives/");
-        this.assets    = new File(this.dir, "/assets/");
-        this.libraries = new File(this.dir, "/libraries/");
-        this.logger    = logger;
-        this.callback  = callback;
+        this.dir           = dir;
+        this.natives       = new File(this.dir, "/natives/");
+        this.assets        = new File(this.dir, "/assets/");
+        this.libraries 	   = new File(this.dir, "/libraries/");
+        this.logger        = logger;
+        this.callback      = callback;
+        this.downloadInfos = infos;
         
         this.dir.mkdirs();
         this.assets.mkdirs();
         this.natives.mkdirs();
         this.libraries.mkdirs();
-    }
-
-    public static Set<Downloadable> getLibraryDownloadable()
-    {
-        return LIBRARY_DOWNLOADABLE;
-    }
-    public static Set<AssetDownloadable> getAssetDownloadables()
-    {
-        return ASSET_DOWNLOADABLES;
+        this.downloadInfos.init();
     }
 
     public void download(boolean downloadServer) throws IOException
     {
         this.logger.info("[Downloader] Checking library files...");
         this.callback.step(Step.DL_LIBS);
+        this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
         this.checkAllLibraries(downloadServer);
-
-        this.logger.info("[Downloader] Extracting natives...");
-        this.callback.step(Step.EXTRACT_NATIVES);
-        this.extractNatives();
 
         this.logger.info("[Downloader] Checking assets...");
         this.callback.step(Step.DL_ASSETS);
         this.downloadAssets();
+        
+        this.logger.info("[Downloader] Extracting natives...");
+        this.callback.step(Step.EXTRACT_NATIVES);
+        this.extractNatives();
 
-        LIBRARY_DOWNLOADABLE.clear();
-        ASSET_DOWNLOADABLES.clear();
+        this.downloadInfos.getLibraryDownloadables().clear();
+        this.downloadInfos.getAssetDownloadables().clear();
         this.logger.info("[Downloader] All files are successfully downloaded !");
     }
 
@@ -89,7 +77,7 @@ public class VanillaDownloader
             }
         }
 
-        for (Downloadable downloadable : LIBRARY_DOWNLOADABLE)
+        for (Downloadable downloadable : this.downloadInfos.getLibraryDownloadables())
         {
             if (downloadable.getName().equals("server.jar") && !downloadServer) continue;
             else
@@ -104,15 +92,15 @@ public class VanillaDownloader
                         this.download(new URL(downloadable.getUrl()), file);
                     }
                 }
-                else
-                {
-                    this.download(new URL(downloadable.getUrl()), file);
-                }
+                else this.download(new URL(downloadable.getUrl()), file);
             }
+            
+            this.downloadInfos.incrementDownloaded();
+            this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
         }
     }
 
-    private void download(@NotNull URL in, @NotNull File out) throws IOException
+    private void download(URL in, File out) throws IOException
     {
         this.logger.info(String.format("[Downloader] Downloading %s from %s...", out.getName(), in.toExternalForm()));
         out.getParentFile().mkdirs();
@@ -129,14 +117,13 @@ public class VanillaDownloader
 
         for (File toDelete : Objects.requireNonNull(this.natives.listFiles()))
         {
-            String name = toDelete.getName().substring(toDelete.getName().lastIndexOf('.') + 1);
-            if (name.equals("git") || name.equals("sha1")) toDelete.delete();
+            if (toDelete.getName().endsWith(".git") || toDelete.getName().endsWith(".sha1")) toDelete.delete();
         }
     }
 
     private void downloadAssets()
     {
-        for (AssetDownloadable assetDownloadable : ASSET_DOWNLOADABLES)
+        for (AssetDownloadable assetDownloadable : this.downloadInfos.getAssetDownloadables())
         {
             try
             {
@@ -154,6 +141,14 @@ public class VanillaDownloader
             {
                 e.printStackTrace();
             }
+            
+            this.downloadInfos.incrementDownloaded();
+            this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
         }
     }
+    
+    public DownloadInfos getDownloadInfos()
+    {
+		return downloadInfos;
+	}
 }
