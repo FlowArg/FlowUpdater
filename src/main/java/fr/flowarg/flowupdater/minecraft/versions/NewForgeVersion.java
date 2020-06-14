@@ -11,7 +11,12 @@ import java.nio.file.StandardCopyOption;
 
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.Logger;
+import fr.flowarg.flowupdater.minecraft.utils.ZipUtils;
 
+/**
+ * Represent a new Forge version (1.13 -> 1.15.2)
+ * @author FlowArg
+ */
 public class NewForgeVersion implements IForgeVersion
 {
     private Logger   logger;

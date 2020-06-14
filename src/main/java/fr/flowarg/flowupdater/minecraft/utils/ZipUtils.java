@@ -1,4 +1,4 @@
-package fr.flowarg.flowupdater.minecraft.versions;
+package fr.flowarg.flowupdater.minecraft.utils;
 
 import java.io.BufferedInputStream;
 import java.io.File;

@@ -4,6 +4,10 @@ import java.io.File;
 
 import fr.flowarg.flowlogger.Logger;
 
+/**
+ * Represent an old Forge version (1.7 -> 1.12.2)
+ * @author FlowArg
+ */
 public class OldForgeVersion implements IForgeVersion
 {
 	private final Logger logger;
@@ -21,6 +25,7 @@ public class OldForgeVersion implements IForgeVersion
 	public void install(File dirToInstall)
 	{
 		this.logger.info("Installing old forge version : " + this.forgeVersion + "...");
+		// TODO make this.
 	}
 	
 	public String getForgeVersion()
