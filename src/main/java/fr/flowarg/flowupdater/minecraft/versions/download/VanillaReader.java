@@ -15,19 +15,19 @@ import com.google.gson.JsonObject;
 
 import fr.flowarg.flowcompat.Platform;
 import fr.flowarg.flowlogger.Logger;
-import fr.flowarg.flowupdater.minecraft.versions.IVersion;
+import fr.flowarg.flowupdater.minecraft.versions.IVanillaVersion;
 import fr.flowarg.flowupdater.minecraft.versions.download.assets.AssetDownloadable;
 import fr.flowarg.flowupdater.minecraft.versions.download.assets.AssetIndex;
 
 public class VanillaReader
 {
-    private final IVersion version;
+    private final IVanillaVersion version;
     private final Logger   logger;
     private boolean isSilent;
     private IProgressCallback callback;
     private DownloadInfos infos;
 
-    public VanillaReader(IVersion version, Logger logger, boolean isSilent, IProgressCallback callback, DownloadInfos infos)
+    public VanillaReader(IVanillaVersion version, Logger logger, boolean isSilent, IProgressCallback callback, DownloadInfos infos)
     {
         this.version = version;
         this.logger = logger;

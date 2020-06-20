@@ -1,6 +1,7 @@
 package fr.flowarg.flowupdater.minecraft.versions;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Represent a Forge version.
@@ -14,4 +15,11 @@ public interface IForgeVersion
 	 * @param dirToInstall Specified directory.
 	 */
 	void install(final File dirToInstall);
+	
+	/**
+	 * This function install mods at the specified directory.
+	 * @param dirToInstall Specified mods directory.
+	 * @throws IOException If install fail.
+	 */
+	void installMods(final File dirToInstall) throws IOException;
 }

@@ -5,26 +5,31 @@ import java.io.IOException;
 
 import fr.flowarg.flowlogger.Logger;
 import fr.flowarg.flowupdater.minecraft.versions.IForgeVersion;
-import fr.flowarg.flowupdater.minecraft.versions.IVersion;
+import fr.flowarg.flowupdater.minecraft.versions.IVanillaVersion;
 import fr.flowarg.flowupdater.minecraft.versions.download.DownloadInfos;
 import fr.flowarg.flowupdater.minecraft.versions.download.IProgressCallback;
 import fr.flowarg.flowupdater.minecraft.versions.download.Step;
 import fr.flowarg.flowupdater.minecraft.versions.download.VanillaDownloader;
 import fr.flowarg.flowupdater.minecraft.versions.download.VanillaReader;
 
+/**
+ * Represent the base class of the updater.<br>
+ * You can define some parameters about your version (Forge, Vanilla, MCP etc...).
+ * @author FlowArg
+ */
 public class FlowArgMinecraftUpdater
 {
-	/** Version's object to update/install */
-    private final IVersion      version;
-    /** Version's JSON parser */
+	/** Vanilla version's object to update/install */
+    private final IVanillaVersion      version;
+    /** Vanilla version's JSON parser */
     private final VanillaReader vanillaReader;
 
     /** Logger object with his {@linkFile} */
     private File         logFile;
     private Logger       logger;
     
-    /** Forge Version ton install, can be null if you want a vanilla installation */
-    private IForgeVersion forgeVersion;
+    /** Forge Version to install, can be null if you want a vanilla/MCP installation */
+    private IForgeVersion forgeVersion = null;
     /** ProgressCallback to notify installation progress */
     private IProgressCallback callback;
     
@@ -50,7 +55,7 @@ public class FlowArgMinecraftUpdater
 	 * @param silentUpdate True -> reader doesn't make any log. False -> reader log all messages.
 	 * @param callback The callback. If it's null, it will automatically assigned as {@link FlowArgMinecraftUpdater#NULL_CALLBACK}.
 	 */
-    public FlowArgMinecraftUpdater(IVersion version, VanillaReader vanillaReader, Logger logger, boolean silentUpdate, IProgressCallback callback)
+    public FlowArgMinecraftUpdater(IVanillaVersion version, VanillaReader vanillaReader, Logger logger, boolean silentUpdate, IProgressCallback callback)
     {
         this.logger  = logger;
         this.logFile = this.logger.getLogFile();
@@ -91,7 +96,10 @@ public class FlowArgMinecraftUpdater
         vanillaDownloader.download(downloadServer);
 
         if (this.getForgeVersion() != null)
-            this.getForgeVersion().install(dir);
+        {
+        	this.forgeVersion.install(dir);
+        	this.forgeVersion.installMods(new File(dir, "mods/"));
+        }    
         this.callback.step(Step.END);
     }
 
@@ -100,7 +108,7 @@ public class FlowArgMinecraftUpdater
         return this.vanillaReader;
     }
 
-    public IVersion getVersion()
+    public IVanillaVersion getVersion()
     {
         return this.version;
     }
@@ -135,10 +143,19 @@ public class FlowArgMinecraftUpdater
 		return this.callback;
 	}
 
+    /**
+     * Necessary if you want install a Forge version.
+     * @param forgeVersion Forge version to install.
+     */
     public void setForgeVersion(IForgeVersion forgeVersion)
     {
         this.forgeVersion = forgeVersion;
     }
+    
+    public DownloadInfos getDownloadInfos()
+    {
+		return this.downloadInfos;
+	}
     
     /**
      * Builder to build a {@link FlowArgMinecraftUpdater} with less argument.
@@ -147,27 +164,27 @@ public class FlowArgMinecraftUpdater
     public static class SlimUpdaterBuilder
     {
         public static FlowArgMinecraftUpdater build(
-        		IVersion version,
+        		IVanillaVersion version,
         		VanillaReader vanillaReader)
         {
         	return new FlowArgMinecraftUpdater(version, vanillaReader, new Logger("[FlowUpdater]", new File("updater/latest.log")), false, NULL_CALLBACK);
         }
 
         public static FlowArgMinecraftUpdater build(
-        		IVersion version)
+        		IVanillaVersion version)
         {
         	return new FlowArgMinecraftUpdater(version, null, new Logger("[FlowUpdater]", new File("updater/latest.log")), false, NULL_CALLBACK);
         }
 
         public static FlowArgMinecraftUpdater build(
-        		IVersion version,
+        		IVanillaVersion version,
         		Logger logger)
         {
         	return new FlowArgMinecraftUpdater(version, null, logger, false, NULL_CALLBACK);
         }
         
         public static FlowArgMinecraftUpdater build(
-        		IVersion version,
+        		IVanillaVersion version,
         		VanillaReader vanillaReader,
         		boolean silentUpdate)
         {
@@ -175,14 +192,14 @@ public class FlowArgMinecraftUpdater
         }
 
         public static FlowArgMinecraftUpdater build(
-        		IVersion version,
+        		IVanillaVersion version,
         		boolean silentUpdate)
         {
         	return new FlowArgMinecraftUpdater(version, null, new Logger("[FlowUpdater]", new File("updater/latest.log")), silentUpdate, NULL_CALLBACK);
         }
 
         public static FlowArgMinecraftUpdater build(
-        		IVersion version,
+        		IVanillaVersion version,
         		Logger logger,
         		boolean silentUpdate)
         {
@@ -190,7 +207,7 @@ public class FlowArgMinecraftUpdater
         }  
         
         public static FlowArgMinecraftUpdater build(
-        		IVersion version,
+        		IVanillaVersion version,
         		VanillaReader vanillaReader,
         		IProgressCallback callback)
         {
@@ -198,14 +215,14 @@ public class FlowArgMinecraftUpdater
         }
 
         public static FlowArgMinecraftUpdater build(
-        		IVersion version,
+        		IVanillaVersion version,
         		IProgressCallback callback)
         {
         	return new FlowArgMinecraftUpdater(version, null, new Logger("[FlowUpdater]", new File("updater/latest.log")), false, callback);
         }
 
         public static FlowArgMinecraftUpdater build(
-        		IVersion version,
+        		IVanillaVersion version,
         		Logger logger,
         		IProgressCallback callback)
         {
@@ -213,7 +230,7 @@ public class FlowArgMinecraftUpdater
         }
         
         public static FlowArgMinecraftUpdater build(
-        		IVersion version,
+        		IVanillaVersion version,
         		VanillaReader vanillaReader,
         		boolean silentUpdate,
         		IProgressCallback callback)
@@ -222,7 +239,7 @@ public class FlowArgMinecraftUpdater
         }
 
         public static FlowArgMinecraftUpdater build(
-        		IVersion version,
+        		IVanillaVersion version,
         		boolean silentUpdate,
         		IProgressCallback callback)
         {
@@ -230,7 +247,7 @@ public class FlowArgMinecraftUpdater
         }
 
         public static FlowArgMinecraftUpdater build(
-        		IVersion version,
+        		IVanillaVersion version,
         		Logger logger,
         		boolean silentUpdate,
         		IProgressCallback callback)

@@ -12,6 +12,6 @@ public enum Step
 	DL_LIBS, /** Download libraries */
 	DL_ASSETS, /** Download assets */
 	EXTRACT_NATIVES, /** Extract natives */
-	FORGE, /** Skipped if forge is not specified in {@link FlowArgMinecraftUpdater} */
+	FORGE, /** Skipped if {@link FlowArgMinecraftUpdater#getForgeVersion()} isn't null. */
 	END; /** All tasks are finished */
 }

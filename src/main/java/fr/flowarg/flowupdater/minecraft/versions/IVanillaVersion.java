@@ -1,12 +1,21 @@
 package fr.flowarg.flowupdater.minecraft.versions;
 
-import com.google.gson.*;
-
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URL;
 import java.util.concurrent.atomic.AtomicReference;
 
-public interface IVersion
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+public interface IVanillaVersion
 {
     String getName();
 
@@ -19,15 +28,17 @@ public interface IVersion
     class Builder
     {
         private String name;
+        /** MCP Version to install, can be null if you want a vanilla/Forge installation */
+        private MCP mcp = null;
 
         public Builder(String name)
         {
             this.name = name;
         }
 
-        public IVersion build(boolean isSnapshot)
+        public IVanillaVersion build(boolean isSnapshot, VersionType versionType)
         {
-            return new IVersion()
+            return new IVanillaVersion()
             {
                 private final JsonElement JSON = this.readData(this.getJsonVersion());
 
@@ -83,13 +94,29 @@ public interface IVersion
                 @Override
                 public JsonObject getMinecraftClient()
                 {
-                    return JSON.getAsJsonObject().getAsJsonObject("downloads").getAsJsonObject("client");
+                	if(versionType == VersionType.MCP)
+                	{
+                		final JsonObject result = new JsonObject();
+                		result.addProperty("sha1", Builder.this.getMcp().getClientSha1());
+                		result.addProperty("size", Builder.this.getMcp().getClientSize());
+                		result.addProperty("url", Builder.this.getMcp().getClientDownloadURL());
+                		return result;
+                	}
+                	else return JSON.getAsJsonObject().getAsJsonObject("downloads").getAsJsonObject("client");
                 }
 
                 @Override
                 public JsonObject getMinecraftServer()
                 {
-                    return JSON.getAsJsonObject().getAsJsonObject("downloads").getAsJsonObject("server");
+                	if(versionType == VersionType.MCP)
+                	{
+                		final JsonObject result = new JsonObject();
+                		result.addProperty("sha1", Builder.this.getMcp().getServerSha1());
+                		result.addProperty("size", Builder.this.getMcp().getServerSize());
+                		result.addProperty("url", Builder.this.getMcp().getServerDownloadURL());
+                		return result;
+                	}
+                	else return JSON.getAsJsonObject().getAsJsonObject("downloads").getAsJsonObject("server");
                 }
 
                 @Override
@@ -117,5 +144,19 @@ public interface IVersion
                 }
             };
         }
+        
+        /**
+         * Necessary if you want install a MCP version.
+         * @param mcp MCP version to install.
+         */
+        public void setMcp(MCP mcp)
+        {
+    		this.mcp = mcp;
+    	}
+        
+        public MCP getMcp()
+        {
+    		return this.mcp;
+    	}
     }
 }

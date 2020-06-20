@@ -6,6 +6,10 @@ import com.google.common.collect.Lists;
 
 import fr.flowarg.flowupdater.minecraft.versions.download.assets.AssetDownloadable;
 
+/**
+ * Represent some informations about download status. Used for progress system {@link IProgressCallback}.
+ * @author FlowArg
+ */
 public class DownloadInfos
 {
     private final List<Downloadable> libraryDownloadables = Lists.newArrayList();
