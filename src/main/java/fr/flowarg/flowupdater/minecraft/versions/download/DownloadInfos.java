@@ -1,8 +1,7 @@
 package fr.flowarg.flowupdater.minecraft.versions.download;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import com.google.common.collect.Lists;
 
 import fr.flowarg.flowupdater.minecraft.versions.download.assets.AssetDownloadable;
 
@@ -12,8 +11,8 @@ import fr.flowarg.flowupdater.minecraft.versions.download.assets.AssetDownloadab
  */
 public class DownloadInfos
 {
-    private final List<Downloadable> libraryDownloadables = Lists.newArrayList();
-    private final List<AssetDownloadable> assetDownloadables = Lists.newArrayList();
+    private final List<Downloadable> libraryDownloadables = new ArrayList<>();
+    private final List<AssetDownloadable> assetDownloadables = new ArrayList<>();
 	private int totalToDownload;
 	private int downloaded;
 	

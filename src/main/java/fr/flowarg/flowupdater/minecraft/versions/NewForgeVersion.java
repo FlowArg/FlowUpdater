@@ -42,7 +42,7 @@ public class NewForgeVersion implements IForgeVersion
             if (!forgeVersion.contains("-"))
                 this.forgeVersion = vanilla.getName() + '-' + forgeVersion;
             else this.forgeVersion = forgeVersion;
-            this.installerUrl = new URL(String.format("https://files.minecraftforge.net/maven/net/minecraftforge/forge/%s/forge-%s-installer.jar", forgeVersion, forgeVersion));
+            this.installerUrl = new URL(String.format("https://files.minecraftforge.net/maven/net/minecraftforge/forge/%s/forge-%s-installer.jar", this.forgeVersion, this.forgeVersion));
             this.vanilla      = vanilla;
             this.callback = callback;
             this.mods = mods;
