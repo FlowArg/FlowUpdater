@@ -15,15 +15,21 @@ repositories {
 	mavenCentral()
 }
 
-task sourcesJar(type: Jar) {
-	classifier 'sources'
-	from sourceSets.main.allSource
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+	archives sourcesJar
 }
 
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
-			pom {
+            from components.java
+            artifact tasks.sourcesJar
+			pom {				
 				groupId = project.group
 				version = project.version
 				artifactId = 'flowupdater'
@@ -44,11 +50,6 @@ publishing {
 					}
 				}
 			}
-		}
-	}
-	repositories {
-		maven {
-			url "https://flowarg.github.io/maven/"
 		}
 	}
 }
