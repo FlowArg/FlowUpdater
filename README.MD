@@ -3,28 +3,40 @@
 ### How it's use ?
 This is very simple !
 
+#### Vanilla
+
 First, declare the version builder :
 ```java
-IVersion.Builder versionBuilder = new IVersion.Builder("1.9.1");
+IVanillaVersion.Builder versionBuilder = new IVanillaVersion.Builder("1.9.1");
 ```
-You have to put the version you want as parameter, you can set a snapshot if you want.
+You have to put the version you want as parameter, you can set a snapshot if you want or `latest`.
 
 Then, build the version :
 ```java
-IVersion version = versionBuilder.build(false);
+IVanillaVersion version = versionBuilder.build(false);
 ```
 If you have specified "latest" to the version name, and that the version is a snapshot, replace false by true.
 
-Then, instantiate a new FlowArgMinecraftUpdater :
+Then, instantiate a new FlowArgMinecraftUpdater, you can use ``SlimUpdaterBuilder#build`` too.
 ```java
-FlowArgMinecraftUpdater updater = new FlowArgMinecraftUpdater(version, new Reader(version));
+FlowArgMinecraftUpdater updater = SlimUpdaterBuilder.build(version, new VanillaReader(version), true);
 ```
 
-Define the Updater with your version and instantiate a new Reader with your version as parameter. Finally, call the update function :
+Finally, call the update function :
 ```java
 updater.update(new File("/your/path/"), false);
 ```
 Replace false by true if you want to download the server Jar.
+
+### Forge
+(You need to setup a vanilla updater)
+First, make a List of Mod objects.
+```
+List<Mod> mods = new ArrayList<>();
+mods.add(new Mod("OneMod.jar", "sha1ofmod", 85120, "https://link/of/mod.jar"));
+mods.add(new Mod("AnotherMod.jar", "sha1ofanothermod", 86120, "https://link/of/another/mod.jar"));
+```
+
 
 ### Add to dependencies
 It's very simple ago !
@@ -41,7 +53,7 @@ repositories {
 and in your `dependencies` block :
 ```groovy
 dependencies {
-    compile 'fr.flowarg:flowupdater:1.0.1'
+    compile 'fr.flowarg:flowupdater:1.1.0'
 }
 ```
 
@@ -49,17 +61,3 @@ And all it's done !
 
 ### Informations
 This library use content of another library : [FlowMultitools](https://github.com/FlowArg/FlowMultitools).
-You must add to dependency this library (read the README of of FlowMultitools).
-If gradle doesn't import dependencies of FlowMultitools, add there manually :
-```groovy
-dependencies {
-    compile 'fr.flowarg:flowupdater:1.0.0'
-    compile 'org.apache.commons:commons-lang3:3.9'
-	compile 'com.google.guava:guava:21.0'
-	compile 'com.google.code.gson:gson:2.8.6'
-	compile 'commons-io:commons-io:2.6'
-	compile 'org.jetbrains:annotations:18.0.0'
-	compile 'com.google.errorprone:error_prone_annotations:2.3.4'
-	compile 'org.codehaus.plexus:plexus-archiver:2.2'
-}
-```
