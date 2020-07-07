@@ -19,7 +19,7 @@ If you have specified "latest" to the version name, and that the version is a sn
 
 Then, instantiate a new FlowArgMinecraftUpdater, you can use ``SlimUpdaterBuilder#build`` too.
 ```java
-FlowArgMinecraftUpdater updater = SlimUpdaterBuilder.build(version, new VanillaReader(version), true);
+FlowArgMinecraftUpdater updater = SlimUpdaterBuilder.build(version, true);
 ```
 
 Finally, call the update function :
