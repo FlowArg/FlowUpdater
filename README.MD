@@ -39,9 +39,9 @@ Next, make a List of Mod objects.
 List<Mod> mods = new ArrayList<>();
 mods.add(new Mod("OneMod.jar", "sha1ofmod", 85120, "https://link/of/mod.jar"));
 mods.add(new Mod("AnotherMod.jar", "sha1ofanothermod", 86120, "https://link/of/another/mod.jar"));
-
-You can get a list of mods by providing a json link : `List<Mod> mods = Mod.getModsFromJson("https://url.com/launcher/mods.json");` too.
 ```
+You can get a list of mods by providing a json link : `List<Mod> mods = Mod.getModsFromJson("https://url.com/launcher/mods.json");` too.
+
 Finally, set the Forge version corresponding to the wanted Forge version :
 ```java
 updater.setForgeVersion(new NewForgeVersion("31.2.30", version, updater.getLogger(), updater.getCallback(), mods)); // NewForgeVersion -> 1.13 1.16 ; OldForgeVersion -> 1.7 1.12
