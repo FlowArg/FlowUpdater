@@ -39,6 +39,8 @@ Next, make a List of Mod objects.
 List<Mod> mods = new ArrayList<>();
 mods.add(new Mod("OneMod.jar", "sha1ofmod", 85120, "https://link/of/mod.jar"));
 mods.add(new Mod("AnotherMod.jar", "sha1ofanothermod", 86120, "https://link/of/another/mod.jar"));
+
+You can get a list of mods by providing a json link : `List<Mod> mods = Mod.getModsFromJson("https://url.com/launcher/mods.json");` too.
 ```
 Finally, set the Forge version corresponding to the wanted Forge version :
 ```java
@@ -53,6 +55,7 @@ Finally, set to versionBuilder a MCP version before building the version :
 ```java
 versionBuilder.setMcp(new MCP("clientDownloadURL", "name", "clientSha1", "author", "serverDownloadURL", "serverSha1", 1215, 20525));
 ```
+You can get a MCP object instance by providing a json link : `versionBuilder.setMcp(MCP.fromJson("https://url.com/launcher/mcp.json"));` too.
 Nothing else to add :).
 
 ### Add to dependencies
@@ -70,7 +73,7 @@ repositories {
 and in your `dependencies` block :
 ```groovy
 dependencies {
-    compile 'fr.flowarg:flowupdater:1.1.0'
+    compile 'fr.flowarg:flowupdater:1.1.1'
 }
 ```
 

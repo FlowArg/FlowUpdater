@@ -1,5 +1,21 @@
 package fr.flowarg.flowupdater.minecraft.versions.download;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 public class Mod
 {
 	private String name;
@@ -7,12 +23,73 @@ public class Mod
 	private int size;
 	private String downloadURL;
 	
+	/**
+	 * Construct a new Mod objcet.
+	 * @param name Name of mod file.
+	 * @param sha1 Sha1 of mod file.
+	 * @param size Size of mod file.
+	 * @param downloadURL Mod download URL.
+	 */
 	public Mod(String name, String sha1, int size, String downloadURL)
 	{
 		this.name = name;
 		this.sha1 = sha1;
 		this.size = size;
 		this.downloadURL =  downloadURL;
+	}
+	
+	/**
+	 * Provide a List of Mods from a JSON file.
+	 * Template of a JSON file :
+	 * {
+	 * 	"mods": [
+	 * 	{
+	 * 		"name": "KeyStroke",
+	 * 		"downloadURL": "https://url.com/launcher/mods/KeyStroke.jar",
+	 * 		"sha1": "70e564892989d8bbc6f45c895df56c5db9378f48",
+	 * 		"size": 1234
+	 * 	},
+	 * 	{
+	 * 		"name": "JourneyMap",
+	 * 		"downloadURL": "https://url.com/launcher/mods/JourneyMap.jar",
+	 * 		"sha1": "eef74b3fbab6400cb14b02439cf092cca3c2125c",
+	 * 		"size": 1234
+	 * 	}
+	 * 	]
+	 * }
+	 * @param url the JSON file URL.
+	 * @return the MCP instance.
+	 */
+	public static List<Mod> getModsFromJson(URL json)
+	{
+		final List<Mod> result = new ArrayList<>();
+		JsonElement element = JsonNull.INSTANCE;
+        try(InputStream stream = new BufferedInputStream(json.openStream()))
+        {
+            final Reader reader = new BufferedReader(new InputStreamReader(stream));
+            final StringBuilder sb = new StringBuilder();
+
+            int character;
+            while ((character = reader.read()) != -1) sb.append((char)character);
+
+            element =  JsonParser.parseString(sb.toString());
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        
+        final JsonObject object = element.getAsJsonObject();
+        final JsonArray mods = object.getAsJsonArray("mods");
+        mods.forEach(modElement -> {
+        	final JsonObject obj = modElement.getAsJsonObject();
+        	final String name = obj.get("name").getAsString();
+        	final String sha1 = obj.get("sha1").getAsString();
+        	final String downloadURL = obj.get("downloadURL").getAsString();
+        	final int size = obj.get("size").getAsInt();
+        	
+        	result.add(new Mod(name, sha1, size, downloadURL));
+        });
+        return result;
 	}
 	
 	public String getName()

@@ -102,7 +102,7 @@ public class VanillaReader
         final JsonObject assetIndex = this.version.getMinecraftAssetsIndex();
         final String url = assetIndex.get("url").getAsString();
         final int size = assetIndex.get("size").getAsInt();
-        final String name = url.replace(url, "/assets/indexes/" + url.substring(url.lastIndexOf('/') + 1));
+        final String name = "/assets/indexes/" + url.substring(url.lastIndexOf('/') + 1);
         final String sha1 = assetIndex.get("sha1").getAsString();
 
         if(!this.isSilent)
@@ -115,13 +115,13 @@ public class VanillaReader
         final JsonObject client = this.version.getMinecraftClient();
         final String clientURL = client.get("url").getAsString();
         final int clientSize = client.get("size").getAsInt();
-        final String clientName = clientURL.replace(clientURL, clientURL.substring(clientURL.lastIndexOf('/') + 1));
+        final String clientName = clientURL.substring(clientURL.lastIndexOf('/') + 1);
         final String clientSha1 = client.get("sha1").getAsString();
 
         final JsonObject server = this.version.getMinecraftServer();
         final String serverURL = server.get("url").getAsString();
         final int serverSize = server.get("size").getAsInt();
-        final String serverName = serverURL.replace(serverURL, serverURL.substring(serverURL.lastIndexOf('/') + 1));
+        final String serverName = serverURL.substring(serverURL.lastIndexOf('/') + 1);
         final String serverSha1 = server.get("sha1").getAsString();
 
         if(!this.isSilent)
@@ -152,7 +152,7 @@ public class VanillaReader
                     final String url = macObj.get("url").getAsString();
                     final int size = macObj.get("size").getAsInt();
                     final String path = macObj.get("path").getAsString();
-                    final String name = path.replace(path, "/natives/" + path.substring(path.lastIndexOf('/') + 1));
+                    final String name = "/natives/" + path.substring(path.lastIndexOf('/') + 1);
                     final String sha1 = macObj.get("sha1").getAsString();
 
                     this.logger.info("Reading " + name + " from " + url + "... SHA1 is : " + sha1);

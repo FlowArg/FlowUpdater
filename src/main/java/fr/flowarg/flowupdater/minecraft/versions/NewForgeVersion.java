@@ -210,7 +210,7 @@ public class NewForgeVersion implements IForgeVersion
 	{
 		for(Mod mod : this.mods)
 		{
-	        final File file = new File(modsDir, mod.getName());
+	        final File file = new File(modsDir, mod.getName().endsWith(".jar") ? mod.getName() : mod.getName() + ".jar");
 
 	        if (file.exists())
 	        {
