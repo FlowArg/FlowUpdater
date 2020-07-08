@@ -71,7 +71,7 @@ public class FlowArgMinecraftUpdater
         {
             e.printStackTrace();
         }
-        this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", version.getName(), "1.1.1"));
+        this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", version.getName(), "1.1.2"));
         this.version       = version;
         this.downloadInfos = new DownloadInfos();
         this.callback = callback != null ? callback : NULL_CALLBACK;

@@ -113,7 +113,9 @@ public class NewForgeVersion implements IForgeVersion
     private void cleaningInstaller(File tempInstallerDir)
     {
         FileUtils.deleteDirectory(new File(tempInstallerDir, "net"));
+        FileUtils.deleteDirectory(new File(tempInstallerDir, "com"));
         FileUtils.deleteDirectory(new File(tempInstallerDir, "joptisimple"));
+        FileUtils.deleteDirectory(new File(tempInstallerDir, "net"));
         new File(tempInstallerDir, "META-INF/MANIFEST.MF").delete();
         new File(tempInstallerDir, "META-INF/FORGE.DSA").delete();
         new File(tempInstallerDir, "META-INF/FORGE.SF").delete();

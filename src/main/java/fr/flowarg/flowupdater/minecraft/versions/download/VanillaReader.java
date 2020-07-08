@@ -84,13 +84,12 @@ public class VanillaReader
                         final JsonObject obj = element.getAsJsonObject("downloads").getAsJsonObject("artifact");
                         final String url = obj.get("url").getAsString();
                         final int size = obj.get("size").getAsInt();
-                        final String path = obj.get("path").getAsString();
-                        final String name = path.replace(path, "/libraries/" + path.substring(path.lastIndexOf('/') + 1));
+                        final String path = "/libraries/" + obj.get("path").getAsString();
                         final String sha1 = obj.get("sha1").getAsString();
 
                         if(!this.isSilent)
-                            this.logger.info("Reading " + name + " from " + url + "... SHA1 is : " + sha1);
-                        this.infos.getLibraryDownloadables().add(new Downloadable(url, size, sha1, name));
+                            this.logger.info("Reading " + path + " from " + url + "... SHA1 is : " + sha1);
+                        this.infos.getLibraryDownloadables().add(new Downloadable(url, size, sha1, path));
                     }
                 }
             }
@@ -162,7 +161,7 @@ public class VanillaReader
                     final String url = osxObj.get("url").getAsString();
                     final int size = osxObj.get("size").getAsInt();
                     final String path = osxObj.get("path").getAsString();
-                    final String name = path.replace(path, "/natives/" + path.substring(path.lastIndexOf('/') + 1));
+                    final String name = "/natives/" + path.substring(path.lastIndexOf('/') + 1);
                     final String sha1 = osxObj.get("sha1").getAsString();
 
                     this.logger.info("Reading " + name + " from " + url + "... SHA1 is : " + sha1);
@@ -172,7 +171,7 @@ public class VanillaReader
                     final String url = windowsObj.get("url").getAsString();
                     final int size = windowsObj.get("size").getAsInt();
                     final String path = windowsObj.get("path").getAsString();
-                    final String name = path.replace(path, "/natives/" + path.substring(path.lastIndexOf('/') + 1));
+                    final String name = "/natives/" + path.substring(path.lastIndexOf('/') + 1);
                     final String sha1 = windowsObj.get("sha1").getAsString();
 
                     if (name.contains("-3.2.1-") && name.contains("lwjgl")) return;
@@ -185,7 +184,7 @@ public class VanillaReader
                     final String url = linuxObj.get("url").getAsString();
                     final int size = linuxObj.get("size").getAsInt();
                     final String path = linuxObj.get("path").getAsString();
-                    final String name = path.replace(path, "/natives/" + path.substring(path.lastIndexOf('/') + 1));
+                    final String name = "/natives/" + path.substring(path.lastIndexOf('/') + 1);
                     final String sha1 = linuxObj.get("sha1").getAsString();
 
                     if (name.contains("-3.2.1-") && name.contains("lwjgl")) return;

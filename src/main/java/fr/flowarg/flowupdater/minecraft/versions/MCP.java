@@ -25,12 +25,11 @@ public class MCP
 	/**
 	 * Construct a new MCP.
 	 * @param clientDownloadURL URL of client.jar
-	 * @param clientSha1
-	 * @param author
-	 * @param serverDownloadURL
-	 * @param serverSha1
-	 * @param clientSize
-	 * @param serverSize
+	 * @param clientSha1 SHA1 of client.jar
+	 * @param serverDownloadURL URL of server.jar
+	 * @param serverSha1 SHA1 of server.jar
+	 * @param clientSize Size (bytes) of client.jar
+	 * @param serverSize Size (bytes) of server.jar
 	 */
 	public MCP(String clientDownloadURL, String clientSha1, String serverDownloadURL, String serverSha1, int clientSize, int serverSize)
 	{
