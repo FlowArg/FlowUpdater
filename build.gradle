@@ -57,6 +57,5 @@ publishing {
 dependencies {
 	implementation 'com.google.code.gson:gson:2.8.6'
 	implementation 'fr.flowarg:flowmultitools:1.0.2'
-	implementation 'org.codehaus.plexus:plexus-archiver:2.2'
 	testImplementation 'junit:junit:4.13'
 }
