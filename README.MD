@@ -73,7 +73,7 @@ repositories {
 and in your `dependencies` block :
 ```groovy
 dependencies {
-    compile 'fr.flowarg:flowupdater:1.1.1'
+    compile 'fr.flowarg:flowupdater:1.1.2'
 }
 ```
 
