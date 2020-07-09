@@ -17,7 +17,7 @@ IVanillaVersion version = versionBuilder.build(false, VersionType.VANILLA);
 ```
 If you have specified "latest" to the version name, and that the version is a snapshot, replace false by true.
 
-Then, instantiate a new FlowArgMinecraftUpdater, you can use ``SlimUpdaterBuilder#build`` too.
+Then, instantiate a new FlowArgMinecraftUpdater (you can use ``SlimUpdaterBuilder#build`` too, check the code for more informations).
 ```java
 FlowUpdater updater = SlimUpdaterBuilder.build(version, true);
 ```
@@ -58,6 +58,14 @@ versionBuilder.setMcp(new MCP("clientDownloadURL", "name", "clientSha1", "author
 You can get a MCP object instance by providing a json link : `versionBuilder.setMcp(MCP.fromJson("https://url.com/launcher/mcp.json"));` too.
 Nothing else to add :).
 
+### External Files
+With FlowUpdater, you can download other files in your update dir!
+In your FlowUpdater instance, precise an array list of ExternalFile (can be get by ExternalFile#fromJson).
+
+### Post executions
+With FlowUpdater, you can execute some actions after update, like patch a file, kill a process, launch a process, review a config etc etc...
+In your FlowUpdater instance, precise an list of Runnable.
+
 ### Add to dependencies
 It's very simple ago !
 In your block `repositories`, add this lines :
@@ -73,7 +81,7 @@ repositories {
 and in your `dependencies` block :
 ```groovy
 dependencies {
-    compile 'fr.flowarg:flowupdater:1.1.2'
+    compile 'fr.flowarg:flowupdater:1.1.3'
     // If you have problem with Logger import, add this line: compile 'fr.flowarg:flowmultitools:1.0.2'
 }
 ```
