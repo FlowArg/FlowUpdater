@@ -7,11 +7,12 @@ import java.util.List;
 
 import org.junit.Test;
 
-import fr.flowarg.flowupdater.minecraft.FlowUpdater.SlimUpdaterBuilder;
-import fr.flowarg.flowupdater.minecraft.versions.IVanillaVersion;
-import fr.flowarg.flowupdater.minecraft.versions.OldForgeVersion;
-import fr.flowarg.flowupdater.minecraft.versions.VersionType;
-import fr.flowarg.flowupdater.minecraft.versions.download.Mod;
+import fr.flowarg.flowupdater.FlowUpdater;
+import fr.flowarg.flowupdater.FlowUpdater.SlimUpdaterBuilder;
+import fr.flowarg.flowupdater.versions.IVanillaVersion;
+import fr.flowarg.flowupdater.versions.OldForgeVersion;
+import fr.flowarg.flowupdater.versions.VersionType;
+import fr.flowarg.flowupdater.versions.download.Mod;
 
 public class FlowArgMinecraftUpdaterTest
 {

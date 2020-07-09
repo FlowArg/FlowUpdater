@@ -1,4 +1,4 @@
-package fr.flowarg.flowupdater.minecraft.versions;
+package fr.flowarg.flowupdater.versions;
 
 import static fr.flowarg.flowio.FileUtils.getFileSizeBytes;
 import static fr.flowarg.flowio.FileUtils.getSHA1;
@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.Objects;
 
 import fr.flowarg.flowlogger.Logger;
-import fr.flowarg.flowupdater.minecraft.versions.download.IProgressCallback;
-import fr.flowarg.flowupdater.minecraft.versions.download.Mod;
-import fr.flowarg.flowupdater.minecraft.versions.download.Step;
+import fr.flowarg.flowupdater.versions.download.IProgressCallback;
+import fr.flowarg.flowupdater.versions.download.Mod;
+import fr.flowarg.flowupdater.versions.download.Step;
 
 /**
  * Represent an old Forge version (1.7 -> 1.12.2)

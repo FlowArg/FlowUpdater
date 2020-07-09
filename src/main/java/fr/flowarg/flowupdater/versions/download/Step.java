@@ -1,6 +1,6 @@
-package fr.flowarg.flowupdater.minecraft.versions.download;
+package fr.flowarg.flowupdater.versions.download;
 
-import fr.flowarg.flowupdater.minecraft.FlowUpdater;
+import fr.flowarg.flowupdater.FlowUpdater;
 
 /**
  * Represent each step of an Minecraft Installation

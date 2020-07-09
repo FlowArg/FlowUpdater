@@ -1,9 +1,9 @@
-package fr.flowarg.flowupdater.minecraft.versions.download;
+package fr.flowarg.flowupdater.versions.download;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.flowarg.flowupdater.minecraft.versions.download.assets.AssetDownloadable;
+import fr.flowarg.flowupdater.versions.download.assets.AssetDownloadable;
 
 /**
  * Represent some informations about download status. Used for progress system {@link IProgressCallback}.

@@ -1,4 +1,4 @@
-package fr.flowarg.flowupdater.minecraft.versions.download;
+package fr.flowarg.flowupdater.versions.download;
 
 import static fr.flowarg.flowio.FileUtils.getFileSizeBytes;
 import static fr.flowarg.flowio.FileUtils.getSHA1;
@@ -12,7 +12,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 
 import fr.flowarg.flowlogger.Logger;
-import fr.flowarg.flowupdater.minecraft.versions.download.assets.AssetDownloadable;
+import fr.flowarg.flowupdater.versions.download.assets.AssetDownloadable;
 
 public class VanillaDownloader
 {

@@ -1,4 +1,4 @@
-package fr.flowarg.flowupdater.minecraft.versions.download.assets;
+package fr.flowarg.flowupdater.versions.download.assets;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;

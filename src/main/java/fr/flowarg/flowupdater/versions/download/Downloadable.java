@@ -1,4 +1,4 @@
-package fr.flowarg.flowupdater.minecraft.versions.download;
+package fr.flowarg.flowupdater.versions.download;
 
 public class Downloadable
 {

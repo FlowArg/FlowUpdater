@@ -1,16 +1,16 @@
-package fr.flowarg.flowupdater.minecraft;
+package fr.flowarg.flowupdater;
 
 import java.io.File;
 import java.io.IOException;
 
 import fr.flowarg.flowlogger.Logger;
-import fr.flowarg.flowupdater.minecraft.versions.IForgeVersion;
-import fr.flowarg.flowupdater.minecraft.versions.IVanillaVersion;
-import fr.flowarg.flowupdater.minecraft.versions.download.DownloadInfos;
-import fr.flowarg.flowupdater.minecraft.versions.download.IProgressCallback;
-import fr.flowarg.flowupdater.minecraft.versions.download.Step;
-import fr.flowarg.flowupdater.minecraft.versions.download.VanillaDownloader;
-import fr.flowarg.flowupdater.minecraft.versions.download.VanillaReader;
+import fr.flowarg.flowupdater.versions.IForgeVersion;
+import fr.flowarg.flowupdater.versions.IVanillaVersion;
+import fr.flowarg.flowupdater.versions.download.DownloadInfos;
+import fr.flowarg.flowupdater.versions.download.IProgressCallback;
+import fr.flowarg.flowupdater.versions.download.Step;
+import fr.flowarg.flowupdater.versions.download.VanillaDownloader;
+import fr.flowarg.flowupdater.versions.download.VanillaReader;
 
 /**
  * Represent the base class of the updater.<br>

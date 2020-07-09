@@ -1,4 +1,4 @@
-package fr.flowarg.flowupdater.minecraft.versions.download;
+package fr.flowarg.flowupdater.versions.download;
 
 import java.io.IOException;
 import java.net.URL;
@@ -15,9 +15,9 @@ import com.google.gson.JsonObject;
 
 import fr.flowarg.flowcompat.Platform;
 import fr.flowarg.flowlogger.Logger;
-import fr.flowarg.flowupdater.minecraft.versions.IVanillaVersion;
-import fr.flowarg.flowupdater.minecraft.versions.download.assets.AssetDownloadable;
-import fr.flowarg.flowupdater.minecraft.versions.download.assets.AssetIndex;
+import fr.flowarg.flowupdater.versions.IVanillaVersion;
+import fr.flowarg.flowupdater.versions.download.assets.AssetDownloadable;
+import fr.flowarg.flowupdater.versions.download.assets.AssetIndex;
 
 public class VanillaReader
 {
