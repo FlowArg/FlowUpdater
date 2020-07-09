@@ -17,7 +17,7 @@ import fr.flowarg.flowupdater.minecraft.versions.download.VanillaReader;
  * You can define some parameters about your version (Forge, Vanilla, MCP etc...).
  * @author FlowArg
  */
-public class FlowArgMinecraftUpdater
+public class FlowUpdater
 {
 	/** Vanilla version's object to update/install */
     private final IVanillaVersion      version;
@@ -48,14 +48,14 @@ public class FlowArgMinecraftUpdater
 	};
 
 	/**
-	 * Basic constructor to construct a new {@link FlowArgMinecraftUpdater}.
+	 * Basic constructor to construct a new {@link FlowUpdater}.
 	 * @param version Version to update
 	 * @param vanillaReader Reader to use for JSON file.
 	 * @param logger Logger used for log informations.
 	 * @param silentUpdate True -> reader doesn't make any log. False -> reader log all messages.
-	 * @param callback The callback. If it's null, it will automatically assigned as {@link FlowArgMinecraftUpdater#NULL_CALLBACK}.
+	 * @param callback The callback. If it's null, it will automatically assigned as {@link FlowUpdater#NULL_CALLBACK}.
 	 */
-    public FlowArgMinecraftUpdater(IVanillaVersion version, VanillaReader vanillaReader, Logger logger, boolean silentUpdate, IProgressCallback callback)
+    public FlowUpdater(IVanillaVersion version, VanillaReader vanillaReader, Logger logger, boolean silentUpdate, IProgressCallback callback)
     {
         this.logger  = logger;
         this.logFile = this.logger.getLogFile();
@@ -158,101 +158,101 @@ public class FlowArgMinecraftUpdater
 	}
     
     /**
-     * Builder to build a {@link FlowArgMinecraftUpdater} with less argument.
+     * Builder to build a {@link FlowUpdater} with less argument.
      * @author FlowArg
      */
     public static class SlimUpdaterBuilder
     {
-        public static FlowArgMinecraftUpdater build(
+        public static FlowUpdater build(
         		IVanillaVersion version,
         		VanillaReader vanillaReader)
         {
-        	return new FlowArgMinecraftUpdater(version, vanillaReader, new Logger("[FlowUpdater]", new File("updater/latest.log")), false, NULL_CALLBACK);
+        	return new FlowUpdater(version, vanillaReader, new Logger("[FlowUpdater]", new File("updater/latest.log")), false, NULL_CALLBACK);
         }
 
-        public static FlowArgMinecraftUpdater build(
+        public static FlowUpdater build(
         		IVanillaVersion version)
         {
-        	return new FlowArgMinecraftUpdater(version, null, new Logger("[FlowUpdater]", new File("updater/latest.log")), false, NULL_CALLBACK);
+        	return new FlowUpdater(version, null, new Logger("[FlowUpdater]", new File("updater/latest.log")), false, NULL_CALLBACK);
         }
 
-        public static FlowArgMinecraftUpdater build(
+        public static FlowUpdater build(
         		IVanillaVersion version,
         		Logger logger)
         {
-        	return new FlowArgMinecraftUpdater(version, null, logger, false, NULL_CALLBACK);
+        	return new FlowUpdater(version, null, logger, false, NULL_CALLBACK);
         }
         
-        public static FlowArgMinecraftUpdater build(
+        public static FlowUpdater build(
         		IVanillaVersion version,
         		VanillaReader vanillaReader,
         		boolean silentUpdate)
         {
-        	return new FlowArgMinecraftUpdater(version, vanillaReader, new Logger("[FlowUpdater]", new File("updater/latest.log")), silentUpdate, NULL_CALLBACK);
+        	return new FlowUpdater(version, vanillaReader, new Logger("[FlowUpdater]", new File("updater/latest.log")), silentUpdate, NULL_CALLBACK);
         }
 
-        public static FlowArgMinecraftUpdater build(
+        public static FlowUpdater build(
         		IVanillaVersion version,
         		boolean silentUpdate)
         {
-        	return new FlowArgMinecraftUpdater(version, null, new Logger("[FlowUpdater]", new File("updater/latest.log")), silentUpdate, NULL_CALLBACK);
+        	return new FlowUpdater(version, null, new Logger("[FlowUpdater]", new File("updater/latest.log")), silentUpdate, NULL_CALLBACK);
         }
 
-        public static FlowArgMinecraftUpdater build(
+        public static FlowUpdater build(
         		IVanillaVersion version,
         		Logger logger,
         		boolean silentUpdate)
         {
-        	return new FlowArgMinecraftUpdater(version, null, logger, silentUpdate, NULL_CALLBACK);
+        	return new FlowUpdater(version, null, logger, silentUpdate, NULL_CALLBACK);
         }  
         
-        public static FlowArgMinecraftUpdater build(
+        public static FlowUpdater build(
         		IVanillaVersion version,
         		VanillaReader vanillaReader,
         		IProgressCallback callback)
         {
-        	return new FlowArgMinecraftUpdater(version, vanillaReader, new Logger("[FlowUpdater]", new File("updater/latest.log")), false, callback);
+        	return new FlowUpdater(version, vanillaReader, new Logger("[FlowUpdater]", new File("updater/latest.log")), false, callback);
         }
 
-        public static FlowArgMinecraftUpdater build(
+        public static FlowUpdater build(
         		IVanillaVersion version,
         		IProgressCallback callback)
         {
-        	return new FlowArgMinecraftUpdater(version, null, new Logger("[FlowUpdater]", new File("updater/latest.log")), false, callback);
+        	return new FlowUpdater(version, null, new Logger("[FlowUpdater]", new File("updater/latest.log")), false, callback);
         }
 
-        public static FlowArgMinecraftUpdater build(
+        public static FlowUpdater build(
         		IVanillaVersion version,
         		Logger logger,
         		IProgressCallback callback)
         {
-        	return new FlowArgMinecraftUpdater(version, null, logger, false, callback);
+        	return new FlowUpdater(version, null, logger, false, callback);
         }
         
-        public static FlowArgMinecraftUpdater build(
+        public static FlowUpdater build(
         		IVanillaVersion version,
         		VanillaReader vanillaReader,
         		boolean silentUpdate,
         		IProgressCallback callback)
         {
-        	return new FlowArgMinecraftUpdater(version, vanillaReader, new Logger("[FlowUpdater]", new File("updater/latest.log")), silentUpdate, callback);
+        	return new FlowUpdater(version, vanillaReader, new Logger("[FlowUpdater]", new File("updater/latest.log")), silentUpdate, callback);
         }
 
-        public static FlowArgMinecraftUpdater build(
+        public static FlowUpdater build(
         		IVanillaVersion version,
         		boolean silentUpdate,
         		IProgressCallback callback)
         {
-        	return new FlowArgMinecraftUpdater(version, null, new Logger("[FlowUpdater]", new File("updater/latest.log")), silentUpdate, callback);
+        	return new FlowUpdater(version, null, new Logger("[FlowUpdater]", new File("updater/latest.log")), silentUpdate, callback);
         }
 
-        public static FlowArgMinecraftUpdater build(
+        public static FlowUpdater build(
         		IVanillaVersion version,
         		Logger logger,
         		boolean silentUpdate,
         		IProgressCallback callback)
         {
-        	return new FlowArgMinecraftUpdater(version, null, logger, silentUpdate, callback);
+        	return new FlowUpdater(version, null, logger, silentUpdate, callback);
         }
     }
 }

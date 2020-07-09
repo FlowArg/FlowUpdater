@@ -3,7 +3,7 @@ package fr.flowarg.flowupdater.minecraft.versions.download;
 public interface IProgressCallback
 {
 	/**
-	 * This method is called at {@link FlowArgMinecraftUpdater} initialization.
+	 * This method is called at {@link FlowUpdater} initialization.
 	 */
 	void init();
 	/**

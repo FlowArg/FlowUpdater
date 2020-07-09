@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import fr.flowarg.flowupdater.minecraft.FlowArgMinecraftUpdater.SlimUpdaterBuilder;
+import fr.flowarg.flowupdater.minecraft.FlowUpdater.SlimUpdaterBuilder;
 import fr.flowarg.flowupdater.minecraft.versions.IVanillaVersion;
 import fr.flowarg.flowupdater.minecraft.versions.OldForgeVersion;
 import fr.flowarg.flowupdater.minecraft.versions.VersionType;
@@ -22,7 +22,7 @@ public class FlowArgMinecraftUpdaterTest
         {
             final IVanillaVersion.Builder builder = new IVanillaVersion.Builder("1.7.10");
             final IVanillaVersion version = builder.build(false, VersionType.FORGE);
-            final FlowArgMinecraftUpdater updater = SlimUpdaterBuilder.build(version, true);
+            final FlowUpdater updater = SlimUpdaterBuilder.build(version, true);
             final List<Mod> mods = new ArrayList<>();
             mods.add(new Mod("name", "sha1", 0, "https://example.org/"));
             updater.setForgeVersion(new OldForgeVersion("1.7.10-10.13.4.1614", version, updater.getLogger(), updater.getCallback(), mods));
