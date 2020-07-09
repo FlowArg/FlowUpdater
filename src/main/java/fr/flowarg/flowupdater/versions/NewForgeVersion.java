@@ -28,7 +28,7 @@ import fr.flowarg.flowupdater.versions.download.Mod;
 import fr.flowarg.flowupdater.versions.download.Step;
 
 /**
- * Represent a new Forge version (1.13 -> 1.15.2)
+ * Represent a new Forge version (1.12.2-14.23.5.2854 -> 1.16.1)
  * @author FlowArg
  */
 public class NewForgeVersion implements IForgeVersion

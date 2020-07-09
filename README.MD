@@ -44,7 +44,7 @@ You can get a list of mods by providing a json link : `List<Mod> mods = Mod.getM
 
 Finally, set the Forge version corresponding to the wanted Forge version :
 ```java
-updater.setForgeVersion(new NewForgeVersion("31.2.30", version, updater.getLogger(), updater.getCallback(), mods)); // NewForgeVersion -> 1.13 1.16 ; OldForgeVersion -> 1.7 1.12
+updater.setForgeVersion(new NewForgeVersion("31.2.30", version, updater.getLogger(), updater.getCallback(), mods)); // NewForgeVersion -> 1.12.2-14.23.5.2854 1.16.1 ; OldForgeVersion -> 1.7 1.12
 ```
 That's all!
 
@@ -73,7 +73,7 @@ repositories {
 and in your `dependencies` block :
 ```groovy
 dependencies {
-    compile 'fr.flowarg:flowupdater:1.1.1'
+    compile 'fr.flowarg:flowupdater:1.1.2'
 }
 ```
 
