@@ -1,12 +1,21 @@
 package fr.flowarg.flowupdater;
 
+import static fr.flowarg.flowio.FileUtils.getSHA1;
+
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 import fr.flowarg.flowlogger.Logger;
 import fr.flowarg.flowupdater.versions.IForgeVersion;
 import fr.flowarg.flowupdater.versions.IVanillaVersion;
 import fr.flowarg.flowupdater.versions.download.DownloadInfos;
+import fr.flowarg.flowupdater.versions.download.ExternalFile;
 import fr.flowarg.flowupdater.versions.download.IProgressCallback;
 import fr.flowarg.flowupdater.versions.download.Step;
 import fr.flowarg.flowupdater.versions.download.VanillaDownloader;
@@ -36,6 +45,12 @@ public class FlowUpdater
     /** Informations about download status */
     private DownloadInfos downloadInfos;
     
+    /** Represent a list of ExternalFile. External files are download before post executions.*/
+    private List<ExternalFile> externalFiles;
+    
+    /** Represent a list of Runnable. Post Executions are called after update. */
+    private List<Runnable> postExecutions;
+    
     /** Default callback */
     public static final IProgressCallback NULL_CALLBACK = new IProgressCallback()
     {
@@ -54,10 +69,14 @@ public class FlowUpdater
 	 * @param logger Logger used for log informations.
 	 * @param silentUpdate True -> reader doesn't make any log. False -> reader log all messages.
 	 * @param callback The callback. If it's null, it will automatically assigned as {@link FlowUpdater#NULL_CALLBACK}.
+	 * @param externalFiles External files are download before postExecutions.
+	 * @param postExecutions Post executions are called after update.
 	 */
-    public FlowUpdater(IVanillaVersion version, VanillaReader vanillaReader, Logger logger, boolean silentUpdate, IProgressCallback callback)
+    public FlowUpdater(IVanillaVersion version, Logger logger, boolean silentUpdate, IProgressCallback callback, ArrayList<ExternalFile> externalFiles, List<Runnable> postExecutions)
     {
         this.logger  = logger;
+        this.externalFiles = externalFiles;
+        this.postExecutions = postExecutions;
         this.logFile = this.logger.getLogFile();
         try
         {
@@ -71,12 +90,12 @@ public class FlowUpdater
         {
             e.printStackTrace();
         }
-        this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", version.getName(), "1.1.2"));
+        this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", version.getName(), "1.1.3"));
         this.version       = version;
         this.downloadInfos = new DownloadInfos();
         this.callback = callback != null ? callback : NULL_CALLBACK;
         this.callback.init();
-        this.vanillaReader = vanillaReader == null ? new VanillaReader(this.version, this.logger, silentUpdate, this.callback, this.downloadInfos) : vanillaReader;
+        this.vanillaReader =  new VanillaReader(this.version, this.logger, silentUpdate, this.callback, this.downloadInfos);
     }
 
     /**
@@ -99,8 +118,35 @@ public class FlowUpdater
         {
         	this.forgeVersion.install(dir);
         	this.forgeVersion.installMods(new File(dir, "mods/"));
-        }    
+        }
+        this.callback.step(Step.EXTERNAL_FILES);
+        this.logger.info("Downloading external files...");
+		for(ExternalFile extFile : this.externalFiles)
+		{
+	        final File file = new File(dir, extFile.getPath());
+
+	        if (file.exists())
+	        {
+	            if (!Objects.requireNonNull(getSHA1(file)).equals(extFile.getSha1()))
+	            {
+	                file.delete();
+	                this.download(new URL(extFile.getDownloadURL()), file);
+	            }
+	        }
+	        else this.download(new URL(extFile.getDownloadURL()), file);
+		}
+        this.callback.step(Step.POST_EXECUTIONS);
+        this.logger.info("Running post executions...");
+        for(Runnable postExecution : this.postExecutions)
+        	postExecution.run();
         this.callback.step(Step.END);
+    }
+    
+    private void download(URL in, File out) throws IOException
+    {
+        this.logger.info(String.format("[Downloader] Downloading %s from %s...", out.getName(), in.toExternalForm()));
+        out.getParentFile().mkdirs();
+        Files.copy(in.openStream(), out.toPath(), StandardCopyOption.REPLACE_EXISTING);
     }
 
     public VanillaReader getVanillaReader()
@@ -142,6 +188,16 @@ public class FlowUpdater
     {
 		return this.callback;
 	}
+    
+    public List<ExternalFile> getExternalFiles()
+    {
+		return this.externalFiles;
+	}
+    
+    public List<Runnable> getPostExecutions()
+    {
+		return this.postExecutions;
+	}
 
     /**
      * Necessary if you want install a Forge version.
@@ -164,38 +220,23 @@ public class FlowUpdater
     public static class SlimUpdaterBuilder
     {
         public static FlowUpdater build(
-        		IVanillaVersion version,
-        		VanillaReader vanillaReader)
-        {
-        	return new FlowUpdater(version, vanillaReader, new Logger("[FlowUpdater]", new File("updater/latest.log")), false, NULL_CALLBACK);
-        }
-
-        public static FlowUpdater build(
         		IVanillaVersion version)
         {
-        	return new FlowUpdater(version, null, new Logger("[FlowUpdater]", new File("updater/latest.log")), false, NULL_CALLBACK);
+        	return new FlowUpdater(version, new Logger("[FlowUpdater]", new File("updater/latest.log")), false, NULL_CALLBACK, new ArrayList<>(), new ArrayList<>());
         }
 
         public static FlowUpdater build(
         		IVanillaVersion version,
         		Logger logger)
         {
-        	return new FlowUpdater(version, null, logger, false, NULL_CALLBACK);
-        }
-        
-        public static FlowUpdater build(
-        		IVanillaVersion version,
-        		VanillaReader vanillaReader,
-        		boolean silentUpdate)
-        {
-        	return new FlowUpdater(version, vanillaReader, new Logger("[FlowUpdater]", new File("updater/latest.log")), silentUpdate, NULL_CALLBACK);
+        	return new FlowUpdater(version, logger, false, NULL_CALLBACK, new ArrayList<>(), new ArrayList<>());
         }
 
         public static FlowUpdater build(
         		IVanillaVersion version,
         		boolean silentUpdate)
         {
-        	return new FlowUpdater(version, null, new Logger("[FlowUpdater]", new File("updater/latest.log")), silentUpdate, NULL_CALLBACK);
+        	return new FlowUpdater(version, new Logger("[FlowUpdater]", new File("updater/latest.log")), silentUpdate, NULL_CALLBACK, new ArrayList<>(), new ArrayList<>());
         }
 
         public static FlowUpdater build(
@@ -203,56 +244,251 @@ public class FlowUpdater
         		Logger logger,
         		boolean silentUpdate)
         {
-        	return new FlowUpdater(version, null, logger, silentUpdate, NULL_CALLBACK);
+        	return new FlowUpdater(version, logger, silentUpdate, NULL_CALLBACK, new ArrayList<>(), new ArrayList<>());
+        }
+
+        public static FlowUpdater build(
+        		IVanillaVersion version,
+        		IProgressCallback callback)
+        {
+        	return new FlowUpdater(version, new Logger("[FlowUpdater]", new File("updater/latest.log")), false, callback, new ArrayList<>(), new ArrayList<>());
+        }
+
+        public static FlowUpdater build(
+        		IVanillaVersion version,
+        		Logger logger,
+        		IProgressCallback callback)
+        {
+        	return new FlowUpdater(version, logger, false, callback, new ArrayList<>(), new ArrayList<>());
+        }
+
+        public static FlowUpdater build(
+        		IVanillaVersion version,
+        		boolean silentUpdate,
+        		IProgressCallback callback)
+        {
+        	return new FlowUpdater(version, new Logger("[FlowUpdater]", new File("updater/latest.log")), silentUpdate, callback, new ArrayList<>(), new ArrayList<>());
+        }
+
+        public static FlowUpdater build(
+        		IVanillaVersion version,
+        		Logger logger,
+        		boolean silentUpdate,
+        		IProgressCallback callback)
+        {
+        	return new FlowUpdater(version, logger, silentUpdate, callback, new ArrayList<>(), new ArrayList<>());
+        }
+
+        public static FlowUpdater build(
+        		IVanillaVersion version,
+        		List<Runnable> postExecutions)
+        {
+        	return new FlowUpdater(version, new Logger("[FlowUpdater]", new File("updater/latest.log")), false, NULL_CALLBACK, new ArrayList<>(), postExecutions);
+        }
+
+        public static FlowUpdater build(
+        		IVanillaVersion version,
+        		Logger logger,
+        		List<Runnable> postExecutions)
+        {
+        	return new FlowUpdater(version, logger, false, NULL_CALLBACK, new ArrayList<>(), postExecutions);
+        }
+
+        public static FlowUpdater build(
+        		IVanillaVersion version,
+        		boolean silentUpdate,
+        		List<Runnable> postExecutions)
+        {
+        	return new FlowUpdater(version, new Logger("[FlowUpdater]", new File("updater/latest.log")), silentUpdate, NULL_CALLBACK, new ArrayList<>(), postExecutions);
+        }
+
+        public static FlowUpdater build(
+        		IVanillaVersion version,
+        		Logger logger,
+        		boolean silentUpdate,
+        		List<Runnable> postExecutions)
+        {
+        	return new FlowUpdater(version, logger, silentUpdate, NULL_CALLBACK, new ArrayList<>(), postExecutions);
         }  
-        
-        public static FlowUpdater build(
-        		IVanillaVersion version,
-        		VanillaReader vanillaReader,
-        		IProgressCallback callback)
-        {
-        	return new FlowUpdater(version, vanillaReader, new Logger("[FlowUpdater]", new File("updater/latest.log")), false, callback);
-        }
 
         public static FlowUpdater build(
         		IVanillaVersion version,
-        		IProgressCallback callback)
+        		IProgressCallback callback,
+        		List<Runnable> postExecutions)
         {
-        	return new FlowUpdater(version, null, new Logger("[FlowUpdater]", new File("updater/latest.log")), false, callback);
+        	return new FlowUpdater(version, new Logger("[FlowUpdater]", new File("updater/latest.log")), false, callback, new ArrayList<>(), postExecutions);
         }
 
         public static FlowUpdater build(
         		IVanillaVersion version,
         		Logger logger,
-        		IProgressCallback callback)
+        		IProgressCallback callback,
+        		List<Runnable> postExecutions)
         {
-        	return new FlowUpdater(version, null, logger, false, callback);
-        }
-        
-        public static FlowUpdater build(
-        		IVanillaVersion version,
-        		VanillaReader vanillaReader,
-        		boolean silentUpdate,
-        		IProgressCallback callback)
-        {
-        	return new FlowUpdater(version, vanillaReader, new Logger("[FlowUpdater]", new File("updater/latest.log")), silentUpdate, callback);
+        	return new FlowUpdater(version, logger, false, callback, new ArrayList<>(), postExecutions);
         }
 
         public static FlowUpdater build(
         		IVanillaVersion version,
         		boolean silentUpdate,
-        		IProgressCallback callback)
+        		IProgressCallback callback,
+        		List<Runnable> postExecutions)
         {
-        	return new FlowUpdater(version, null, new Logger("[FlowUpdater]", new File("updater/latest.log")), silentUpdate, callback);
+        	return new FlowUpdater(version, new Logger("[FlowUpdater]", new File("updater/latest.log")), silentUpdate, callback, new ArrayList<>(), postExecutions);
         }
 
         public static FlowUpdater build(
         		IVanillaVersion version,
         		Logger logger,
         		boolean silentUpdate,
-        		IProgressCallback callback)
+        		IProgressCallback callback,
+        		List<Runnable> postExecutions)
         {
-        	return new FlowUpdater(version, null, logger, silentUpdate, callback);
+        	return new FlowUpdater(version, logger, silentUpdate, callback, new ArrayList<>(), postExecutions);
+        }
+        
+        public static FlowUpdater build(
+        		IVanillaVersion version,
+        		ArrayList<ExternalFile> externalFiles)
+        {
+        	return new FlowUpdater(version, new Logger("[FlowUpdater]", new File("updater/latest.log")), false, NULL_CALLBACK, externalFiles, new ArrayList<>());
+        }
+
+        public static FlowUpdater build(
+        		IVanillaVersion version,
+        		Logger logger,
+        		ArrayList<ExternalFile> externalFiles)
+        {
+        	return new FlowUpdater(version, logger, false, NULL_CALLBACK, externalFiles, new ArrayList<>());
+        }
+
+        public static FlowUpdater build(
+        		IVanillaVersion version,
+        		boolean silentUpdate,
+        		ArrayList<ExternalFile> externalFiles)
+        {
+        	return new FlowUpdater(version, new Logger("[FlowUpdater]", new File("updater/latest.log")), silentUpdate, NULL_CALLBACK, externalFiles, new ArrayList<>());
+        }
+
+        public static FlowUpdater build(
+        		IVanillaVersion version,
+        		Logger logger,
+        		boolean silentUpdate,
+        		ArrayList<ExternalFile> externalFiles)
+        {
+        	return new FlowUpdater(version, logger, silentUpdate, NULL_CALLBACK, externalFiles, new ArrayList<>());
+        }
+
+        public static FlowUpdater build(
+        		IVanillaVersion version,
+        		IProgressCallback callback,
+        		ArrayList<ExternalFile> externalFiles)
+        {
+        	return new FlowUpdater(version, new Logger("[FlowUpdater]", new File("updater/latest.log")), false, callback, externalFiles, new ArrayList<>());
+        }
+
+        public static FlowUpdater build(
+        		IVanillaVersion version,
+        		Logger logger,
+        		IProgressCallback callback,
+        		ArrayList<ExternalFile> externalFiles)
+        {
+        	return new FlowUpdater(version, logger, false, callback, externalFiles, new ArrayList<>());
+        }
+
+        public static FlowUpdater build(
+        		IVanillaVersion version,
+        		boolean silentUpdate,
+        		IProgressCallback callback,
+        		ArrayList<ExternalFile> externalFiles)
+        {
+        	return new FlowUpdater(version, new Logger("[FlowUpdater]", new File("updater/latest.log")), silentUpdate, callback, externalFiles, new ArrayList<>());
+        }
+
+        public static FlowUpdater build(
+        		IVanillaVersion version,
+        		Logger logger,
+        		boolean silentUpdate,
+        		IProgressCallback callback,
+        		ArrayList<ExternalFile> externalFiles)
+        {
+        	return new FlowUpdater(version, logger, silentUpdate, callback, externalFiles, new ArrayList<>());
+        }
+
+        public static FlowUpdater build(
+        		IVanillaVersion version,
+        		ArrayList<ExternalFile> externalFiles,
+        		List<Runnable> postExecutions)
+        {
+        	return new FlowUpdater(version, new Logger("[FlowUpdater]", new File("updater/latest.log")), false, NULL_CALLBACK, externalFiles, postExecutions);
+        }
+
+        public static FlowUpdater build(
+        		IVanillaVersion version,
+        		Logger logger,
+        		ArrayList<ExternalFile> externalFiles,
+        		List<Runnable> postExecutions)
+        {
+        	return new FlowUpdater(version, logger, false, NULL_CALLBACK, externalFiles, postExecutions);
+        }
+
+        public static FlowUpdater build(
+        		IVanillaVersion version,
+        		boolean silentUpdate,
+        		ArrayList<ExternalFile> externalFiles,
+        		List<Runnable> postExecutions)
+        {
+        	return new FlowUpdater(version, new Logger("[FlowUpdater]", new File("updater/latest.log")), silentUpdate, NULL_CALLBACK, externalFiles, postExecutions);
+        }
+
+        public static FlowUpdater build(
+        		IVanillaVersion version,
+        		Logger logger,
+        		boolean silentUpdate,
+        		ArrayList<ExternalFile> externalFiles,
+        		List<Runnable> postExecutions)
+        {
+        	return new FlowUpdater(version, logger, silentUpdate, NULL_CALLBACK, externalFiles, postExecutions);
+        }  
+
+        public static FlowUpdater build(
+        		IVanillaVersion version,
+        		IProgressCallback callback,
+        		ArrayList<ExternalFile> externalFiles,
+        		List<Runnable> postExecutions)
+        {
+        	return new FlowUpdater(version, new Logger("[FlowUpdater]", new File("updater/latest.log")), false, callback, externalFiles, postExecutions);
+        }
+
+        public static FlowUpdater build(
+        		IVanillaVersion version,
+        		Logger logger,
+        		IProgressCallback callback,
+        		ArrayList<ExternalFile> externalFiles,
+        		List<Runnable> postExecutions)
+        {
+        	return new FlowUpdater(version, logger, false, callback, externalFiles, postExecutions);
+        }
+
+        public static FlowUpdater build(
+        		IVanillaVersion version,
+        		boolean silentUpdate,
+        		IProgressCallback callback,
+        		ArrayList<ExternalFile> externalFiles,
+        		List<Runnable> postExecutions)
+        {
+        	return new FlowUpdater(version, new Logger("[FlowUpdater]", new File("updater/latest.log")), silentUpdate, callback, externalFiles, postExecutions);
+        }
+
+        public static FlowUpdater build(
+        		IVanillaVersion version,
+        		Logger logger,
+        		boolean silentUpdate,
+        		IProgressCallback callback,
+        		ArrayList<ExternalFile> externalFiles,
+        		List<Runnable> postExecutions)
+        {
+        	return new FlowUpdater(version, logger, silentUpdate, callback, externalFiles, postExecutions);
         }
     }
 }

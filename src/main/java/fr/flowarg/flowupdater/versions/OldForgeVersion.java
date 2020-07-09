@@ -44,33 +44,14 @@ public class OldForgeVersion implements IForgeVersion
 		this.logger.info("Installing old forge version : " + this.forgeVersion + "...");
 		// TODO make this.
 	}
-	
-	public String getForgeVersion()
-	{
-		return this.forgeVersion;
-	}
-	
-	public Logger getLogger()
-	{
-		return this.logger;
-	}
-	
-	public IVanillaVersion getVanilla()
-	{
-		return this.vanilla;
-	}
-	
-	public List<Mod> getMods()
-	{
-		return this.mods;
-	}
 
 	@Override
 	public void installMods(File modsDir) throws IOException
 	{
+		this.callback.step(Step.MODS);
 		for(Mod mod : this.mods)
 		{
-	        final File file = new File(modsDir, mod.getName());
+	        final File file = new File(modsDir, mod.getName().endsWith(".jar") ? mod.getName() : mod.getName() + ".jar");
 
 	        if (file.exists())
 	        {
@@ -90,4 +71,24 @@ public class OldForgeVersion implements IForgeVersion
         out.getParentFile().mkdirs();
         Files.copy(in.openStream(), out.toPath(), StandardCopyOption.REPLACE_EXISTING);
     }
+    
+	public String getForgeVersion()
+	{
+		return this.forgeVersion;
+	}
+	
+	public Logger getLogger()
+	{
+		return this.logger;
+	}
+	
+	public IVanillaVersion getVanilla()
+	{
+		return this.vanilla;
+	}
+	
+	public List<Mod> getMods()
+	{
+		return this.mods;
+	}
 }

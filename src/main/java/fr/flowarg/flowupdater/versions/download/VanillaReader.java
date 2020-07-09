@@ -211,8 +211,8 @@ public class VanillaReader
                 .create()
                 .fromJson(json, AssetIndex.class);
 
-        for (final Map.Entry<AssetDownloadable, String> entry : index.getUniqueObjects().entrySet())
-            toDownload.add(new AssetDownloadable(entry.getKey().getHash(), entry.getKey().getSize()));
+        for (final Map.Entry<String, AssetDownloadable> entry : index.getUniqueObjects().entrySet())
+            toDownload.add(new AssetDownloadable(entry.getValue().getHash(), entry.getValue().getSize()));
         this.infos.getAssetDownloadables().addAll(toDownload);
     }
 

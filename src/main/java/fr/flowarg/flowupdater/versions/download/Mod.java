@@ -24,7 +24,7 @@ public class Mod
 	private String downloadURL;
 	
 	/**
-	 * Construct a new Mod objcet.
+	 * Construct a new Mod object.
 	 * @param name Name of mod file.
 	 * @param sha1 Sha1 of mod file.
 	 * @param size Size of mod file.
@@ -58,7 +58,7 @@ public class Mod
 	 * 	]
 	 * }
 	 * @param url the JSON file URL.
-	 * @return the MCP instance.
+	 * @return a Mod list.
 	 */
 	public static List<Mod> getModsFromJson(URL json)
 	{

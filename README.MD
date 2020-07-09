@@ -74,6 +74,7 @@ and in your `dependencies` block :
 ```groovy
 dependencies {
     compile 'fr.flowarg:flowupdater:1.1.2'
+    // If you have problem with Logger import, add this line: compile 'fr.flowarg:flowmultitools:1.0.2'
 }
 ```
 

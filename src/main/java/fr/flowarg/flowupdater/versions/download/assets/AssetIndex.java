@@ -13,11 +13,11 @@ public class AssetIndex
         return this.objects;
     }
 
-    public Map<AssetDownloadable, String> getUniqueObjects()
+    public Map<String, AssetDownloadable> getUniqueObjects()
     {
-        final Map<AssetDownloadable, String> result = new HashMap<>();
+        final Map<String, AssetDownloadable> result = new HashMap<>();
         for (Map.Entry<String, AssetDownloadable> entry : this.objects.entrySet())
-            result.put(entry.getValue(), entry.getKey());
+            result.put(entry.getKey(), entry.getValue());
         return result;
     }
 }

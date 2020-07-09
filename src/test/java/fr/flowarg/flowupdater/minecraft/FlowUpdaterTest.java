@@ -14,7 +14,7 @@ import fr.flowarg.flowupdater.versions.OldForgeVersion;
 import fr.flowarg.flowupdater.versions.VersionType;
 import fr.flowarg.flowupdater.versions.download.Mod;
 
-public class FlowArgMinecraftUpdaterTest
+public class FlowUpdaterTest
 {
     @Test
     public void test()
@@ -25,7 +25,7 @@ public class FlowArgMinecraftUpdaterTest
             final IVanillaVersion version = builder.build(false, VersionType.FORGE);
             final FlowUpdater updater = SlimUpdaterBuilder.build(version, true);
             final List<Mod> mods = new ArrayList<>();
-            mods.add(new Mod("name", "sha1", 0, "https://example.org/"));
+            mods.add(new Mod("name", "sha1", 0, "https://example.org/a.jar"));
             updater.setForgeVersion(new OldForgeVersion("1.7.10-10.13.4.1614", version, updater.getLogger(), updater.getCallback(), mods));
             updater.update(new File("/home/flow/Bureau/test/"), false);
         }
