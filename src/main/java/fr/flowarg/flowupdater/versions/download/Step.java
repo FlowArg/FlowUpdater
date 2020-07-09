@@ -13,5 +13,6 @@ public enum Step
 	DL_ASSETS, /** Download assets */
 	EXTRACT_NATIVES, /** Extract natives */
 	FORGE, /** Skipped if {@link FlowUpdater#getForgeVersion()} isn't null. */
+	MODS,
 	END; /** All tasks are finished */
 }

@@ -13,6 +13,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Objects;
@@ -32,18 +33,20 @@ import fr.flowarg.flowupdater.versions.download.Step;
  */
 public class NewForgeVersion implements IForgeVersion
 {
-    private Logger   logger;
+	private final boolean noGui;
+    private final Logger   logger;
     private String   forgeVersion;
     private IVanillaVersion vanilla;
     private URL      installerUrl;
     private IProgressCallback callback;
     private List<Mod> mods;
 
-    public NewForgeVersion(String forgeVersion, IVanillaVersion vanilla, Logger logger, IProgressCallback callback, List<Mod> mods)
+    public NewForgeVersion(String forgeVersion, IVanillaVersion vanilla, Logger logger, IProgressCallback callback, List<Mod> mods, boolean noGui)
     {
+        this.logger = logger;
+        this.noGui = noGui;
         try
         {
-            this.logger = logger;
             if (!forgeVersion.contains("-"))
                 this.forgeVersion = vanilla.getName() + '-' + forgeVersion;
             else this.forgeVersion = forgeVersion;
@@ -94,7 +97,16 @@ public class NewForgeVersion implements IForgeVersion
                 patches.delete();
                 this.logger.info("Launching forge installer...");
                 
-                final ProcessBuilder processBuilder = new ProcessBuilder("java", "-Xmx256M", "-jar", patchedInstaller.getAbsolutePath(), "--installClient", dirToInstall.getAbsolutePath());
+                final ArrayList<String> command = new ArrayList<>();
+                command.add("java");
+                command.add("-Xmx256M");
+                command.add("-jar");
+                command.add(patchedInstaller.getAbsolutePath());
+                command.add("--installClient");
+                command.add(dirToInstall.getAbsolutePath());
+                if(this.noGui)
+                	command.add("--nogui");
+                final ProcessBuilder processBuilder = new ProcessBuilder(command);
                 
                 processBuilder.redirectOutput(Redirect.INHERIT);
                 final Process process = processBuilder.start();
@@ -117,6 +129,8 @@ public class NewForgeVersion implements IForgeVersion
         FileUtils.deleteDirectory(new File(tempInstallerDir, "joptisimple"));
         FileUtils.deleteDirectory(new File(tempInstallerDir, "net"));
         new File(tempInstallerDir, "META-INF/MANIFEST.MF").delete();
+        new File(tempInstallerDir, "lekeystore.jks").delete();
+        new File(tempInstallerDir, "big_logo.png").delete();
         new File(tempInstallerDir, "META-INF/FORGE.DSA").delete();
         new File(tempInstallerDir, "META-INF/FORGE.SF").delete();
     }
@@ -176,6 +190,33 @@ public class NewForgeVersion implements IForgeVersion
 
         jar.close();
     }
+    
+	@Override
+	public void installMods(File modsDir) throws IOException
+	{
+		this.callback.step(Step.MODS);
+		for(Mod mod : this.mods)
+		{
+	        final File file = new File(modsDir, mod.getName().endsWith(".jar") ? mod.getName() : mod.getName() + ".jar");
+
+	        if (file.exists())
+	        {
+	            if (!Objects.requireNonNull(getSHA1(file)).equals(mod.getSha1()) || getFileSizeBytes(file) != mod.getSize())
+	            {
+	                file.delete();
+	                this.download(new URL(mod.getDownloadURL()), file);
+	            }
+	        }
+	        else this.download(new URL(mod.getDownloadURL()), file);
+		}
+	}
+	
+    private void download(URL in, File out) throws IOException
+    {
+        this.logger.info(String.format("[Downloader] Downloading %s from %s...", out.getName(), in.toExternalForm()));
+        out.getParentFile().mkdirs();
+        Files.copy(in.openStream(), out.toPath(), StandardCopyOption.REPLACE_EXISTING);
+    }
 
     public Logger getLogger()
     {
@@ -206,30 +247,9 @@ public class NewForgeVersion implements IForgeVersion
     {
 		this.mods = mods;
 	}
-
-	@Override
-	public void installMods(File modsDir) throws IOException
-	{
-		for(Mod mod : this.mods)
-		{
-	        final File file = new File(modsDir, mod.getName().endsWith(".jar") ? mod.getName() : mod.getName() + ".jar");
-
-	        if (file.exists())
-	        {
-	            if (!Objects.requireNonNull(getSHA1(file)).equals(mod.getSha1()) || getFileSizeBytes(file) != mod.getSize())
-	            {
-	                file.delete();
-	                this.download(new URL(mod.getDownloadURL()), file);
-	            }
-	        }
-	        else this.download(new URL(mod.getDownloadURL()), file);
-		}
-	}
-	
-    private void download(URL in, File out) throws IOException
+    
+    public boolean isNoGui()
     {
-        this.logger.info(String.format("[Downloader] Downloading %s from %s...", out.getName(), in.toExternalForm()));
-        out.getParentFile().mkdirs();
-        Files.copy(in.openStream(), out.toPath(), StandardCopyOption.REPLACE_EXISTING);
-    }
+		return this.noGui;
+	}
 }
