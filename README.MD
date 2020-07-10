@@ -17,9 +17,9 @@ IVanillaVersion version = versionBuilder.build(false, VersionType.VANILLA);
 ```
 If you have specified "latest" to the version name, and that the version is a snapshot, replace false by true.
 
-Then, instantiate a new FlowArgMinecraftUpdater (you can use ``SlimUpdaterBuilder#build`` too, check the code for more informations).
+Then, instantiate a new FlowArgMinecraftUpdater with ``FlowUpdaterBuilder#addArguments#build``. Check the code for more informations.
 ```java
-FlowUpdater updater = SlimUpdaterBuilder.build(version, true);
+FlowUpdater updater = new FlowUpdaterBuilder().withVersion(version).build();
 ```
 
 Finally, call the update function :
