@@ -90,7 +90,7 @@ public class FlowUpdater
         {
             e.printStackTrace();
         }
-        this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", version.getName(), "1.1.3"));
+        this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", version.getName(), "1.1.4"));
         this.version       = version;
         this.downloadInfos = new DownloadInfos();
         this.callback = callback != null ? callback : NULL_CALLBACK;

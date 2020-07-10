@@ -5,24 +5,18 @@ import static fr.flowarg.flowio.FileUtils.getSHA1;
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.ProcessBuilder.Redirect;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Objects;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.Logger;
-import fr.flowarg.flowupdater.utils.ZipUtils;
 import fr.flowarg.flowupdater.versions.download.IProgressCallback;
 import fr.flowarg.flowupdater.versions.download.Mod;
 import fr.flowarg.flowupdater.versions.download.Step;
@@ -35,9 +29,9 @@ public class NewForgeVersion implements IForgeVersion
 {
 	private final boolean noGui;
     private final Logger   logger;
-    private String   forgeVersion;
+    private String forgeVersion;
     private IVanillaVersion vanilla;
-    private URL      installerUrl;
+    private URL installerUrl;
     private IProgressCallback callback;
     private List<Mod> mods;
 
@@ -127,68 +121,11 @@ public class NewForgeVersion implements IForgeVersion
         FileUtils.deleteDirectory(new File(tempInstallerDir, "net"));
         FileUtils.deleteDirectory(new File(tempInstallerDir, "com"));
         FileUtils.deleteDirectory(new File(tempInstallerDir, "joptisimple"));
-        FileUtils.deleteDirectory(new File(tempInstallerDir, "net"));
         new File(tempInstallerDir, "META-INF/MANIFEST.MF").delete();
         new File(tempInstallerDir, "lekeystore.jks").delete();
         new File(tempInstallerDir, "big_logo.png").delete();
         new File(tempInstallerDir, "META-INF/FORGE.DSA").delete();
         new File(tempInstallerDir, "META-INF/FORGE.SF").delete();
-    }
-
-    private void packPatchedInstaller(final File tempDir, final File tempInstallerDir) throws IOException
-    {
-        final File output = new File(tempDir, "forge-installer-patched.zip");
-        ZipUtils.INSTANCE.compressFiles(tempInstallerDir.listFiles(), output);
-        Files.move(output.toPath(), new File(output.getAbsolutePath().replace(".zip", ".jar")).toPath(), StandardCopyOption.REPLACE_EXISTING);
-        tempInstallerDir.delete();
-    }
-    
-    private void unzipJar(final File destinationDir, final File jarFile) throws IOException
-    {
-        final JarFile jar = new JarFile(jarFile);
-
-        for (Enumeration<JarEntry> enums = jar.entries(); enums.hasMoreElements(); )
-        {
-            final JarEntry entry = enums.nextElement();
-
-            final String fileName = destinationDir + File.separator + entry.getName();
-            final File   file     = new File(fileName);
-
-            if (fileName.endsWith("/")) file.mkdirs();
-        }
-
-        for (Enumeration<JarEntry> enums = jar.entries(); enums.hasMoreElements(); )
-        {
-            final JarEntry entry = enums.nextElement();
-
-            final String fileName = destinationDir + File.separator + entry.getName();
-            final File   file     = new File(fileName);
-
-            if (!fileName.endsWith("/"))
-            {
-                if (fileName.endsWith(".lzma"))
-                {
-                    new File(destinationDir, "data").mkdir();
-                    final InputStream stream = jar.getInputStream(entry);
-                    Files.copy(stream, new File(destinationDir, entry.getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
-                    stream.close();
-                }
-                else
-                {
-                    final InputStream      is  = jar.getInputStream(entry);
-                    final FileOutputStream fos = new FileOutputStream(file);
-
-                    while (is.available() > 0)
-                        fos.write(is.read());
-
-                    fos.close();
-                    is.close();
-                }
-                jar.getInputStream(entry).close();
-            }
-        }
-
-        jar.close();
     }
     
 	@Override
