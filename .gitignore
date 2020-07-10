@@ -1,7 +1,4 @@
-# Ignore Gradle project-specific cache directory
 .gradle
-
-# Ignore Gradle build output directory
 build
 /out/
 /updater/
@@ -11,8 +8,5 @@ bin
 .project
 .settings
 .classpath
-
-src/main/resources/
-src/test/resources/
 forge-installer.jar.log
 forge-installer-patched.jar.log
