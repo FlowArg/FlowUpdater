@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 
+import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.Logger;
 import fr.flowarg.flowupdater.versions.download.assets.AssetDownloadable;
 
@@ -26,12 +27,12 @@ public class VanillaDownloader
 
     public VanillaDownloader(File dir, Logger logger, IProgressCallback callback, DownloadInfos infos)
     {
-        this.dir           = dir;
-        this.natives       = new File(this.dir, "/natives/");
-        this.assets        = new File(this.dir, "/assets/");
-        this.libraries 	   = new File(this.dir, "/libraries/");
-        this.logger        = logger;
-        this.callback      = callback;
+        this.dir = dir;
+        this.natives = new File(this.dir, "/natives/");
+        this.assets = new File(this.dir, "/assets/");
+        this.libraries = new File(this.dir, "/libraries/");
+        this.logger = logger;
+        this.callback = callback;
         this.downloadInfos = infos;
         
         this.dir.mkdirs();
@@ -73,7 +74,7 @@ public class VanillaDownloader
                         files.deleteOnExit();
                 }
                 if (files.isDirectory())
-                    files.delete();
+                    FileUtils.deleteDirectory(files);
             }
         }
 

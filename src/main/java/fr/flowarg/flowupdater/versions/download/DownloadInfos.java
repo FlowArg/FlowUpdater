@@ -18,7 +18,7 @@ public class DownloadInfos
 	
 	public void init()
 	{
-		this.totalToDownload = libraryDownloadables.size() + assetDownloadables.size();
+		this.totalToDownload = this.libraryDownloadables.size() + this.assetDownloadables.size();
 		this.downloaded = 0;
 	}
 	

@@ -34,8 +34,8 @@ public class FlowUpdater
     private final VanillaReader vanillaReader;
 
     /** Logger object with his {@linkFile} */
-    private File         logFile;
-    private Logger       logger;
+    private File logFile;
+    private Logger logger;
     
     /** Forge Version to install, can be null if you want a vanilla/MCP installation */
     private IForgeVersion forgeVersion = null;
@@ -74,7 +74,7 @@ public class FlowUpdater
 	 */
     public FlowUpdater(IVanillaVersion version, Logger logger, boolean silentUpdate, IProgressCallback callback, ArrayList<ExternalFile> externalFiles, List<Runnable> postExecutions)
     {
-        this.logger  = logger;
+        this.logger = logger;
         this.externalFiles = externalFiles;
         this.postExecutions = postExecutions;
         this.logFile = this.logger.getLogFile();
@@ -91,11 +91,11 @@ public class FlowUpdater
             e.printStackTrace();
         }
         this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", version.getName(), "1.1.4"));
-        this.version       = version;
+        this.version = version;
         this.downloadInfos = new DownloadInfos();
         this.callback = callback != null ? callback : NULL_CALLBACK;
         this.callback.init();
-        this.vanillaReader =  new VanillaReader(this.version, this.logger, silentUpdate, this.callback, this.downloadInfos);
+        this.vanillaReader = new VanillaReader(this.version, this.logger, silentUpdate, this.callback, this.downloadInfos);
     }
 
     /**

@@ -97,12 +97,19 @@ public interface IVanillaVersion
                 	if(versionType == VersionType.MCP)
                 	{
                 		final JsonObject result = new JsonObject();
-                		result.addProperty("sha1", Builder.this.getMcp().getClientSha1());
-                		result.addProperty("size", Builder.this.getMcp().getClientSize());
-                		result.addProperty("url", Builder.this.getMcp().getClientDownloadURL());
-                		return result;
+                		final String sha1 = Builder.this.getMcp().getClientSha1();
+                		final String url = Builder.this.getMcp().getClientDownloadURL();
+                		final int size = Builder.this.getMcp().getClientSize();
+                		if(this.checkString(sha1) && this.checkString(url) && size > 0)
+                		{
+                    		result.addProperty("sha1", Builder.this.getMcp().getClientSha1());
+                    		result.addProperty("size", Builder.this.getMcp().getClientSize());
+                    		result.addProperty("url", Builder.this.getMcp().getClientDownloadURL());
+                    		return result;
+                		}
+                		else System.out.println("Skipped mcp client.");
                 	}
-                	else return JSON.getAsJsonObject().getAsJsonObject("downloads").getAsJsonObject("client");
+                	return JSON.getAsJsonObject().getAsJsonObject("downloads").getAsJsonObject("client");
                 }
 
                 @Override
@@ -111,12 +118,24 @@ public interface IVanillaVersion
                 	if(versionType == VersionType.MCP)
                 	{
                 		final JsonObject result = new JsonObject();
-                		result.addProperty("sha1", Builder.this.getMcp().getServerSha1());
-                		result.addProperty("size", Builder.this.getMcp().getServerSize());
-                		result.addProperty("url", Builder.this.getMcp().getServerDownloadURL());
-                		return result;
+                		final String sha1 = Builder.this.getMcp().getServerSha1();
+                		final String url = Builder.this.getMcp().getServerDownloadURL();
+                		final int size = Builder.this.getMcp().getServerSize();
+                		if(this.checkString(url) && this.checkString(sha1) && size > 0)
+                		{
+                    		result.addProperty("sha1", Builder.this.getMcp().getServerSha1());
+                    		result.addProperty("size", Builder.this.getMcp().getServerSize());
+                    		result.addProperty("url", Builder.this.getMcp().getServerDownloadURL());
+                    		return result;
+                		}
+                		else System.out.println("Skipped mcp server.");
                 	}
-                	else return JSON.getAsJsonObject().getAsJsonObject("downloads").getAsJsonObject("server");
+                	return JSON.getAsJsonObject().getAsJsonObject("downloads").getAsJsonObject("server");
+                }
+                
+                private boolean checkString(String str)
+                {
+                	return str != null && !str.trim().equals("");
                 }
 
                 @Override
