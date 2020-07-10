@@ -38,7 +38,7 @@ public class ExternalFile
 	 * Provide a List of external file from a JSON file.
 	 * Template of a JSON file :
 	 * {
-	 * 	"extfile": [
+	 * 	"extfiles": [
 	 * 	{
 	 * 		"path": "other/path/AnExternalFile.binpatch",
 	 * 		"downloadURL": "https://url.com/launcher/extern/AnExtFile.binpatch",
@@ -73,14 +73,14 @@ public class ExternalFile
         }
         
         final JsonObject object = element.getAsJsonObject();
-        final JsonArray mods = object.getAsJsonArray("extfiles");
-        mods.forEach(extFileElement -> {
+        final JsonArray extfiles = object.getAsJsonArray("extfiles");
+        extfiles.forEach(extFileElement -> {
         	final JsonObject obj = extFileElement.getAsJsonObject();
         	final String path = obj.get("path").getAsString();
         	final String sha1 = obj.get("sha1").getAsString();
         	final String downloadURL = obj.get("downloadURL").getAsString();
         	
-        	result.add(new ExternalFile(path, sha1, downloadURL));
+        	result.add(new ExternalFile(path, downloadURL, sha1));
         });
         return result;
 	}
