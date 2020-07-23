@@ -33,6 +33,7 @@ public class OldForgeVersion implements IForgeVersion
 	private URL installerUrl;
 	private String forgeVersion;
 	private List<Mod> mods;
+	private boolean useFileDeleter = false;
 	
 	public OldForgeVersion(String forgeVersion, IVanillaVersion vanilla, Logger logger, IProgressCallback callback, List<Mod> mods)
 	{
@@ -58,7 +59,19 @@ public class OldForgeVersion implements IForgeVersion
 	{
 		this.callback.step(Step.FORGE);
 		this.logger.info("Installing old forge version : " + this.forgeVersion + "...");
-        try (BufferedInputStream stream = new BufferedInputStream(this.installerUrl.openStream()))
+        if(!this.installForge(dirToInstall, true))
+        {
+        	try {
+				this.installerUrl = new URL(String.format("https://files.minecraftforge.net/maven/net/minecraftforge/forge/%s-%s/forge-%s-%s-installer.jar", this.forgeVersion, this.vanilla.getName(), this.forgeVersion, this.vanilla.getName()));
+				if(!this.installForge(dirToInstall, false))
+					this.logger.err("Check the given forge version !");
+        	} catch (MalformedURLException ignored) {}
+        }
+	}
+	
+	private boolean installForge(File dirToInstall, boolean first)
+	{
+		try (BufferedInputStream stream = new BufferedInputStream(this.installerUrl.openStream()))
         {
             this.logger.info("Downloading new forge installer...");
             final File tempDir          = new File(dirToInstall, ".flowupdater");
@@ -96,15 +109,19 @@ public class OldForgeVersion implements IForgeVersion
             final ProcessBuilder processBuilder = new ProcessBuilder(command);
             
             processBuilder.redirectOutput(Redirect.INHERIT);
+            processBuilder.directory(dirToInstall);
             final Process process = processBuilder.start();
             process.waitFor();
             
             this.logger.info("Successfully installed Forge !");
             FileUtils.deleteDirectory(tempDir);
+            return true;
         }
         catch (IOException | InterruptedException e)
         {
-            this.logger.printStackTrace(e);
+        	if(!first)
+        		this.logger.printStackTrace(e);
+            return false;
         }
 	}
 	
@@ -113,6 +130,7 @@ public class OldForgeVersion implements IForgeVersion
         FileUtils.deleteDirectory(new File(tempInstallerDir, "net"));
         FileUtils.deleteDirectory(new File(tempInstallerDir, "joptisimple"));
         FileUtils.deleteDirectory(new File(tempInstallerDir, "META-INF"));
+        FileUtils.deleteDirectory(new File(tempInstallerDir, "com"));
         new File(tempInstallerDir, "big_logo.png").delete();
         new File(tempInstallerDir, "url.png").delete();
     }
@@ -134,6 +152,41 @@ public class OldForgeVersion implements IForgeVersion
 	            }
 	        }
 	        else this.download(new URL(mod.getDownloadURL()), file);
+		}
+		
+		
+		if(this.useFileDeleter)
+		{
+			final List<File> badFiles = new ArrayList<>();
+			final List<File> verifiedFiles = new ArrayList<>();
+			for(File fileInDir : modsDir.listFiles())
+			{
+				if(!fileInDir.isDirectory())
+				{
+					for(Mod mod : this.mods)
+					{
+						final File file = new File(modsDir, mod.getName().endsWith(".jar") ? mod.getName() : mod.getName() + ".jar");
+						if(file.getName().equalsIgnoreCase(fileInDir.getName()))
+						{
+							if(getSHA1(fileInDir).equals(mod.getSha1()) && getFileSizeBytes(fileInDir) == mod.getSize())
+							{
+								if(badFiles.contains(fileInDir))
+									badFiles.remove(fileInDir);
+								verifiedFiles.add(fileInDir);
+							}
+							else badFiles.add(fileInDir);
+						}
+						else
+						{
+							if(!verifiedFiles.contains(fileInDir))
+								badFiles.add(fileInDir);
+						}
+					}
+				}
+			}
+			
+			badFiles.forEach(File::delete);
+			badFiles.clear();
 		}
 	}
 	
@@ -172,5 +225,25 @@ public class OldForgeVersion implements IForgeVersion
 	public IProgressCallback getCallback()
 	{
 		return this.callback;
+	}
+
+	@Override
+	public boolean isModFileDeleterEnabled()
+	{
+		return this.useFileDeleter;
+	}
+
+	@Override
+	public IForgeVersion enableModFileDeleter()
+	{
+		this.useFileDeleter = true;
+		return this;
+	}
+	
+	@Override
+	public IForgeVersion disableModFileDeleter()
+	{
+		this.useFileDeleter = false;
+		return this;
 	}
 }

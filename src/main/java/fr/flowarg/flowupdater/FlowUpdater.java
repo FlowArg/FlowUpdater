@@ -90,7 +90,7 @@ public class FlowUpdater
         {
             e.printStackTrace();
         }
-        this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", version.getName(), "1.1.4"));
+        this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", version.getName(), "1.1.5"));
         this.version = version;
         this.downloadInfos = new DownloadInfos();
         this.callback = callback != null ? callback : NULL_CALLBACK;
@@ -119,26 +119,32 @@ public class FlowUpdater
         	this.forgeVersion.install(dir);
         	this.forgeVersion.installMods(new File(dir, "mods/"));
         }
-        this.callback.step(Step.EXTERNAL_FILES);
-        this.logger.info("Downloading external files...");
-		for(ExternalFile extFile : this.externalFiles)
-		{
-	        final File file = new File(dir, extFile.getPath());
+        if(!this.externalFiles.isEmpty())
+        {
+            this.callback.step(Step.EXTERNAL_FILES);
+            this.logger.info("Downloading external files...");
+    		for(ExternalFile extFile : this.externalFiles)
+    		{
+    	        final File file = new File(dir, extFile.getPath());
 
-	        if (file.exists())
-	        {
-	            if (!Objects.requireNonNull(getSHA1(file)).equals(extFile.getSha1()))
-	            {
-	                file.delete();
-	                this.download(new URL(extFile.getDownloadURL()), file);
-	            }
-	        }
-	        else this.download(new URL(extFile.getDownloadURL()), file);
-		}
-        this.callback.step(Step.POST_EXECUTIONS);
-        this.logger.info("Running post executions...");
-        for(Runnable postExecution : this.postExecutions)
-        	postExecution.run();
+    	        if (file.exists())
+    	        {
+    	            if (!Objects.requireNonNull(getSHA1(file)).equals(extFile.getSha1()))
+    	            {
+    	                file.delete();
+    	                this.download(new URL(extFile.getDownloadURL()), file);
+    	            }
+    	        }
+    	        else this.download(new URL(extFile.getDownloadURL()), file);
+    		}
+        }
+        if(!this.postExecutions.isEmpty())
+        {
+        	this.callback.step(Step.POST_EXECUTIONS);
+            this.logger.info("Running post executions...");
+            for(Runnable postExecution : this.postExecutions)
+            	postExecution.run();
+        }
         this.callback.step(Step.END);
     }
     

@@ -18,7 +18,7 @@ import fr.flowarg.flowupdater.utils.ZipUtils;
  * @author FlowArg
  */
 public interface IForgeVersion
-{
+{	
 	/**
 	 * This function install a Forge version at the specified directory.
 	 * @param dirToInstall Specified directory.
@@ -31,6 +31,10 @@ public interface IForgeVersion
 	 * @throws IOException If install fail.
 	 */
 	void installMods(final File dirToInstall) throws IOException;
+	
+	boolean isModFileDeleterEnabled();
+	IForgeVersion enableModFileDeleter();
+	IForgeVersion disableModFileDeleter();
 	
 	default void unzipJar(final File destinationDir, final File jarFile) throws IOException
 	{
@@ -86,5 +90,5 @@ public interface IForgeVersion
         ZipUtils.INSTANCE.compressFiles(tempInstallerDir.listFiles(), output);
         Files.move(output.toPath(), new File(output.getAbsolutePath().replace(".zip", ".jar")).toPath(), StandardCopyOption.REPLACE_EXISTING);
         tempInstallerDir.delete();
-    }
+    }	
 }

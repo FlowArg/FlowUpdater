@@ -28,12 +28,13 @@ import fr.flowarg.flowupdater.versions.download.Step;
 public class NewForgeVersion implements IForgeVersion
 {
 	private final boolean noGui;
-    private final Logger   logger;
+    private final Logger logger;
     private String forgeVersion;
     private IVanillaVersion vanilla;
     private URL installerUrl;
     private IProgressCallback callback;
     private List<Mod> mods;
+    private boolean useFileDeleter = false;
 
     public NewForgeVersion(String forgeVersion, IVanillaVersion vanilla, Logger logger, IProgressCallback callback, List<Mod> mods, boolean noGui)
     {
@@ -45,7 +46,7 @@ public class NewForgeVersion implements IForgeVersion
                 this.forgeVersion = vanilla.getName() + '-' + forgeVersion;
             else this.forgeVersion = forgeVersion.trim();
             this.installerUrl = new URL(String.format("https://files.minecraftforge.net/maven/net/minecraftforge/forge/%s/forge-%s-installer.jar", this.forgeVersion, this.forgeVersion));
-            this.vanilla      = vanilla;
+            this.vanilla = vanilla;
             this.callback = callback;
             this.mods = mods;
         } catch (MalformedURLException e)
@@ -66,10 +67,10 @@ public class NewForgeVersion implements IForgeVersion
             try (BufferedInputStream stream = new BufferedInputStream(this.installerUrl.openStream()))
             {
                 this.logger.info("Downloading new forge installer...");
-                final File tempDir          = new File(dirToInstall, ".flowupdater");
+                final File tempDir = new File(dirToInstall, ".flowupdater");
                 final File tempInstallerDir = new File(tempDir, "installer/");
-                final File install          = new File(tempDir, "forge-installer.jar");
-                final File patches          = new File(tempDir, "patches.jar");
+                final File install = new File(tempDir, "forge-installer.jar");
+                final File patches = new File(tempDir, "patches.jar");
                 final File patchedInstaller = new File(tempDir, "forge-installer-patched.jar");
                 FileUtils.deleteDirectory(tempInstallerDir);
                 install.delete();
@@ -146,6 +147,40 @@ public class NewForgeVersion implements IForgeVersion
 	        }
 	        else this.download(new URL(mod.getDownloadURL()), file);
 		}
+		
+		if(this.useFileDeleter)
+		{
+			final List<File> badFiles = new ArrayList<>();
+			final List<File> verifiedFiles = new ArrayList<>();
+			for(File fileInDir : modsDir.listFiles())
+			{
+				if(!fileInDir.isDirectory())
+				{
+					for(Mod mod : this.mods)
+					{
+						final File file = new File(modsDir, mod.getName().endsWith(".jar") ? mod.getName() : mod.getName() + ".jar");
+						if(file.getName().equalsIgnoreCase(fileInDir.getName()))
+						{
+							if(getSHA1(fileInDir).equals(mod.getSha1()) && getFileSizeBytes(fileInDir) == mod.getSize())
+							{
+								if(badFiles.contains(fileInDir))
+									badFiles.remove(fileInDir);
+								verifiedFiles.add(fileInDir);
+							}
+							else badFiles.add(fileInDir);
+						}
+						else
+						{
+							if(!verifiedFiles.contains(fileInDir))
+								badFiles.add(fileInDir);
+						}
+					}
+				}
+			}
+			
+			badFiles.forEach(File::delete);
+			badFiles.clear();
+		}
 	}
 	
     private void download(URL in, File out) throws IOException
@@ -188,5 +223,25 @@ public class NewForgeVersion implements IForgeVersion
     public boolean isNoGui()
     {
 		return this.noGui;
+	}
+
+	@Override
+	public boolean isModFileDeleterEnabled()
+	{
+		return this.useFileDeleter;
+	}
+
+	@Override
+	public IForgeVersion enableModFileDeleter()
+	{
+		this.useFileDeleter = true;
+		return this;
+	}
+	
+	@Override
+	public IForgeVersion disableModFileDeleter()
+	{
+		this.useFileDeleter = false;
+		return this;
 	}
 }
