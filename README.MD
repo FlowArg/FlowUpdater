@@ -1,7 +1,7 @@
 # FlowUpdater
 
-### Support
-Join the Discord server for support : https://discord.gg/yvv78kV
+## Support
+Join the Discord server for support, help and contribution : https://discord.gg/yvv78kV
 
 ### How it's use ?
 This is very simple !
@@ -84,7 +84,7 @@ repositories {
 and in your `dependencies` block :
 ```groovy
 dependencies {
-    compile 'fr.flowarg:flowupdater:1.1.3'
+    compile 'fr.flowarg:flowupdater:1.1.5'
     // If you have problem with Logger import, add this line: compile 'fr.flowarg:flowmultitools:1.0.2'
 }
 ```
