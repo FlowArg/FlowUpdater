@@ -1,5 +1,8 @@
 # FlowUpdater
 
+### Support
+Join the Discord server for support : https://discord.gg/yvv78kV
+
 ### How it's use ?
 This is very simple !
 
