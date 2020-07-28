@@ -1,4 +1,10 @@
-[ ![Download](https://api.bintray.com/packages/flowarg/maven/FlowUpdater/images/download.svg) ](https://bintray.com/flowarg/maven/FlowUpdater/_latestVersion)
+[version]: https://api.bintray.com/packages/flowarg/maven/FlowUpdater/images/download.svg
+[download]: https://bintray.com/flowarg/maven/FlowUpdater/_latestVersion
+[discord-shield]: https://discordapp.com/api/guilds/730758985376071750/widget.png
+[discord-invite]: https://discord.gg/dN6HWHp
+
+[ ![version][] ][download]
+[ ![discord-shield][] ][discord-invite]
 
 # FlowUpdater
 
