@@ -1,3 +1,5 @@
+[ ![Download](https://api.bintray.com/packages/flowarg/maven/FlowUpdater/images/download.svg) ](https://bintray.com/flowarg/maven/FlowUpdater/_latestVersion)
+
 # FlowUpdater
 
 ### Installation
