@@ -14,7 +14,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
 import fr.flowarg.flowcompat.Platform;
-import fr.flowarg.flowlogger.Logger;
+import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.versions.IVanillaVersion;
 import fr.flowarg.flowupdater.versions.download.assets.AssetDownloadable;
 import fr.flowarg.flowupdater.versions.download.assets.AssetIndex;
@@ -22,12 +22,12 @@ import fr.flowarg.flowupdater.versions.download.assets.AssetIndex;
 public class VanillaReader
 {
     private final IVanillaVersion version;
-    private final Logger   logger;
+    private final ILogger logger;
     private boolean isSilent;
     private IProgressCallback callback;
     private DownloadInfos infos;
 
-    public VanillaReader(IVanillaVersion version, Logger logger, boolean isSilent, IProgressCallback callback, DownloadInfos infos)
+    public VanillaReader(IVanillaVersion version, ILogger logger, boolean isSilent, IProgressCallback callback, DownloadInfos infos)
     {
         this.version = version;
         this.logger = logger;

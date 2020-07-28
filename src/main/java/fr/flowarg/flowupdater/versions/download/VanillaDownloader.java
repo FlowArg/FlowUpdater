@@ -12,7 +12,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 
 import fr.flowarg.flowio.FileUtils;
-import fr.flowarg.flowlogger.Logger;
+import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.versions.download.assets.AssetDownloadable;
 
 public class VanillaDownloader
@@ -21,11 +21,11 @@ public class VanillaDownloader
     private final File natives;
     private final File assets;
     private final File libraries;
-    private final Logger logger;
+    private final ILogger logger;
     private File dir;
     private IProgressCallback callback;
 
-    public VanillaDownloader(File dir, Logger logger, IProgressCallback callback, DownloadInfos infos)
+    public VanillaDownloader(File dir, ILogger logger, IProgressCallback callback, DownloadInfos infos)
     {
         this.dir = dir;
         this.natives = new File(this.dir, "/natives/");
@@ -150,6 +150,6 @@ public class VanillaDownloader
     
     public DownloadInfos getDownloadInfos()
     {
-		return downloadInfos;
+		return this.downloadInfos;
 	}
 }

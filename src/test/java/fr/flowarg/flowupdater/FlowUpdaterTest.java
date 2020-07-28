@@ -8,6 +8,7 @@ import java.util.List;
 import org.junit.Test;
 
 import fr.flowarg.flowupdater.FlowUpdater.FlowUpdaterBuilder;
+import fr.flowarg.flowupdater.utils.BuilderArgumentException;
 import fr.flowarg.flowupdater.versions.IVanillaVersion;
 import fr.flowarg.flowupdater.versions.OldForgeVersion;
 import fr.flowarg.flowupdater.versions.VersionType;
@@ -28,7 +29,7 @@ public class FlowUpdaterTest
             updater.setForgeVersion(new OldForgeVersion("1.7.10-10.13.4.1614-1.7.10", version, updater.getLogger(), updater.getCallback(), mods).enableModFileDeleter());
             updater.update(new File("/home/flow/Bureau/test/"), false);
         }
-        catch (IOException e)
+        catch (IOException | BuilderArgumentException e)
         {
             e.printStackTrace();
         }

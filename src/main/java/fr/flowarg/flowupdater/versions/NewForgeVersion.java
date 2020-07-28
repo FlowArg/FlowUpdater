@@ -16,19 +16,19 @@ import java.util.List;
 import java.util.Objects;
 
 import fr.flowarg.flowio.FileUtils;
-import fr.flowarg.flowlogger.Logger;
+import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.versions.download.IProgressCallback;
 import fr.flowarg.flowupdater.versions.download.Mod;
 import fr.flowarg.flowupdater.versions.download.Step;
 
 /**
- * Represent a new Forge version (1.12.2-14.23.5.2854 -> 1.16.1)
+ * Represent a new Forge version (1.12.2-14.23.5.2851 -> 1.16.1)
  * @author FlowArg
  */
 public class NewForgeVersion implements IForgeVersion
 {
 	private final boolean noGui;
-    private final Logger logger;
+    private final ILogger logger;
     private String forgeVersion;
     private IVanillaVersion vanilla;
     private URL installerUrl;
@@ -36,7 +36,7 @@ public class NewForgeVersion implements IForgeVersion
     private List<Mod> mods;
     private boolean useFileDeleter = false;
 
-    public NewForgeVersion(String forgeVersion, IVanillaVersion vanilla, Logger logger, IProgressCallback callback, List<Mod> mods, boolean noGui)
+    public NewForgeVersion(String forgeVersion, IVanillaVersion vanilla, ILogger logger, IProgressCallback callback, List<Mod> mods, boolean noGui)
     {
         this.logger = logger;
         this.noGui = noGui;
@@ -62,7 +62,11 @@ public class NewForgeVersion implements IForgeVersion
     	this.logger.info("Installing new forge version : " + this.forgeVersion + "...");
     	if (this.forgeVersion.startsWith("1.15") ||
                 this.forgeVersion.startsWith("1.14") ||
-                this.forgeVersion.startsWith("1.13") || this.forgeVersion.equalsIgnoreCase("1.12.2-14.23.5.2854"))
+                this.forgeVersion.startsWith("1.13") ||
+                this.forgeVersion.equalsIgnoreCase("1.12.2-14.23.5.2851") ||
+                this.forgeVersion.equalsIgnoreCase("1.12.2-14.23.5.2852") ||
+                this.forgeVersion.equalsIgnoreCase("1.12.2-14.23.5.2853") ||
+                this.forgeVersion.equalsIgnoreCase("1.12.2-14.23.5.2854"))
         {
             try (BufferedInputStream stream = new BufferedInputStream(this.installerUrl.openStream()))
             {
@@ -190,7 +194,7 @@ public class NewForgeVersion implements IForgeVersion
         Files.copy(in.openStream(), out.toPath(), StandardCopyOption.REPLACE_EXISTING);
     }
 
-    public Logger getLogger()
+    public ILogger getLogger()
     {
         return this.logger;
     }

@@ -1,9 +1,9 @@
-apply plugin: 'java'
-apply plugin: 'idea'
+apply plugin: 'java-library'
+apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
 group 'fr.flowarg'
-version '1.1.5'
+version '1.1.6'
 archivesBaseName = "flowupdater"
 
 repositories {
@@ -56,6 +56,6 @@ publishing {
 
 dependencies {
 	implementation 'com.google.code.gson:gson:2.8.6'
-	implementation 'fr.flowarg:flowmultitools:1.0.2'
+	implementation 'fr.flowarg:flowmultitools:1.0.3'
 	testImplementation 'junit:junit:4.13'
 }

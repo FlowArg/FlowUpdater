@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Objects;
 
 import fr.flowarg.flowio.FileUtils;
-import fr.flowarg.flowlogger.Logger;
+import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.versions.download.IProgressCallback;
 import fr.flowarg.flowupdater.versions.download.Mod;
 import fr.flowarg.flowupdater.versions.download.Step;
@@ -27,7 +27,7 @@ import fr.flowarg.flowupdater.versions.download.Step;
  */
 public class OldForgeVersion implements IForgeVersion
 {
-	private final Logger logger;
+	private final ILogger logger;
 	private IVanillaVersion vanilla;
 	private IProgressCallback callback;
 	private URL installerUrl;
@@ -35,7 +35,7 @@ public class OldForgeVersion implements IForgeVersion
 	private List<Mod> mods;
 	private boolean useFileDeleter = false;
 	
-	public OldForgeVersion(String forgeVersion, IVanillaVersion vanilla, Logger logger, IProgressCallback callback, List<Mod> mods)
+	public OldForgeVersion(String forgeVersion, IVanillaVersion vanilla, ILogger logger, IProgressCallback callback, List<Mod> mods)
 	{
 		this.logger = logger;
 		this.mods = mods;
@@ -73,7 +73,7 @@ public class OldForgeVersion implements IForgeVersion
 	{
 		try (BufferedInputStream stream = new BufferedInputStream(this.installerUrl.openStream()))
         {
-            this.logger.info("Downloading new forge installer...");
+            this.logger.info("Downloading old forge installer...");
             final File tempDir          = new File(dirToInstall, ".flowupdater");
             final File tempInstallerDir = new File(tempDir, "installer/");
             final File install          = new File(tempDir, "forge-installer.jar");
@@ -202,7 +202,7 @@ public class OldForgeVersion implements IForgeVersion
 		return this.forgeVersion;
 	}
 	
-	public Logger getLogger()
+	public ILogger getLogger()
 	{
 		return this.logger;
 	}

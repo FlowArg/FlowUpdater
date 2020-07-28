@@ -8,7 +8,7 @@ import fr.flowarg.flowupdater.FlowUpdater;
  */
 public enum Step
 {
-	READ, /** JSON */
+	READ, /** JSON reading */
 	DL_LIBS, /** Download libraries */
 	DL_ASSETS, /** Download assets */
 	EXTRACT_NATIVES, /** Extract natives */

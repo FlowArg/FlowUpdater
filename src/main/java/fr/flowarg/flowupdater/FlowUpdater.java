@@ -11,7 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowlogger.Logger;
+import fr.flowarg.flowupdater.utils.BuilderArgument;
+import fr.flowarg.flowupdater.utils.BuilderArgumentException;
 import fr.flowarg.flowupdater.versions.IForgeVersion;
 import fr.flowarg.flowupdater.versions.IVanillaVersion;
 import fr.flowarg.flowupdater.versions.download.DownloadInfos;
@@ -29,13 +32,13 @@ import fr.flowarg.flowupdater.versions.download.VanillaReader;
 public class FlowUpdater
 {
 	/** Vanilla version's object to update/install */
-    private final IVanillaVersion      version;
+    private final IVanillaVersion version;
     /** Vanilla version's JSON parser */
     private final VanillaReader vanillaReader;
 
     /** Logger object with his {@linkFile} */
     private File logFile;
-    private Logger logger;
+    private ILogger logger;
     
     /** Forge Version to install, can be null if you want a vanilla/MCP installation */
     private IForgeVersion forgeVersion = null;
@@ -44,6 +47,9 @@ public class FlowUpdater
     
     /** Informations about download status */
     private DownloadInfos downloadInfos;
+    
+    /** Is the update silent */
+    private boolean isSilent;
     
     /** Represent a list of ExternalFile. External files are download before post executions.*/
     private List<ExternalFile> externalFiles;
@@ -72,11 +78,12 @@ public class FlowUpdater
 	 * @param externalFiles External files are download before postExecutions.
 	 * @param postExecutions Post executions are called after update.
 	 */
-    private FlowUpdater(IVanillaVersion version, Logger logger, boolean silentUpdate, IProgressCallback callback, ArrayList<ExternalFile> externalFiles, List<Runnable> postExecutions)
+    private FlowUpdater(IVanillaVersion version, ILogger logger, boolean silentUpdate, IProgressCallback callback, List<ExternalFile> externalFiles, List<Runnable> postExecutions)
     {
         this.logger = logger;
         this.externalFiles = externalFiles;
         this.postExecutions = postExecutions;
+        this.isSilent = silentUpdate;
         this.logFile = this.logger.getLogFile();
         try
         {
@@ -90,12 +97,12 @@ public class FlowUpdater
         {
             e.printStackTrace();
         }
-        this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", version.getName(), "1.1.5"));
+        this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", version.getName(), "1.1.6"));
         this.version = version;
         this.downloadInfos = new DownloadInfos();
-        this.callback = callback != null ? callback : NULL_CALLBACK;
+        this.callback = callback;
         this.callback.init();
-        this.vanillaReader = new VanillaReader(this.version, this.logger, silentUpdate, this.callback, this.downloadInfos);
+        this.vanillaReader = new VanillaReader(this.version, this.logger, this.isSilent, this.callback, this.downloadInfos);
     }
 
     /**
@@ -154,6 +161,8 @@ public class FlowUpdater
         out.getParentFile().mkdirs();
         Files.copy(in.openStream(), out.toPath(), StandardCopyOption.REPLACE_EXISTING);
     }
+    
+    // GETTERS
 
     public VanillaReader getVanillaReader()
     {
@@ -175,12 +184,12 @@ public class FlowUpdater
         this.logFile = logFile;
     }
 
-    public void setLogger(Logger logger)
+    public void setLogger(ILogger logger)
     {
         this.logger = logger;
     }
 
-    public Logger getLogger()
+    public ILogger getLogger()
     {
         return this.logger;
     }
@@ -204,6 +213,17 @@ public class FlowUpdater
     {
 		return this.postExecutions;
 	}
+    
+    public boolean isSilent()
+    {
+		return this.isSilent;
+	}
+    
+    
+    public DownloadInfos getDownloadInfos()
+    {
+		return this.downloadInfos;
+	}
 
     /**
      * Necessary if you want install a Forge version.
@@ -214,70 +234,65 @@ public class FlowUpdater
         this.forgeVersion = forgeVersion;
     }
     
-    public DownloadInfos getDownloadInfos()
-    {
-		return this.downloadInfos;
-	}
-    
     /**
      * Builder to build a {@link FlowUpdater} with less argument.
      * @author FlowArg
      */
     public static class FlowUpdaterBuilder
-    {
-    	private IVanillaVersion versionForBuilder;
-    	private Logger loggerForBuilder;
-    	private boolean silentUpdateForBuilder;
-    	private IProgressCallback progressCallbackForBuilder;
-    	private ArrayList<ExternalFile> externalFilesForBuilder;
-    	private List<Runnable> postExecutionsForBuilder;
+    {    	
+    	private BuilderArgument<IVanillaVersion> versionArgument = new BuilderArgument<IVanillaVersion>(null).required();
+    	private BuilderArgument<ILogger> loggerArgument = new BuilderArgument<ILogger>(null).optional();
+    	private BuilderArgument<Boolean> silentUpdateArgument = new BuilderArgument<Boolean>(null).optional();
+    	private BuilderArgument<IProgressCallback> progressCallbackArgument = new BuilderArgument<IProgressCallback>(null).optional();
+    	private BuilderArgument<List<ExternalFile>> externalFilesArgument = new BuilderArgument<List<ExternalFile>>(null).optional();
+    	private BuilderArgument<List<Runnable>> postExecutionsArgument = new BuilderArgument<List<Runnable>>(null).optional();
     	
     	public FlowUpdaterBuilder withVersion(IVanillaVersion version)
     	{
-    		this.versionForBuilder = version;
+    		this.versionArgument.set(version);
     		return this;
     	}
     	
-    	public FlowUpdaterBuilder withLogger(Logger logger)
+    	public FlowUpdaterBuilder withLogger(ILogger logger)
     	{
-    		this.loggerForBuilder = logger;
+    		this.loggerArgument.set(logger);
     		return this;
     	}
     	
     	public FlowUpdaterBuilder withSilentUpdate(boolean silentUpdate)
     	{
-    		this.silentUpdateForBuilder = silentUpdate;
+    		this.silentUpdateArgument.set(Boolean.valueOf(silentUpdate));
     		return this;
     	}
     	
     	public FlowUpdaterBuilder withProgressCallback(IProgressCallback callback)
     	{
-    		this.progressCallbackForBuilder = callback;
+    		this.progressCallbackArgument.set(callback);
     		return this;
     	}
     	
     	public FlowUpdaterBuilder withExternaFiles(ArrayList<ExternalFile> externalFiles)
     	{
-    		this.externalFilesForBuilder = externalFiles;
+    		this.externalFilesArgument.set(externalFiles);
     		return this;
     	}
     	
-    	public FlowUpdaterBuilder witPostExecutions(List<Runnable> postExecutions)
+    	public FlowUpdaterBuilder witPostExecutions(ArrayList<Runnable> postExecutions)
     	{
-    		this.postExecutionsForBuilder = postExecutions;
+    		this.postExecutionsArgument.set(postExecutions);
     		return this;
     	}
     	
-    	public FlowUpdater build()
+    	public FlowUpdater build() throws BuilderArgumentException
     	{
-    		assert this.versionForBuilder != null;
-    		final Logger logger = this.loggerForBuilder != null ? this.loggerForBuilder :  new Logger("[FlowUpdater]", new File("updater/latest.log"));
-    		return new FlowUpdater(this.versionForBuilder,
+    		assert this.versionArgument.get() != null;
+    		final ILogger logger = this.loggerArgument != null ? this.loggerArgument.get() :  new Logger("[FlowUpdater]", new File(".", "updater/latest.log"));
+    		return new FlowUpdater(this.versionArgument.get(),
     				logger,
-    				this.silentUpdateForBuilder,
-    				this.progressCallbackForBuilder != null ? this.progressCallbackForBuilder : NULL_CALLBACK,
-    				this.externalFilesForBuilder != null ? this.externalFilesForBuilder : new ArrayList<>(),
-    				this.postExecutionsForBuilder != null ? this.postExecutionsForBuilder : new ArrayList<>());
+    				this.silentUpdateArgument.get(),
+    				this.progressCallbackArgument.get() != null ? this.progressCallbackArgument.get() : NULL_CALLBACK,
+    				this.externalFilesArgument.get() != null ? this.externalFilesArgument.get() : new ArrayList<>(),
+    				this.postExecutionsArgument.get() != null ? this.postExecutionsArgument.get() : new ArrayList<>());
     	}
     }
 }

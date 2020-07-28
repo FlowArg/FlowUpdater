@@ -20,13 +20,13 @@ import fr.flowarg.flowupdater.utils.ZipUtils;
 public interface IForgeVersion
 {	
 	/**
-	 * This function install a Forge version at the specified directory.
+	 * This function installs a Forge version at the specified directory.
 	 * @param dirToInstall Specified directory.
 	 */
 	void install(final File dirToInstall);
 	
 	/**
-	 * This function install mods at the specified directory.
+	 * This function installs mods at the specified directory.
 	 * @param dirToInstall Specified mods directory.
 	 * @throws IOException If install fail.
 	 */
