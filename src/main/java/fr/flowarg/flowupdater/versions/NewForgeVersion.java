@@ -187,11 +187,18 @@ public class NewForgeVersion implements IForgeVersion
 		}
 	}
 	
-    private void download(URL in, File out) throws IOException
+    private void download(URL in, File out)
     {
-        this.logger.info(String.format("[Downloader] Downloading %s from %s...", out.getName(), in.toExternalForm()));
-        out.getParentFile().mkdirs();
-        Files.copy(in.openStream(), out.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        try
+        {
+            this.logger.info(String.format("[Downloader] Downloading %s from %s...", out.getName(), in.toExternalForm()));
+            out.getParentFile().mkdirs();
+			Files.copy(in.openStream(), out.toPath(), StandardCopyOption.REPLACE_EXISTING);
+		}
+        catch (IOException e)
+        {
+			this.logger.printStackTrace(e);
+		}
     }
 
     public ILogger getLogger()

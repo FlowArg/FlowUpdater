@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,11 +61,11 @@ public class Mod
 	 * @param url the JSON file URL.
 	 * @return a Mod list.
 	 */
-	public static List<Mod> getModsFromJson(URL json)
+	public static List<Mod> getModsFromJson(URL jsonUrl)
 	{
 		final List<Mod> result = new ArrayList<>();
 		JsonElement element = JsonNull.INSTANCE;
-        try(InputStream stream = new BufferedInputStream(json.openStream()))
+        try(InputStream stream = new BufferedInputStream(jsonUrl.openStream()))
         {
             final Reader reader = new BufferedReader(new InputStreamReader(stream));
             final StringBuilder sb = new StringBuilder();
@@ -90,6 +91,18 @@ public class Mod
         	result.add(new Mod(name, sha1, size, downloadURL));
         });
         return result;
+	}
+	
+	public static List<Mod> getModsFromJson(String jsonUrl)
+	{
+		try
+		{
+			return getModsFromJson(new URL(jsonUrl));
+		}
+		catch (MalformedURLException e)
+		{
+			return new ArrayList<>();
+		}
 	}
 	
 	public String getName()

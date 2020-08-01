@@ -286,7 +286,7 @@ public class FlowUpdater
     	public FlowUpdater build() throws BuilderArgumentException
     	{
     		assert this.versionArgument.get() != null;
-    		final ILogger logger = this.loggerArgument != null ? this.loggerArgument.get() :  new Logger("[FlowUpdater]", new File(".", "updater/latest.log"));
+    		final ILogger logger = this.loggerArgument.get() != null ? this.loggerArgument.get() : new Logger("[FlowUpdater]", new File(".", "updater/latest.log"));
     		return new FlowUpdater(this.versionArgument.get(),
     				logger,
     				this.silentUpdateArgument.get(),

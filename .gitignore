@@ -3,6 +3,8 @@ build
 /out/
 /updater/
 /run/
+/src/main/resources/jsontamer.json
+/src/test/
 /.idea/
 bin
 .project
