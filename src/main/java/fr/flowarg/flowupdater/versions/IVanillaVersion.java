@@ -17,6 +17,39 @@ import com.google.gson.JsonParser;
 
 public interface IVanillaVersion
 {
+	IVanillaVersion NULL_VERSION = new IVanillaVersion()
+	{
+		@Override
+		public String getName()
+		{
+			return "null";
+		}
+		
+		@Override
+		public JsonObject getMinecraftServer()
+		{
+			return new JsonObject();
+		}
+		
+		@Override
+		public JsonArray getMinecraftLibrariesJson()
+		{
+			return new JsonArray(0);
+		}
+		
+		@Override
+		public JsonObject getMinecraftClient()
+		{
+			return new JsonObject();
+		}
+		
+		@Override
+		public JsonObject getMinecraftAssetsIndex()
+		{
+			return new JsonObject();
+		}
+	};
+	
     String getName();
 
     JsonArray getMinecraftLibrariesJson();

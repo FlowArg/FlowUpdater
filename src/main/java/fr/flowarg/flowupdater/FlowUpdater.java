@@ -70,15 +70,15 @@ public class FlowUpdater
 
 	/**
 	 * Basic constructor to construct a new {@link FlowUpdater}.
-	 * @param version Version to update
-	 * @param vanillaReader Reader to use for JSON file.
+	 * @param version Version to update.
 	 * @param logger Logger used for log informations.
 	 * @param silentUpdate True -> reader doesn't make any log. False -> reader log all messages.
 	 * @param callback The callback. If it's null, it will automatically assigned as {@link FlowUpdater#NULL_CALLBACK}.
 	 * @param externalFiles External files are download before postExecutions.
 	 * @param postExecutions Post executions are called after update.
 	 */
-    private FlowUpdater(IVanillaVersion version, ILogger logger, boolean silentUpdate, IProgressCallback callback, List<ExternalFile> externalFiles, List<Runnable> postExecutions)
+    private FlowUpdater(IVanillaVersion version, ILogger logger, boolean silentUpdate,
+    		IProgressCallback callback, List<ExternalFile> externalFiles, List<Runnable> postExecutions)
     {
         this.logger = logger;
         this.externalFiles = externalFiles;
@@ -102,30 +102,34 @@ public class FlowUpdater
         this.downloadInfos = new DownloadInfos();
         this.callback = callback;
         this.callback.init();
-        this.vanillaReader = new VanillaReader(this.version, this.logger, this.isSilent, this.callback, this.downloadInfos);
+       	this.vanillaReader = new VanillaReader(this.version, this.logger, this.isSilent, this.callback, this.downloadInfos);
     }
 
     /**
-     * This method update the Minecraft Installation in the given directory.
+     * This method update the Minecraft Installation in the given directory. If the {@link #version} is {@link IVanillaVersion#NULL_VERSION}, the updater will
+     * be only run external files and post executions.
      * @param dir Directory where is the Minecraft installation.
      * @param downloadServer True -> Download the server.jar.
      * @throws IOException if a problem has occurred.
      */
     public void update(File dir, boolean downloadServer) throws IOException
     {
-        this.logger.info(String.format("Reading data about %s Minecraft version...", version.getName()));
-        this.vanillaReader.read();
+    	if(this.version != IVanillaVersion.NULL_VERSION)
+    	{
+            this.logger.info(String.format("Reading data about %s Minecraft version...", version.getName()));
+            this.vanillaReader.read();
 
-        if (!dir.exists())
-            dir.mkdirs();
-        final VanillaDownloader vanillaDownloader = new VanillaDownloader(dir, this.logger, this.callback, this.downloadInfos);
-        vanillaDownloader.download(downloadServer);
+            if (!dir.exists())
+                dir.mkdirs();
+            final VanillaDownloader vanillaDownloader = new VanillaDownloader(dir, this.logger, this.callback, this.downloadInfos);
+            vanillaDownloader.download(downloadServer);
 
-        if (this.getForgeVersion() != null)
-        {
-        	this.forgeVersion.install(dir);
-        	this.forgeVersion.installMods(new File(dir, "mods/"));
-        }
+            if (this.getForgeVersion() != null)
+            {
+            	this.forgeVersion.install(dir);
+            	this.forgeVersion.installMods(new File(dir, "mods/"));
+            }
+    	}
         if(!this.externalFiles.isEmpty())
         {
             this.callback.step(Step.EXTERNAL_FILES);
@@ -157,9 +161,16 @@ public class FlowUpdater
     
     private void download(URL in, File out) throws IOException
     {
-        this.logger.info(String.format("[Downloader] Downloading %s from %s...", out.getName(), in.toExternalForm()));
-        out.getParentFile().mkdirs();
-        Files.copy(in.openStream(), out.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        try
+        {
+            this.logger.info(String.format("[Downloader] Downloading %s from %s...", out.getName(), in.toExternalForm()));
+            out.getParentFile().mkdirs();
+			Files.copy(in.openStream(), out.toPath(), StandardCopyOption.REPLACE_EXISTING);
+		}
+        catch (IOException e)
+        {
+			this.logger.printStackTrace(e);
+		}
     }
     
     // GETTERS
@@ -218,8 +229,7 @@ public class FlowUpdater
     {
 		return this.isSilent;
 	}
-    
-    
+      
     public DownloadInfos getDownloadInfos()
     {
 		return this.downloadInfos;
@@ -239,9 +249,9 @@ public class FlowUpdater
      * @author FlowArg
      */
     public static class FlowUpdaterBuilder
-    {    	
+    {
     	private BuilderArgument<IVanillaVersion> versionArgument = new BuilderArgument<IVanillaVersion>(null).required();
-    	private BuilderArgument<ILogger> loggerArgument = new BuilderArgument<ILogger>(null).optional();
+    	private BuilderArgument<ILogger> loggerArgument = new BuilderArgument<ILogger>(null).required();
     	private BuilderArgument<Boolean> silentUpdateArgument = new BuilderArgument<Boolean>(null).optional();
     	private BuilderArgument<IProgressCallback> progressCallbackArgument = new BuilderArgument<IProgressCallback>(null).optional();
     	private BuilderArgument<List<ExternalFile>> externalFilesArgument = new BuilderArgument<List<ExternalFile>>(null).optional();
@@ -286,7 +296,9 @@ public class FlowUpdater
     	public FlowUpdater build() throws BuilderArgumentException
     	{
     		assert this.versionArgument.get() != null;
-    		final ILogger logger = this.loggerArgument.get() != null ? this.loggerArgument.get() : new Logger("[FlowUpdater]", new File(".", "updater/latest.log"));
+    		final ILogger logger = this.loggerArgument.get() != null ?
+    				this.loggerArgument.get() :
+    					new Logger("[FlowUpdater]", new File(".", "updater/latest.log"));
     		return new FlowUpdater(this.versionArgument.get(),
     				logger,
     				this.silentUpdateArgument.get(),
