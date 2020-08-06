@@ -19,6 +19,9 @@ import fr.flowarg.flowupdater.utils.ZipUtils;
  */
 public interface IForgeVersion
 {	
+	boolean isForgeAlreadyInstalled(File installDir);
+
+	
 	/**
 	 * This function installs a Forge version at the specified directory.
 	 * @param dirToInstall Specified directory.

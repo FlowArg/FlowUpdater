@@ -255,4 +255,10 @@ public class NewForgeVersion implements IForgeVersion
 		this.useFileDeleter = false;
 		return this;
 	}
+
+	@Override
+	public boolean isForgeAlreadyInstalled(File installDir)
+	{
+		return new File(installDir, "libraries/net/minecraftforge/forge/" + this.forgeVersion + "/" + "forge-" + this.forgeVersion + ".jar").exists();
+	}
 }

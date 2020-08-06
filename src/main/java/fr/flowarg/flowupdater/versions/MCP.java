@@ -50,7 +50,7 @@ public class MCP
 	 * 	"serverURL": "https://url.com/launcher/server.jar",
 	 * 	"serverSha1": "777039aab46578247b8954e2f7d482826315fca8",
 	 * 	"clientSize": 1234,
-	 * 	"serverSize": 1234,
+	 * 	"serverSize": 1234
 	 * }
 	 * @param url the JSON file URL.
 	 * @return the MCP instance.

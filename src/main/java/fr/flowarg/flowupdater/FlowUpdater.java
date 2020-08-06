@@ -67,6 +67,9 @@ public class FlowUpdater
 		@Override
 		public void init() {}
 	};
+	
+	/** Default logger */
+	public static final ILogger DEFAULT_LOGGER = new Logger("[FlowUpdater]", new File(".", "updater/latest.log"));
 
 	/**
 	 * Basic constructor to construct a new {@link FlowUpdater}.
@@ -78,31 +81,20 @@ public class FlowUpdater
 	 * @param postExecutions Post executions are called after update.
 	 */
     private FlowUpdater(IVanillaVersion version, ILogger logger, boolean silentUpdate,
-    		IProgressCallback callback, List<ExternalFile> externalFiles, List<Runnable> postExecutions)
+    		IProgressCallback callback, List<ExternalFile> externalFiles, List<Runnable> postExecutions, IForgeVersion forgeVersion)
     {
         this.logger = logger;
+        this.version = version;
+        this.logFile = this.logger.getLogFile();
         this.externalFiles = externalFiles;
         this.postExecutions = postExecutions;
+        this.forgeVersion = forgeVersion;
         this.isSilent = silentUpdate;
-        this.logFile = this.logger.getLogFile();
-        try
-        {
-            if (!this.logFile.exists())
-            {
-                this.logFile.getParentFile().mkdirs();
-                this.logFile.createNewFile();
-            }
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", version.getName(), "1.1.6"));
-        this.version = version;
         this.downloadInfos = new DownloadInfos();
         this.callback = callback;
         this.callback.init();
        	this.vanillaReader = new VanillaReader(this.version, this.logger, this.isSilent, this.callback, this.downloadInfos);
+       	this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.1.6"));
     }
 
     /**
@@ -126,7 +118,9 @@ public class FlowUpdater
 
             if (this.getForgeVersion() != null)
             {
-            	this.forgeVersion.install(dir);
+            	if(!this.forgeVersion.isForgeAlreadyInstalled(dir))
+            	  	this.forgeVersion.install(dir);
+            	else this.logger.info("Detected forge ! Skipping installation...");
             	this.forgeVersion.installMods(new File(dir, "mods/"));
             }
     	}
@@ -238,7 +232,9 @@ public class FlowUpdater
     /**
      * Necessary if you want install a Forge version.
      * @param forgeVersion Forge version to install.
+     * @deprecated Prefer use {@link FlowUpdaterBuilder#withForgeVersion(IForgeVersion)}
      */
+    @Deprecated
     public void setForgeVersion(IForgeVersion forgeVersion)
     {
         this.forgeVersion = forgeVersion;
@@ -250,12 +246,13 @@ public class FlowUpdater
      */
     public static class FlowUpdaterBuilder
     {
-    	private BuilderArgument<IVanillaVersion> versionArgument = new BuilderArgument<IVanillaVersion>(null).required();
-    	private BuilderArgument<ILogger> loggerArgument = new BuilderArgument<ILogger>(null).required();
-    	private BuilderArgument<Boolean> silentUpdateArgument = new BuilderArgument<Boolean>(null).optional();
-    	private BuilderArgument<IProgressCallback> progressCallbackArgument = new BuilderArgument<IProgressCallback>(null).optional();
-    	private BuilderArgument<List<ExternalFile>> externalFilesArgument = new BuilderArgument<List<ExternalFile>>(null).optional();
-    	private BuilderArgument<List<Runnable>> postExecutionsArgument = new BuilderArgument<List<Runnable>>(null).optional();
+    	private final BuilderArgument<IVanillaVersion> versionArgument = new BuilderArgument<IVanillaVersion>(null).required();
+    	private final BuilderArgument<ILogger> loggerArgument = new BuilderArgument<ILogger>(null).required();
+    	private final BuilderArgument<Boolean> silentUpdateArgument = new BuilderArgument<Boolean>(null).optional();
+    	private final BuilderArgument<IProgressCallback> progressCallbackArgument = new BuilderArgument<IProgressCallback>(null).optional();
+    	private final BuilderArgument<List<ExternalFile>> externalFilesArgument = new BuilderArgument<List<ExternalFile>>(null).optional();
+    	private final BuilderArgument<List<Runnable>> postExecutionsArgument = new BuilderArgument<List<Runnable>>(null).optional();
+    	private final BuilderArgument<IForgeVersion> forgeVersionArgument = new BuilderArgument<IForgeVersion>(null).optional();
     	
     	public FlowUpdaterBuilder withVersion(IVanillaVersion version)
     	{
@@ -281,15 +278,25 @@ public class FlowUpdater
     		return this;
     	}
     	
-    	public FlowUpdaterBuilder withExternaFiles(ArrayList<ExternalFile> externalFiles)
+    	public FlowUpdaterBuilder withExternaFiles(List<ExternalFile> externalFiles)
     	{
     		this.externalFilesArgument.set(externalFiles);
     		return this;
     	}
     	
-    	public FlowUpdaterBuilder witPostExecutions(ArrayList<Runnable> postExecutions)
+    	public FlowUpdaterBuilder withPostExecutions(List<Runnable> postExecutions)
     	{
     		this.postExecutionsArgument.set(postExecutions);
+    		return this;
+    	}
+    	
+        /**
+         * Necessary if you want install a Forge version.
+         * @param forgeVersion Forge version to install.
+         */
+    	public FlowUpdaterBuilder withForgeVersion(IForgeVersion forgeVersion)
+    	{
+    		this.forgeVersionArgument.set(forgeVersion);
     		return this;
     	}
     	
@@ -297,14 +304,14 @@ public class FlowUpdater
     	{
     		assert this.versionArgument.get() != null;
     		final ILogger logger = this.loggerArgument.get() != null ?
-    				this.loggerArgument.get() :
-    					new Logger("[FlowUpdater]", new File(".", "updater/latest.log"));
+    				this.loggerArgument.get() : DEFAULT_LOGGER;
     		return new FlowUpdater(this.versionArgument.get(),
     				logger,
     				this.silentUpdateArgument.get(),
     				this.progressCallbackArgument.get() != null ? this.progressCallbackArgument.get() : NULL_CALLBACK,
     				this.externalFilesArgument.get() != null ? this.externalFilesArgument.get() : new ArrayList<>(),
-    				this.postExecutionsArgument.get() != null ? this.postExecutionsArgument.get() : new ArrayList<>());
+    				this.postExecutionsArgument.get() != null ? this.postExecutionsArgument.get() : new ArrayList<>(),
+    				this.forgeVersionArgument.get());
     	}
     }
 }
