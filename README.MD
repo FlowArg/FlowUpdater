@@ -13,10 +13,7 @@
 In your block `repositories`, add this lines :
 ```groovy
 repositories {
-    maven {
-        url = "https://flowarg.github.io/maven/"
-        name = "FlowArg's Maven repository"
-    }   
+    jcenter() 
 }
 ```
 
@@ -46,7 +43,7 @@ IVanillaVersion version = versionBuilder.build(false, VersionType.VANILLA);
 ```
 If you have specified "latest" to the version name, and that the version is a snapshot, replace false by true.
 
-Then, instantiate a new FlowUpdater with ``FlowUpdaterBuilder#addArguments#build``. Check the code for more informations.
+Then, instantiate a new FlowUpdater with ``FlowUpdaterBuilder#withXArguments#build``. Check the code for more informations.
 ```java
 FlowUpdater updater = new FlowUpdaterBuilder().withVersion(version).build();
 ```
@@ -73,7 +70,7 @@ You can get a list of mods by providing a json link : `List<Mod> mods = Mod.getM
 
 Finally, set the Forge version corresponding to the wanted Forge version :
 ```java
-updater.setForgeVersion(new NewForgeVersion("31.2.30", version, updater.getLogger(), updater.getCallback(), mods)); // NewForgeVersion -> 1.12.2-14.23.5.2854 1.16.1 ; OldForgeVersion -> 1.7 1.12
+updater.setForgeVersion(new NewForgeVersion("31.2.30", version, updater.getLogger(), updater.getCallback(), mods)); // NewForgeVersion -> 1.12.2-14.23.5.2851 1.16.1 ; OldForgeVersion -> 1.7 1.12
 ```
 That's all!
 

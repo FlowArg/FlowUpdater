@@ -25,17 +25,20 @@ artifacts {
 }
 
 bintray {
-    user = System.getenv('BINTRAY_USER')
+    user = System.getenv('BINTRAY_USERNAME')
     key = System.getenv('BINTRAY_KEY')
+    publications = ['mavenJava'] 
     pkg {
     	repo = 'maven'
-        name = 'maven'
-        licenses = ['GPL-3.0', 'Apache-2.0']
+        name = 'FlowUpdater'
+        userOrg = 'flowarg'
+        licenses = ['GPL-3.0']
+        publicDownloadNumbers = true
         vcsUrl = 'https://github.com/FlowArg/FlowUpdater.git'
         version {
-        	name = '1.0-Final'
+        	name = 'v' + project.version
         	desc = 'ILogger & JCenter update'
-        	released  = new Date()
+        	released = new Date()
         	vcsTag = 'v' + project.version
     	}
     }
@@ -53,7 +56,6 @@ publishing {
 				name = project.name
 				description = 'FlowUpdater is a library for automatically update minecraft versions !'
 				url = 'https://github.com/FlowArg/FlowUpdater'
-				packaging = 'jar'
 
 				issueManagement {
 					system = 'github'
