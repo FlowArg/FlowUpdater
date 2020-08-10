@@ -27,6 +27,7 @@ import fr.flowarg.flowupdater.versions.download.Step;
  */
 public class NewForgeVersion implements IForgeVersion
 {
+	private final String[] compatibleVersions = {"1.16", "1.15", "1.14", "1.12.2-14.23.5.285"};
 	private final boolean noGui;
     private final ILogger logger;
     private String forgeVersion;
@@ -60,13 +61,7 @@ public class NewForgeVersion implements IForgeVersion
     {
     	this.callback.step(Step.FORGE);
     	this.logger.info("Installing new forge version : " + this.forgeVersion + "...");
-    	if (this.forgeVersion.startsWith("1.15") ||
-                this.forgeVersion.startsWith("1.14") ||
-                this.forgeVersion.startsWith("1.13") ||
-                this.forgeVersion.equalsIgnoreCase("1.12.2-14.23.5.2851") ||
-                this.forgeVersion.equalsIgnoreCase("1.12.2-14.23.5.2852") ||
-                this.forgeVersion.equalsIgnoreCase("1.12.2-14.23.5.2853") ||
-                this.forgeVersion.equalsIgnoreCase("1.12.2-14.23.5.2854"))
+    	if (this.isCompatible())
         {
             try (BufferedInputStream stream = new BufferedInputStream(this.installerUrl.openStream()))
             {
@@ -88,9 +83,9 @@ public class NewForgeVersion implements IForgeVersion
                 Files.copy(new URL("https://flowarg.github.io/minecraft/launcher/patches.jar").openStream(), patches.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
                 this.logger.info("Applying patches...");
-                this.unzipJar(tempInstallerDir, install);
+                FileUtils.unzipJarWithLZMACompat(tempInstallerDir, install);
                 this.cleaningInstaller(tempInstallerDir);
-                this.unzipJar(tempInstallerDir, patches);
+                FileUtils.unzipJarWithLZMACompat(tempInstallerDir, patches);
                 this.logger.info("Repack installer...");
                 this.packPatchedInstaller(tempDir, tempInstallerDir);
                 patches.delete();
@@ -119,6 +114,24 @@ public class NewForgeVersion implements IForgeVersion
                 this.logger.printStackTrace(e);
             }
         }
+    }
+    
+    public boolean isCompatible()
+    {
+    	for(String str : this.compatibleVersions)
+    	{
+    		if(this.forgeVersion.startsWith(str))
+    			return true;
+    	}
+    	return false;
+    	
+    	/*return this.forgeVersion.startsWith("1.16") ||
+    	this.forgeVersion.startsWith("1.15") ||
+        this.forgeVersion.startsWith("1.14") ||
+        this.forgeVersion.startsWith("1.13") ||
+        this.forgeVersion.equalsIgnoreCase("1.12.2-14.23.5.2851") ||
+        this.forgeVersion.equalsIgnoreCase("1.12.2-14.23.5.2852") ||
+        this.forgeVersion.equalsIgnoreCase("1.12.2-14.23.5.2854");*/
     }
 
     private void cleaningInstaller(File tempInstallerDir)

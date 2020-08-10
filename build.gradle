@@ -37,7 +37,6 @@ bintray {
         vcsUrl = 'https://github.com/FlowArg/FlowUpdater.git'
         version {
         	name = 'v' + project.version
-        	desc = 'ILogger & JCenter update'
         	released = new Date()
         	vcsTag = 'v' + project.version
     	}
@@ -76,6 +75,6 @@ publishing {
 
 dependencies {
 	implementation 'com.google.code.gson:gson:2.8.6'
-	implementation 'fr.flowarg:flowmultitools:1.0.3'
+	implementation 'fr.flowarg:flowmultitools:1.0.4'
 	testImplementation 'junit:junit:4.13'
 }

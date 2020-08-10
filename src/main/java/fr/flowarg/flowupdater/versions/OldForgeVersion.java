@@ -91,9 +91,9 @@ public class OldForgeVersion implements IForgeVersion
             Files.copy(new URL("https://flowarg.github.io/minecraft/launcher/oldpatches.jar").openStream(), patches.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
             this.logger.info("Applying patches...");
-            this.unzipJar(tempInstallerDir, install);
+            FileUtils.unzipJarWithLZMACompat(tempInstallerDir, install);
             this.cleaningInstaller(tempInstallerDir);
-            this.unzipJar(tempInstallerDir, patches);
+            FileUtils.unzipJarWithLZMACompat(tempInstallerDir, patches);
             this.logger.info("Repack installer...");
             this.packPatchedInstaller(tempDir, tempInstallerDir);
             patches.delete();

@@ -20,18 +20,21 @@ public class ExternalFile
 	private String path;
 	private String downloadURL;
 	private String sha1;
+	private int size;
 	
 	/**
 	 * Construct a new ExternalFile object.
 	 * @param path
 	 * @param downloadURL
 	 * @param sha1
+	 * @param size
 	 */
-	public ExternalFile(String path, String downloadURL, String sha1)
+	public ExternalFile(String path, String downloadURL, String sha1, int size)
 	{
 		this.path = path;
 		this.downloadURL = downloadURL;
 		this.sha1 = sha1;
+		this.size = size;
 	}
 	
 	/**
@@ -42,12 +45,14 @@ public class ExternalFile
 	 * 	{
 	 * 		"path": "other/path/AnExternalFile.binpatch",
 	 * 		"downloadURL": "https://url.com/launcher/extern/AnExtFile.binpatch",
-	 * 		"sha1": "40f784892989du0fc6f45c895d4l6c5db9378f48"
+	 * 		"sha1": "40f784892989du0fc6f45c895d4l6c5db9378f48",
+	 * 		"size": 25652
 	 * 	},
 	 * 	{
 	 * 		"path": "config/config.json",
 	 * 		"downloadURL": "https://url.com/launcher/ext/modconfig.json",
-	 * 		"sha1": "eef74b3fbab6400cb14b02439cf092cca3c2125c"
+	 * 		"sha1": "eef74b3fbab6400cb14b02439cf092cca3c2125c",
+	 * 		"size": 19683
 	 * 	}
 	 * 	]
 	 * }
@@ -79,8 +84,9 @@ public class ExternalFile
         	final String path = obj.get("path").getAsString();
         	final String sha1 = obj.get("sha1").getAsString();
         	final String downloadURL = obj.get("downloadURL").getAsString();
+        	final int size = obj.get("size").getAsInt();
         	
-        	result.add(new ExternalFile(path, downloadURL, sha1));
+        	result.add(new ExternalFile(path, downloadURL, sha1, size));
         });
         return result;
 	}
@@ -98,5 +104,10 @@ public class ExternalFile
 	public String getSha1()
 	{
 		return this.sha1;
+	}
+	
+	public int getSize()
+	{
+		return this.size;
 	}
 }
