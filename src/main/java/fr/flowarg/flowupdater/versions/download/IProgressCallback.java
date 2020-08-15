@@ -1,5 +1,7 @@
 package fr.flowarg.flowupdater.versions.download;
 
+import fr.flowarg.flowupdater.FlowUpdater;
+
 public interface IProgressCallback
 {
 	/**

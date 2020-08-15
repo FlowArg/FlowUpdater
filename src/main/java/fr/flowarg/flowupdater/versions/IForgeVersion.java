@@ -7,10 +7,13 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import fr.flowarg.flowio.FileUtils;
+import fr.flowarg.flowupdater.versions.download.DownloadInfos;
+import fr.flowarg.flowupdater.versions.download.Mod;
 
 /**
  * Represent a Forge version.
@@ -38,6 +41,8 @@ public interface IForgeVersion
 	boolean isModFileDeleterEnabled();
 	IForgeVersion enableModFileDeleter();
 	IForgeVersion disableModFileDeleter();
+	
+	void appendDownloadInfos(DownloadInfos infos);
 	
 	@Deprecated
 	default void unzipJar(final File destinationDir, final File jarFile) throws IOException
@@ -94,5 +99,7 @@ public interface IForgeVersion
         FileUtils.compressFiles(tempInstallerDir.listFiles(), output);
         Files.move(output.toPath(), new File(output.getAbsolutePath().replace(".zip", ".jar")).toPath(), StandardCopyOption.REPLACE_EXISTING);
         tempInstallerDir.delete();
-    }	
+    }
+	
+	List<Mod> getMods();
 }

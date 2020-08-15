@@ -201,9 +201,10 @@ public interface IVanillaVersion
          * Necessary if you want install a MCP version.
          * @param mcp MCP version to install.
          */
-        public void setMcp(MCP mcp)
+        public Builder withMCPVersion(MCP mcp)
         {
     		this.mcp = mcp;
+    		return this;
     	}
         
         public MCP getMcp()

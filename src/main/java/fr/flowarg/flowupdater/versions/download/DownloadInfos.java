@@ -13,12 +13,14 @@ public class DownloadInfos
 {
     private final List<Downloadable> libraryDownloadables = new ArrayList<>();
     private final List<AssetDownloadable> assetDownloadables = new ArrayList<>();
+    private final List<ExternalFile> extFiles = new ArrayList<>();
+    private final List<Mod> mods = new ArrayList<>();
 	private int totalToDownload;
 	private int downloaded;
 	
 	public void init()
 	{
-		this.totalToDownload = this.libraryDownloadables.size() + this.assetDownloadables.size();
+		this.totalToDownload = this.libraryDownloadables.size() + this.assetDownloadables.size() + this.extFiles.size() + this.mods.size();
 		this.downloaded = 0;
 	}
 	
@@ -55,5 +57,15 @@ public class DownloadInfos
 	public List<Downloadable> getLibraryDownloadables()
 	{
 		return this.libraryDownloadables;
+	}
+	
+	public List<ExternalFile> getExtFiles()
+	{
+		return this.extFiles;
+	}
+	
+	public List<Mod> getMods()
+	{
+		return this.mods;
 	}
 }

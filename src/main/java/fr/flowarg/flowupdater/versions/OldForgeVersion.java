@@ -13,10 +13,10 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
+import fr.flowarg.flowupdater.versions.download.DownloadInfos;
 import fr.flowarg.flowupdater.versions.download.IProgressCallback;
 import fr.flowarg.flowupdater.versions.download.Mod;
 import fr.flowarg.flowupdater.versions.download.Step;
@@ -34,6 +34,7 @@ public class OldForgeVersion implements IForgeVersion
 	private String forgeVersion;
 	private List<Mod> mods;
 	private boolean useFileDeleter = false;
+	private DownloadInfos downloadInfos;
 	
 	public OldForgeVersion(String forgeVersion, IVanillaVersion vanilla, ILogger logger, IProgressCallback callback, List<Mod> mods)
 	{
@@ -74,10 +75,10 @@ public class OldForgeVersion implements IForgeVersion
 		try (BufferedInputStream stream = new BufferedInputStream(this.installerUrl.openStream()))
         {
             this.logger.info("Downloading old forge installer...");
-            final File tempDir          = new File(dirToInstall, ".flowupdater");
+            final File tempDir = new File(dirToInstall, ".flowupdater");
             final File tempInstallerDir = new File(tempDir, "installer/");
-            final File install          = new File(tempDir, "forge-installer.jar");
-            final File patches          = new File(tempDir, "patches.jar");
+            final File install = new File(tempDir, "forge-installer.jar");
+            final File patches = new File(tempDir, "patches.jar");
             final File patchedInstaller = new File(tempDir, "forge-installer-patched.jar");
             FileUtils.deleteDirectory(tempInstallerDir);
             install.delete();
@@ -139,21 +140,18 @@ public class OldForgeVersion implements IForgeVersion
 	public void installMods(File modsDir) throws IOException
 	{
 		this.callback.step(Step.MODS);
-		for(Mod mod : this.mods)
-		{
-	        final File file = new File(modsDir, mod.getName().endsWith(".jar") ? mod.getName() : mod.getName() + ".jar");
-
-	        if (file.exists())
-	        {
-	            if (!Objects.requireNonNull(getSHA1(file)).equals(mod.getSha1()) || getFileSizeBytes(file) != mod.getSize())
-	            {
-	                file.delete();
-	                this.download(new URL(mod.getDownloadURL()), file);
-	            }
-	        }
-	        else this.download(new URL(mod.getDownloadURL()), file);
-		}
-		
+		this.downloadInfos.getMods().forEach(mod -> {
+			try
+			{
+				this.download(new URL(mod.getDownloadURL()), new File(modsDir, mod.getName()));
+			}
+			catch (MalformedURLException e)
+			{
+				this.logger.printStackTrace(e);
+			}
+			this.downloadInfos.incrementDownloaded();
+			this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
+		});
 		
 		if(this.useFileDeleter)
 		{
@@ -219,6 +217,7 @@ public class OldForgeVersion implements IForgeVersion
 		return this.vanilla;
 	}
 	
+	@Override
 	public List<Mod> getMods()
 	{
 		return this.mods;
@@ -258,5 +257,11 @@ public class OldForgeVersion implements IForgeVersion
 	public boolean isForgeAlreadyInstalled(File installDir)
 	{
 		return new File(installDir, "libraries/net/minecraftforge/forge/" + this.forgeVersion + "/" + "forge-" + this.forgeVersion + ".jar").exists();
+	}
+
+	@Override
+	public void appendDownloadInfos(DownloadInfos infos)
+	{
+		this.downloadInfos = infos;
 	}
 }

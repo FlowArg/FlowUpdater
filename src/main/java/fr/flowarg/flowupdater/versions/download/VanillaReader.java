@@ -8,13 +8,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.apache.commons.io.IOUtils;
-
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
 import fr.flowarg.flowcompat.Platform;
 import fr.flowarg.flowlogger.ILogger;
+import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.versions.IVanillaVersion;
 import fr.flowarg.flowupdater.versions.download.assets.AssetDownloadable;
 import fr.flowarg.flowupdater.versions.download.assets.AssetIndex;
