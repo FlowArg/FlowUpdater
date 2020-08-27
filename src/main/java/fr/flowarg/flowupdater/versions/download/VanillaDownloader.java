@@ -24,8 +24,9 @@ public class VanillaDownloader
     private final ILogger logger;
     private File dir;
     private IProgressCallback callback;
+    private boolean reextractNatives;
 
-    public VanillaDownloader(File dir, ILogger logger, IProgressCallback callback, DownloadInfos infos)
+    public VanillaDownloader(File dir, ILogger logger, IProgressCallback callback, DownloadInfos infos, boolean reextractNatives)
     {
         this.dir = dir;
         this.natives = new File(this.dir, "/natives/");
@@ -34,6 +35,7 @@ public class VanillaDownloader
         this.logger = logger;
         this.callback = callback;
         this.downloadInfos = infos;
+        this.reextractNatives = reextractNatives;
         
         this.dir.mkdirs();
         this.assets.mkdirs();
@@ -46,7 +48,7 @@ public class VanillaDownloader
     {
         this.logger.info("[Downloader] Checking library files...");
         this.callback.step(Step.DL_LIBS);
-        this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
+        //this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
         this.checkAllLibraries(downloadServer);
 
         this.logger.info("[Downloader] Checking assets...");
@@ -57,8 +59,6 @@ public class VanillaDownloader
         this.callback.step(Step.EXTRACT_NATIVES);
         this.extractNatives();
 
-        this.downloadInfos.getLibraryDownloadables().clear();
-        this.downloadInfos.getAssetDownloadables().clear();
         this.logger.info("[Downloader] All files are successfully downloaded !");
     }
 
@@ -110,11 +110,23 @@ public class VanillaDownloader
 
     private void extractNatives() throws IOException
     {
-        for (File minecraftNative : Objects.requireNonNull(this.natives.listFiles()))
-        {
-            if (!minecraftNative.isDirectory() && minecraftNative.getName().endsWith(".jar"))
-                unzipJar(this.natives.getAbsolutePath(), minecraftNative.getAbsolutePath());
-        }
+    	boolean flag = true;
+    	for(File minecraftNative : Objects.requireNonNull(this.natives.listFiles()))
+    	{
+    		if(minecraftNative.getName().endsWith(".so") || minecraftNative.getName().endsWith(".dylib") || minecraftNative.getAbsolutePath().endsWith(".dll"))
+    		{
+    			flag = false;
+    			break;
+    		}
+    	}
+    	if(this.reextractNatives || flag)
+    	{
+            for (File minecraftNative : Objects.requireNonNull(this.natives.listFiles()))
+            {
+            	if (!minecraftNative.isDirectory() && minecraftNative.getName().endsWith(".jar"))
+            		unzipJar(this.natives.getAbsolutePath(), minecraftNative.getAbsolutePath());
+            }
+    	}
 
         for (File toDelete : Objects.requireNonNull(this.natives.listFiles()))
         {

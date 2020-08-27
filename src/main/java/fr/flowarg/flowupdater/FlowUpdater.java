@@ -16,6 +16,7 @@ import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowlogger.Logger;
 import fr.flowarg.flowupdater.utils.BuilderArgument;
 import fr.flowarg.flowupdater.utils.BuilderArgumentException;
+import fr.flowarg.flowupdater.utils.UpdaterOptions;
 import fr.flowarg.flowupdater.versions.IForgeVersion;
 import fr.flowarg.flowupdater.versions.IVanillaVersion;
 import fr.flowarg.flowupdater.versions.download.DownloadInfos;
@@ -49,9 +50,9 @@ public class FlowUpdater
     
     /** Informations about download status */
     private DownloadInfos downloadInfos;
-    
-    /** Is the update silent */
-    private boolean isSilent;
+        
+    /** Represent somme settings for FlowUpdater */
+    private UpdaterOptions updaterOptions;
     
     /** Represent a list of ExternalFile. External files are download before post executions.*/
     private List<ExternalFile> externalFiles;
@@ -82,7 +83,7 @@ public class FlowUpdater
 	 * @param externalFiles External files are download before postExecutions.
 	 * @param postExecutions Post executions are called after update.
 	 */
-    private FlowUpdater(IVanillaVersion version, ILogger logger, boolean silentUpdate,
+    private FlowUpdater(IVanillaVersion version, ILogger logger, UpdaterOptions updaterOptions,
     		IProgressCallback callback, List<ExternalFile> externalFiles, List<Runnable> postExecutions, IForgeVersion forgeVersion)
     {
         this.logger = logger;
@@ -91,12 +92,12 @@ public class FlowUpdater
         this.externalFiles = externalFiles;
         this.postExecutions = postExecutions;
         this.forgeVersion = forgeVersion;
-        this.isSilent = silentUpdate;
+        this.updaterOptions = updaterOptions;
         this.downloadInfos = new DownloadInfos();
         this.callback = callback;
         this.callback.init();
-       	this.vanillaReader = new VanillaReader(this.version, this.logger, this.isSilent, this.callback, this.downloadInfos);
-       	this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.1.7"));
+       	this.vanillaReader = new VanillaReader(this.version, this.logger, this.updaterOptions.isSilentUpdate(), this.callback, this.downloadInfos);
+       	this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.1.8"));
     }
 
     /**
@@ -151,11 +152,12 @@ public class FlowUpdater
 
             if (!dir.exists())
                 dir.mkdirs();
-            final VanillaDownloader vanillaDownloader = new VanillaDownloader(dir, this.logger, this.callback, this.downloadInfos);
+            final VanillaDownloader vanillaDownloader = new VanillaDownloader(dir, this.logger, this.callback, this.downloadInfos, this.updaterOptions.isReextractNatives());
             vanillaDownloader.download(downloadServer);
 
             if (this.forgeVersion != null)
             {
+            	this.forgeVersion.appendDownloadInfos(this.downloadInfos);
             	if(!this.forgeVersion.isForgeAlreadyInstalled(dir))
             	  	this.forgeVersion.install(dir);
             	else this.logger.info("Detected forge ! Skipping installation...");
@@ -189,6 +191,7 @@ public class FlowUpdater
             this.postExecutions.forEach(Runnable::run);
         }
         this.callback.step(Step.END);
+        this.downloadInfos.clear();
     }
     
     private void download(URL in, File out) throws IOException
@@ -224,7 +227,7 @@ public class FlowUpdater
     {
     	private final BuilderArgument<IVanillaVersion> versionArgument = new BuilderArgument<IVanillaVersion>(IVanillaVersion.NULL_VERSION).required();
     	private final BuilderArgument<ILogger> loggerArgument = new BuilderArgument<ILogger>(DEFAULT_LOGGER).required();
-    	private final BuilderArgument<Boolean> silentUpdateArgument = new BuilderArgument<Boolean>(true).optional();
+    	private final BuilderArgument<UpdaterOptions> updaterOptionsArgument = new BuilderArgument<UpdaterOptions>(null).required();
     	private final BuilderArgument<IProgressCallback> progressCallbackArgument = new BuilderArgument<IProgressCallback>(NULL_CALLBACK).optional();
     	private final BuilderArgument<List<ExternalFile>> externalFilesArgument = new BuilderArgument<List<ExternalFile>>(new ArrayList<>()).optional();
     	private final BuilderArgument<List<Runnable>> postExecutionsArgument = new BuilderArgument<List<Runnable>>(new ArrayList<>()).optional();
@@ -242,9 +245,9 @@ public class FlowUpdater
     		return this;
     	}
     	
-    	public FlowUpdaterBuilder withSilentUpdate(boolean silentUpdate)
+    	public FlowUpdaterBuilder withUpdaterOptions(UpdaterOptions updaterOptions)
     	{
-    		this.silentUpdateArgument.set(Boolean.valueOf(silentUpdate));
+    		this.updaterOptionsArgument.set(updaterOptions);
     		return this;
     	}
     	
@@ -280,7 +283,7 @@ public class FlowUpdater
     	{
     		return new FlowUpdater(this.versionArgument.get(),
     				this.loggerArgument.get(),
-    				this.silentUpdateArgument.get(),
+    				this.updaterOptionsArgument.get(),
     				this.progressCallbackArgument.get(),
     				this.externalFilesArgument.get(),
     				this.postExecutionsArgument.get(),
@@ -327,14 +330,14 @@ public class FlowUpdater
     {
 		return this.postExecutions;
 	}
-    
-    public boolean isSilent()
-    {
-		return this.isSilent;
-	}
       
     public DownloadInfos getDownloadInfos()
     {
 		return this.downloadInfos;
+	}
+    
+    public UpdaterOptions getUpdaterOptions()
+    {
+		return this.updaterOptions;
 	}
 }

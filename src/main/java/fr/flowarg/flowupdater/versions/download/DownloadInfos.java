@@ -6,7 +6,7 @@ import java.util.List;
 import fr.flowarg.flowupdater.versions.download.assets.AssetDownloadable;
 
 /**
- * Represent some informations about download status. Used for progress system {@link IProgressCallback}.
+ * Represent informations about download status. Used for progress system {@link IProgressCallback}.
  * @author FlowArg
  */
 public class DownloadInfos
@@ -67,5 +67,15 @@ public class DownloadInfos
 	public List<Mod> getMods()
 	{
 		return this.mods;
+	}
+	
+	public void clear()
+	{
+		this.libraryDownloadables.clear();
+		this.extFiles.clear();
+		this.assetDownloadables.clear();
+		this.mods.clear();
+		this.totalToDownload = 0;
+		this.downloaded = 0;
 	}
 }
