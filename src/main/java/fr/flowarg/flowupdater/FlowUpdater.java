@@ -12,11 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowlogger.Logger;
 import fr.flowarg.flowupdater.utils.BuilderArgument;
 import fr.flowarg.flowupdater.utils.BuilderArgumentException;
+import fr.flowarg.flowupdater.utils.ForgeHacks;
 import fr.flowarg.flowupdater.utils.UpdaterOptions;
 import fr.flowarg.flowupdater.versions.IForgeVersion;
 import fr.flowarg.flowupdater.versions.IVanillaVersion;
@@ -96,7 +96,7 @@ public class FlowUpdater
         this.callback = callback;
         this.callback.init();
        	this.vanillaReader = new VanillaReader(this.version, this.logger, this.updaterOptions.isSilentUpdate(), this.callback, this.downloadInfos);
-       	this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.1.9"));
+       	this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.1.10"));
     }
 
     /**
@@ -163,33 +163,7 @@ public class FlowUpdater
             	this.forgeVersion.installMods(new File(dir, "mods/"));
             	
             	if(!this.updaterOptions.disableForgeHacks())
-            	{
-                	this.callback.step(Step.INTERNAL_FORGE_HACKS);
-                	for(File x : new File(dir, "libraries/org/ow2/asm/").listFiles())
-                	{
-                		if(x.listFiles() != null)
-                		{
-                			boolean sevenPresent = false;
-                			boolean sixPresent = false;
-                			for(File y : x.listFiles())
-                			{
-                				if(y.getName().startsWith("7"))
-                					sevenPresent = true;
-                				if(y.getName().startsWith("6"))
-                					sixPresent = true;
-                			}
-                			
-                			if(sevenPresent && sixPresent)
-                			{
-                    			for(File y : x.listFiles())
-                    			{
-                    				if(y.getName().startsWith("6"))
-                    					FileUtils.deleteDirectory(y);
-                    			}
-                			}
-                		}
-                	}
-            	}
+            		ForgeHacks.fix(this.callback, dir);
             }
     	}
     	else this.downloadInfos.init();
