@@ -8,10 +8,14 @@ public class UpdaterOptions
 	/** Reextract natives at each updates ? */
 	private final boolean reextractNatives;
 	
-	public UpdaterOptions(boolean silentUpdate, boolean reextractNatives)
+	/** Enable/Disable forge fixes */
+	private final boolean disableForgeHacks;
+	
+	public UpdaterOptions(boolean silentUpdate, boolean reextractNatives, boolean disableForgeHacks)
 	{
 		this.silentUpdate = silentUpdate;
 		this.reextractNatives = reextractNatives;
+		this.disableForgeHacks = disableForgeHacks;
 	}
 	
 	public boolean isReextractNatives()
@@ -22,5 +26,10 @@ public class UpdaterOptions
 	public boolean isSilentUpdate()
 	{
 		return this.silentUpdate;
+	}
+	
+	public boolean disableForgeHacks()
+	{
+		return this.disableForgeHacks;
 	}
 }

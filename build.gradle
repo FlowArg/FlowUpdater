@@ -7,7 +7,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
 group 'fr.flowarg'
-version '1.1.8'
+version '1.1.9'
 archivesBaseName = "flowupdater"
 
 
@@ -75,6 +75,6 @@ publishing {
 
 dependencies {
 	implementation 'com.google.code.gson:gson:2.8.6'
-	implementation 'fr.flowarg:flowmultitools:1.0.4'
+	implementation 'fr.flowarg:flowmultitools:1.0.5'
 	testImplementation 'junit:junit:4.13'
 }

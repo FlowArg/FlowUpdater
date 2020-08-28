@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowlogger.Logger;
 import fr.flowarg.flowupdater.utils.BuilderArgument;
@@ -39,8 +40,7 @@ public class FlowUpdater
     /** Vanilla version's JSON parser */
     private final VanillaReader vanillaReader;
 
-    /** Logger object with his {@link File} */
-    private File logFile;
+    /** Logger object */
     private ILogger logger;
     
     /** Forge Version to install, can be null if you want a vanilla/MCP installation */
@@ -88,7 +88,6 @@ public class FlowUpdater
     {
         this.logger = logger;
         this.version = version;
-        this.logFile = this.logger.getLogFile();
         this.externalFiles = externalFiles;
         this.postExecutions = postExecutions;
         this.forgeVersion = forgeVersion;
@@ -97,7 +96,7 @@ public class FlowUpdater
         this.callback = callback;
         this.callback.init();
        	this.vanillaReader = new VanillaReader(this.version, this.logger, this.updaterOptions.isSilentUpdate(), this.callback, this.downloadInfos);
-       	this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.1.8"));
+       	this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.1.9"));
     }
 
     /**
@@ -162,6 +161,35 @@ public class FlowUpdater
             	  	this.forgeVersion.install(dir);
             	else this.logger.info("Detected forge ! Skipping installation...");
             	this.forgeVersion.installMods(new File(dir, "mods/"));
+            	
+            	if(!this.updaterOptions.disableForgeHacks())
+            	{
+                	this.callback.step(Step.INTERNAL_FORGE_HACKS);
+                	for(File x : new File(dir, "libraries/org/ow2/asm/").listFiles())
+                	{
+                		if(x.listFiles() != null)
+                		{
+                			boolean sevenPresent = false;
+                			boolean sixPresent = false;
+                			for(File y : x.listFiles())
+                			{
+                				if(y.getName().startsWith("7"))
+                					sevenPresent = true;
+                				if(y.getName().startsWith("6"))
+                					sixPresent = true;
+                			}
+                			
+                			if(sevenPresent && sixPresent)
+                			{
+                    			for(File y : x.listFiles())
+                    			{
+                    				if(y.getName().startsWith("6"))
+                    					FileUtils.deleteDirectory(y);
+                    			}
+                			}
+                		}
+                	}
+            	}
             }
     	}
     	else this.downloadInfos.init();
@@ -299,11 +327,6 @@ public class FlowUpdater
     public IVanillaVersion getVersion()
     {
         return this.version;
-    }
-
-    public File getLogFile()
-    {
-        return this.logFile;
     }
 
     public ILogger getLogger()
