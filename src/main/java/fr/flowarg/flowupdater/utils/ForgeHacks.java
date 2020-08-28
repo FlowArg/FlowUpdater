@@ -3,8 +3,8 @@ package fr.flowarg.flowupdater.utils;
 import java.io.File;
 
 import fr.flowarg.flowio.FileUtils;
-import fr.flowarg.flowupdater.versions.download.IProgressCallback;
-import fr.flowarg.flowupdater.versions.download.Step;
+import fr.flowarg.flowupdater.download.IProgressCallback;
+import fr.flowarg.flowupdater.download.Step;
 
 public class ForgeHacks
 {

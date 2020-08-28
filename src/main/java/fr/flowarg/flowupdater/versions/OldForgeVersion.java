@@ -16,10 +16,10 @@ import java.util.List;
 
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
-import fr.flowarg.flowupdater.versions.download.DownloadInfos;
-import fr.flowarg.flowupdater.versions.download.IProgressCallback;
-import fr.flowarg.flowupdater.versions.download.Mod;
-import fr.flowarg.flowupdater.versions.download.Step;
+import fr.flowarg.flowupdater.download.DownloadInfos;
+import fr.flowarg.flowupdater.download.IProgressCallback;
+import fr.flowarg.flowupdater.download.Step;
+import fr.flowarg.flowupdater.download.json.Mod;
 
 /**
  * Represent an old Forge version (1.7 -> 1.12.2) (No support for versions older than 1.7)

@@ -1,4 +1,4 @@
-package fr.flowarg.flowupdater.versions.download;
+package fr.flowarg.flowupdater.download;
 
 import fr.flowarg.flowupdater.FlowUpdater;
 

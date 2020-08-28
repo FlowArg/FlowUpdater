@@ -1,4 +1,4 @@
-package fr.flowarg.flowupdater.versions.download;
+package fr.flowarg.flowupdater.download.json;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;

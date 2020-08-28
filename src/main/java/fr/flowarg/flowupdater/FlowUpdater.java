@@ -14,19 +14,19 @@ import java.util.Objects;
 
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowlogger.Logger;
+import fr.flowarg.flowupdater.download.DownloadInfos;
+import fr.flowarg.flowupdater.download.IProgressCallback;
+import fr.flowarg.flowupdater.download.Step;
+import fr.flowarg.flowupdater.download.VanillaDownloader;
+import fr.flowarg.flowupdater.download.VanillaReader;
+import fr.flowarg.flowupdater.download.json.ExternalFile;
+import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.utils.BuilderArgument;
 import fr.flowarg.flowupdater.utils.BuilderArgumentException;
 import fr.flowarg.flowupdater.utils.ForgeHacks;
 import fr.flowarg.flowupdater.utils.UpdaterOptions;
 import fr.flowarg.flowupdater.versions.IForgeVersion;
 import fr.flowarg.flowupdater.versions.IVanillaVersion;
-import fr.flowarg.flowupdater.versions.download.DownloadInfos;
-import fr.flowarg.flowupdater.versions.download.ExternalFile;
-import fr.flowarg.flowupdater.versions.download.IProgressCallback;
-import fr.flowarg.flowupdater.versions.download.Mod;
-import fr.flowarg.flowupdater.versions.download.Step;
-import fr.flowarg.flowupdater.versions.download.VanillaDownloader;
-import fr.flowarg.flowupdater.versions.download.VanillaReader;
 
 /**
  * Represent the base class of the updater.<br>
@@ -227,8 +227,8 @@ public class FlowUpdater
      */
     public static class FlowUpdaterBuilder
     {
-    	private final BuilderArgument<IVanillaVersion> versionArgument = new BuilderArgument<IVanillaVersion>(IVanillaVersion.NULL_VERSION).required();
-    	private final BuilderArgument<ILogger> loggerArgument = new BuilderArgument<ILogger>(DEFAULT_LOGGER).required();
+    	private final BuilderArgument<IVanillaVersion> versionArgument = new BuilderArgument<IVanillaVersion>(IVanillaVersion.NULL_VERSION).optional();
+    	private final BuilderArgument<ILogger> loggerArgument = new BuilderArgument<ILogger>(DEFAULT_LOGGER).optional();
     	private final BuilderArgument<UpdaterOptions> updaterOptionsArgument = new BuilderArgument<UpdaterOptions>(null).required();
     	private final BuilderArgument<IProgressCallback> progressCallbackArgument = new BuilderArgument<IProgressCallback>(NULL_CALLBACK).optional();
     	private final BuilderArgument<List<ExternalFile>> externalFilesArgument = new BuilderArgument<List<ExternalFile>>(new ArrayList<>()).optional();

@@ -1,4 +1,4 @@
-package fr.flowarg.flowupdater.versions.download;
+package fr.flowarg.flowupdater.download;
 
 import java.io.IOException;
 import java.net.URL;
@@ -13,10 +13,11 @@ import com.google.gson.JsonObject;
 
 import fr.flowarg.flowcompat.Platform;
 import fr.flowarg.flowlogger.ILogger;
+import fr.flowarg.flowupdater.download.json.AssetDownloadable;
+import fr.flowarg.flowupdater.download.json.AssetIndex;
+import fr.flowarg.flowupdater.download.json.Downloadable;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.versions.IVanillaVersion;
-import fr.flowarg.flowupdater.versions.download.assets.AssetDownloadable;
-import fr.flowarg.flowupdater.versions.download.assets.AssetIndex;
 
 public class VanillaReader
 {

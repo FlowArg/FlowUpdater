@@ -12,8 +12,8 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import fr.flowarg.flowio.FileUtils;
-import fr.flowarg.flowupdater.versions.download.DownloadInfos;
-import fr.flowarg.flowupdater.versions.download.Mod;
+import fr.flowarg.flowupdater.download.DownloadInfos;
+import fr.flowarg.flowupdater.download.json.Mod;
 
 /**
  * Represent a Forge version.

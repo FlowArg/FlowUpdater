@@ -1,4 +1,4 @@
-package fr.flowarg.flowupdater.versions.download;
+package fr.flowarg.flowupdater.download;
 
 import static fr.flowarg.flowio.FileUtils.getFileSizeBytes;
 import static fr.flowarg.flowio.FileUtils.getSHA1;
@@ -13,7 +13,8 @@ import java.util.Objects;
 
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
-import fr.flowarg.flowupdater.versions.download.assets.AssetDownloadable;
+import fr.flowarg.flowupdater.download.json.AssetDownloadable;
+import fr.flowarg.flowupdater.download.json.Downloadable;
 
 public class VanillaDownloader
 {

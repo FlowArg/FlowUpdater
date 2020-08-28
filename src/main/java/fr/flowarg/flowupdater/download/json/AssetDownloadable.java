@@ -1,4 +1,4 @@
-package fr.flowarg.flowupdater.versions.download.assets;
+package fr.flowarg.flowupdater.download.json;
 
 import java.net.MalformedURLException;
 import java.net.URL;
