@@ -22,7 +22,6 @@ task sourcesJar(type: Jar) {
 }
 
 jar {
-    from zipTree(jar.archivePath)
     excludes = ["fr/flowarg/flowupdater/rework/**"]
 }
 
