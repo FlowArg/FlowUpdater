@@ -50,23 +50,18 @@ public class ForgeHacks
     		boolean twenty = false;
     		boolean twentyOne = false;
     		boolean twentyFive = false;
-    		for(File y : x.listFiles())
-    		{
-    			if(y.getName().startsWith("20.0"))
-    				twenty = true;
-    			if(y.getName().startsWith("21.0"))
-    				twentyOne = true;
-    			if(y.getName().startsWith("25"))
-    				twentyFive = true;
-    		}
+            if(x.getName().startsWith("20"))
+                twenty = true;
+            if(x.getName().startsWith("21"))
+                twentyOne = true;
+            if(x.getName().startsWith("25"))
+                twentyFive = true;
+    		
     			
     		if(twenty && twentyOne && twentyFive)
     		{
-        		for(File y : x.listFiles())
-        		{
-        			if(!y.getName().startsWith("21"))
-        				FileUtils.deleteDirectory(y);
-        		}
+                if(!x.getName().startsWith("21"))
+                    FileUtils.deleteDirectory(x);
     		}
     	}
 	}
