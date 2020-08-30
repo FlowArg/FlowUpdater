@@ -15,6 +15,8 @@ import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import fr.flowarg.flowupdater.FlowUpdater;
+
 public interface IVanillaVersion
 {
 	IVanillaVersion NULL_VERSION = new IVanillaVersion()
@@ -140,7 +142,7 @@ public interface IVanillaVersion
                     		result.addProperty("url", Builder.this.getMcp().getClientDownloadURL());
                     		return result;
                 		}
-                		else System.out.println("Skipped mcp client.");
+                		else FlowUpdater.DEFAULT_LOGGER.warn("Skipped MCP Client");
                 	}
                 	return JSON.getAsJsonObject().getAsJsonObject("downloads").getAsJsonObject("client");
                 }
@@ -161,7 +163,7 @@ public interface IVanillaVersion
                     		result.addProperty("url", Builder.this.getMcp().getServerDownloadURL());
                     		return result;
                 		}
-                		else System.out.println("Skipped mcp server.");
+                		else FlowUpdater.DEFAULT_LOGGER.warn("Skipped MCP Server");
                 	}
                 	return JSON.getAsJsonObject().getAsJsonObject("downloads").getAsJsonObject("server");
                 }

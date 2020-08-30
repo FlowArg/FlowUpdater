@@ -101,6 +101,7 @@ public class Mod
 		}
 		catch (MalformedURLException e)
 		{
+			e.printStackTrace();
 			return new ArrayList<>();
 		}
 	}

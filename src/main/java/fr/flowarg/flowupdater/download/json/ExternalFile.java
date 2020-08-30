@@ -24,10 +24,10 @@ public class ExternalFile
 	
 	/**
 	 * Construct a new ExternalFile object.
-	 * @param path
-	 * @param downloadURL
-	 * @param sha1
-	 * @param size
+	 * @param path Path of external file.
+	 * @param sha1 Sha1 of external file.
+	 * @param size Size of external file.
+	 * @param downloadURL external file URL.
 	 */
 	public ExternalFile(String path, String downloadURL, String sha1, int size)
 	{

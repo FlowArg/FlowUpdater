@@ -41,24 +41,24 @@ public class FlowUpdater
     private final VanillaReader vanillaReader;
 
     /** Logger object */
-    private ILogger logger;
+    private final ILogger logger;
     
     /** Forge Version to install, can be null if you want a vanilla/MCP installation */
-    private IForgeVersion forgeVersion = null;
+    private final IForgeVersion forgeVersion;
     /** ProgressCallback to notify installation progress */
-    private IProgressCallback callback;
+    private final IProgressCallback callback;
     
     /** Informations about download status */
-    private DownloadInfos downloadInfos;
+    private final DownloadInfos downloadInfos;
         
     /** Represent somme settings for FlowUpdater */
-    private UpdaterOptions updaterOptions;
+    private final UpdaterOptions updaterOptions;
     
     /** Represent a list of ExternalFile. External files are download before post executions.*/
-    private List<ExternalFile> externalFiles;
+    private final List<ExternalFile> externalFiles;
     
     /** Represent a list of Runnable. Post Executions are called after update. */
-    private List<Runnable> postExecutions;
+    private final List<Runnable> postExecutions;
     
     /** Default callback */
     public static final IProgressCallback NULL_CALLBACK = new IProgressCallback()
@@ -72,7 +72,7 @@ public class FlowUpdater
 	};
 	
 	/** Default logger */
-	public static final ILogger DEFAULT_LOGGER = new Logger("[FlowUpdater]", new File(".", "updater/latest.log"));
+	public static final ILogger DEFAULT_LOGGER = new Logger("[FlowUpdater]", null);
 
 	/**
 	 * Basic constructor to construct a new {@link FlowUpdater}.
@@ -208,17 +208,6 @@ public class FlowUpdater
         {
 			this.logger.printStackTrace(e);
 		}
-    }
-    
-    /**
-     * Necessary if you want install a Forge version.
-     * @param forgeVersion Forge version to install.
-     * @deprecated Prefer use {@link FlowUpdaterBuilder#withForgeVersion(IForgeVersion)}
-     */
-    @Deprecated
-    public void setForgeVersion(IForgeVersion forgeVersion)
-    {
-        this.forgeVersion = forgeVersion;
     }
     
     /**
