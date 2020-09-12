@@ -23,7 +23,6 @@ import fr.flowarg.flowupdater.download.json.ExternalFile;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.utils.BuilderArgument;
 import fr.flowarg.flowupdater.utils.BuilderArgumentException;
-import fr.flowarg.flowupdater.utils.ForgeHacks;
 import fr.flowarg.flowupdater.utils.IBuilder;
 import fr.flowarg.flowupdater.utils.UpdaterOptions;
 import fr.flowarg.flowupdater.versions.IForgeVersion;
@@ -166,9 +165,6 @@ public class FlowUpdater
             	  	this.forgeVersion.install(dir);
             	else this.logger.info("Detected forge ! Skipping installation...");
             	this.forgeVersion.installMods(new File(dir, "mods/"));
-            	
-            	if(!this.updaterOptions.disableForgeHacks())
-            		ForgeHacks.fix(this.callback, dir, this.version.getName());
             }
     	}
     	else this.downloadInfos.init();
