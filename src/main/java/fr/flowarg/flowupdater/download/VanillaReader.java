@@ -17,17 +17,17 @@ import fr.flowarg.flowupdater.download.json.AssetDownloadable;
 import fr.flowarg.flowupdater.download.json.AssetIndex;
 import fr.flowarg.flowupdater.download.json.Downloadable;
 import fr.flowarg.flowupdater.utils.IOUtils;
-import fr.flowarg.flowupdater.versions.IVanillaVersion;
+import fr.flowarg.flowupdater.versions.VanillaVersion;
 
 public class VanillaReader
 {
-    private final IVanillaVersion version;
+    private final VanillaVersion version;
     private final ILogger logger;
     private boolean isSilent;
     private IProgressCallback callback;
     private DownloadInfos infos;
 
-    public VanillaReader(IVanillaVersion version, ILogger logger, boolean isSilent, IProgressCallback callback, DownloadInfos infos)
+    public VanillaReader(VanillaVersion version, ILogger logger, boolean isSilent, IProgressCallback callback, DownloadInfos infos)
     {
         this.version = version;
         this.logger = logger;

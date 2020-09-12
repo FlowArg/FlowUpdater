@@ -5,4 +5,5 @@ public enum VersionType
 	VANILLA,
 	MCP,
 	FORGE
+	// TODO FABRIC
 }

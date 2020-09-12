@@ -8,11 +8,11 @@ import fr.flowarg.flowupdater.download.Step;
 
 public class ForgeHacks
 {
-	public static void fix(IProgressCallback callback, File dir)
+	public static void fix(IProgressCallback callback, File dir, String version)
 	{
     	callback.step(Step.INTERNAL_FORGE_HACKS);
     	fixAsm(dir);
-    	fixGuava(dir);
+    	fixGuava(dir, version);
 	}
 	
 	private static void fixAsm(File dir)
@@ -43,26 +43,39 @@ public class ForgeHacks
     	}
 	}
 	
-	private static void fixGuava(File dir)
+	private static void fixGuava(File dir, String version)
 	{
-    	for(File x : new File(dir, "libraries/com/google/guava/guava/").listFiles())
-    	{
-    		boolean twenty = false;
-    		boolean twentyOne = false;
-    		boolean twentyFive = false;
-            if(x.getName().startsWith("20"))
-                twenty = true;
-            if(x.getName().startsWith("21"))
-                twentyOne = true;
-            if(x.getName().startsWith("25"))
-                twentyFive = true;
-    		
-    			
-    		if(twenty && twentyOne && twentyFive)
-    		{
-                if(!x.getName().startsWith("21"))
-                    FileUtils.deleteDirectory(x);
-    		}
-    	}
+		final String[] concerned = {"1.13", "1.14", "1.15", "1.16"};
+		boolean flag = false;
+		for(String str : concerned)
+		{
+			if(version.contains(str))
+			{
+				flag = true;
+				break;
+			}
+		}
+		
+		if(flag)
+		{
+	    	for(File x : new File(dir, "libraries/com/google/guava/guava/").listFiles())
+	    	{
+	    		boolean twenty = false;
+	    		boolean twentyOne = false;
+	    		boolean twentyFive = false;
+	            if(x.getName().startsWith("20"))
+	                twenty = true;
+	            if(x.getName().startsWith("21"))
+	                twentyOne = true;
+	            if(x.getName().startsWith("25"))
+	                twentyFive = true;
+	    		
+	    		if(twenty && twentyOne && twentyFive)
+	    		{
+	                if(!x.getName().startsWith("21"))
+	                    FileUtils.deleteDirectory(x);
+	    		}
+	    	}
+		}
 	}
 }

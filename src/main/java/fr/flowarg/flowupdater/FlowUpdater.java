@@ -24,9 +24,10 @@ import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.utils.BuilderArgument;
 import fr.flowarg.flowupdater.utils.BuilderArgumentException;
 import fr.flowarg.flowupdater.utils.ForgeHacks;
+import fr.flowarg.flowupdater.utils.IBuilder;
 import fr.flowarg.flowupdater.utils.UpdaterOptions;
 import fr.flowarg.flowupdater.versions.IForgeVersion;
-import fr.flowarg.flowupdater.versions.IVanillaVersion;
+import fr.flowarg.flowupdater.versions.VanillaVersion;
 
 /**
  * Represent the base class of the updater.<br>
@@ -36,7 +37,7 @@ import fr.flowarg.flowupdater.versions.IVanillaVersion;
 public class FlowUpdater
 {
 	/** Vanilla version's object to update/install */
-    private final IVanillaVersion version;
+    private final VanillaVersion version;
     /** Vanilla version's JSON parser */
     private final VanillaReader vanillaReader;
 
@@ -45,7 +46,7 @@ public class FlowUpdater
     
     /** Forge Version to install, can be null if you want a vanilla/MCP installation */
     private final IForgeVersion forgeVersion;
-    /** ProgressCallback to notify installation progress */
+    /** Progress callback to notify installation progress */
     private final IProgressCallback callback;
     
     /** Informations about download status */
@@ -68,7 +69,10 @@ public class FlowUpdater
 		@Override
 		public void step(Step step) {}
 		@Override
-		public void init() {}
+		public void init(ILogger logger)
+		{
+			logger.warn("You are using default callback ! It's not recommanded. IT'S NOT AN ERROR !!!");
+		}
 	};
 	
 	/** Default logger */
@@ -78,12 +82,13 @@ public class FlowUpdater
 	 * Basic constructor to construct a new {@link FlowUpdater}.
 	 * @param version Version to update.
 	 * @param logger Logger used for log informations.
-	 * @param silentUpdate True -> reader doesn't make any log. False -> reader log all messages.
+	 * @param updaterOptions options for this updater
 	 * @param callback The callback. If it's null, it will automatically assigned as {@link FlowUpdater#NULL_CALLBACK}.
 	 * @param externalFiles External files are download before postExecutions.
 	 * @param postExecutions Post executions are called after update.
+	 * @param forgeVersion ForgeVersion to install, can be null.
 	 */
-    private FlowUpdater(IVanillaVersion version, ILogger logger, UpdaterOptions updaterOptions,
+    private FlowUpdater(VanillaVersion version, ILogger logger, UpdaterOptions updaterOptions,
     		IProgressCallback callback, List<ExternalFile> externalFiles, List<Runnable> postExecutions, IForgeVersion forgeVersion)
     {
         this.logger = logger;
@@ -94,9 +99,9 @@ public class FlowUpdater
         this.updaterOptions = updaterOptions;
         this.downloadInfos = new DownloadInfos();
         this.callback = callback;
-        this.callback.init();
+        this.callback.init(this.logger);
        	this.vanillaReader = new VanillaReader(this.version, this.logger, this.updaterOptions.isSilentUpdate(), this.callback, this.downloadInfos);
-       	this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.1.11"));
+       	this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.1.12"));
     }
 
     /**
@@ -126,7 +131,7 @@ public class FlowUpdater
     		}
         }
         
-    	if(this.version != IVanillaVersion.NULL_VERSION)
+    	if(this.version != VanillaVersion.NULL_VERSION)
     	{
             this.logger.info(String.format("Reading data about %s Minecraft version...", version.getName()));
             this.vanillaReader.read();
@@ -163,7 +168,7 @@ public class FlowUpdater
             	this.forgeVersion.installMods(new File(dir, "mods/"));
             	
             	if(!this.updaterOptions.disableForgeHacks())
-            		ForgeHacks.fix(this.callback, dir);
+            		ForgeHacks.fix(this.callback, dir, this.version.getName());
             }
     	}
     	else this.downloadInfos.init();
@@ -214,9 +219,9 @@ public class FlowUpdater
      * Builder of {@link FlowUpdater}.
      * @author FlowArg
      */
-    public static class FlowUpdaterBuilder
+    public static class FlowUpdaterBuilder implements IBuilder<FlowUpdater>
     {
-    	private final BuilderArgument<IVanillaVersion> versionArgument = new BuilderArgument<IVanillaVersion>(IVanillaVersion.NULL_VERSION).optional();
+    	private final BuilderArgument<VanillaVersion> versionArgument = new BuilderArgument<VanillaVersion>(VanillaVersion.NULL_VERSION).optional();
     	private final BuilderArgument<ILogger> loggerArgument = new BuilderArgument<ILogger>(DEFAULT_LOGGER).optional();
     	private final BuilderArgument<UpdaterOptions> updaterOptionsArgument = new BuilderArgument<UpdaterOptions>(null).required();
     	private final BuilderArgument<IProgressCallback> progressCallbackArgument = new BuilderArgument<IProgressCallback>(NULL_CALLBACK).optional();
@@ -224,7 +229,7 @@ public class FlowUpdater
     	private final BuilderArgument<List<Runnable>> postExecutionsArgument = new BuilderArgument<List<Runnable>>(new ArrayList<>()).optional();
     	private final BuilderArgument<IForgeVersion> forgeVersionArgument = new BuilderArgument<IForgeVersion>(null).optional();
     	
-    	public FlowUpdaterBuilder withVersion(IVanillaVersion version)
+    	public FlowUpdaterBuilder withVersion(VanillaVersion version)
     	{
     		this.versionArgument.set(version);
     		return this;
@@ -270,8 +275,11 @@ public class FlowUpdater
     		return this;
     	}
     	
+    	@Override
     	public FlowUpdater build() throws BuilderArgumentException
     	{
+    		if(this.forgeVersionArgument.get() != null && (this.versionArgument.get() == VanillaVersion.NULL_VERSION || this.versionArgument.get() == null))
+    			throw new BuilderArgumentException("VanillaVersion cannot be a NULL_VERSION or null if you are using forge !");
     		return new FlowUpdater(this.versionArgument.get(),
     				this.loggerArgument.get(),
     				this.updaterOptionsArgument.get(),
@@ -287,7 +295,7 @@ public class FlowUpdater
         return this.vanillaReader;
     }
 
-    public IVanillaVersion getVersion()
+    public VanillaVersion getVersion()
     {
         return this.version;
     }

@@ -7,7 +7,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
 group 'fr.flowarg'
-version '1.1.11'
+version '1.1.12'
 archivesBaseName = "flowupdater"
 
 

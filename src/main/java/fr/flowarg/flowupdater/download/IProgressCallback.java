@@ -1,13 +1,15 @@
 package fr.flowarg.flowupdater.download;
 
+import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.FlowUpdater;
 
 public interface IProgressCallback
 {
 	/**
 	 * This method is called at {@link FlowUpdater} initialization.
+	 * @param logger Logger of FlowUpdater instance.
 	 */
-	void init();
+	void init(ILogger logger);
 	/**
 	 * This method is called when a step started.
 	 * @param step Actual step.

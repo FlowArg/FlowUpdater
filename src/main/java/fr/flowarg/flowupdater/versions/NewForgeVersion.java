@@ -31,14 +31,13 @@ public class NewForgeVersion implements IForgeVersion
 	private final boolean noGui;
     private final ILogger logger;
     private String forgeVersion;
-    private IVanillaVersion vanilla;
     private URL installerUrl;
     private IProgressCallback callback;
     private List<Mod> mods;
     private boolean useFileDeleter = false;
     private DownloadInfos downloadInfos;
 
-    public NewForgeVersion(String forgeVersion, IVanillaVersion vanilla, ILogger logger, IProgressCallback callback, List<Mod> mods, boolean noGui)
+    public NewForgeVersion(String forgeVersion, VanillaVersion vanilla, ILogger logger, IProgressCallback callback, List<Mod> mods, boolean noGui)
     {
         this.logger = logger;
         this.noGui = noGui;
@@ -48,7 +47,6 @@ public class NewForgeVersion implements IForgeVersion
                 this.forgeVersion = vanilla.getName() + '-' + forgeVersion;
             else this.forgeVersion = forgeVersion.trim();
             this.installerUrl = new URL(String.format("https://files.minecraftforge.net/maven/net/minecraftforge/forge/%s/forge-%s-installer.jar", this.forgeVersion, this.forgeVersion));
-            this.vanilla = vanilla;
             this.callback = callback;
             this.mods = mods;
         } catch (MalformedURLException e)
@@ -218,11 +216,6 @@ public class NewForgeVersion implements IForgeVersion
     public URL getInstallerUrl()
     {
         return this.installerUrl;
-    }
-
-    public IVanillaVersion getVanilla()
-    {
-        return this.vanilla;
     }
     
     @Override

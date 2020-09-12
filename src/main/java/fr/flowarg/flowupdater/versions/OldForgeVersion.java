@@ -28,7 +28,7 @@ import fr.flowarg.flowupdater.download.json.Mod;
 public class OldForgeVersion implements IForgeVersion
 {
 	private final ILogger logger;
-	private IVanillaVersion vanilla;
+	private VanillaVersion vanilla;
 	private IProgressCallback callback;
 	private URL installerUrl;
 	private String forgeVersion;
@@ -36,7 +36,7 @@ public class OldForgeVersion implements IForgeVersion
 	private boolean useFileDeleter = false;
 	private DownloadInfos downloadInfos;
 	
-	public OldForgeVersion(String forgeVersion, IVanillaVersion vanilla, ILogger logger, IProgressCallback callback, List<Mod> mods)
+	public OldForgeVersion(String forgeVersion, VanillaVersion vanilla, ILogger logger, IProgressCallback callback, List<Mod> mods)
 	{
 		this.logger = logger;
 		this.mods = mods;
@@ -212,7 +212,7 @@ public class OldForgeVersion implements IForgeVersion
 		return this.logger;
 	}
 	
-	public IVanillaVersion getVanilla()
+	public VanillaVersion getVanilla()
 	{
 		return this.vanilla;
 	}
