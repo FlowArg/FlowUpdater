@@ -1,9 +1,23 @@
-package fr.flowarg.flowupdater.utils;
+package fr.flowarg.flowupdater.utils.builderapi;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import fr.flowarg.flowupdater.FlowUpdater;
+import fr.flowarg.flowupdater.versions.VanillaVersion;
+
+/**
+ * Builder API
+ * 
+ * @author flow
+ * @version 1.3
+ * 
+ * Used for {@link FlowUpdater} & {@link VanillaVersion}
+ * @param <T> Object Argument
+ * 
+ * Represent an argument for a Builder implementation.
+ */
 public class BuilderArgument<T>
 {
 	private final String objectName;

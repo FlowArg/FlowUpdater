@@ -16,12 +16,15 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import fr.flowarg.flowupdater.FlowUpdater;
-import fr.flowarg.flowupdater.utils.BuilderArgument;
-import fr.flowarg.flowupdater.utils.BuilderArgumentException;
-import fr.flowarg.flowupdater.utils.IBuilder;
+import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
+import fr.flowarg.flowupdater.utils.builderapi.BuilderArgumentException;
+import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
 
 public class VanillaVersion
 {
+	/**
+	 * Default version used for no minecraft updates.
+	 */
 	public static final VanillaVersion NULL_VERSION = new VanillaVersion("no", null, false, null);
 	
 	private final String name;
@@ -29,7 +32,7 @@ public class VanillaVersion
 	private final boolean snapshot;
 	private final VersionType versionType;
 	
-	private JsonElement json;
+	private JsonElement json = null;
 	
 	private VanillaVersion(String name, MCP mcp, boolean snapshot, VersionType versionType)
 	{
@@ -116,6 +119,9 @@ public class VanillaVersion
     	return str != null && !str.trim().equals("");
     }
     
+    /**
+     * Get the input stream of the wanted version json.
+     */
     private InputStream getJsonVersion()
     {
         final AtomicReference<String> version = new AtomicReference<>(null);
@@ -153,6 +159,11 @@ public class VanillaVersion
         return result.get();
     }
     
+    /**
+     * Converting an inputstream to a json element
+     * @param input json input
+     * @return json
+     */
     private JsonElement readData(InputStream input)
     {
         try(InputStream stream = new BufferedInputStream(input))
@@ -171,6 +182,10 @@ public class VanillaVersion
         return JsonNull.INSTANCE;
     }
 	
+    /**
+     * A builder for building a vanilla version like FlowUpdaterBuilder
+     * @author flow
+     */
 	public static class VanillaVersionBuilder implements IBuilder<VanillaVersion>
 	{
 		private final BuilderArgument<String> nameArgument = new BuilderArgument<String>("Name").required();

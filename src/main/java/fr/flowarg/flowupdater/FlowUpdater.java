@@ -19,11 +19,11 @@ import fr.flowarg.flowupdater.download.VanillaDownloader;
 import fr.flowarg.flowupdater.download.VanillaReader;
 import fr.flowarg.flowupdater.download.json.ExternalFile;
 import fr.flowarg.flowupdater.download.json.Mod;
-import fr.flowarg.flowupdater.utils.BuilderArgument;
-import fr.flowarg.flowupdater.utils.BuilderArgumentException;
-import fr.flowarg.flowupdater.utils.IBuilder;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.UpdaterOptions;
+import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
+import fr.flowarg.flowupdater.utils.builderapi.BuilderArgumentException;
+import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
 import fr.flowarg.flowupdater.versions.IForgeVersion;
 import fr.flowarg.flowupdater.versions.VanillaVersion;
 
@@ -50,7 +50,7 @@ public class FlowUpdater
     /** Informations about download status */
     private final DownloadInfos downloadInfos;
         
-    /** Represent somme settings for FlowUpdater */
+    /** Represent some settings for FlowUpdater */
     private final UpdaterOptions updaterOptions;
     
     /** Represent a list of ExternalFile. External files are download before post executions.*/
@@ -270,6 +270,8 @@ public class FlowUpdater
     				this.forgeVersionArgument.get());
     	}
     }
+    
+    // Some getters
     
     public VanillaReader getVanillaReader()
     {
