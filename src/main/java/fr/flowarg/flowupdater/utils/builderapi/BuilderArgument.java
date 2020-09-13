@@ -63,7 +63,7 @@ public class BuilderArgument<T>
 			this.requireds.forEach(arg -> {
 				try
 				{
-					if(arg.get() == null || arg.get() == arg.badObject())
+					if((arg.get() == null || arg.get() == arg.badObject()) && this.object != null)
 						throw new BuilderArgumentException(arg.getObjectName() + " cannot be null/a bad object if you're using " + this.objectName + " argument !");
 				}
 				catch (BuilderArgumentException e)
