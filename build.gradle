@@ -80,6 +80,6 @@ publishing {
 
 dependencies {
 	implementation 'com.google.code.gson:gson:2.8.6'
-	implementation 'fr.flowarg:flowmultitools:1.1.0'
+	implementation 'fr.flowarg:flowmultitools:1.1.1'
 	testImplementation 'junit:junit:4.13'
 }

@@ -19,6 +19,7 @@ import fr.flowarg.flowupdater.FlowUpdater;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgumentException;
 import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
+import fr.flowarg.flowutils.Utils;
 
 public class VanillaVersion
 {
@@ -77,7 +78,7 @@ public class VanillaVersion
     		final String sha1 = this.mcp.getClientSha1();
     		final String url = this.mcp.getClientDownloadURL();
     		final int size =this.mcp.getClientSize();
-    		if(this.checkString(sha1) && this.checkString(url) && size > 0)
+    		if(Utils.checkString(sha1) && Utils.checkString(url) && size > 0)
     		{
         		result.addProperty("sha1", this.mcp.getClientSha1());
         		result.addProperty("size", this.mcp.getClientSize());
@@ -97,7 +98,7 @@ public class VanillaVersion
     		final String sha1 = this.mcp.getServerSha1();
     		final String url = this.mcp.getServerDownloadURL();
     		final int size = this.mcp.getServerSize();
-    		if(this.checkString(url) && this.checkString(sha1) && size > 0)
+    		if(Utils.checkString(url) && Utils.checkString(sha1) && size > 0)
     		{
         		result.addProperty("sha1", this.mcp.getServerSha1());
         		result.addProperty("size", this.mcp.getServerSize());
@@ -112,11 +113,6 @@ public class VanillaVersion
     public JsonObject getMinecraftAssetsIndex() 
     {
     	return this.json.getAsJsonObject().getAsJsonObject("assetIndex");
-    }
-    
-    private boolean checkString(String str)
-    {
-    	return str != null && !str.trim().equals("");
     }
     
     /**

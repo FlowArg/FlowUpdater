@@ -112,7 +112,7 @@ public class VanillaDownloader
             for (File minecraftNative : Objects.requireNonNull(this.natives.listFiles()))
             {
             	if (!minecraftNative.isDirectory() && minecraftNative.getName().endsWith(".jar"))
-            		unzipJar(this.natives.getAbsolutePath(), minecraftNative.getAbsolutePath());
+            		unzipJar(this.natives.getAbsolutePath(), minecraftNative.getAbsolutePath(), "ignoreMetaInf");
             }
     	}
 
