@@ -173,10 +173,10 @@ public class VanillaVersion
 	
 	public static class VanillaVersionBuilder implements IBuilder<VanillaVersion>
 	{
-		private final BuilderArgument<String> nameArgument = new BuilderArgument<String>(null).required();
-		private final BuilderArgument<MCP> mcpArgument = new BuilderArgument<MCP>(null).optional();
-		private final BuilderArgument<Boolean> snapshotArgument = new BuilderArgument<Boolean>(false).optional();
-		private final BuilderArgument<VersionType> versionTypeArgument = new BuilderArgument<VersionType>(null).required();
+		private final BuilderArgument<String> nameArgument = new BuilderArgument<String>("Name").required();
+		private final BuilderArgument<MCP> mcpArgument = new BuilderArgument<MCP>("MCP").optional();
+		private final BuilderArgument<Boolean> snapshotArgument = new BuilderArgument<Boolean>("Snapshot", false).optional();
+		private final BuilderArgument<VersionType> versionTypeArgument = new BuilderArgument<VersionType>("VersionType").required();
 		
 		public VanillaVersionBuilder withName(String name)
 		{

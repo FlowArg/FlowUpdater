@@ -23,9 +23,9 @@ public class VanillaReader
 {
     private final VanillaVersion version;
     private final ILogger logger;
-    private boolean isSilent;
-    private IProgressCallback callback;
-    private DownloadInfos infos;
+    private final boolean isSilent;
+    private final IProgressCallback callback;
+    private final DownloadInfos infos;
 
     public VanillaReader(VanillaVersion version, ILogger logger, boolean isSilent, IProgressCallback callback, DownloadInfos infos)
     {

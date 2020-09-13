@@ -20,6 +20,7 @@ import fr.flowarg.flowupdater.download.DownloadInfos;
 import fr.flowarg.flowupdater.download.IProgressCallback;
 import fr.flowarg.flowupdater.download.Step;
 import fr.flowarg.flowupdater.download.json.Mod;
+import fr.flowarg.flowupdater.utils.IOUtils;
 
 /**
  * Represent a new Forge version (1.12.2-14.23.5.2851 -> 1.16.1)
@@ -144,7 +145,7 @@ public class NewForgeVersion implements IForgeVersion
 		this.downloadInfos.getMods().forEach(mod -> {
 			try
 			{
-				this.download(new URL(mod.getDownloadURL()), new File(modsDir, mod.getName()));
+				IOUtils.download(this.logger, new URL(mod.getDownloadURL()), new File(modsDir, mod.getName()));
 			}
 			catch (MalformedURLException e)
 			{
@@ -188,20 +189,6 @@ public class NewForgeVersion implements IForgeVersion
 			badFiles.clear();
 		}
 	}
-	
-    private void download(URL in, File out)
-    {
-        try
-        {
-            this.logger.info(String.format("[Downloader] Downloading %s from %s...", out.getName(), in.toExternalForm()));
-            out.getParentFile().mkdirs();
-			Files.copy(in.openStream(), out.toPath(), StandardCopyOption.REPLACE_EXISTING);
-		}
-        catch (IOException e)
-        {
-			this.logger.printStackTrace(e);
-		}
-    }
 
     public ILogger getLogger()
     {

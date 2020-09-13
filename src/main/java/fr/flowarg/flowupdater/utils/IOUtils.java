@@ -1,9 +1,15 @@
 package fr.flowarg.flowupdater.utils;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+
+import fr.flowarg.flowlogger.ILogger;
 
 public class IOUtils
 {
@@ -18,5 +24,19 @@ public class IOUtils
             	sw.write(buffer, 0, n);          
             return sw.toString();
         }
+    }
+    
+    public static void download(ILogger logger, URL in, File out)
+    {
+        try
+        {
+            logger.info(String.format("Downloading %s from %s...", out.getName(), in.toExternalForm()));
+            out.getParentFile().mkdirs();
+			Files.copy(in.openStream(), out.toPath(), StandardCopyOption.REPLACE_EXISTING);
+		}
+        catch (IOException e)
+        {
+			logger.printStackTrace(e);
+		}
     }
 }

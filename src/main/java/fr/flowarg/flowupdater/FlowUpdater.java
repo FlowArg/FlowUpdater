@@ -6,8 +6,6 @@ import static fr.flowarg.flowio.FileUtils.getSHA1;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -24,6 +22,7 @@ import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.utils.BuilderArgument;
 import fr.flowarg.flowupdater.utils.BuilderArgumentException;
 import fr.flowarg.flowupdater.utils.IBuilder;
+import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.UpdaterOptions;
 import fr.flowarg.flowupdater.versions.IForgeVersion;
 import fr.flowarg.flowupdater.versions.VanillaVersion;
@@ -176,7 +175,7 @@ public class FlowUpdater
         	this.downloadInfos.getExtFiles().forEach(extFile -> {
         		try
         		{
-    				this.download(new URL(extFile.getDownloadURL()), new File(dir, extFile.getPath()));
+        			IOUtils.download(this.logger, new URL(extFile.getDownloadURL()), new File(dir, extFile.getPath()));
     			}
         		catch (IOException e)
         		{
@@ -197,33 +196,19 @@ public class FlowUpdater
         this.downloadInfos.clear();
     }
     
-    private void download(URL in, File out) throws IOException
-    {
-        try
-        {
-            this.logger.info(String.format("[Downloader] Downloading %s from %s...", out.getName(), in.toExternalForm()));
-            out.getParentFile().mkdirs();
-			Files.copy(in.openStream(), out.toPath(), StandardCopyOption.REPLACE_EXISTING);
-		}
-        catch (IOException e)
-        {
-			this.logger.printStackTrace(e);
-		}
-    }
-    
     /**
      * Builder of {@link FlowUpdater}.
      * @author FlowArg
      */
     public static class FlowUpdaterBuilder implements IBuilder<FlowUpdater>
     {
-    	private final BuilderArgument<VanillaVersion> versionArgument = new BuilderArgument<VanillaVersion>(VanillaVersion.NULL_VERSION).optional();
-    	private final BuilderArgument<ILogger> loggerArgument = new BuilderArgument<ILogger>(DEFAULT_LOGGER).optional();
-    	private final BuilderArgument<UpdaterOptions> updaterOptionsArgument = new BuilderArgument<UpdaterOptions>(null).required();
-    	private final BuilderArgument<IProgressCallback> progressCallbackArgument = new BuilderArgument<IProgressCallback>(NULL_CALLBACK).optional();
-    	private final BuilderArgument<List<ExternalFile>> externalFilesArgument = new BuilderArgument<List<ExternalFile>>(new ArrayList<>()).optional();
-    	private final BuilderArgument<List<Runnable>> postExecutionsArgument = new BuilderArgument<List<Runnable>>(new ArrayList<>()).optional();
-    	private final BuilderArgument<IForgeVersion> forgeVersionArgument = new BuilderArgument<IForgeVersion>(null).optional();
+    	private final BuilderArgument<VanillaVersion> versionArgument = new BuilderArgument<VanillaVersion>("VanillaVersion", VanillaVersion.NULL_VERSION, VanillaVersion.NULL_VERSION).optional();
+    	private final BuilderArgument<ILogger> loggerArgument = new BuilderArgument<ILogger>("Logger", DEFAULT_LOGGER).optional();
+    	private final BuilderArgument<UpdaterOptions> updaterOptionsArgument = new BuilderArgument<UpdaterOptions>("UpdaterOptions").required();
+    	private final BuilderArgument<IProgressCallback> progressCallbackArgument = new BuilderArgument<IProgressCallback>("Callback", NULL_CALLBACK).optional();
+    	private final BuilderArgument<List<ExternalFile>> externalFilesArgument = new BuilderArgument<List<ExternalFile>>("External Files", new ArrayList<>()).optional();
+    	private final BuilderArgument<List<Runnable>> postExecutionsArgument = new BuilderArgument<List<Runnable>>("Post Executions", new ArrayList<>()).optional();
+    	private final BuilderArgument<IForgeVersion> forgeVersionArgument = new BuilderArgument<IForgeVersion>("ForgeVersion").optional().require(this.versionArgument);
     	
     	public FlowUpdaterBuilder withVersion(VanillaVersion version)
     	{

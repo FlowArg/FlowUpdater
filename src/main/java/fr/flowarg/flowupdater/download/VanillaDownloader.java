@@ -7,14 +7,13 @@ import static fr.flowarg.flowio.FileUtils.unzipJar;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.download.json.AssetDownloadable;
 import fr.flowarg.flowupdater.download.json.Downloadable;
+import fr.flowarg.flowupdater.utils.IOUtils;
 
 public class VanillaDownloader
 {
@@ -84,22 +83,15 @@ public class VanillaDownloader
                     if (!Objects.requireNonNull(getSHA1(file)).equals(downloadable.getSha1()) || getFileSizeBytes(file) != downloadable.getSize())
                     {
                         file.delete();
-                        this.download(new URL(downloadable.getUrl()), file);
+                        IOUtils.download(this.logger, new URL(downloadable.getUrl()), file);
                     }
                 }
-                else this.download(new URL(downloadable.getUrl()), file);
+                else IOUtils.download(this.logger, new URL(downloadable.getUrl()), file);
             }
             
             this.downloadInfos.incrementDownloaded();
             this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
         }
-    }
-
-    private void download(URL in, File out) throws IOException
-    {
-        this.logger.info(String.format("Downloading %s from %s...", out.getName(), in.toExternalForm()));
-        out.getParentFile().mkdirs();
-        Files.copy(in.openStream(), out.toPath(), StandardCopyOption.REPLACE_EXISTING);
     }
 
     private void extractNatives() throws IOException
@@ -134,22 +126,16 @@ public class VanillaDownloader
     {
         for (AssetDownloadable assetDownloadable : this.downloadInfos.getAssetDownloadables())
         {
-            try
-            {
-                final File download = new File(this.assets, assetDownloadable.getFile());
+            final File download = new File(this.assets, assetDownloadable.getFile());
 
-                if (download.exists())
-                {
-                    if (getFileSizeBytes(download) != assetDownloadable.getSize())
-                    {
-                        download.delete();
-                        this.download(assetDownloadable.getUrl(), download);
-                    }
-                } else this.download(assetDownloadable.getUrl(), download);
-            } catch (IOException e)
-            {
-                e.printStackTrace();
-            }
+			if (download.exists())
+			{
+			    if (getFileSizeBytes(download) != assetDownloadable.getSize())
+			    {
+			        download.delete();
+			        IOUtils.download(this.logger, assetDownloadable.getUrl(), download);
+			    }
+			} else IOUtils.download(this.logger, assetDownloadable.getUrl(), download);
             
             this.downloadInfos.incrementDownloaded();
             this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
