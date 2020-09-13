@@ -1,29 +1,59 @@
-apply plugin: 'java'
-apply plugin: 'idea'
+plugins {
+    id "com.jfrog.bintray" version "1.8.5"
+}
+
+apply plugin: 'java-library'
+apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
 group 'fr.flowarg'
-version '1.1.0'
+version '1.1.12'
 archivesBaseName = "flowupdater"
 
+
 repositories {
-	maven {
-		name "Flow's Maven repository"
-		url 'https://flowarg.github.io/maven/'
-	}
 	jcenter()
-	mavenCentral()
 }
 
 task sourcesJar(type: Jar) {
-	classifier = 'sources'
-	from sourceSets.main.allSource
+    classifier 'sources'
+    from sourceSets.main.allSource
+    excludes = ["fr/flowarg/flowupdater/rework/**"]
+}
+
+jar {
+    excludes = ["fr/flowarg/flowupdater/rework/**"]
+}
+
+artifacts {
+	archives sourcesJar
+}
+
+bintray {
+    user = System.getenv('BINTRAY_USERNAME')
+    key = System.getenv('BINTRAY_KEY')
+    publications = ['mavenJava'] 
+    pkg {
+    	repo = 'maven'
+        name = 'FlowUpdater'
+        userOrg = 'flowarg'
+        licenses = ['GPL-3.0']
+        publicDownloadNumbers = true
+        vcsUrl = 'https://github.com/FlowArg/FlowUpdater.git'
+        version {
+        	name = 'v' + project.version
+        	released = new Date()
+        	vcsTag = 'v' + project.version
+    	}
+    }
 }
 
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
-			pom {
+            from components.java
+            artifact tasks.sourcesJar
+			pom {				
 				groupId = project.group
 				version = project.version
 				artifactId = 'flowupdater'
@@ -46,20 +76,10 @@ publishing {
 			}
 		}
 	}
-	repositories {
-		maven {
-			url "https://flowarg.github.io/maven/"
-		}
-	}
 }
 
 dependencies {
-    implementation 'org.apache.commons:commons-lang3:3.9'
-	implementation 'com.google.guava:guava:21.0'
 	implementation 'com.google.code.gson:gson:2.8.6'
-	implementation 'commons-io:commons-io:2.6'
-	implementation 'org.jetbrains:annotations:18.0.0'
-	implementation 'com.google.errorprone:error_prone_annotations:2.3.4'
-	implementation 'fr.flowarg:flowmultitools:1.0.1'
-	implementation 'org.codehaus.plexus:plexus-archiver:2.2'
+	implementation 'fr.flowarg:flowmultitools:1.1.0'
+	testImplementation 'junit:junit:4.13'
 }
