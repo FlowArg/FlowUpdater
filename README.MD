@@ -31,16 +31,12 @@ Join the Discord server for support, help and contribution : https://discord.gg/
 
 #### Vanilla
 
-First, declare the version builder :
+First, create a new VanillaVersion, specify arguments.
+Then build the version :
 ```java
-IVanillaVersion.Builder versionBuilder = new IVanillaVersion.Builder("1.15.2");
+VanillaVersion version = new VanillaVersionBuilder().withName("1.15.2").withSnapshot(false).withVersionType(VersionType.VANILLA).build();
 ```
 You have to put the version you want as parameter, you can set a snapshot if you want or `latest`.
-
-Then, build the version :
-```java
-IVanillaVersion version = versionBuilder.build(false, VersionType.VANILLA);
-```
 If you have specified "latest" to the version name, and that the version is a snapshot, replace false by true.
 
 Then, instantiate a new FlowUpdater with ``FlowUpdaterBuilder#withXArguments#withAnotherArguemtn#build``. Check the code for more informations.
@@ -59,7 +55,7 @@ Replace false by true if you want to download the server Jar.
 
 (Before calling update function!)
 
-First, in your versionBuilder instance, change the version type to `VersionType.FORGE`.
+First, in your vanilla version builder, change the version type to `VersionType.FORGE`.
 Next, make a List of Mod objects.
 ```java
 List<Mod> mods = new ArrayList<>();
@@ -70,23 +66,23 @@ You can get a list of mods by providing a json link too : `List<Mod> mods = Mod.
 
 Finally, set the Forge version corresponding to the wanted Forge version :
 ```java
-updaterBuilder.withForgeVersion(new NewForgeVersion("31.2.30", version, updater.getLogger(), updater.getCallback(), mods)); // NewForgeVersion -> 1.12.2-14.23.5.2851 1.16.2 ; OldForgeVersion -> 1.7 1.12
+... new FlowUpdaterBuilder()...()...().withForgeVersion(new NewForgeVersion("31.2.30", version, logger /* Same as the updater */, callback /* Same as the updater */, mods)); // NewForgeVersion -> 1.12.2-14.23.5.2851 1.16.2 ; OldForgeVersion -> 1.7 1.12
 ```
 That's all!
 
 ### MCP
 (You need to setup a vanilla updater !)
-In your versionBuilder instance, change the version type to `VersionType.MCP`.
-Finally, set to versionBuilder a MCP version before building the version :
+In your vanilla version builder, change the version type to `VersionType.MCP`.
+Finally, set to vanilla version builder a MCP version :
 ```java
-versionBuilder.setMcp(new MCP("clientDownloadURL", "name", "clientSha1", "author", "serverDownloadURL", "serverSha1", 1215, 20525));
+... new VanillaVersionBuilder()...()...().withMCP(new MCP("clientDownloadURL", "name", "clientSha1", "author", "serverDownloadURL", "serverSha1", 1215, 20525));
 ```
 If you set an empty/null string in url and sha1 and 0 in size, the updater will use the default minecraft jar.
 Example on client-only mcp downloading :
 ```java
-versionBuilder.setMcp(new MCP("https://mighya.eu/resources/Client.jar", "client.jar", "f2c219e485831af2bae9464eebbe4765128c6ad6", "Kohala", "", "", 23005862, 0));
+... new VanillaVersionBuilder()...()...().withMCP(new MCP("https://mighya.eu/resources/Client.jar", "client.jar", "f2c219e485831af2bae9464eebbe4765128c6ad6", "Kohala", "", "", 23005862, 210052));
 ```
-You can get a MCP object instance by providing a json link too : `versionBuilder.setMcp(MCP.fromJson("https://url.com/launcher/mcp.json"));`.
+You can get a MCP object instance by providing a json link too : `.withMCP(MCP.fromJson("https://url.com/launcher/mcp.json"));`.
 Nothing else to add :).
 
 ### External Files
