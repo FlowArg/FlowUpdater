@@ -24,7 +24,7 @@ import fr.flowarg.flowupdater.utils.UpdaterOptions;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
 import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
-import fr.flowarg.flowupdater.versions.IForgeVersion;
+import fr.flowarg.flowupdater.versions.AbstractForgeVersion;
 import fr.flowarg.flowupdater.versions.VanillaVersion;
 
 /**
@@ -43,7 +43,7 @@ public class FlowUpdater
     private final ILogger logger;
     
     /** Forge Version to install, can be null if you want a vanilla/MCP installation */
-    private final IForgeVersion forgeVersion;
+    private final AbstractForgeVersion forgeVersion;
     /** Progress callback to notify installation progress */
     private final IProgressCallback callback;
     
@@ -87,7 +87,7 @@ public class FlowUpdater
 	 * @param forgeVersion ForgeVersion to install, can be null.
 	 */
     private FlowUpdater(VanillaVersion version, ILogger logger, UpdaterOptions updaterOptions,
-    		IProgressCallback callback, List<ExternalFile> externalFiles, List<Runnable> postExecutions, IForgeVersion forgeVersion)
+    		IProgressCallback callback, List<ExternalFile> externalFiles, List<Runnable> postExecutions, AbstractForgeVersion forgeVersion)
     {
         this.logger = logger;
         this.version = version;
@@ -237,7 +237,7 @@ public class FlowUpdater
     	private final BuilderArgument<IProgressCallback> progressCallbackArgument = new BuilderArgument<IProgressCallback>("Callback", NULL_CALLBACK).optional();
     	private final BuilderArgument<List<ExternalFile>> externalFilesArgument = new BuilderArgument<List<ExternalFile>>("External Files", new ArrayList<>()).optional();
     	private final BuilderArgument<List<Runnable>> postExecutionsArgument = new BuilderArgument<List<Runnable>>("Post Executions", new ArrayList<>()).optional();
-    	private final BuilderArgument<IForgeVersion> forgeVersionArgument = new BuilderArgument<IForgeVersion>("ForgeVersion").optional().require(this.versionArgument);
+    	private final BuilderArgument<AbstractForgeVersion> forgeVersionArgument = new BuilderArgument<AbstractForgeVersion>("ForgeVersion").optional().require(this.versionArgument);
     	
     	public FlowUpdaterBuilder withVersion(VanillaVersion version)
     	{
@@ -279,7 +279,7 @@ public class FlowUpdater
          * Necessary if you want install a Forge version.
          * @param forgeVersion Forge version to install.
          */
-    	public FlowUpdaterBuilder withForgeVersion(IForgeVersion forgeVersion)
+    	public FlowUpdaterBuilder withForgeVersion(AbstractForgeVersion forgeVersion)
     	{
     		this.forgeVersionArgument.set(forgeVersion);
     		return this;
@@ -315,7 +315,7 @@ public class FlowUpdater
         return this.logger;
     }
 
-    public IForgeVersion getForgeVersion()
+    public AbstractForgeVersion getForgeVersion()
     {
         return this.forgeVersion;
     }

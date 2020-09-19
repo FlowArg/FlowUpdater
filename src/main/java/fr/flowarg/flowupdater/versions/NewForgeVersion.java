@@ -1,13 +1,9 @@
 package fr.flowarg.flowupdater.versions;
 
-import static fr.flowarg.flowio.FileUtils.getFileSizeBytes;
-import static fr.flowarg.flowio.FileUtils.getSHA1;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ProcessBuilder.Redirect;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
@@ -18,49 +14,27 @@ import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.download.DownloadInfos;
 import fr.flowarg.flowupdater.download.IProgressCallback;
-import fr.flowarg.flowupdater.download.Step;
 import fr.flowarg.flowupdater.download.json.Mod;
-import fr.flowarg.flowupdater.utils.IOUtils;
 
 /**
  * Represent a new Forge version (1.12.2-14.23.5.2851 -> 1.16.1)
  * @author FlowArg
  */
-public class NewForgeVersion implements IForgeVersion
+public class NewForgeVersion extends AbstractForgeVersion
 {
-	private final String[] compatibleVersions = {"1.16", "1.15", "1.14", "1.12.2-14.23.5.285"};
+	private final String[] compatibleVersions = {"1.16", "1.15", "1.14", "1.13", "1.12.2-14.23.5.285"};
 	private final boolean noGui;
-    private final ILogger logger;
-    private String forgeVersion;
-    private URL installerUrl;
-    private IProgressCallback callback;
-    private List<Mod> mods;
-    private boolean useFileDeleter = false;
-    private DownloadInfos downloadInfos;
 
     public NewForgeVersion(String forgeVersion, VanillaVersion vanilla, ILogger logger, IProgressCallback callback, List<Mod> mods, boolean noGui)
     {
-        this.logger = logger;
+    	super(logger, mods, forgeVersion, vanilla, callback);
         this.noGui = noGui;
-        try
-        {
-            if (!forgeVersion.contains("-"))
-                this.forgeVersion = vanilla.getName() + '-' + forgeVersion;
-            else this.forgeVersion = forgeVersion.trim();
-            this.installerUrl = new URL(String.format("https://files.minecraftforge.net/maven/net/minecraftforge/forge/%s/forge-%s-installer.jar", this.forgeVersion, this.forgeVersion));
-            this.callback = callback;
-            this.mods = mods;
-        } catch (MalformedURLException e)
-        {
-            e.printStackTrace();
-        }
     }
 
     @Override
     public void install(final File dirToInstall)
     {
-    	this.callback.step(Step.FORGE);
-    	this.logger.info("Installing new forge version : " + this.forgeVersion + "...");
+    	super.install(dirToInstall);
     	if (this.isCompatible())
         {
             try (BufferedInputStream stream = new BufferedInputStream(this.installerUrl.openStream()))
@@ -138,82 +112,10 @@ public class NewForgeVersion implements IForgeVersion
         new File(tempInstallerDir, "META-INF/FORGE.SF").delete();
     }
     
-	@Override
-	public void installMods(File modsDir) throws IOException
-	{
-		this.callback.step(Step.MODS);
-		this.downloadInfos.getMods().forEach(mod -> {
-			try
-			{
-				IOUtils.download(this.logger, new URL(mod.getDownloadURL()), new File(modsDir, mod.getName()));
-			}
-			catch (MalformedURLException e)
-			{
-				this.logger.printStackTrace(e);
-			}
-			this.downloadInfos.incrementDownloaded();
-			this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
-		});
-		
-		if(this.useFileDeleter)
-		{
-			final List<File> badFiles = new ArrayList<>();
-			final List<File> verifiedFiles = new ArrayList<>();
-			for(File fileInDir : modsDir.listFiles())
-			{
-				if(!fileInDir.isDirectory())
-				{
-					for(Mod mod : this.mods)
-					{
-						final File file = new File(modsDir, mod.getName().endsWith(".jar") ? mod.getName() : mod.getName() + ".jar");
-						if(file.getName().equalsIgnoreCase(fileInDir.getName()))
-						{
-							if(getSHA1(fileInDir).equals(mod.getSha1()) && getFileSizeBytes(fileInDir) == mod.getSize())
-							{
-								if(badFiles.contains(fileInDir))
-									badFiles.remove(fileInDir);
-								verifiedFiles.add(fileInDir);
-							}
-							else badFiles.add(fileInDir);
-						}
-						else
-						{
-							if(!verifiedFiles.contains(fileInDir))
-								badFiles.add(fileInDir);
-						}
-					}
-				}
-			}
-			
-			badFiles.forEach(File::delete);
-			badFiles.clear();
-		}
-	}
-
-    public ILogger getLogger()
-    {
-        return this.logger;
-    }
-
-    public String getForgeVersion()
-    {
-        return this.forgeVersion;
-    }
-
-    public URL getInstallerUrl()
-    {
-        return this.installerUrl;
-    }
-    
     @Override
     public List<Mod> getMods()
     {
 		return this.mods;
-	}
-    
-    public void setMods(List<Mod> mods)
-    {
-		this.mods = mods;
 	}
     
     public boolean isNoGui()
@@ -228,14 +130,14 @@ public class NewForgeVersion implements IForgeVersion
 	}
 
 	@Override
-	public IForgeVersion enableModFileDeleter()
+	public AbstractForgeVersion enableModFileDeleter()
 	{
 		this.useFileDeleter = true;
 		return this;
 	}
 	
 	@Override
-	public IForgeVersion disableModFileDeleter()
+	public AbstractForgeVersion disableModFileDeleter()
 	{
 		this.useFileDeleter = false;
 		return this;
