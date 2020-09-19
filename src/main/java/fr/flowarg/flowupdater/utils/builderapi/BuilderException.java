@@ -7,33 +7,33 @@ import fr.flowarg.flowupdater.versions.VanillaVersion;
  * Builder API
  * 
  * @author flow
- * @version 1.3
+ * @version 1.4
  * 
  * Used for {@link FlowUpdater} & {@link VanillaVersion}
  * @param <T> Object Argument
  * 
  * This exception is throwed when an error occured with Builder API.
  */
-public class BuilderArgumentException extends Exception
+public class BuilderException extends Exception
 {
 	private static final long serialVersionUID = 1L;
 
-    public BuilderArgumentException()
+    public BuilderException()
     {
         super();
     }
 
-    public BuilderArgumentException(String reason)
+    public BuilderException(String reason)
     {
         super(reason);
     }
 
-    public BuilderArgumentException(String reason, Throwable cause)
+    public BuilderException(String reason, Throwable cause)
     {
         super(reason, cause);
     }
 
-    public BuilderArgumentException(Throwable cause)
+    public BuilderException(Throwable cause)
     {
         super(cause);
     }

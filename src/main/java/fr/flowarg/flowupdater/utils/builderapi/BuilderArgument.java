@@ -11,7 +11,7 @@ import fr.flowarg.flowupdater.versions.VanillaVersion;
  * Builder API
  * 
  * @author flow
- * @version 1.3
+ * @version 1.4
  * 
  * Used for {@link FlowUpdater} & {@link VanillaVersion}
  * @param <T> Object Argument
@@ -50,12 +50,12 @@ public class BuilderArgument<T>
 		this.badObject = badObject;
 	}
 	
-	public T get() throws BuilderArgumentException
+	public T get() throws BuilderException
 	{
 		if(this.required)
 		{
-			if(this.object == null)
-				throw new BuilderArgumentException("Current argument is null !");
+			if(this.object == null || this.object == this.badObject)
+				throw new BuilderException("Argument" + this.objectName + " is null/a bad object !");
 			else return this.object;
 		}
 		else
@@ -64,9 +64,9 @@ public class BuilderArgument<T>
 				try
 				{
 					if((arg.get() == null || arg.get() == arg.badObject()) && this.object != null)
-						throw new BuilderArgumentException(arg.getObjectName() + " cannot be null/a bad object if you're using " + this.objectName + " argument !");
+						throw new BuilderException(arg.getObjectName() + " cannot be null/a bad object if you're using " + this.objectName + " argument !");
 				}
-				catch (BuilderArgumentException e)
+				catch (BuilderException e)
 				{
 					e.printStackTrace();
 				}

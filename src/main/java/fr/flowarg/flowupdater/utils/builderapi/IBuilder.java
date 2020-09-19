@@ -5,7 +5,7 @@ import fr.flowarg.flowupdater.versions.VanillaVersion;
 
 /**
  * Builder API
- * @version 1.3
+ * @version 1.4
  * @author flow
  * Used for {@link FlowUpdater} & {@link VanillaVersion}
  * @param <T> Object returned.
@@ -19,5 +19,5 @@ public interface IBuilder<T>
 	 * @return a {@link T} object.
 	 * @throws BuilderArgumentException
 	 */
-	T build() throws BuilderArgumentException;
+	T build() throws BuilderException;
 }

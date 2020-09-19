@@ -17,7 +17,7 @@ import com.google.gson.JsonParser;
 
 import fr.flowarg.flowupdater.FlowUpdater;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
-import fr.flowarg.flowupdater.utils.builderapi.BuilderArgumentException;
+import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
 import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
 import fr.flowarg.flowutils.Utils;
 
@@ -214,7 +214,7 @@ public class VanillaVersion
 		}
 
 		@Override
-		public VanillaVersion build() throws BuilderArgumentException
+		public VanillaVersion build() throws BuilderException
 		{
 			return new VanillaVersion(this.nameArgument.get(), this.mcpArgument.get(), this.snapshotArgument.get(), this.versionTypeArgument.get());
 		}

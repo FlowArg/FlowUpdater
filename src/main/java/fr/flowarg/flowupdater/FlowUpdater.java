@@ -22,7 +22,7 @@ import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.UpdaterOptions;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
-import fr.flowarg.flowupdater.utils.builderapi.BuilderArgumentException;
+import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
 import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
 import fr.flowarg.flowupdater.versions.IForgeVersion;
 import fr.flowarg.flowupdater.versions.VanillaVersion;
@@ -257,10 +257,8 @@ public class FlowUpdater
     	}
     	
     	@Override
-    	public FlowUpdater build() throws BuilderArgumentException
+    	public FlowUpdater build() throws BuilderException
     	{
-    		if(this.forgeVersionArgument.get() != null && (this.versionArgument.get() == VanillaVersion.NULL_VERSION || this.versionArgument.get() == null))
-    			throw new BuilderArgumentException("VanillaVersion cannot be a NULL_VERSION or null if you are using forge !");
     		return new FlowUpdater(this.versionArgument.get(),
     				this.loggerArgument.get(),
     				this.updaterOptionsArgument.get(),
