@@ -21,6 +21,11 @@ import fr.flowarg.flowupdater.download.Step;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.utils.IOUtils;
 
+/**
+ * The base object of a forge version.
+ * Implemented by {@link OldForgeVersion} & {@link NewForgeVersion}
+ * @author flow
+ */
 public abstract class AbstractForgeVersion
 {
 	protected final ILogger logger;

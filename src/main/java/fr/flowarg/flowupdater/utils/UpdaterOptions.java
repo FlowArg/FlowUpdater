@@ -1,5 +1,9 @@
 package fr.flowarg.flowupdater.utils;
 
+/**
+ * Represent some settings for FlowUpdater
+ * @author flow
+ */
 public class UpdaterOptions
 {
 	/** Is the update silent (Recommended : true) */

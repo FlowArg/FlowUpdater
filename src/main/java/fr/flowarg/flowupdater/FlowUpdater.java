@@ -29,7 +29,7 @@ import fr.flowarg.flowupdater.versions.VanillaVersion;
 
 /**
  * Represent the base class of the updater.<br>
- * You can define some parameters about your version (Forge, Vanilla, MCP etc...).
+ * You can define some parameters about your version (Forge, Vanilla, MCP (Soon fabric) etc...).
  * @author FlowArg
  */
 public class FlowUpdater
@@ -73,7 +73,7 @@ public class FlowUpdater
 		}
 	};
 	
-	/** Default logger */
+	/** Default logger, null for file argument = no file logger */
 	public static final ILogger DEFAULT_LOGGER = new Logger("[FlowUpdater]", null);
 
 	/**
@@ -175,7 +175,7 @@ public class FlowUpdater
             	this.forgeVersion.appendDownloadInfos(this.downloadInfos);
             	if(!this.forgeVersion.isForgeAlreadyInstalled(dir))
             	  	this.forgeVersion.install(dir);
-            	else this.logger.info("Detected forge ! Skipping installation...");
+            	else this.logger.info("Forge is already installed ! Skipping installation...");
             	this.forgeVersion.installMods(new File(dir, "mods/"));
             }
     	}
