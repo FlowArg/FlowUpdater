@@ -193,8 +193,15 @@ public class FlowUpdater
             this.postExecutions.forEach(Runnable::run);
         }
         this.callback.step(Step.END);
+        if(this.downloadInfos.getTotalToDownload() == this.downloadInfos.getDownloaded() + 1)
+        {
+        	this.downloadInfos.incrementDownloaded();
+        	this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
+        }
         this.downloadInfos.clear();
     }
+    
+    
     
     /**
      * Builder of {@link FlowUpdater}.
