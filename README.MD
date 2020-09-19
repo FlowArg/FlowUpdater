@@ -41,7 +41,7 @@ If you have specified "latest" to the version name, and that the version is a sn
 
 Then, instantiate a new FlowUpdater with ``FlowUpdaterBuilder#withXArguments#withAnotherArguemtn#build``. Check the code for more informations.
 ```java
-FlowUpdater updater = new FlowUpdaterBuilder().withVersion(version).withUpdaterOptions(new UpdaterOptions(false, true, false)).build();
+FlowUpdater updater = new FlowUpdaterBuilder().withVersion(version).withUpdaterOptions(new UpdaterOptions(false, true)).build();
 ```
 
 Finally, call the update function :
