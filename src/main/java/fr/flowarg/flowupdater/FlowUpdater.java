@@ -99,9 +99,9 @@ public class FlowUpdater
         this.callback = callback;
         this.callback.init(this.logger);
        	this.vanillaReader = new VanillaReader(this.version, this.logger, this.updaterOptions.isSilentUpdate(), this.callback, this.downloadInfos);
-       	this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.1.12"));
+       	this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.1.13"));
     }
-
+    
     /**
      * This method update the Minecraft Installation in the given directory. If the {@link #version} is {@link IVanillaVersion#NULL_VERSION}, the updater will
      * be only run external files and post executions.
@@ -110,6 +110,16 @@ public class FlowUpdater
      * @throws IOException if a I/O problem has occurred.
      */
     public void update(File dir, boolean downloadServer) throws IOException
+    {
+    	this.checkExtFiles(dir);
+        this.updateVanillaVersion(dir, downloadServer);
+    	this.updateExtFiles(dir);
+    	this.runPostExecutions();
+    	this.endUpdate();
+    }
+    
+    
+    private void checkExtFiles(File dir)
     {
         if(!this.externalFiles.isEmpty())
         {
@@ -128,7 +138,10 @@ public class FlowUpdater
     	        else this.downloadInfos.getExtFiles().add(extFile);
     		}
         }
-        
+    }
+    
+    private void updateVanillaVersion(File dir, boolean downloadServer) throws IOException
+    {
     	if(this.version != VanillaVersion.NULL_VERSION)
     	{
             this.logger.info(String.format("Reading data about %s Minecraft version...", version.getName()));
@@ -167,7 +180,10 @@ public class FlowUpdater
             }
     	}
     	else this.downloadInfos.init();
-    	
+    }
+    
+    private void updateExtFiles(File dir)
+    {
     	if(!this.downloadInfos.getExtFiles().isEmpty())
     	{
             this.callback.step(Step.EXTERNAL_FILES);
@@ -185,13 +201,20 @@ public class FlowUpdater
     			this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
         	});
     	}
-    	
+    }
+    
+    private void runPostExecutions()
+    {
         if(!this.postExecutions.isEmpty())
         {
         	this.callback.step(Step.POST_EXECUTIONS);
             this.logger.info("Running post executions...");
             this.postExecutions.forEach(Runnable::run);
         }
+    }
+    
+    private void endUpdate()
+    {
         this.callback.step(Step.END);
         if(this.downloadInfos.getTotalToDownload() == this.downloadInfos.getDownloaded() + 1)
         {
@@ -200,7 +223,6 @@ public class FlowUpdater
         }
         this.downloadInfos.clear();
     }
-    
     
     
     /**
