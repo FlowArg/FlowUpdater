@@ -1,10 +1,7 @@
 .gradle
 build
-/out/
 /updater/
 /run/
-/src/main/resources/jsontamer.json
-/src/main/java/fr/flowarg/flowupdater/rework/
 /src/test/
 /.idea/
 bin

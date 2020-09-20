@@ -97,9 +97,9 @@ public class FlowUpdater
         this.updaterOptions = updaterOptions;
         this.downloadInfos = new DownloadInfos();
         this.callback = callback;
-        this.callback.init(this.logger);
-       	this.vanillaReader = new VanillaReader(this.version, this.logger, this.updaterOptions.isSilentUpdate(), this.callback, this.downloadInfos);
-       	this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.1.13"));
+       	this.vanillaReader = new VanillaReader(this.version, this.logger, this.updaterOptions.isSilentRead(), this.callback, this.downloadInfos);
+       	this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.1.14"));
+       	this.callback.init(this.logger);
     }
     
     /**
