@@ -1,25 +1,15 @@
 package fr.flowarg.flowupdater.versions;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.URL;
-import java.util.concurrent.atomic.AtomicReference;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonNull;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
+import com.google.gson.*;
 import fr.flowarg.flowupdater.FlowUpdater;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
 import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
 import fr.flowarg.flowutils.Utils;
+
+import java.io.*;
+import java.net.URL;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class VanillaVersion
 {
@@ -186,7 +176,7 @@ public class VanillaVersion
 	{
 		private final BuilderArgument<String> nameArgument = new BuilderArgument<String>("Name").required();
 		private final BuilderArgument<MCP> mcpArgument = new BuilderArgument<MCP>("MCP").optional();
-		private final BuilderArgument<Boolean> snapshotArgument = new BuilderArgument<Boolean>("Snapshot", false).optional();
+		private final BuilderArgument<Boolean> snapshotArgument = new BuilderArgument<>("Snapshot", false).optional();
 		private final BuilderArgument<VersionType> versionTypeArgument = new BuilderArgument<VersionType>("VersionType").required();
 		
 		public VanillaVersionBuilder withName(String name)

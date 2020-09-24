@@ -1,11 +1,11 @@
 package fr.flowarg.flowupdater.utils.builderapi;
 
+import fr.flowarg.flowupdater.FlowUpdater;
+import fr.flowarg.flowupdater.versions.VanillaVersion;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import fr.flowarg.flowupdater.FlowUpdater;
-import fr.flowarg.flowupdater.versions.VanillaVersion;
 
 /**
  * Builder API

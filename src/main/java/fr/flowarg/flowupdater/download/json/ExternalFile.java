@@ -1,26 +1,17 @@
 package fr.flowarg.flowupdater.download.json;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import com.google.gson.*;
+
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonNull;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
 public class ExternalFile
 {
-	private String path;
-	private String downloadURL;
-	private String sha1;
-	private int size;
+	private final String path;
+	private final String downloadURL;
+	private final String sha1;
+	private final int size;
 	
 	/**
 	 * Construct a new ExternalFile object.
@@ -56,14 +47,14 @@ public class ExternalFile
 	 * 	}
 	 * 	]
 	 * }
-	 * @param url the JSON file URL.
+	 * @param jsonUrl the JSON file URL.
 	 * @return an external file list.
 	 */
-	public static ArrayList<ExternalFile> fromJson(URL json)
+	public static ArrayList<ExternalFile> fromJson(URL jsonUrl)
 	{
 		final ArrayList<ExternalFile> result = new ArrayList<>();
 		JsonElement element = JsonNull.INSTANCE;
-        try(InputStream stream = new BufferedInputStream(json.openStream()))
+        try(InputStream stream = new BufferedInputStream(jsonUrl.openStream()))
         {
             final Reader reader = new BufferedReader(new InputStreamReader(stream));
             final StringBuilder sb = new StringBuilder();

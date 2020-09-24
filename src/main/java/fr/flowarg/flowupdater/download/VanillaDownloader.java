@@ -1,19 +1,17 @@
 package fr.flowarg.flowupdater.download;
 
-import static fr.flowarg.flowio.FileUtils.getFileSizeBytes;
-import static fr.flowarg.flowio.FileUtils.getSHA1;
-import static fr.flowarg.flowio.FileUtils.unzipJar;
+import fr.flowarg.flowio.FileUtils;
+import fr.flowarg.flowlogger.ILogger;
+import fr.flowarg.flowupdater.download.json.AssetDownloadable;
+import fr.flowarg.flowupdater.download.json.Downloadable;
+import fr.flowarg.flowupdater.utils.IOUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
 
-import fr.flowarg.flowio.FileUtils;
-import fr.flowarg.flowlogger.ILogger;
-import fr.flowarg.flowupdater.download.json.AssetDownloadable;
-import fr.flowarg.flowupdater.download.json.Downloadable;
-import fr.flowarg.flowupdater.utils.IOUtils;
+import static fr.flowarg.flowio.FileUtils.*;
 
 public class VanillaDownloader
 {
@@ -45,7 +43,7 @@ public class VanillaDownloader
         this.downloadInfos.init();
     }
 
-    public void download(boolean downloadServer) throws IOException
+    public void download(boolean downloadServer) throws Exception
     {
         this.logger.info("Checking library files...");
         this.callback.step(Step.DL_LIBS);
@@ -60,7 +58,7 @@ public class VanillaDownloader
         this.logger.info("All files are successfully downloaded !");
     }
 
-    private void checkAllLibraries(boolean downloadServer) throws IOException
+    private void checkAllLibraries(boolean downloadServer) throws Exception
     {
         if (this.natives.listFiles() != null)
         {

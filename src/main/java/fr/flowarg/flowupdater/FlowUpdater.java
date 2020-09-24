@@ -1,22 +1,8 @@
 package fr.flowarg.flowupdater;
 
-import static fr.flowarg.flowio.FileUtils.getFileSizeBytes;
-import static fr.flowarg.flowio.FileUtils.getSHA1;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowlogger.Logger;
-import fr.flowarg.flowupdater.download.DownloadInfos;
-import fr.flowarg.flowupdater.download.IProgressCallback;
-import fr.flowarg.flowupdater.download.Step;
-import fr.flowarg.flowupdater.download.VanillaDownloader;
-import fr.flowarg.flowupdater.download.VanillaReader;
+import fr.flowarg.flowupdater.download.*;
 import fr.flowarg.flowupdater.download.json.ExternalFile;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.utils.IOUtils;
@@ -26,6 +12,16 @@ import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
 import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
 import fr.flowarg.flowupdater.versions.AbstractForgeVersion;
 import fr.flowarg.flowupdater.versions.VanillaVersion;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import static fr.flowarg.flowio.FileUtils.getFileSizeBytes;
+import static fr.flowarg.flowio.FileUtils.getSHA1;
 
 /**
  * Represent the base class of the updater.<br>
@@ -103,13 +99,13 @@ public class FlowUpdater
     }
     
     /**
-     * This method update the Minecraft Installation in the given directory. If the {@link #version} is {@link IVanillaVersion#NULL_VERSION}, the updater will
+     * This method update the Minecraft Installation in the given directory. If the {@link #version} is {@link VanillaVersion#NULL_VERSION}, the updater will
      * be only run external files and post executions.
      * @param dir Directory where is the Minecraft installation.
      * @param downloadServer True -> Download the server.jar.
      * @throws IOException if a I/O problem has occurred.
      */
-    public void update(File dir, boolean downloadServer) throws IOException
+    public void update(File dir, boolean downloadServer) throws Exception
     {
     	this.checkExtFiles(dir);
         this.updateVanillaVersion(dir, downloadServer);
@@ -117,10 +113,9 @@ public class FlowUpdater
     	this.runPostExecutions();
     	this.endUpdate();
     }
-    
-    
-    private void checkExtFiles(File dir)
-    {
+
+    private void checkExtFiles(File dir) throws Exception
+	{
         if(!this.externalFiles.isEmpty())
         {
     		for(ExternalFile extFile : this.externalFiles)
@@ -140,7 +135,7 @@ public class FlowUpdater
         }
     }
     
-    private void updateVanillaVersion(File dir, boolean downloadServer) throws IOException
+    private void updateVanillaVersion(File dir, boolean downloadServer) throws Exception
     {
     	if(this.version != VanillaVersion.NULL_VERSION)
     	{
@@ -231,10 +226,10 @@ public class FlowUpdater
      */
     public static class FlowUpdaterBuilder implements IBuilder<FlowUpdater>
     {
-    	private final BuilderArgument<VanillaVersion> versionArgument = new BuilderArgument<VanillaVersion>("VanillaVersion", VanillaVersion.NULL_VERSION, VanillaVersion.NULL_VERSION).optional();
-    	private final BuilderArgument<ILogger> loggerArgument = new BuilderArgument<ILogger>("Logger", DEFAULT_LOGGER).optional();
+    	private final BuilderArgument<VanillaVersion> versionArgument = new BuilderArgument<>("VanillaVersion", VanillaVersion.NULL_VERSION, VanillaVersion.NULL_VERSION).optional();
+    	private final BuilderArgument<ILogger> loggerArgument = new BuilderArgument<>("Logger", DEFAULT_LOGGER).optional();
     	private final BuilderArgument<UpdaterOptions> updaterOptionsArgument = new BuilderArgument<UpdaterOptions>("UpdaterOptions").required();
-    	private final BuilderArgument<IProgressCallback> progressCallbackArgument = new BuilderArgument<IProgressCallback>("Callback", NULL_CALLBACK).optional();
+    	private final BuilderArgument<IProgressCallback> progressCallbackArgument = new BuilderArgument<>("Callback", NULL_CALLBACK).optional();
     	private final BuilderArgument<List<ExternalFile>> externalFilesArgument = new BuilderArgument<List<ExternalFile>>("External Files", new ArrayList<>()).optional();
     	private final BuilderArgument<List<Runnable>> postExecutionsArgument = new BuilderArgument<List<Runnable>>("Post Executions", new ArrayList<>()).optional();
     	private final BuilderArgument<AbstractForgeVersion> forgeVersionArgument = new BuilderArgument<AbstractForgeVersion>("ForgeVersion").optional().require(this.versionArgument);

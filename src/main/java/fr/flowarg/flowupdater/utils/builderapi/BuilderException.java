@@ -10,7 +10,6 @@ import fr.flowarg.flowupdater.versions.VanillaVersion;
  * @version 1.4
  * 
  * Used for {@link FlowUpdater} & {@link VanillaVersion}
- * @param <T> Object Argument
  * 
  * This exception is throwed when an error occured with Builder API.
  */

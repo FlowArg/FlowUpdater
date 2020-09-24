@@ -1,26 +1,21 @@
 package fr.flowarg.flowupdater.versions;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.URL;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import java.io.*;
+import java.net.URL;
+
 public class MCP
 {
-	private String clientDownloadURL;
-	private String clientSha1;
-	private int clientSize;
-	private int serverSize;
-	private String serverDownloadURL;
-	private String serverSha1;
+	private final String clientDownloadURL;
+	private final String clientSha1;
+	private final int clientSize;
+	private final int serverSize;
+	private final String serverDownloadURL;
+	private final String serverSha1;
 	
 	/**
 	 * Construct a new MCP.

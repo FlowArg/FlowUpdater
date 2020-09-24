@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class AssetIndex
 {
-    private Map<String, AssetDownloadable> objects = new LinkedHashMap<>();
+    private final Map<String, AssetDownloadable> objects = new LinkedHashMap<>();
 
     public Map<String, AssetDownloadable> getObjects()
     {

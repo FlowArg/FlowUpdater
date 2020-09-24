@@ -1,28 +1,19 @@
 package fr.flowarg.flowupdater.download.json;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import com.google.gson.*;
+
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonNull;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
 public class Mod
 {
-	private String name;
-	private String sha1;
-	private int size;
-	private String downloadURL;
+	private final String name;
+	private final String sha1;
+	private final int size;
+	private final String downloadURL;
 	
 	/**
 	 * Construct a new Mod object.
@@ -58,7 +49,7 @@ public class Mod
 	 * 	}
 	 * 	]
 	 * }
-	 * @param url the JSON file URL.
+	 * @param jsonUrl the JSON file URL.
 	 * @return a Mod list.
 	 */
 	public static List<Mod> getModsFromJson(URL jsonUrl)

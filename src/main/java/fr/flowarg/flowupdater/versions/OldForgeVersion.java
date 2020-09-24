@@ -1,5 +1,11 @@
 package fr.flowarg.flowupdater.versions;
 
+import fr.flowarg.flowio.FileUtils;
+import fr.flowarg.flowlogger.ILogger;
+import fr.flowarg.flowupdater.download.DownloadInfos;
+import fr.flowarg.flowupdater.download.IProgressCallback;
+import fr.flowarg.flowupdater.download.json.Mod;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -10,12 +16,6 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
-
-import fr.flowarg.flowio.FileUtils;
-import fr.flowarg.flowlogger.ILogger;
-import fr.flowarg.flowupdater.download.DownloadInfos;
-import fr.flowarg.flowupdater.download.IProgressCallback;
-import fr.flowarg.flowupdater.download.json.Mod;
 
 /**
  * Represent an old Forge version (1.7 -> 1.12.2) (No support for versions older than 1.7)

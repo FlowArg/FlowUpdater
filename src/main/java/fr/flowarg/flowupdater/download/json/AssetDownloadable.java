@@ -5,11 +5,11 @@ import java.net.URL;
 
 public class AssetDownloadable
 {
-    private String hash;
-    private int size;
-    private String urlString;
-    private URL url;
-    private String file;
+    private final String hash;
+    private final int size;
+    private final String urlString;
+    private final URL url;
+    private final String file;
 
     public AssetDownloadable(String hash, int size) throws MalformedURLException
     {

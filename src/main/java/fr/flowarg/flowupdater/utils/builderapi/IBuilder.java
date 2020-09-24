@@ -17,7 +17,7 @@ public interface IBuilder<T>
 	/**
 	 * Build a {@link T} object.
 	 * @return a {@link T} object.
-	 * @throws BuilderArgumentException
+	 * @throws BuilderException if an error occurred when building object.
 	 */
 	T build() throws BuilderException;
 }

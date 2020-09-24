@@ -1,7 +1,13 @@
 package fr.flowarg.flowupdater.versions;
 
-import static fr.flowarg.flowio.FileUtils.getFileSizeBytes;
-import static fr.flowarg.flowio.FileUtils.getSHA1;
+import fr.flowarg.flowio.FileUtils;
+import fr.flowarg.flowlogger.ILogger;
+import fr.flowarg.flowupdater.FlowUpdater;
+import fr.flowarg.flowupdater.download.DownloadInfos;
+import fr.flowarg.flowupdater.download.IProgressCallback;
+import fr.flowarg.flowupdater.download.Step;
+import fr.flowarg.flowupdater.download.json.Mod;
+import fr.flowarg.flowupdater.utils.IOUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,14 +18,8 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.flowarg.flowio.FileUtils;
-import fr.flowarg.flowlogger.ILogger;
-import fr.flowarg.flowupdater.FlowUpdater;
-import fr.flowarg.flowupdater.download.DownloadInfos;
-import fr.flowarg.flowupdater.download.IProgressCallback;
-import fr.flowarg.flowupdater.download.Step;
-import fr.flowarg.flowupdater.download.json.Mod;
-import fr.flowarg.flowupdater.utils.IOUtils;
+import static fr.flowarg.flowio.FileUtils.getFileSizeBytes;
+import static fr.flowarg.flowio.FileUtils.getSHA1;
 
 /**
  * The base object of a forge version.
@@ -74,10 +74,10 @@ public abstract class AbstractForgeVersion
 	
 	/**
 	 * This function installs mods at the specified directory.
-	 * @param dirToInstall Specified mods directory.
+	 * @param modsDir Specified mods directory.
 	 * @throws IOException If install fail.
 	 */
-	public void installMods(File modsDir) throws IOException
+	public void installMods(File modsDir) throws Exception
 	{
 		this.callback.step(Step.MODS);
 		this.downloadInfos.getMods().forEach(mod -> {

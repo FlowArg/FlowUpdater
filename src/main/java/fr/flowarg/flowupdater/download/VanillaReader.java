@@ -1,16 +1,7 @@
 package fr.flowarg.flowupdater.download;
 
-import java.io.IOException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-
 import fr.flowarg.flowcompat.Platform;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.download.json.AssetDownloadable;
@@ -18,6 +9,14 @@ import fr.flowarg.flowupdater.download.json.AssetIndex;
 import fr.flowarg.flowupdater.download.json.Downloadable;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.versions.VanillaVersion;
+
+import java.io.IOException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class VanillaReader
 {

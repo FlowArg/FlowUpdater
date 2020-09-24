@@ -1,12 +1,12 @@
 package fr.flowarg.flowupdater.download;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import fr.flowarg.flowupdater.download.json.AssetDownloadable;
 import fr.flowarg.flowupdater.download.json.Downloadable;
 import fr.flowarg.flowupdater.download.json.ExternalFile;
 import fr.flowarg.flowupdater.download.json.Mod;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represent informations about download status. Used for progress system {@link IProgressCallback}.

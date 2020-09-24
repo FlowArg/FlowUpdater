@@ -1,15 +1,16 @@
 package fr.flowarg.flowupdater.utils;
 
+import fr.flowarg.flowlogger.ILogger;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-
-import fr.flowarg.flowlogger.ILogger;
 
 public class IOUtils
 {
@@ -17,7 +18,7 @@ public class IOUtils
     {
         try (final StringBuilderWriter sw = new StringBuilderWriter())
         {
-            final InputStreamReader in = new InputStreamReader(input, encoding == null ? Charset.forName("UTF-8") : encoding);
+            final InputStreamReader in = new InputStreamReader(input, encoding == null ? StandardCharsets.UTF_8 : encoding);
             final char[] buffer = new char[4096];
             int n;
             while ((n = in.read(buffer)) != -1)

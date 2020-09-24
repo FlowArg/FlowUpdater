@@ -2,10 +2,10 @@ package fr.flowarg.flowupdater.download.json;
 
 public class Downloadable
 {
-    private String url;
-    private int size;
-    private String sha1;
-    private String name;
+    private final String url;
+    private final int size;
+    private final String sha1;
+    private final String name;
 
     public Downloadable(String url, int size, String sha1, String name)
     {
