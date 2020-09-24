@@ -3,10 +3,7 @@ build
 /updater/
 /run/
 /src/test/
-/.idea/
-bin
-.project
-.settings
-.classpath
+.idea
+out
 forge-installer.jar.log
 forge-installer-patched.jar.log
