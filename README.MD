@@ -67,7 +67,7 @@ You can get a list of mods by providing a json link too : `List<Mod> mods = Mod.
 
 Finally, set the Forge version corresponding to the wanted Forge version :
 ```java
-... new FlowUpdaterBuilder()...()...().withForgeVersion(new NewForgeVersion("31.2.30", version, logger /* Same as the updater */, callback /* Same as the updater */, mods)); // NewForgeVersion -> 1.12.2-14.23.5.2851 1.16.2 ; OldForgeVersion -> 1.7 1.12
+... new FlowUpdaterBuilder()...()...().withForgeVersion(new NewForgeVersion("31.2.30", version, logger /* Same as the updater */, callback /* Same as the updater */, mods).enableModFileDeleter()); // NewForgeVersion -> 1.12.2-14.23.5.2851 1.16.2 ; OldForgeVersion -> 1.7 1.12 ; use enableModFileDeleter() | disableModFileDeleter() as you want.
 ```
 That's all!
 
