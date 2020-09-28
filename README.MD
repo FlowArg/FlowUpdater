@@ -112,3 +112,9 @@ And all it's done !
 This library has some dependencies :
 - [FlowMultitools](https://github.com/FlowArg/FlowMultitools).
 - [Gson](https://github.com/Google/Gson).
+
+
+### Donating
+
+If you want to contribute to the project, please consider providing me with some support:
+https://paypal.me/Philouse
