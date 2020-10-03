@@ -2,7 +2,6 @@ package fr.flowarg.flowupdater.utils;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import fr.flowarg.flowlogger.ILogger;
 
@@ -42,10 +41,32 @@ public class IOUtils
 		}
     }
 
+    /**
+     * Reading an url in a json element
+     * @param jsonURL json input
+     * @return a json element
+     */
     public static JsonElement readData(URL jsonURL)
     {
+        try
+        {
+            return readData(jsonURL.openStream());
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        return JsonNull.INSTANCE;
+    }
+
+    /**
+     * Reading an inputStream in a json element
+     * @param inputStream json input
+     * @return a json element
+     */
+    public static JsonElement readData(InputStream inputStream)
+    {
         JsonElement element = JsonNull.INSTANCE;
-        try(InputStream stream = new BufferedInputStream(jsonURL.openStream()))
+        try(InputStream stream = new BufferedInputStream(inputStream))
         {
             final Reader reader = new BufferedReader(new InputStreamReader(stream));
             final StringBuilder sb = new StringBuilder();

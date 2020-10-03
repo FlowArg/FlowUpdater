@@ -1,13 +1,17 @@
 package fr.flowarg.flowupdater.versions;
 
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import fr.flowarg.flowupdater.FlowUpdater;
+import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
 import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
 import fr.flowarg.flowutils.Utils;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -32,7 +36,7 @@ public class VanillaVersion
 		this.snapshot = snapshot;
 		this.versionType = versionType;
 		if(!this.name.equals("no"))
-			this.json = this.readData(this.getJsonVersion());
+			this.json = IOUtils.readData(this.getJsonVersion());
 	}
 	
 	public String getName()
@@ -115,7 +119,7 @@ public class VanillaVersion
 
         try
         {
-            final JsonObject launcherMeta = this.readData(new URL("https://launchermeta.mojang.com/mc/game/version_manifest.json").openStream()).getAsJsonObject();
+            final JsonObject launcherMeta = IOUtils.readData(new URL("https://launchermeta.mojang.com/mc/game/version_manifest.json").openStream()).getAsJsonObject();
 
             if (this.getName().equals("latest"))
             {
@@ -143,29 +147,6 @@ public class VanillaVersion
         }
 
         return result.get();
-    }
-    
-    /**
-     * Converting an inputstream to a json element
-     * @param input json input
-     * @return json
-     */
-    private JsonElement readData(InputStream input)
-    {
-        try(InputStream stream = new BufferedInputStream(input))
-        {
-            final Reader reader = new BufferedReader(new InputStreamReader(stream));
-            final StringBuilder sb = new StringBuilder();
-
-            int character;
-            while ((character = reader.read()) != -1) sb.append((char)character);
-
-            return JsonParser.parseString(sb.toString());
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        return JsonNull.INSTANCE;
     }
 	
     /**
