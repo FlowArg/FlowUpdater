@@ -161,11 +161,14 @@ public class FlowUpdater implements IAPI
 
     	        if (file.exists())
     	        {
-    	            if (!Objects.requireNonNull(getSHA1(file)).equals(extFile.getSha1()))
-    	            {
-    	                file.delete();
-    	                this.downloadInfos.getExtFiles().add(extFile);
-    	            }
+    	        	if(extFile.isUpdate())
+					{
+						if (!Objects.requireNonNull(getSHA1(file)).equals(extFile.getSha1()))
+						{
+							file.delete();
+							this.downloadInfos.getExtFiles().add(extFile);
+						}
+					}
     	        }
     	        else this.downloadInfos.getExtFiles().add(extFile);
     		}

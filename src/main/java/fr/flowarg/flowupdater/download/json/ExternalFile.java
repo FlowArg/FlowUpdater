@@ -14,6 +14,7 @@ public class ExternalFile
 	private final String downloadURL;
 	private final String sha1;
 	private final int size;
+	private final boolean update;
 	
 	/**
 	 * Construct a new ExternalFile object.
@@ -28,6 +29,24 @@ public class ExternalFile
 		this.downloadURL = downloadURL;
 		this.sha1 = sha1;
 		this.size = size;
+		this.update = true;
+	}
+
+	/**
+	 * Construct a new ExternalFile object.
+	 * @param path Path of external file.
+	 * @param sha1 Sha1 of external file.
+	 * @param size Size of external file.
+	 * @param downloadURL external file URL.
+	 * @param update false -> not checking if the file is valid. true -> checking if the file is valid.
+	 */
+	public ExternalFile(String path, String downloadURL, String sha1, int size, boolean update)
+	{
+		this.path = path;
+		this.downloadURL = downloadURL;
+		this.sha1 = sha1;
+		this.size = size;
+		this.update = update;
 	}
 	
 	/**
@@ -45,7 +64,8 @@ public class ExternalFile
 	 * 		"path": "config/config.json",
 	 * 		"downloadURL": "https://url.com/launcher/ext/modconfig.json",
 	 * 		"sha1": "eef74b3fbab6400cb14b02439cf092cca3c2125c",
-	 * 		"size": 19683
+	 * 		"size": 19683,
+	 * 		"update": false
 	 * 	}
 	 * 	]
 	 * }
@@ -62,8 +82,9 @@ public class ExternalFile
         	final String sha1 = obj.get("sha1").getAsString();
         	final String downloadURL = obj.get("downloadURL").getAsString();
         	final int size = obj.get("size").getAsInt();
-        	
-        	result.add(new ExternalFile(path, downloadURL, sha1, size));
+        	if(obj.get("update") != null)
+				result.add(new ExternalFile(path, downloadURL, sha1, size, obj.get("update").getAsBoolean()));
+        	else result.add(new ExternalFile(path, downloadURL, sha1, size));
         });
         return result;
 	}
@@ -86,5 +107,10 @@ public class ExternalFile
 	public int getSize()
 	{
 		return this.size;
+	}
+
+	public boolean isUpdate()
+	{
+		return this.update;
 	}
 }
