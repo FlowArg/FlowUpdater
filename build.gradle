@@ -2,27 +2,37 @@ plugins {
     id "com.jfrog.bintray" version "1.8.5"
 }
 
-apply plugin: 'java-library'
-apply plugin: 'idea'
 apply plugin: 'maven-publish'
 
-group 'fr.flowarg'
-version '1.2.0'
-archivesBaseName = "flowupdater"
+allprojects {
+	apply plugin: 'java-library'
+	apply plugin: 'idea'
 
-repositories {
-	jcenter()
+	group 'fr.flowarg'
 
-	maven {
-		url "https://jitpack.io/"
-		name = "JitPack"
+	repositories {
+		jcenter()
+
+		maven {
+			url "https://jitpack.io/"
+			name = "JitPack"
+		}
+	}
+
+	task sourcesJar(type: Jar) {
+		classifier 'sources'
+		from sourceSets.main.allSource
+	}
+
+	dependencies {
+		implementation 'com.google.code.gson:gson:2.8.6'
+		implementation 'fr.flowarg:flowmultitools:1.1.2'
+		implementation 'com.github.FlowArg:PluginLoaderAPI:-SNAPSHOT'
 	}
 }
 
-task sourcesJar(type: Jar) {
-    classifier 'sources'
-    from sourceSets.main.allSource
-}
+version '1.2.0'
+archivesBaseName = "flowupdater"
 
 artifacts {
 	archives sourcesJar
@@ -78,7 +88,5 @@ publishing {
 }
 
 dependencies {
-	implementation 'com.google.code.gson:gson:2.8.6'
-	implementation 'fr.flowarg:flowmultitools:1.1.2'
-	implementation 'com.github.FlowArg:PluginLoaderAPI:-SNAPSHOT'
+	runtimeOnly project(":CurseForgePlugin")
 }
