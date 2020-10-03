@@ -3,9 +3,12 @@ package fr.flowarg.flowupdater;
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowlogger.Logger;
+import fr.flowarg.flowupdater.curseforgeplugin.CurseForgePlugin;
+import fr.flowarg.flowupdater.curseforgeplugin.CurseMod;
 import fr.flowarg.flowupdater.download.*;
 import fr.flowarg.flowupdater.download.json.ExternalFile;
 import fr.flowarg.flowupdater.download.json.Mod;
+import fr.flowarg.flowupdater.utils.CurseModInfos;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.UpdaterOptions;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
@@ -19,13 +22,14 @@ import fr.flowarg.pluginloaderapi.plugin.PluginLoader;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 
-import static fr.flowarg.flowio.FileUtils.getFileSizeBytes;
-import static fr.flowarg.flowio.FileUtils.getSHA1;
+import static fr.flowarg.flowio.FileUtils.*;
 
 /**
  * Represent the base class of the updater.<br>
@@ -60,6 +64,8 @@ public class FlowUpdater implements IAPI
     private final List<Runnable> postExecutions;
 
     private boolean canPLAShutdown;
+
+    private boolean cursePluginLoaded = true;
 
     /** Default callback */
     public static final IProgressCallback NULL_CALLBACK = new IProgressCallback()
@@ -114,20 +120,20 @@ public class FlowUpdater implements IAPI
      */
     public void update(File dir, boolean downloadServer) throws Exception
     {
-    	this.checkPrerequisites();
+    	this.checkPrerequisites(dir);
     	this.checkExtFiles(dir);
-        this.updateVanillaVersion(dir, downloadServer);
+        this.updateMinecraft(dir, downloadServer);
     	this.updateExtFiles(dir);
     	this.runPostExecutions();
     	this.endUpdate();
     }
 
-    private void checkPrerequisites() throws Exception
+    private void checkPrerequisites(File dir) throws Exception
 	{
 		this.callback.step(Step.PREREQUISITES);
-		if(this.updaterOptions.isEnableModFromCurseForge())
+		if(this.updaterOptions.isEnableModsFromCurseForge())
 		{
-			final File curseForgePlugin = new File(".", "FUPlugins/CurseForgePlugin.jar");
+			final File curseForgePlugin = new File(dir, "FUPlugins/CurseForgePlugin.jar");
 			boolean flag = true;
 			if (curseForgePlugin.exists())
 			{
@@ -137,18 +143,22 @@ public class FlowUpdater implements IAPI
 			}
 
 			if(flag)
+			{
+				this.logger.debug("Downloading CFP...");
 				IOUtils.download(this.logger, new URL("https://flowarg.github.io/minecraft/launcher/CurseForgePlugin.jar"), curseForgePlugin);
+			}
 
-			this.configurePLA();
+			this.logger.debug("Configuring CFP...");
+			this.configurePLA(dir);
 		}
 	}
 
-	private void configurePLA()
+	private void configurePLA(File dir)
 	{
+		PluginLoaderAPI.setLogger(this.logger);
+		PluginLoaderAPI.registerPluginLoader(new PluginLoader("FlowUpdater", new File(dir, "FUPlugins/"), FlowUpdater.class)).complete();
 		PluginLoaderAPI.removeDefaultShutdownTrigger().complete();
-		PluginLoaderAPI.addShutdownTrigger(pluginLoaders -> this.canPLAShutdown).complete();
-		PluginLoaderAPI.registerPluginLoader(new PluginLoader("FlowUpdater", new File(".", "FUPlugins"), FlowUpdater.class));
-		PluginLoaderAPI.ready(FlowUpdater.class);
+		PluginLoaderAPI.ready(FlowUpdater.class).complete();
 	}
 
     private void checkExtFiles(File dir) throws Exception
@@ -175,7 +185,7 @@ public class FlowUpdater implements IAPI
         }
     }
 
-    private void updateVanillaVersion(File dir, boolean downloadServer) throws Exception
+    private void updateMinecraft(File dir, boolean downloadServer) throws Exception
     {
     	if(this.version != VanillaVersion.NULL_VERSION)
     	{
@@ -198,6 +208,34 @@ public class FlowUpdater implements IAPI
         	        }
         	        else this.downloadInfos.getMods().add(mod);
         		}
+
+        		for (CurseModInfos infos : this.forgeVersion.getCurseMods())
+				{
+					try
+					{
+						Class.forName("fr.flowarg.flowupdater.curseforgeplugin.CurseForgePlugin");
+						this.cursePluginLoaded = true;
+						final CurseForgePlugin curseForgePlugin = CurseForgePlugin.instance;
+						final CurseMod mod = curseForgePlugin.getCurseMod(infos.getProjectID(), infos.getFileID());
+
+						final File file = new File(new File(dir, "mods/"), mod.getName());
+						if (file.exists())
+						{
+							if (!Objects.requireNonNull(getMD5ofFile(file)).equals(mod.getMd5()) || getFileSizeBytes(file) != mod.getLength())
+							{
+								file.delete();
+								this.downloadInfos.getCurseMods().add(mod);
+							}
+						}
+						else this.downloadInfos.getCurseMods().add(mod);
+					}
+					catch (ClassNotFoundException e)
+					{
+						this.cursePluginLoaded = false;
+						this.logger.err("Cannot install mods from curseforge: CurseAPI is not loaded. Please, enable the 'enableModsFromCurseForge' updater option !");
+						break;
+					}
+				}
             }
 
             if (!dir.exists())
@@ -211,11 +249,33 @@ public class FlowUpdater implements IAPI
             	if(!this.forgeVersion.isForgeAlreadyInstalled(dir))
             	  	this.forgeVersion.install(dir);
             	else this.logger.info("Forge is already installed ! Skipping installation...");
-            	this.forgeVersion.installMods(new File(dir, "mods/"));
+            	final File modsDir = new File(dir, "mods/");
+            	this.forgeVersion.installMods(modsDir);
+            	this.installCurseForgeMods(modsDir);
             }
     	}
     	else this.downloadInfos.init();
     }
+
+    private void installCurseForgeMods(File dir)
+	{
+		if(this.cursePluginLoaded)
+		{
+			this.downloadInfos.getCurseMods().forEach(obj -> {
+				try
+				{
+					final CurseMod curseMod = (CurseMod)obj;
+					IOUtils.download(this.logger, new URL(curseMod.getDownloadURL()), new File(dir, curseMod.getName()));
+				} catch (MalformedURLException e)
+				{
+					this.logger.printStackTrace(e);
+				}
+				this.downloadInfos.incrementDownloaded();
+				this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
+			});
+		}
+		this.cursePluginLoaded = false;
+	}
 
     private void updateExtFiles(File dir)
     {

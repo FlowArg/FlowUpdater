@@ -55,7 +55,7 @@ public class VanillaDownloader
         
         this.extractNatives();
 
-        this.logger.info("All files are successfully downloaded !");
+        this.logger.info("All vanilla files are successfully downloaded !");
     }
 
     private void checkAllLibraries(boolean downloadServer) throws Exception

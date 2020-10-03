@@ -12,14 +12,16 @@ public class UpdaterOptions
 	/** Reextract natives at each updates ? (Recommended : false for old versions like 1.7.10) */
 	private final boolean reextractNatives;
 
-	/** Select some mods from CurseForge ? */
-	private final boolean enableModFromCurseForge;
+	/** Select some mods from CurseForge ?
+	 * WARNING: IF THIS FIELD IS THE TO TRUE, IT WILL DOWNLOAD AND LOAD A PLUGIN ; DISABLE THIS OPTION IF YOU DON'T USE CURSEFORGE !!
+	 */
+	private final boolean enableModsFromCurseForge;
 	
-	public UpdaterOptions(boolean silentRead, boolean reextractNatives, boolean enableModFromCurseForge)
+	public UpdaterOptions(boolean silentRead, boolean reextractNatives, boolean enableModsFromCurseForge)
 	{
 		this.silentRead = silentRead;
 		this.reextractNatives = reextractNatives;
-		this.enableModFromCurseForge = enableModFromCurseForge;
+		this.enableModsFromCurseForge = enableModsFromCurseForge;
 	}
 	
 	public boolean isReextractNatives()
@@ -32,8 +34,8 @@ public class UpdaterOptions
 		return this.silentRead;
 	}
 
-	public boolean isEnableModFromCurseForge()
+	public boolean isEnableModsFromCurseForge()
 	{
-		return this.enableModFromCurseForge;
+		return this.enableModsFromCurseForge;
 	}
 }

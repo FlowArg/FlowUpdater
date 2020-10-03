@@ -2,7 +2,6 @@ package fr.flowarg.flowupdater.versions;
 
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
-import fr.flowarg.flowupdater.download.DownloadInfos;
 import fr.flowarg.flowupdater.download.IProgressCallback;
 import fr.flowarg.flowupdater.download.json.Mod;
 
@@ -112,46 +111,8 @@ public class NewForgeVersion extends AbstractForgeVersion
         new File(tempInstallerDir, "META-INF/FORGE.SF").delete();
     }
     
-    @Override
-    public List<Mod> getMods()
-    {
-		return this.mods;
-	}
-    
     public boolean isNoGui()
     {
 		return this.noGui;
-	}
-
-	@Override
-	public boolean isModFileDeleterEnabled()
-	{
-		return this.useFileDeleter;
-	}
-
-	@Override
-	public AbstractForgeVersion enableModFileDeleter()
-	{
-		this.useFileDeleter = true;
-		return this;
-	}
-	
-	@Override
-	public AbstractForgeVersion disableModFileDeleter()
-	{
-		this.useFileDeleter = false;
-		return this;
-	}
-
-	@Override
-	public boolean isForgeAlreadyInstalled(File installDir)
-	{
-		return new File(installDir, "libraries/net/minecraftforge/forge/" + this.forgeVersion + "/" + "forge-" + this.forgeVersion + ".jar").exists();
-	}
-
-	@Override
-	public void appendDownloadInfos(DownloadInfos infos)
-	{
-		this.downloadInfos = infos;
 	}
 }

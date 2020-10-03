@@ -1,0 +1,5 @@
+{
+  "name": "CurseForgePlugin",
+  "pluginClass": "fr.flowarg.flowupdater.curseforgeplugin.CurseForgePlugin",
+  "version": "1.0.0"
+}

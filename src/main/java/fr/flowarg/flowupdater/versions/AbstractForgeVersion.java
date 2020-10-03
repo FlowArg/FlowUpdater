@@ -7,6 +7,7 @@ import fr.flowarg.flowupdater.download.DownloadInfos;
 import fr.flowarg.flowupdater.download.IProgressCallback;
 import fr.flowarg.flowupdater.download.Step;
 import fr.flowarg.flowupdater.download.json.Mod;
+import fr.flowarg.flowupdater.utils.CurseModInfos;
 import fr.flowarg.flowupdater.utils.IOUtils;
 
 import java.io.File;
@@ -36,6 +37,7 @@ public abstract class AbstractForgeVersion
 	protected URL installerUrl;
 	protected DownloadInfos downloadInfos;
 	protected boolean useFileDeleter = false;
+	protected List<CurseModInfos> curseMods;
 	
 	protected AbstractForgeVersion(ILogger logger, List<Mod> mods, String forgeVersion, VanillaVersion vanilla, IProgressCallback callback)
 	{
@@ -60,7 +62,10 @@ public abstract class AbstractForgeVersion
 	 * @param installDir the minecraft installation dir.
 	 * @return true if forge is already installed or not.
 	 */
-	public abstract boolean isForgeAlreadyInstalled(File installDir);
+	public boolean isForgeAlreadyInstalled(File installDir)
+	{
+		return new File(installDir, "libraries/net/minecraftforge/forge/" + this.forgeVersion + "/" + "forge-" + this.forgeVersion + ".jar").exists();
+	}
 	
 	/**
 	 * This function installs a Forge version at the specified directory.
@@ -128,11 +133,27 @@ public abstract class AbstractForgeVersion
 		}
 	}
 	
-	public abstract boolean isModFileDeleterEnabled();
-	public abstract AbstractForgeVersion enableModFileDeleter();
-	public abstract AbstractForgeVersion disableModFileDeleter();
+	public boolean isModFileDeleterEnabled()
+	{
+		return this.useFileDeleter;
+	}
+
+	public AbstractForgeVersion enableModFileDeleter()
+	{
+		this.useFileDeleter = true;
+		return this;
+	}
+
+	public AbstractForgeVersion disableModFileDeleter()
+	{
+		this.useFileDeleter = false;
+		return this;
+	}
 	
-	public abstract void appendDownloadInfos(DownloadInfos infos);
+	public void appendDownloadInfos(DownloadInfos infos)
+	{
+		this.downloadInfos = infos;
+	}
 	
 	protected void packPatchedInstaller(final File tempDir, final File tempInstallerDir) throws IOException
     {
@@ -141,8 +162,17 @@ public abstract class AbstractForgeVersion
         Files.move(output.toPath(), new File(output.getAbsolutePath().replace(".zip", ".jar")).toPath(), StandardCopyOption.REPLACE_EXISTING);
         tempInstallerDir.delete();
     }
+
+    public AbstractForgeVersion withCurseMods(List<CurseModInfos> curseMods)
+	{
+		this.curseMods = curseMods;
+		return this;
+	}
 	
-	public abstract List<Mod> getMods();
+	public List<Mod> getMods()
+	{
+		return this.mods;
+	}
 	
     public ILogger getLogger()
     {
@@ -158,4 +188,9 @@ public abstract class AbstractForgeVersion
     {
         return this.installerUrl;
     }
+
+	public List<CurseModInfos> getCurseMods()
+	{
+		return this.curseMods;
+	}
 }

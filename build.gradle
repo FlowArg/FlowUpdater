@@ -10,6 +10,11 @@ allprojects {
 
 	group 'fr.flowarg'
 
+	compileJava {
+		options.encoding = 'UTF-8'
+		sourceCompatibility = JavaVersion.VERSION_1_8
+	}
+
 	repositories {
 		jcenter()
 
@@ -27,7 +32,7 @@ allprojects {
 	dependencies {
 		implementation 'com.google.code.gson:gson:2.8.6'
 		implementation 'fr.flowarg:flowmultitools:1.1.2'
-		implementation 'com.github.FlowArg:PluginLoaderAPI:-SNAPSHOT'
+		implementation 'com.github.FlowArg:PluginLoaderAPI:1080d3c9e4'
 	}
 }
 
@@ -88,5 +93,5 @@ publishing {
 }
 
 dependencies {
-	runtimeOnly project(":CurseForgePlugin")
+	compileOnly project(":CurseForgePlugin")
 }
