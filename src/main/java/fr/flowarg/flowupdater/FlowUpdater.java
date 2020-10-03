@@ -43,7 +43,7 @@ public class FlowUpdater
     /** Progress callback to notify installation progress */
     private final IProgressCallback callback;
     
-    /** Informations about download status */
+    /** Information about download status */
     private final DownloadInfos downloadInfos;
         
     /** Represent some settings for FlowUpdater */
@@ -65,7 +65,7 @@ public class FlowUpdater
 		@Override
 		public void init(ILogger logger)
 		{
-			logger.warn("You are using default callback ! It's not recommanded. IT'S NOT AN ERROR !!!");
+			logger.warn("You are using default callback ! It's not recommended. IT'S NOT AN ERROR !!!");
 		}
 	};
 	
@@ -75,7 +75,7 @@ public class FlowUpdater
 	/**
 	 * Basic constructor to construct a new {@link FlowUpdater}.
 	 * @param version Version to update.
-	 * @param logger Logger used for log informations.
+	 * @param logger Logger used for log information.
 	 * @param updaterOptions options for this updater
 	 * @param callback The callback. If it's null, it will automatically assigned as {@link FlowUpdater#NULL_CALLBACK}.
 	 * @param externalFiles External files are download before postExecutions.
@@ -258,7 +258,7 @@ public class FlowUpdater
     		return this;
     	}
     	
-    	public FlowUpdaterBuilder withExternaFiles(List<ExternalFile> externalFiles)
+    	public FlowUpdaterBuilder withExternalFiles(List<ExternalFile> externalFiles)
     	{
     		this.externalFilesArgument.set(externalFiles);
     		return this;

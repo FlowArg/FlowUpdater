@@ -1,10 +1,12 @@
 package fr.flowarg.flowupdater.download.json;
 
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import fr.flowarg.flowupdater.utils.IOUtils;
 
-import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ExternalFile
 {
@@ -50,26 +52,10 @@ public class ExternalFile
 	 * @param jsonUrl the JSON file URL.
 	 * @return an external file list.
 	 */
-	public static ArrayList<ExternalFile> fromJson(URL jsonUrl)
+	public static List<ExternalFile> fromJson(URL jsonUrl)
 	{
-		final ArrayList<ExternalFile> result = new ArrayList<>();
-		JsonElement element = JsonNull.INSTANCE;
-        try(InputStream stream = new BufferedInputStream(jsonUrl.openStream()))
-        {
-            final Reader reader = new BufferedReader(new InputStreamReader(stream));
-            final StringBuilder sb = new StringBuilder();
-
-            int character;
-            while ((character = reader.read()) != -1) sb.append((char)character);
-
-            element =  JsonParser.parseString(sb.toString());
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        
-        final JsonObject object = element.getAsJsonObject();
-        final JsonArray extfiles = object.getAsJsonArray("extfiles");
+		final List<ExternalFile> result = new ArrayList<>();
+        final JsonArray extfiles = IOUtils.readData(jsonUrl).getAsJsonObject().getAsJsonArray("extfiles");
         extfiles.forEach(extFileElement -> {
         	final JsonObject obj = extFileElement.getAsJsonObject();
         	final String path = obj.get("path").getAsString();

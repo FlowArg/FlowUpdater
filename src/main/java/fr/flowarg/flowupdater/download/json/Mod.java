@@ -1,8 +1,9 @@
 package fr.flowarg.flowupdater.download.json;
 
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import fr.flowarg.flowupdater.utils.IOUtils;
 
-import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -55,22 +56,7 @@ public class Mod
 	public static List<Mod> getModsFromJson(URL jsonUrl)
 	{
 		final List<Mod> result = new ArrayList<>();
-		JsonElement element = JsonNull.INSTANCE;
-        try(InputStream stream = new BufferedInputStream(jsonUrl.openStream()))
-        {
-            final Reader reader = new BufferedReader(new InputStreamReader(stream));
-            final StringBuilder sb = new StringBuilder();
-
-            int character;
-            while ((character = reader.read()) != -1) sb.append((char)character);
-
-            element =  JsonParser.parseString(sb.toString());
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        
-        final JsonObject object = element.getAsJsonObject();
+        final JsonObject object = IOUtils.readData(jsonUrl).getAsJsonObject();
         final JsonArray mods = object.getAsJsonArray("mods");
         mods.forEach(modElement -> {
         	final JsonObject obj = modElement.getAsJsonObject();

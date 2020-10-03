@@ -1,11 +1,8 @@
 package fr.flowarg.flowupdater.versions;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import fr.flowarg.flowupdater.utils.IOUtils;
 
-import java.io.*;
 import java.net.URL;
 
 public class MCP
@@ -52,22 +49,7 @@ public class MCP
 	 */
 	public static MCP fromJson(URL url)
 	{
-		JsonElement element = JsonNull.INSTANCE;
-        try(InputStream stream = new BufferedInputStream(url.openStream()))
-        {
-            final Reader reader = new BufferedReader(new InputStreamReader(stream));
-            final StringBuilder sb = new StringBuilder();
-
-            int character;
-            while ((character = reader.read()) != -1) sb.append((char)character);
-
-            element =  JsonParser.parseString(sb.toString());
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        
-        final JsonObject object = element.getAsJsonObject();
+		final JsonObject object = IOUtils.readData(url).getAsJsonObject();
         
         return new MCP(object.get("clientURL").getAsString(),
         		object.get("clientSha1").getAsString(),

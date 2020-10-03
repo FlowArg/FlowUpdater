@@ -1,11 +1,12 @@
 package fr.flowarg.flowupdater.utils;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import fr.flowarg.flowlogger.ILogger;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -39,5 +40,25 @@ public class IOUtils
         {
 			logger.printStackTrace(e);
 		}
+    }
+
+    public static JsonElement readData(URL jsonURL)
+    {
+        JsonElement element = JsonNull.INSTANCE;
+        try(InputStream stream = new BufferedInputStream(jsonURL.openStream()))
+        {
+            final Reader reader = new BufferedReader(new InputStreamReader(stream));
+            final StringBuilder sb = new StringBuilder();
+
+            int character;
+            while ((character = reader.read()) != -1) sb.append((char)character);
+
+            element =  JsonParser.parseString(sb.toString());
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        return element.getAsJsonObject();
     }
 }
