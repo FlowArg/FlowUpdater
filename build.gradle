@@ -7,12 +7,16 @@ apply plugin: 'idea'
 apply plugin: 'maven-publish'
 
 group 'fr.flowarg'
-version '1.1.14'
+version '1.2.0'
 archivesBaseName = "flowupdater"
-
 
 repositories {
 	jcenter()
+
+	maven {
+		url "https://jitpack.io/"
+		name = "JitPack"
+	}
 }
 
 task sourcesJar(type: Jar) {
@@ -76,4 +80,5 @@ publishing {
 dependencies {
 	implementation 'com.google.code.gson:gson:2.8.6'
 	implementation 'fr.flowarg:flowmultitools:1.1.2'
+	implementation 'com.github.FlowArg:PluginLoaderAPI:-SNAPSHOT'
 }
