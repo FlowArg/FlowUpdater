@@ -41,16 +41,34 @@ public class IOUtils
 		}
     }
 
+    public static String getContent(URL url)
+    {
+        try(InputStream stream = new BufferedInputStream(url.openStream()))
+        {
+            final Reader reader = new BufferedReader(new InputStreamReader(stream));
+            final StringBuilder sb = new StringBuilder();
+
+            int character;
+            while ((character = reader.read()) != -1) sb.append((char)character);
+
+            return sb.toString();
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
     /**
      * Reading an url in a json element
      * @param jsonURL json input
      * @return a json element
      */
-    public static JsonElement readData(URL jsonURL)
+    public static JsonElement readJson(URL jsonURL)
     {
         try
         {
-            return readData(jsonURL.openStream());
+            return readJson(jsonURL.openStream());
         } catch (IOException e)
         {
             e.printStackTrace();
@@ -63,7 +81,7 @@ public class IOUtils
      * @param inputStream json input
      * @return a json element
      */
-    public static JsonElement readData(InputStream inputStream)
+    public static JsonElement readJson(InputStream inputStream)
     {
         JsonElement element = JsonNull.INSTANCE;
         try(InputStream stream = new BufferedInputStream(inputStream))

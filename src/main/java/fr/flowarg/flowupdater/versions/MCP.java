@@ -49,7 +49,7 @@ public class MCP
 	 */
 	public static MCP fromJson(URL url)
 	{
-		final JsonObject object = IOUtils.readData(url).getAsJsonObject();
+		final JsonObject object = IOUtils.readJson(url).getAsJsonObject();
         
         return new MCP(object.get("clientURL").getAsString(),
         		object.get("clientSha1").getAsString(),

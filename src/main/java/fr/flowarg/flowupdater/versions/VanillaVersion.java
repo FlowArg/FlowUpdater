@@ -36,7 +36,7 @@ public class VanillaVersion
 		this.snapshot = snapshot;
 		this.versionType = versionType;
 		if(!this.name.equals("no"))
-			this.json = IOUtils.readData(this.getJsonVersion());
+			this.json = IOUtils.readJson(this.getJsonVersion());
 	}
 	
 	public String getName()
@@ -119,7 +119,7 @@ public class VanillaVersion
 
         try
         {
-            final JsonObject launcherMeta = IOUtils.readData(new URL("https://launchermeta.mojang.com/mc/game/version_manifest.json").openStream()).getAsJsonObject();
+            final JsonObject launcherMeta = IOUtils.readJson(new URL("https://launchermeta.mojang.com/mc/game/version_manifest.json").openStream()).getAsJsonObject();
 
             if (this.getName().equals("latest"))
             {

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represent informations about download status. Used for progress system {@link IProgressCallback}.
+ * Represent information about download status. Used for progress system {@link IProgressCallback}.
  * @author FlowArg
  */
 public class DownloadInfos

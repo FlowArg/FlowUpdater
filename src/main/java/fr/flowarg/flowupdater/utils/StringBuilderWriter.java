@@ -12,16 +12,6 @@ public class StringBuilderWriter extends Writer implements Serializable
     {
         this.builder = new StringBuilder();
     }
-
-    public StringBuilderWriter(final int capacity)
-    {
-        this.builder = new StringBuilder(capacity);
-    }
-
-    public StringBuilderWriter(final StringBuilder builder)
-    {
-        this.builder = builder != null ? builder : new StringBuilder();
-    }
     
     @Override
     public Writer append(final char value)

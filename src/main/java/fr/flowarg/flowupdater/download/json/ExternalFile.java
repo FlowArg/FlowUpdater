@@ -55,7 +55,7 @@ public class ExternalFile
 	public static List<ExternalFile> fromJson(URL jsonUrl)
 	{
 		final List<ExternalFile> result = new ArrayList<>();
-        final JsonArray extfiles = IOUtils.readData(jsonUrl).getAsJsonObject().getAsJsonArray("extfiles");
+        final JsonArray extfiles = IOUtils.readJson(jsonUrl).getAsJsonObject().getAsJsonArray("extfiles");
         extfiles.forEach(extFileElement -> {
         	final JsonObject obj = extFileElement.getAsJsonObject();
         	final String path = obj.get("path").getAsString();

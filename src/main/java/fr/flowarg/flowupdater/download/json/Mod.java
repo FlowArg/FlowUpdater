@@ -56,7 +56,7 @@ public class Mod
 	public static List<Mod> getModsFromJson(URL jsonUrl)
 	{
 		final List<Mod> result = new ArrayList<>();
-        final JsonObject object = IOUtils.readData(jsonUrl).getAsJsonObject();
+        final JsonObject object = IOUtils.readJson(jsonUrl).getAsJsonObject();
         final JsonArray mods = object.getAsJsonArray("mods");
         mods.forEach(modElement -> {
         	final JsonObject obj = modElement.getAsJsonObject();
