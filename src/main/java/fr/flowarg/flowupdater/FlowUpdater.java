@@ -102,17 +102,23 @@ public class FlowUpdater
      * This method update the Minecraft Installation in the given directory. If the {@link #version} is {@link VanillaVersion#NULL_VERSION}, the updater will
      * be only run external files and post executions.
      * @param dir Directory where is the Minecraft installation.
-     * @param downloadServer True -> Download the server.jar.
+     * @param downloadServer True -> Download the server.jar : useful for server installation programs.
      * @throws IOException if a I/O problem has occurred.
      */
     public void update(File dir, boolean downloadServer) throws Exception
     {
+    	this.checkPrerequisites();
     	this.checkExtFiles(dir);
         this.updateVanillaVersion(dir, downloadServer);
     	this.updateExtFiles(dir);
     	this.runPostExecutions();
     	this.endUpdate();
     }
+
+    private void checkPrerequisites()
+	{
+		this.callback.step(Step.PREREQUISITES);
+	}
 
     private void checkExtFiles(File dir) throws Exception
 	{
