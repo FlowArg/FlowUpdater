@@ -41,14 +41,14 @@ If you have specified "latest" to the version name, and that the version is a sn
 
 Then, instantiate a new FlowUpdater with ``FlowUpdaterBuilder#withXArguments#withAnotherArguemtn#build``. Check the code for more informations.
 ```java
-FlowUpdater updater = new FlowUpdaterBuilder().withVersion(version).withUpdaterOptions(new UpdaterOptions(false, true)).build();
+FlowUpdater updater = new FlowUpdaterBuilder().withVersion(version).withUpdaterOptions(new UpdaterOptions(false, true, false)).build();
 ```
 
 Finally, call the update function :
 ```java
 updater.update(new File("/your/path/"), false);
 ```
-Replace false by true if you want to download the server Jar.
+Replace false by true if you want to download the server Jar (useful for server installation program).
 
 ### Forge
 
@@ -64,6 +64,20 @@ mods.add(new Mod("OneMod.jar", "sha1ofmod", 85120, "https://link/of/mod.jar"));
 mods.add(new Mod("AnotherMod.jar", "sha1ofanothermod", 86120, "https://link/of/another/mod.jar"));
 ```
 You can get a list of mods by providing a json link too : `List<Mod> mods = Mod.getModsFromJson("https://url.com/launcher/mods.json");`.
+
+You can get mods from CurseForge too:
+```java
+final List<CurseModInfos> modInfos = new ArrayList<>();
+modInfos.add(new CurseModInfos(238222, 2988823));
+You can get a list of curse mods by providing a json link too : `List<CurseModInfos> mods = CurseModInfos.getCurseModsFromJson("https://url.com/launcher/cursemods.json");`.
+
+// On updater options :
+xxx(new UpdaterOptions(true/false, true/false, true)).xx(xxxx)...
+
+// On forge version instantiation:
+
+new NewForgeVersion(xx, xxxx, xxx, x...).xx().withCurseMods(modInfos).xx()
+```
 
 Finally, set the Forge version corresponding to the wanted Forge version :
 ```java
@@ -84,7 +98,7 @@ Example on client-only mcp downloading :
 ```java
 ... new VanillaVersionBuilder()...()...().withMCP(new MCP("https://mighya.eu/resources/Client.jar", "client.jar", "f2c219e485831af2bae9464eebbe4765128c6ad6", "Kohala", "", "", 23005862, 210052));
 ```
-You can get a MCP object instance by providing a json link too : `.withMCP(MCP.fromJson("https://url.com/launcher/mcp.json"));`.
+You can get a MCP object instance by providing a json link too : `.withMCP(MCP.getMCPFromJson("https://url.com/launcher/mcp.json"));`.
 Nothing else to add :).
 
 ### Fabric
@@ -94,7 +108,7 @@ Coming soon !!!
 ### External Files
 
 With FlowUpdater, you can download other files in your update dir!
-In your FlowUpdaterBuilder, precise an array list of ExternalFile (can be get by ExternalFile#fromJson).
+In your FlowUpdaterBuilder, precise an array list of ExternalFile (can be get by `ExternalFile#getExternalFilesFromJson`).
 
 ### About json files...
 
