@@ -22,7 +22,7 @@ public class IOUtils
             final char[] buffer = new char[4096];
             int n;
             while ((n = in.read(buffer)) != -1)
-            	sw.write(buffer, 0, n);          
+                sw.write(buffer, 0, n);          
             return sw.toString();
         }
     }
@@ -33,12 +33,12 @@ public class IOUtils
         {
             logger.info(String.format("Downloading %s from %s...", out.getName(), in.toExternalForm()));
             out.getParentFile().mkdirs();
-			Files.copy(in.openStream(), out.toPath(), StandardCopyOption.REPLACE_EXISTING);
-		}
+            Files.copy(in.openStream(), out.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }
         catch (IOException e)
         {
-			logger.printStackTrace(e);
-		}
+            logger.printStackTrace(e);
+        }
     }
 
     public static String getContent(URL url)

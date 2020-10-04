@@ -14,10 +14,10 @@ import fr.flowarg.flowupdater.versions.VanillaVersion;
  */
 public interface IBuilder<T> 
 {
-	/**
-	 * Build a {@link T} object.
-	 * @return a {@link T} object.
-	 * @throws BuilderException if an error occurred when building object.
-	 */
-	T build() throws BuilderException;
+    /**
+     * Build a {@link T} object.
+     * @return a {@link T} object.
+     * @throws BuilderException if an error occurred when building object.
+     */
+    T build() throws BuilderException;
 }

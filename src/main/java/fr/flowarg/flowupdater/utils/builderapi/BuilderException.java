@@ -15,7 +15,7 @@ import fr.flowarg.flowupdater.versions.VanillaVersion;
  */
 public class BuilderException extends Exception
 {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     public BuilderException()
     {
