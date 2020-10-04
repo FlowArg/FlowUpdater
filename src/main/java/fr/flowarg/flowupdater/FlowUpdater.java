@@ -6,9 +6,9 @@ import fr.flowarg.flowlogger.Logger;
 import fr.flowarg.flowupdater.curseforgeplugin.CurseForgePlugin;
 import fr.flowarg.flowupdater.curseforgeplugin.CurseMod;
 import fr.flowarg.flowupdater.download.*;
+import fr.flowarg.flowupdater.download.json.CurseModInfos;
 import fr.flowarg.flowupdater.download.json.ExternalFile;
 import fr.flowarg.flowupdater.download.json.Mod;
-import fr.flowarg.flowupdater.utils.CurseModInfos;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.UpdaterOptions;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
@@ -27,7 +27,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Predicate;
 
 import static fr.flowarg.flowio.FileUtils.*;
 
@@ -274,7 +273,6 @@ public class FlowUpdater implements IAPI
 				this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
 			});
 		}
-		this.cursePluginLoaded = false;
 	}
 
     private void updateExtFiles(File dir)
@@ -317,6 +315,8 @@ public class FlowUpdater implements IAPI
         	this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
         }
         this.downloadInfos.clear();
+        if(this.cursePluginLoaded)
+			CurseForgePlugin.instance.shutdownOKHTTP();
         this.canPLAShutdown = true;
     }
 

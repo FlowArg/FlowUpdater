@@ -2,10 +2,12 @@ package fr.flowarg.flowupdater.curseforgeplugin;
 
 import com.therandomlabs.curseapi.CurseAPI;
 import com.therandomlabs.curseapi.CurseException;
+import com.therandomlabs.curseapi.util.OkHttpUtils;
 import fr.flowarg.pluginloaderapi.plugin.Plugin;
 import okhttp3.HttpUrl;
 
 import javax.net.ssl.HttpsURLConnection;
+import java.io.IOException;
 import java.net.URL;
 
 public class CurseForgePlugin extends Plugin
@@ -57,6 +59,22 @@ public class CurseForgePlugin extends Plugin
         }
 
         return new CurseMod("", "", "", -1);
+    }
+
+    public void shutdownOKHTTP()
+    {
+        if (OkHttpUtils.getClient() != null)
+        {
+            OkHttpUtils.getClient().dispatcher().executorService().shutdown();
+            OkHttpUtils.getClient().connectionPool().evictAll();
+            if(OkHttpUtils.getClient().cache() != null)
+            {
+                try
+                {
+                    OkHttpUtils.getClient().cache().close();
+                } catch (IOException ignored) {}
+            }
+        }
     }
 
     @Override
