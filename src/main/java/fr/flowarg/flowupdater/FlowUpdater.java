@@ -17,7 +17,6 @@ import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
 import fr.flowarg.flowupdater.versions.AbstractForgeVersion;
 import fr.flowarg.flowupdater.versions.VanillaVersion;
 import fr.flowarg.pluginloaderapi.PluginLoaderAPI;
-import fr.flowarg.pluginloaderapi.api.IAPI;
 import fr.flowarg.pluginloaderapi.plugin.PluginLoader;
 
 import java.io.File;
@@ -35,7 +34,7 @@ import static fr.flowarg.flowio.FileUtils.*;
  * You can define some parameters about your version (Forge, Vanilla, MCP (Soon fabric) etc...).
  * @author FlowArg
  */
-public class FlowUpdater implements IAPI
+public class FlowUpdater
 {
 	/** Vanilla version's object to update/install */
     private final VanillaVersion version;

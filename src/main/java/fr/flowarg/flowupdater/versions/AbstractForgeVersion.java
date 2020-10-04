@@ -37,7 +37,7 @@ public abstract class AbstractForgeVersion
 	protected URL installerUrl;
 	protected DownloadInfos downloadInfos;
 	protected boolean useFileDeleter = false;
-	protected List<CurseModInfos> curseMods;
+	protected List<CurseModInfos> curseMods = new ArrayList<>();
 	
 	protected AbstractForgeVersion(ILogger logger, List<Mod> mods, String forgeVersion, VanillaVersion vanilla, IProgressCallback callback)
 	{
