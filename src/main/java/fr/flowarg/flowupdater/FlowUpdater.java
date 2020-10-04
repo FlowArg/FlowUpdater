@@ -63,7 +63,7 @@ public class FlowUpdater
 
     private boolean canPLAShutdown;
 
-    private boolean cursePluginLoaded = true;
+    private boolean cursePluginLoaded = false;
 
     /** Default callback */
     public static final IProgressCallback NULL_CALLBACK = new IProgressCallback()
@@ -146,7 +146,7 @@ public class FlowUpdater
 				IOUtils.download(this.logger, new URL("https://flowarg.github.io/minecraft/launcher/CurseForgePlugin.jar"), curseForgePlugin);
 			}
 
-			this.logger.debug("Configuring CFP...");
+			this.logger.debug("Configuring PLA...");
 			this.configurePLA(dir);
 		}
 	}
@@ -276,30 +276,30 @@ public class FlowUpdater
 
     private void updateExtFiles(File dir)
     {
-    	if(!this.downloadInfos.getExtFiles().isEmpty())
-    	{
+        if(!this.downloadInfos.getExtFiles().isEmpty())
+        {
             this.callback.step(Step.EXTERNAL_FILES);
             this.logger.info("Downloading external file(s)...");
-        	this.downloadInfos.getExtFiles().forEach(extFile -> {
-        		try
-        		{
-        			IOUtils.download(this.logger, new URL(extFile.getDownloadURL()), new File(dir, extFile.getPath()));
-    			}
-        		catch (IOException e)
-        		{
-    				this.logger.printStackTrace(e);
-    			}
-    			this.downloadInfos.incrementDownloaded();
-    			this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
-        	});
-    	}
+            this.downloadInfos.getExtFiles().forEach(extFile -> {
+                try
+                {
+                    IOUtils.download(this.logger, new URL(extFile.getDownloadURL()), new File(dir, extFile.getPath()));
+                }
+                catch (IOException e)
+                {
+                    this.logger.printStackTrace(e);
+                }
+                this.downloadInfos.incrementDownloaded();
+                this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
+            });
+        }
     }
 
     private void runPostExecutions()
     {
         if(!this.postExecutions.isEmpty())
         {
-        	this.callback.step(Step.POST_EXECUTIONS);
+            this.callback.step(Step.POST_EXECUTIONS);
             this.logger.info("Running post executions...");
             this.postExecutions.forEach(Runnable::run);
         }
@@ -310,12 +310,13 @@ public class FlowUpdater
         this.callback.step(Step.END);
         if(this.downloadInfos.getTotalToDownload() == this.downloadInfos.getDownloaded() + 1)
         {
-        	this.downloadInfos.incrementDownloaded();
-        	this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
+            this.downloadInfos.incrementDownloaded();
+            this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
         }
         this.downloadInfos.clear();
         if(this.cursePluginLoaded)
-			CurseForgePlugin.instance.shutdownOKHTTP();
+            CurseForgePlugin.instance.shutdownOKHTTP();
+        this.cursePluginLoaded = false;
         this.canPLAShutdown = true;
     }
 
@@ -416,31 +417,31 @@ public class FlowUpdater
 
     public IProgressCallback getCallback()
     {
-		return this.callback;
-	}
+        return this.callback;
+    }
 
     public List<ExternalFile> getExternalFiles()
     {
-		return this.externalFiles;
-	}
+        return this.externalFiles;
+    }
 
     public List<Runnable> getPostExecutions()
     {
-		return this.postExecutions;
-	}
+        return this.postExecutions;
+    }
 
     public DownloadInfos getDownloadInfos()
     {
-		return this.downloadInfos;
-	}
+        return this.downloadInfos;
+    }
 
     public UpdaterOptions getUpdaterOptions()
     {
-		return this.updaterOptions;
-	}
+        return this.updaterOptions;
+    }
 
-	public boolean canPLAShutdown()
-	{
-		return this.canPLAShutdown;
-	}
+    public boolean canPLAShutdown()
+    {
+        return this.canPLAShutdown;
+    }
 }
