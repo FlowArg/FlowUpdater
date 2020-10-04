@@ -1,8 +1,9 @@
-package fr.flowarg.flowupdater.versions;
+package fr.flowarg.flowupdater.download.json;
 
 import com.google.gson.JsonObject;
 import fr.flowarg.flowupdater.utils.IOUtils;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 public class MCP
@@ -44,12 +45,12 @@ public class MCP
 	 * 	"clientSize": 1234,
 	 * 	"serverSize": 1234
 	 * }
-	 * @param url the JSON file URL.
+	 * @param jsonUrl the JSON file URL.
 	 * @return the MCP instance.
 	 */
-	public static MCP fromJson(URL url)
+	public static MCP getMCPFromJson(URL jsonUrl)
 	{
-		final JsonObject object = IOUtils.readJson(url).getAsJsonObject();
+		final JsonObject object = IOUtils.readJson(jsonUrl).getAsJsonObject();
         
         return new MCP(object.get("clientURL").getAsString(),
         		object.get("clientSha1").getAsString(),
@@ -57,6 +58,18 @@ public class MCP
         		object.get("serverSha1").getAsString(),
         		object.get("clientSize").getAsInt(),
         		object.get("serverSize").getAsInt());
+	}
+
+	public static MCP getMCPFromJson(String jsonUrl)
+	{
+		try
+		{
+			return getMCPFromJson(new URL(jsonUrl));
+		} catch (MalformedURLException e)
+		{
+			e.printStackTrace();
+			return new MCP("", "", "", "", -1, -1);
+		}
 	}
 	
 	public String getClientDownloadURL()

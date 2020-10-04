@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import fr.flowarg.flowupdater.utils.IOUtils;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +73,7 @@ public class ExternalFile
 	 * @param jsonUrl the JSON file URL.
 	 * @return an external file list.
 	 */
-	public static List<ExternalFile> fromJson(URL jsonUrl)
+	public static List<ExternalFile> getExternalFilesFromJson(URL jsonUrl)
 	{
 		final List<ExternalFile> result = new ArrayList<>();
         final JsonArray extfiles = IOUtils.readJson(jsonUrl).getAsJsonObject().getAsJsonArray("extfiles");
@@ -87,6 +88,18 @@ public class ExternalFile
         	else result.add(new ExternalFile(path, downloadURL, sha1, size));
         });
         return result;
+	}
+
+	public static List<ExternalFile> getExternalFilesFromJson(String jsonUrl)
+	{
+		try
+		{
+			return getExternalFilesFromJson(new URL(jsonUrl));
+		} catch (MalformedURLException e)
+		{
+			e.printStackTrace();
+			return new ArrayList<>();
+		}
 	}
 	
 	public String getPath()
