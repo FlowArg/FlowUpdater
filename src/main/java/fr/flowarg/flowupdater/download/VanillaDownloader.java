@@ -15,8 +15,8 @@ import static fr.flowarg.flowio.FileUtils.*;
 
 public class VanillaDownloader
 {
-	private final File dir;
-	private final ILogger logger;
+    private final File dir;
+    private final ILogger logger;
     private final IProgressCallback callback;
     private final DownloadInfos downloadInfos;
     private final boolean reextractNatives;
@@ -94,25 +94,25 @@ public class VanillaDownloader
 
     private void extractNatives() throws IOException
     {
-    	boolean flag = true;
-    	for(File minecraftNative : Objects.requireNonNull(this.natives.listFiles()))
-    	{
-    		if(minecraftNative.getName().endsWith(".so") || minecraftNative.getName().endsWith(".dylib") || minecraftNative.getAbsolutePath().endsWith(".dll"))
-    		{
-    			flag = false;
-    			break;
-    		}
-    	}
-    	if(this.reextractNatives || flag)
-    	{
+        boolean flag = true;
+        for(File minecraftNative : Objects.requireNonNull(this.natives.listFiles()))
+        {
+            if(minecraftNative.getName().endsWith(".so") || minecraftNative.getName().endsWith(".dylib") || minecraftNative.getAbsolutePath().endsWith(".dll"))
+            {
+                flag = false;
+                break;
+            }
+        }
+        if(this.reextractNatives || flag)
+        {
             this.logger.info("Extracting natives...");
             this.callback.step(Step.EXTRACT_NATIVES);
             for (File minecraftNative : Objects.requireNonNull(this.natives.listFiles()))
             {
-            	if (!minecraftNative.isDirectory() && minecraftNative.getName().endsWith(".jar"))
-            		unzipJar(this.natives.getAbsolutePath(), minecraftNative.getAbsolutePath(), "ignoreMetaInf");
+                if (!minecraftNative.isDirectory() && minecraftNative.getName().endsWith(".jar"))
+                    unzipJar(this.natives.getAbsolutePath(), minecraftNative.getAbsolutePath(), "ignoreMetaInf");
             }
-    	}
+        }
 
         for (File toDelete : Objects.requireNonNull(this.natives.listFiles()))
         {
@@ -126,14 +126,14 @@ public class VanillaDownloader
         {
             final File download = new File(this.assets, assetDownloadable.getFile());
 
-			if (download.exists())
-			{
-			    if (getFileSizeBytes(download) != assetDownloadable.getSize())
-			    {
-			        download.delete();
-			        IOUtils.download(this.logger, assetDownloadable.getUrl(), download);
-			    }
-			} else IOUtils.download(this.logger, assetDownloadable.getUrl(), download);
+            if (download.exists())
+            {
+                if (getFileSizeBytes(download) != assetDownloadable.getSize())
+                {
+                    download.delete();
+                    IOUtils.download(this.logger, assetDownloadable.getUrl(), download);
+                }
+            } else IOUtils.download(this.logger, assetDownloadable.getUrl(), download);
             
             this.downloadInfos.incrementDownloaded();
             this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
@@ -142,6 +142,6 @@ public class VanillaDownloader
     
     public DownloadInfos getDownloadInfos()
     {
-		return this.downloadInfos;
-	}
+        return this.downloadInfos;
+    }
 }

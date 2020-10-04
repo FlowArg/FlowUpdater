@@ -37,26 +37,26 @@ public class VanillaReader
 
     public void read() throws IOException
     {
-    	this.callback.step(Step.READ);
+        this.callback.step(Step.READ);
         if(!this.isSilent)
             this.logger.info("Reading libraries information...");
         long start = System.currentTimeMillis();
         this.getLibraries();
 
         if(!this.isSilent)
-        	this.logger.info("Reading assets information...");
+            this.logger.info("Reading assets information...");
         this.getAssetsIndex();
 
         if(!this.isSilent)
-        	this.logger.info("Reading jars for client/server game...");
+            this.logger.info("Reading jars for client/server game...");
         this.getClientServerJars();
 
         if(!this.isSilent)
-        	this.logger.info("Reading natives...");
+            this.logger.info("Reading natives...");
         this.getNatives();
 
         if(!this.isSilent)
-        	this.logger.info("Reading assets...");
+            this.logger.info("Reading assets...");
         this.getAssets();
 
         if(!this.isSilent)
@@ -146,21 +146,21 @@ public class VanillaReader
                 final JsonObject linuxObj = obj.getAsJsonObject("natives-linux");
 
                 if (macObj != null && Platform.isOnMac())
-                	this.getNativeForOS("mac", macObj);
+                    this.getNativeForOS("mac", macObj);
                 else if (osxObj != null && Platform.isOnMac())
-                	this.getNativeForOS("mac", osxObj);
+                    this.getNativeForOS("mac", osxObj);
                 else if (windowsObj != null && Platform.isOnWindows())
-                	this.getNativeForOS("win", windowsObj);
+                    this.getNativeForOS("win", windowsObj);
                 else if (linuxObj != null && Platform.isOnLinux())
-                	this.getNativeForOS("linux", linuxObj);
+                    this.getNativeForOS("linux", linuxObj);
             }
         });
     }
     
     private void getNativeForOS(String os, JsonObject obj)
     {
-    	if(os.equals("mac"))
-    	{
+        if(os.equals("mac"))
+        {
             final String url = obj.get("url").getAsString();
             final int size = obj.get("size").getAsInt();
             final String path = obj.get("path").getAsString();
@@ -168,11 +168,11 @@ public class VanillaReader
             final String sha1 = obj.get("sha1").getAsString();
 
             if(this.isSilent)
-            	this.logger.debug("Reading " + name + " from " + url + "... SHA1 is : " + sha1);
+                this.logger.debug("Reading " + name + " from " + url + "... SHA1 is : " + sha1);
             this.infos.getLibraryDownloadables().add(new Downloadable(url, size, sha1, name));
-    	}
-    	else
-    	{
+        }
+        else
+        {
             final String url = obj.get("url").getAsString();
             final int size = obj.get("size").getAsInt();
             final String path = obj.get("path").getAsString();
@@ -185,7 +185,7 @@ public class VanillaReader
             if(!this.isSilent)
                 this.logger.debug("Reading " + name + " from " + url + "... SHA1 is : " + sha1);
             this.infos.getLibraryDownloadables().add(new Downloadable(url, size, sha1, name));
-    	}
+        }
     }
 
     private void getAssets() throws IOException
@@ -221,7 +221,7 @@ public class VanillaReader
                         final String os = jsonElement.getAsJsonObject().getAsJsonObject("os").get("name").getAsString();
 
                         if(this.check(os))
-                        	canDownload.set(true);
+                            canDownload.set(true);
                         else canDownload.set(false);
                     }
                 }
@@ -229,7 +229,7 @@ public class VanillaReader
                 {
                     final String os = jsonElement.getAsJsonObject().getAsJsonObject("os").get("name").getAsString();
                     if(this.check(os))
-                    	canDownload.set(false);
+                        canDownload.set(false);
                 }
             });
         }
@@ -239,11 +239,11 @@ public class VanillaReader
     
     private boolean check(String str, String str2)
     {
-    	return str.equalsIgnoreCase(str2);
+        return str.equalsIgnoreCase(str2);
     }
     
     private boolean check(String os)
     {
-    	return (this.check(os, "osx") && Platform.isOnMac()) || (this.check(os, "macos") && Platform.isOnMac()) || (this.check(os, "windows") && Platform.isOnWindows()) || (this.check(os, "linux") && Platform.isOnLinux());
+        return (this.check(os, "osx") && Platform.isOnMac()) || (this.check(os, "macos") && Platform.isOnMac()) || (this.check(os, "windows") && Platform.isOnWindows()) || (this.check(os, "linux") && Platform.isOnLinux());
     }
 }
