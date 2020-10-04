@@ -36,7 +36,7 @@ import static fr.flowarg.flowio.FileUtils.*;
  */
 public class FlowUpdater
 {
-	/** Vanilla version's object to update/install */
+    /** Vanilla version's object to update/install */
     private final VanillaVersion version;
     /** Vanilla version's JSON parser */
     private final VanillaReader vanillaReader;
@@ -68,32 +68,34 @@ public class FlowUpdater
     /** Default callback */
     public static final IProgressCallback NULL_CALLBACK = new IProgressCallback()
     {
-		@Override
-		public void update(int downloaded, int max) {}
-		@Override
-		public void step(Step step) {}
-		@Override
-		public void init(ILogger logger)
-		{
-			logger.warn("You are using default callback ! It's not recommended. IT'S NOT AN ERROR !!!");
-		}
-	};
+        @Override
+        public void update(int downloaded, int max) {}
+        
+        @Override
+        public void step(Step step) {}
+        
+        @Override
+        public void init(ILogger logger)
+        {
+            logger.warn("You are using default callback ! It's not recommended. IT'S NOT AN ERROR !!!");
+        }
+    };
 
-	/** Default logger, null for file argument = no file logger */
-	public static final ILogger DEFAULT_LOGGER = new Logger("[FlowUpdater]", null);
+    /** Default logger, null for file argument = no file logger */
+    public static final ILogger DEFAULT_LOGGER = new Logger("[FlowUpdater]", null);
 
-	/**
-	 * Basic constructor to construct a new {@link FlowUpdater}.
-	 * @param version Version to update.
-	 * @param logger Logger used for log information.
-	 * @param updaterOptions options for this updater
-	 * @param callback The callback. If it's null, it will automatically assigned as {@link FlowUpdater#NULL_CALLBACK}.
-	 * @param externalFiles External files are download before postExecutions.
-	 * @param postExecutions Post executions are called after update.
-	 * @param forgeVersion ForgeVersion to install, can be null.
-	 */
+    /**
+     * Basic constructor to construct a new {@link FlowUpdater}.
+     * @param version Version to update.
+     * @param logger Logger used for log information.
+     * @param updaterOptions options for this updater
+     * @param callback The callback. If it's null, it will automatically assigned as {@link FlowUpdater#NULL_CALLBACK}.
+     * @param externalFiles External files are download before postExecutions.
+     * @param postExecutions Post executions are called after update.
+     * @param forgeVersion ForgeVersion to install, can be null.
+     */
     private FlowUpdater(VanillaVersion version, ILogger logger, UpdaterOptions updaterOptions,
-    		IProgressCallback callback, List<ExternalFile> externalFiles, List<Runnable> postExecutions, AbstractForgeVersion forgeVersion)
+            IProgressCallback callback, List<ExternalFile> externalFiles, List<Runnable> postExecutions, AbstractForgeVersion forgeVersion)
     {
         this.logger = logger;
         this.version = version;
@@ -118,122 +120,122 @@ public class FlowUpdater
      */
     public void update(File dir, boolean downloadServer) throws Exception
     {
-    	this.checkPrerequisites(dir);
-    	this.checkExtFiles(dir);
+        this.checkPrerequisites(dir);
+        this.checkExtFiles(dir);
         this.updateMinecraft(dir, downloadServer);
-    	this.updateExtFiles(dir);
-    	this.runPostExecutions();
-    	this.endUpdate();
+        this.updateExtFiles(dir);
+        this.runPostExecutions();
+        this.endUpdate();
     }
 
     private void checkPrerequisites(File dir) throws Exception
-	{
-		this.callback.step(Step.PREREQUISITES);
-		if(this.updaterOptions.isEnableModsFromCurseForge())
-		{
-			final File curseForgePlugin = new File(dir, "FUPlugins/CurseForgePlugin.jar");
-			boolean flag = true;
-			if (curseForgePlugin.exists())
-			{
-				final String crc32 = IOUtils.getContent(new URL("https://flowarg.github.io/minecraft/launcher/CurseForgePlugin.info"));
-				if(FileUtils.getCRC32(curseForgePlugin) == Long.parseLong(crc32))
-					flag = false;
-			}
+    {
+        this.callback.step(Step.PREREQUISITES);
+        if(this.updaterOptions.isEnableModsFromCurseForge())
+        {
+            final File curseForgePlugin = new File(dir, "FUPlugins/CurseForgePlugin.jar");
+            boolean flag = true;
+            if (curseForgePlugin.exists())
+            {
+                final String crc32 = IOUtils.getContent(new URL("https://flowarg.github.io/minecraft/launcher/CurseForgePlugin.info"));
+                if(FileUtils.getCRC32(curseForgePlugin) == Long.parseLong(crc32))
+                    flag = false;
+            }
 
-			if(flag)
-			{
-				this.logger.debug("Downloading CFP...");
-				IOUtils.download(this.logger, new URL("https://flowarg.github.io/minecraft/launcher/CurseForgePlugin.jar"), curseForgePlugin);
-			}
+            if(flag)
+            {
+                this.logger.debug("Downloading CFP...");
+                IOUtils.download(this.logger, new URL("https://flowarg.github.io/minecraft/launcher/CurseForgePlugin.jar"), curseForgePlugin);
+            }
 
-			this.logger.debug("Configuring PLA...");
-			this.configurePLA(dir);
-		}
-	}
+            this.logger.debug("Configuring PLA...");
+            this.configurePLA(dir);
+        }
+    }
 
-	private void configurePLA(File dir)
-	{
-		PluginLoaderAPI.setLogger(this.logger);
-		PluginLoaderAPI.registerPluginLoader(new PluginLoader("FlowUpdater", new File(dir, "FUPlugins/"), FlowUpdater.class)).complete();
-		PluginLoaderAPI.removeDefaultShutdownTrigger().complete();
-		PluginLoaderAPI.ready(FlowUpdater.class).complete();
-	}
+    private void configurePLA(File dir)
+    {
+        PluginLoaderAPI.setLogger(this.logger);
+        PluginLoaderAPI.registerPluginLoader(new PluginLoader("FlowUpdater", new File(dir, "FUPlugins/"), FlowUpdater.class)).complete();
+        PluginLoaderAPI.removeDefaultShutdownTrigger().complete();
+        PluginLoaderAPI.ready(FlowUpdater.class).complete();
+    }
 
     private void checkExtFiles(File dir) throws Exception
-	{
+    {
         if(!this.externalFiles.isEmpty())
         {
-    		for(ExternalFile extFile : this.externalFiles)
-    		{
-    	        final File file = new File(dir, extFile.getPath());
+            for(ExternalFile extFile : this.externalFiles)
+            {
+                final File file = new File(dir, extFile.getPath());
 
-    	        if (file.exists())
-    	        {
-    	        	if(extFile.isUpdate())
-					{
-						if (!Objects.requireNonNull(getSHA1(file)).equals(extFile.getSha1()))
-						{
-							file.delete();
-							this.downloadInfos.getExtFiles().add(extFile);
-						}
-					}
-    	        }
-    	        else this.downloadInfos.getExtFiles().add(extFile);
-    		}
+                if (file.exists())
+                {
+                    if(extFile.isUpdate())
+                    {
+                        if (!Objects.requireNonNull(getSHA1(file)).equals(extFile.getSha1()))
+                        {
+                            file.delete();
+                            this.downloadInfos.getExtFiles().add(extFile);
+                        }
+                    }
+                }
+                else this.downloadInfos.getExtFiles().add(extFile);
+            }
         }
     }
 
     private void updateMinecraft(File dir, boolean downloadServer) throws Exception
     {
-    	if(this.version != VanillaVersion.NULL_VERSION)
-    	{
+        if(this.version != VanillaVersion.NULL_VERSION)
+        {
             this.logger.info(String.format("Reading data about %s Minecraft version...", version.getName()));
             this.vanillaReader.read();
 
             if(this.forgeVersion != null)
             {
-        		for(Mod mod : this.forgeVersion.getMods())
-        		{
-        	        final File file = new File(new File(dir, "mods/"), mod.getName());
+                for(Mod mod : this.forgeVersion.getMods())
+                {
+                    final File file = new File(new File(dir, "mods/"), mod.getName());
 
-        	        if (file.exists())
-        	        {
-        	            if (!Objects.requireNonNull(getSHA1(file)).equals(mod.getSha1()) || getFileSizeBytes(file) != mod.getSize())
-        	            {
-        	                file.delete();
-        	                this.downloadInfos.getMods().add(mod);
-        	            }
-        	        }
-        	        else this.downloadInfos.getMods().add(mod);
-        		}
+                    if (file.exists())
+                    {
+                        if (!Objects.requireNonNull(getSHA1(file)).equals(mod.getSha1()) || getFileSizeBytes(file) != mod.getSize())
+                        {
+                            file.delete();
+                            this.downloadInfos.getMods().add(mod);
+                        }
+                    }
+                    else this.downloadInfos.getMods().add(mod);
+                }
 
-        		for (CurseModInfos infos : this.forgeVersion.getCurseMods())
-				{
-					try
-					{
-						Class.forName("fr.flowarg.flowupdater.curseforgeplugin.CurseForgePlugin");
-						this.cursePluginLoaded = true;
-						final CurseForgePlugin curseForgePlugin = CurseForgePlugin.instance;
-						final CurseMod mod = curseForgePlugin.getCurseMod(infos.getProjectID(), infos.getFileID());
+                for (CurseModInfos infos : this.forgeVersion.getCurseMods())
+                {
+                    try
+                    {
+                        Class.forName("fr.flowarg.flowupdater.curseforgeplugin.CurseForgePlugin");
+                        this.cursePluginLoaded = true;
+                        final CurseForgePlugin curseForgePlugin = CurseForgePlugin.instance;
+                        final CurseMod mod = curseForgePlugin.getCurseMod(infos.getProjectID(), infos.getFileID());
 
-						final File file = new File(new File(dir, "mods/"), mod.getName());
-						if (file.exists())
-						{
-							if (!Objects.requireNonNull(getMD5ofFile(file)).equals(mod.getMd5()) || getFileSizeBytes(file) != mod.getLength())
-							{
-								file.delete();
-								this.downloadInfos.getCurseMods().add(mod);
-							}
-						}
-						else this.downloadInfos.getCurseMods().add(mod);
-					}
-					catch (ClassNotFoundException e)
-					{
-						this.cursePluginLoaded = false;
-						this.logger.err("Cannot install mods from curseforge: CurseAPI is not loaded. Please, enable the 'enableModsFromCurseForge' updater option !");
-						break;
-					}
-				}
+                        final File file = new File(new File(dir, "mods/"), mod.getName());
+                        if (file.exists())
+                        {
+                            if (!Objects.requireNonNull(getMD5ofFile(file)).equals(mod.getMd5()) || getFileSizeBytes(file) != mod.getLength())
+                            {
+                                file.delete();
+                                this.downloadInfos.getCurseMods().add(mod);
+                            }
+                        }
+                        else this.downloadInfos.getCurseMods().add(mod);
+                    }
+                    catch (ClassNotFoundException e)
+                    {
+                        this.cursePluginLoaded = false;
+                        this.logger.err("Cannot install mods from curseforge: CurseAPI is not loaded. Please, enable the 'enableModsFromCurseForge' updater option !");
+                        break;
+                    }
+                }
             }
 
             if (!dir.exists())
@@ -243,36 +245,36 @@ public class FlowUpdater
 
             if (this.forgeVersion != null)
             {
-            	this.forgeVersion.appendDownloadInfos(this.downloadInfos);
-            	if(!this.forgeVersion.isForgeAlreadyInstalled(dir))
-            	  	this.forgeVersion.install(dir);
-            	else this.logger.info("Forge is already installed ! Skipping installation...");
-            	final File modsDir = new File(dir, "mods/");
-            	this.forgeVersion.installMods(modsDir);
-            	this.installCurseForgeMods(modsDir);
+                this.forgeVersion.appendDownloadInfos(this.downloadInfos);
+                if(!this.forgeVersion.isForgeAlreadyInstalled(dir))
+                    this.forgeVersion.install(dir);
+                else this.logger.info("Forge is already installed ! Skipping installation...");
+                final File modsDir = new File(dir, "mods/");
+                this.forgeVersion.installMods(modsDir);
+                this.installCurseForgeMods(modsDir);
             }
-    	}
-    	else this.downloadInfos.init();
+        }
+        else this.downloadInfos.init();
     }
 
     private void installCurseForgeMods(File dir)
-	{
-		if(this.cursePluginLoaded)
-		{
-			this.downloadInfos.getCurseMods().forEach(obj -> {
-				try
-				{
-					final CurseMod curseMod = (CurseMod)obj;
-					IOUtils.download(this.logger, new URL(curseMod.getDownloadURL()), new File(dir, curseMod.getName()));
-				} catch (MalformedURLException e)
-				{
-					this.logger.printStackTrace(e);
-				}
-				this.downloadInfos.incrementDownloaded();
-				this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
-			});
-		}
-	}
+    {
+        if(this.cursePluginLoaded)
+        {
+            this.downloadInfos.getCurseMods().forEach(obj -> {
+                try
+                {
+                    final CurseMod curseMod = (CurseMod)obj;
+                    IOUtils.download(this.logger, new URL(curseMod.getDownloadURL()), new File(dir, curseMod.getName()));
+                } catch (MalformedURLException e)
+                {
+                    this.logger.printStackTrace(e);
+                }
+                this.downloadInfos.incrementDownloaded();
+                this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
+            });
+        }
+    }
 
     private void updateExtFiles(File dir)
     {
@@ -326,71 +328,71 @@ public class FlowUpdater
      */
     public static class FlowUpdaterBuilder implements IBuilder<FlowUpdater>
     {
-    	private final BuilderArgument<VanillaVersion> versionArgument = new BuilderArgument<>("VanillaVersion", VanillaVersion.NULL_VERSION, VanillaVersion.NULL_VERSION).optional();
-    	private final BuilderArgument<ILogger> loggerArgument = new BuilderArgument<>("Logger", DEFAULT_LOGGER).optional();
-    	private final BuilderArgument<UpdaterOptions> updaterOptionsArgument = new BuilderArgument<UpdaterOptions>("UpdaterOptions").required();
-    	private final BuilderArgument<IProgressCallback> progressCallbackArgument = new BuilderArgument<>("Callback", NULL_CALLBACK).optional();
-    	private final BuilderArgument<List<ExternalFile>> externalFilesArgument = new BuilderArgument<List<ExternalFile>>("External Files", new ArrayList<>()).optional();
-    	private final BuilderArgument<List<Runnable>> postExecutionsArgument = new BuilderArgument<List<Runnable>>("Post Executions", new ArrayList<>()).optional();
-    	private final BuilderArgument<AbstractForgeVersion> forgeVersionArgument = new BuilderArgument<AbstractForgeVersion>("ForgeVersion").optional().require(this.versionArgument);
+        private final BuilderArgument<VanillaVersion> versionArgument = new BuilderArgument<>("VanillaVersion", VanillaVersion.NULL_VERSION, VanillaVersion.NULL_VERSION).optional();
+        private final BuilderArgument<ILogger> loggerArgument = new BuilderArgument<>("Logger", DEFAULT_LOGGER).optional();
+        private final BuilderArgument<UpdaterOptions> updaterOptionsArgument = new BuilderArgument<UpdaterOptions>("UpdaterOptions").required();
+        private final BuilderArgument<IProgressCallback> progressCallbackArgument = new BuilderArgument<>("Callback", NULL_CALLBACK).optional();
+        private final BuilderArgument<List<ExternalFile>> externalFilesArgument = new BuilderArgument<List<ExternalFile>>("External Files", new ArrayList<>()).optional();
+        private final BuilderArgument<List<Runnable>> postExecutionsArgument = new BuilderArgument<List<Runnable>>("Post Executions", new ArrayList<>()).optional();
+        private final BuilderArgument<AbstractForgeVersion> forgeVersionArgument = new BuilderArgument<AbstractForgeVersion>("ForgeVersion").optional().require(this.versionArgument);
 
-    	public FlowUpdaterBuilder withVersion(VanillaVersion version)
-    	{
-    		this.versionArgument.set(version);
-    		return this;
-    	}
+        public FlowUpdaterBuilder withVersion(VanillaVersion version)
+        {
+            this.versionArgument.set(version);
+            return this;
+        }
 
-    	public FlowUpdaterBuilder withLogger(ILogger logger)
-    	{
-    		this.loggerArgument.set(logger);
-    		return this;
-    	}
+        public FlowUpdaterBuilder withLogger(ILogger logger)
+        {
+            this.loggerArgument.set(logger);
+            return this;
+        }
 
-    	public FlowUpdaterBuilder withUpdaterOptions(UpdaterOptions updaterOptions)
-    	{
-    		this.updaterOptionsArgument.set(updaterOptions);
-    		return this;
-    	}
+        public FlowUpdaterBuilder withUpdaterOptions(UpdaterOptions updaterOptions)
+        {
+            this.updaterOptionsArgument.set(updaterOptions);
+            return this;
+        }
 
-    	public FlowUpdaterBuilder withProgressCallback(IProgressCallback callback)
-    	{
-    		this.progressCallbackArgument.set(callback);
-    		return this;
-    	}
+        public FlowUpdaterBuilder withProgressCallback(IProgressCallback callback)
+        {
+            this.progressCallbackArgument.set(callback);
+            return this;
+        }
 
-    	public FlowUpdaterBuilder withExternalFiles(List<ExternalFile> externalFiles)
-    	{
-    		this.externalFilesArgument.set(externalFiles);
-    		return this;
-    	}
+        public FlowUpdaterBuilder withExternalFiles(List<ExternalFile> externalFiles)
+        {
+            this.externalFilesArgument.set(externalFiles);
+            return this;
+        }
 
-    	public FlowUpdaterBuilder withPostExecutions(List<Runnable> postExecutions)
-    	{
-    		this.postExecutionsArgument.set(postExecutions);
-    		return this;
-    	}
+        public FlowUpdaterBuilder withPostExecutions(List<Runnable> postExecutions)
+        {
+            this.postExecutionsArgument.set(postExecutions);
+            return this;
+        }
 
         /**
          * Necessary if you want install a Forge version.
          * @param forgeVersion Forge version to install.
          */
-    	public FlowUpdaterBuilder withForgeVersion(AbstractForgeVersion forgeVersion)
-    	{
-    		this.forgeVersionArgument.set(forgeVersion);
-    		return this;
-    	}
+        public FlowUpdaterBuilder withForgeVersion(AbstractForgeVersion forgeVersion)
+        {
+            this.forgeVersionArgument.set(forgeVersion);
+            return this;
+        }
 
-    	@Override
-    	public FlowUpdater build() throws BuilderException
-    	{
-    		return new FlowUpdater(this.versionArgument.get(),
-    				this.loggerArgument.get(),
-    				this.updaterOptionsArgument.get(),
-    				this.progressCallbackArgument.get(),
-    				this.externalFilesArgument.get(),
-    				this.postExecutionsArgument.get(),
-    				this.forgeVersionArgument.get());
-    	}
+        @Override
+        public FlowUpdater build() throws BuilderException
+        {
+            return new FlowUpdater(this.versionArgument.get(),
+                    this.loggerArgument.get(),
+                    this.updaterOptionsArgument.get(),
+                    this.progressCallbackArgument.get(),
+                    this.externalFilesArgument.get(),
+                    this.postExecutionsArgument.get(),
+                    this.forgeVersionArgument.get());
+        }
     }
 
     // Some getters
