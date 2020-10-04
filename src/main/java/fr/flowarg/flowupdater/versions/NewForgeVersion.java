@@ -21,20 +21,20 @@ import java.util.List;
  */
 public class NewForgeVersion extends AbstractForgeVersion
 {
-	private final String[] compatibleVersions = {"1.16", "1.15", "1.14", "1.13", "1.12.2-14.23.5.285"};
-	private final boolean noGui;
+    private final String[] compatibleVersions = {"1.16", "1.15", "1.14", "1.13", "1.12.2-14.23.5.285"};
+    private final boolean noGui;
 
     public NewForgeVersion(String forgeVersion, VanillaVersion vanilla, ILogger logger, IProgressCallback callback, List<Mod> mods, boolean noGui)
     {
-    	super(logger, mods, forgeVersion, vanilla, callback);
+        super(logger, mods, forgeVersion, vanilla, callback);
         this.noGui = noGui;
     }
 
     @Override
     public void install(final File dirToInstall)
     {
-    	super.install(dirToInstall);
-    	if (this.isCompatible())
+        super.install(dirToInstall);
+        if (this.isCompatible())
         {
             try (BufferedInputStream stream = new BufferedInputStream(this.installerUrl.openStream()))
             {
@@ -91,12 +91,12 @@ public class NewForgeVersion extends AbstractForgeVersion
     
     public boolean isCompatible()
     {
-    	for(String str : this.compatibleVersions)
-    	{
-    		if(this.forgeVersion.startsWith(str))
-    			return true;
-    	}
-    	return false;
+        for(String str : this.compatibleVersions)
+        {
+            if(this.forgeVersion.startsWith(str))
+                return true;
+        }
+        return false;
     }
 
     private void cleaningInstaller(File tempInstallerDir)
@@ -113,6 +113,6 @@ public class NewForgeVersion extends AbstractForgeVersion
     
     public boolean isNoGui()
     {
-		return this.noGui;
-	}
+        return this.noGui;
+    }
 }

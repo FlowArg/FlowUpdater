@@ -18,96 +18,96 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class VanillaVersion
 {
-	/**
-	 * Default version used for no minecraft updates.
-	 */
-	public static final VanillaVersion NULL_VERSION = new VanillaVersion("no", null, false, null);
-	
-	private final String name;
-	private final MCP mcp;
-	private final boolean snapshot;
-	private final VersionType versionType;
-	
-	private JsonElement json = null;
-	
-	private VanillaVersion(String name, MCP mcp, boolean snapshot, VersionType versionType)
-	{
-		this.name = name;
-		this.mcp = mcp;
-		this.snapshot = snapshot;
-		this.versionType = versionType;
-		if(!this.name.equals("no"))
-			this.json = IOUtils.readJson(this.getJsonVersion());
-	}
-	
-	public String getName()
-	{
-		return this.name;
-	}
-	
-	public MCP getMcp()
-	{
-		return this.mcp;
-	}
-	
-	public boolean isSnapshot()
-	{
-		return this.snapshot;
-	}
-	
-	public VersionType getVersionType()
-	{
-		return this.versionType;
-	}
-	
+    /**
+     * Default version used for no minecraft updates.
+     */
+    public static final VanillaVersion NULL_VERSION = new VanillaVersion("no", null, false, null);
+    
+    private final String name;
+    private final MCP mcp;
+    private final boolean snapshot;
+    private final VersionType versionType;
+    
+    private JsonElement json = null;
+    
+    private VanillaVersion(String name, MCP mcp, boolean snapshot, VersionType versionType)
+    {
+        this.name = name;
+        this.mcp = mcp;
+        this.snapshot = snapshot;
+        this.versionType = versionType;
+        if(!this.name.equals("no"))
+            this.json = IOUtils.readJson(this.getJsonVersion());
+    }
+    
+    public String getName()
+    {
+        return this.name;
+    }
+    
+    public MCP getMcp()
+    {
+        return this.mcp;
+    }
+
+    public boolean isSnapshot()
+    {
+        return this.snapshot;
+    }
+    
+    public VersionType getVersionType()
+    {
+        return this.versionType;
+    }
+    
     public JsonArray getMinecraftLibrariesJson() 
     {
-    	return this.json.getAsJsonObject().getAsJsonArray("libraries");
+        return this.json.getAsJsonObject().getAsJsonArray("libraries");
     }
     
     public JsonObject getMinecraftClient() 
     {
-    	if(versionType == VersionType.MCP)
-    	{
-    		final JsonObject result = new JsonObject();
-    		final String sha1 = this.mcp.getClientSha1();
-    		final String url = this.mcp.getClientDownloadURL();
-    		final int size =this.mcp.getClientSize();
-    		if(Utils.checkString(sha1) && Utils.checkString(url) && size > 0)
-    		{
-        		result.addProperty("sha1", this.mcp.getClientSha1());
-        		result.addProperty("size", this.mcp.getClientSize());
-        		result.addProperty("url", this.mcp.getClientDownloadURL());
-        		return result;
-    		}
-    		else FlowUpdater.DEFAULT_LOGGER.warn("Skipped MCP Client");
-    	}
-    	return this.json.getAsJsonObject().getAsJsonObject("downloads").getAsJsonObject("client");
+        if(versionType == VersionType.MCP)
+        {
+            final JsonObject result = new JsonObject();
+            final String sha1 = this.mcp.getClientSha1();
+            final String url = this.mcp.getClientDownloadURL();
+            final int size =this.mcp.getClientSize();
+            if(Utils.checkString(sha1) && Utils.checkString(url) && size > 0)
+            {
+                result.addProperty("sha1", this.mcp.getClientSha1());
+                result.addProperty("size", this.mcp.getClientSize());
+                result.addProperty("url", this.mcp.getClientDownloadURL());
+                return result;
+            }
+            else FlowUpdater.DEFAULT_LOGGER.warn("Skipped MCP Client");
+        }
+        return this.json.getAsJsonObject().getAsJsonObject("downloads").getAsJsonObject("client");
     }
     
     public JsonObject getMinecraftServer() 
     {
-    	if(versionType == VersionType.MCP)
-    	{
-    		final JsonObject result = new JsonObject();
-    		final String sha1 = this.mcp.getServerSha1();
-    		final String url = this.mcp.getServerDownloadURL();
-    		final int size = this.mcp.getServerSize();
-    		if(Utils.checkString(url) && Utils.checkString(sha1) && size > 0)
-    		{
-        		result.addProperty("sha1", this.mcp.getServerSha1());
-        		result.addProperty("size", this.mcp.getServerSize());
-        		result.addProperty("url", this.mcp.getServerDownloadURL());
-        		return result;
-    		}
-    		else FlowUpdater.DEFAULT_LOGGER.warn("Skipped MCP Server");
-    	}
-    	return this.json.getAsJsonObject().getAsJsonObject("downloads").getAsJsonObject("server");
+        if(versionType == VersionType.MCP)
+        {
+            final JsonObject result = new JsonObject();
+            final String sha1 = this.mcp.getServerSha1();
+            final String url = this.mcp.getServerDownloadURL();
+            final int size = this.mcp.getServerSize();
+            if(Utils.checkString(url) && Utils.checkString(sha1) && size > 0)
+            {
+                result.addProperty("sha1", this.mcp.getServerSha1());
+                result.addProperty("size", this.mcp.getServerSize());
+                result.addProperty("url", this.mcp.getServerDownloadURL());
+                return result;
+            }
+            else FlowUpdater.DEFAULT_LOGGER.warn("Skipped MCP Server");
+        }
+        return this.json.getAsJsonObject().getAsJsonObject("downloads").getAsJsonObject("server");
     }
 
     public JsonObject getMinecraftAssetsIndex() 
     {
-    	return this.json.getAsJsonObject().getAsJsonObject("assetIndex");
+        return this.json.getAsJsonObject().getAsJsonObject("assetIndex");
     }
     
     /**
@@ -149,46 +149,46 @@ public class VanillaVersion
 
         return result.get();
     }
-	
+
     /**
      * A builder for building a vanilla version like FlowUpdaterBuilder
      * @author flow
      */
-	public static class VanillaVersionBuilder implements IBuilder<VanillaVersion>
-	{
-		private final BuilderArgument<String> nameArgument = new BuilderArgument<String>("Name").required();
-		private final BuilderArgument<MCP> mcpArgument = new BuilderArgument<MCP>("MCP").optional();
-		private final BuilderArgument<Boolean> snapshotArgument = new BuilderArgument<>("Snapshot", false).optional();
-		private final BuilderArgument<VersionType> versionTypeArgument = new BuilderArgument<VersionType>("VersionType").required();
-		
-		public VanillaVersionBuilder withName(String name)
-		{
-			this.nameArgument.set(name);
-			return this;
-		}
-		
-		public VanillaVersionBuilder withMCP(MCP mcp)
-		{
-			this.mcpArgument.set(mcp);
-			return this;
-		}
-		
-		public VanillaVersionBuilder withSnapshot(boolean snapshot)
-		{
-			this.snapshotArgument.set(snapshot);
-			return this;
-		}
-		
-		public VanillaVersionBuilder withVersionType(VersionType versionType)
-		{
-			this.versionTypeArgument.set(versionType);
-			return this;
-		}
+    public static class VanillaVersionBuilder implements IBuilder<VanillaVersion>
+    {
+        private final BuilderArgument<String> nameArgument = new BuilderArgument<String>("Name").required();
+        private final BuilderArgument<MCP> mcpArgument = new BuilderArgument<MCP>("MCP").optional();
+        private final BuilderArgument<Boolean> snapshotArgument = new BuilderArgument<>("Snapshot", false).optional();
+        private final BuilderArgument<VersionType> versionTypeArgument = new BuilderArgument<VersionType>("VersionType").required();
+        
+        public VanillaVersionBuilder withName(String name)
+        {
+            this.nameArgument.set(name);
+            return this;
+        }
+        
+        public VanillaVersionBuilder withMCP(MCP mcp)
+        {
+            this.mcpArgument.set(mcp);
+            return this;
+        }
+        
+        public VanillaVersionBuilder withSnapshot(boolean snapshot)
+        {
+            this.snapshotArgument.set(snapshot);
+            return this;
+        }
+        
+        public VanillaVersionBuilder withVersionType(VersionType versionType)
+        {
+            this.versionTypeArgument.set(versionType);
+            return this;
+        }
 
-		@Override
-		public VanillaVersion build() throws BuilderException
-		{
-			return new VanillaVersion(this.nameArgument.get(), this.mcpArgument.get(), this.snapshotArgument.get(), this.versionTypeArgument.get());
-		}
-	}
+        @Override
+        public VanillaVersion build() throws BuilderException
+        {
+            return new VanillaVersion(this.nameArgument.get(), this.mcpArgument.get(), this.snapshotArgument.get(), this.versionTypeArgument.get());
+        }
+    }
 }

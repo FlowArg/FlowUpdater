@@ -22,28 +22,30 @@ import java.util.List;
  */
 public class OldForgeVersion extends AbstractForgeVersion
 {
-	public OldForgeVersion(String forgeVersion, VanillaVersion vanilla, ILogger logger, IProgressCallback callback, List<Mod> mods)
-	{
-		super(logger, mods, forgeVersion, vanilla, callback);
-	}
-	
-	@Override
-	public void install(File dirToInstall)
-	{
-		super.install(dirToInstall);
+    public OldForgeVersion(String forgeVersion, VanillaVersion vanilla, ILogger logger, IProgressCallback callback, List<Mod> mods)
+    {
+        super(logger, mods, forgeVersion, vanilla, callback);
+    }
+    
+    @Override
+    public void install(File dirToInstall)
+    {
+        super.install(dirToInstall);
         if(!this.installForge(dirToInstall, true))
         {
-        	try {
-				this.installerUrl = new URL(String.format("https://files.minecraftforge.net/maven/net/minecraftforge/forge/%s-%s/forge-%s-%s-installer.jar", this.forgeVersion, this.vanilla.getName(), this.forgeVersion, this.vanilla.getName()));
-				if(!this.installForge(dirToInstall, false))
-					this.logger.err("Check the given forge version !");
-        	} catch (MalformedURLException ignored) {}
+            try
+            {
+                this.installerUrl = new URL(String.format("https://files.minecraftforge.net/maven/net/minecraftforge/forge/%s-%s/forge-%s-%s-installer.jar", this.forgeVersion, this.vanilla.getName(), this.forgeVersion, this.vanilla.getName()));
+                if(!this.installForge(dirToInstall, false))
+                    this.logger.err("Check the given forge version !");
+            }
+            catch (MalformedURLException ignored) {}
         }
-	}
-	
-	private boolean installForge(File dirToInstall, boolean first)
-	{
-		try (BufferedInputStream stream = new BufferedInputStream(this.installerUrl.openStream()))
+    }
+    
+    private boolean installForge(File dirToInstall, boolean first)
+    {
+        try (BufferedInputStream stream = new BufferedInputStream(this.installerUrl.openStream()))
         {
             this.logger.info("Downloading old forge installer...");
             final File tempDir = new File(dirToInstall, ".flowupdater");
@@ -91,12 +93,12 @@ public class OldForgeVersion extends AbstractForgeVersion
         }
         catch (IOException | InterruptedException e)
         {
-        	if(!first)
-        		this.logger.printStackTrace(e);
+            if(!first)
+                this.logger.printStackTrace(e);
             return false;
         }
-	}
-	
+    }
+    
     private void cleaningInstaller(File tempInstallerDir)
     {
         FileUtils.deleteDirectory(new File(tempInstallerDir, "net"));
@@ -106,9 +108,9 @@ public class OldForgeVersion extends AbstractForgeVersion
         new File(tempInstallerDir, "big_logo.png").delete();
         new File(tempInstallerDir, "url.png").delete();
     }
-	
-	public VanillaVersion getVanilla()
-	{
-		return this.vanilla;
-	}
+
+    public VanillaVersion getVanilla()
+    {
+        return this.vanilla;
+    }
 }
