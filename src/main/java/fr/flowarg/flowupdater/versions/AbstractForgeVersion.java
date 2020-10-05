@@ -154,15 +154,41 @@ public abstract class AbstractForgeVersion
             {
                 if(!fileInDir.isDirectory())
                 {
-                    if(cursePluginLoaded)
+                    if(this.mods.isEmpty() && this.allCurseMods.isEmpty())
                     {
-                        for(Object obj : this.getAllCurseMods())
+                        badFiles.add(fileInDir);
+                    }
+                    else
+                    {
+                        if(cursePluginLoaded)
                         {
-                            final CurseMod mod = (CurseMod)obj;
+                            for(Object obj : this.getAllCurseMods())
+                            {
+                                final CurseMod mod = (CurseMod)obj;
+                                final File file = new File(modsDir, mod.getName().endsWith(".jar") ? mod.getName() : mod.getName() + ".jar");
+                                if(file.getName().equalsIgnoreCase(fileInDir.getName()))
+                                {
+                                    if(getMD5ofFile(fileInDir).equals(mod.getMd5()) && getFileSizeBytes(fileInDir) == mod.getLength())
+                                    {
+                                        badFiles.remove(fileInDir);
+                                        verifiedFiles.add(fileInDir);
+                                    }
+                                    else badFiles.add(fileInDir);
+                                }
+                                else
+                                {
+                                    if(!verifiedFiles.contains(fileInDir))
+                                        badFiles.add(fileInDir);
+                                }
+                            }
+                        }
+
+                        for(Mod mod : this.mods)
+                        {
                             final File file = new File(modsDir, mod.getName().endsWith(".jar") ? mod.getName() : mod.getName() + ".jar");
                             if(file.getName().equalsIgnoreCase(fileInDir.getName()))
                             {
-                                if(getMD5ofFile(fileInDir).equals(mod.getMd5()) && getFileSizeBytes(fileInDir) == mod.getLength())
+                                if(getSHA1(fileInDir).equals(mod.getSha1()) && getFileSizeBytes(fileInDir) == mod.getSize())
                                 {
                                     badFiles.remove(fileInDir);
                                     verifiedFiles.add(fileInDir);
@@ -174,25 +200,6 @@ public abstract class AbstractForgeVersion
                                 if(!verifiedFiles.contains(fileInDir))
                                     badFiles.add(fileInDir);
                             }
-                        }
-                    }
-
-                    for(Mod mod : this.mods)
-                    {
-                        final File file = new File(modsDir, mod.getName().endsWith(".jar") ? mod.getName() : mod.getName() + ".jar");
-                        if(file.getName().equalsIgnoreCase(fileInDir.getName()))
-                        {
-                            if(getSHA1(fileInDir).equals(mod.getSha1()) && getFileSizeBytes(fileInDir) == mod.getSize())
-                            {
-                                badFiles.remove(fileInDir);
-                                verifiedFiles.add(fileInDir);
-                            }
-                            else badFiles.add(fileInDir);
-                        }
-                        else
-                        {
-                            if(!verifiedFiles.contains(fileInDir))
-                                badFiles.add(fileInDir);
                         }
                     }
                 }
