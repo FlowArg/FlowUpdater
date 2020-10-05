@@ -3,6 +3,7 @@ package fr.flowarg.flowupdater.versions;
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.download.IProgressCallback;
+import fr.flowarg.flowupdater.download.json.CurseModInfos;
 import fr.flowarg.flowupdater.download.json.Mod;
 
 import java.io.BufferedInputStream;
@@ -24,9 +25,9 @@ public class NewForgeVersion extends AbstractForgeVersion
     private final String[] compatibleVersions = {"1.16", "1.15", "1.14", "1.13", "1.12.2-14.23.5.285"};
     private final boolean noGui;
 
-    public NewForgeVersion(String forgeVersion, VanillaVersion vanilla, ILogger logger, IProgressCallback callback, List<Mod> mods, boolean noGui)
+    NewForgeVersion(String forgeVersion, VanillaVersion vanilla, ILogger logger, IProgressCallback callback, List<Mod> mods, ArrayList<CurseModInfos> curseMods, boolean noGui, boolean useFileDeleter)
     {
-        super(logger, mods, forgeVersion, vanilla, callback);
+        super(logger, mods, curseMods, forgeVersion, vanilla, callback, useFileDeleter);
         this.noGui = noGui;
     }
 

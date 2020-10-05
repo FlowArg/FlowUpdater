@@ -34,15 +34,17 @@ public abstract class AbstractForgeVersion
     protected final VanillaVersion vanilla;
     protected final String forgeVersion;
     protected final IProgressCallback callback;
+    protected final ArrayList<CurseModInfos> curseMods;
+    protected final boolean useFileDeleter;
     protected URL installerUrl;
     protected DownloadInfos downloadInfos;
-    protected boolean useFileDeleter = false;
-    protected List<CurseModInfos> curseMods = new ArrayList<>();
-    
-    protected AbstractForgeVersion(ILogger logger, List<Mod> mods, String forgeVersion, VanillaVersion vanilla, IProgressCallback callback)
+
+    protected AbstractForgeVersion(ILogger logger, List<Mod> mods, ArrayList<CurseModInfos> curseMods, String forgeVersion, VanillaVersion vanilla, IProgressCallback callback, boolean useFileDeleter)
     {
         this.logger = logger;
         this.mods = mods;
+        this.useFileDeleter = useFileDeleter;
+        this.curseMods = curseMods;
         this.vanilla = vanilla;
         if (!forgeVersion.contains("-"))
             this.forgeVersion = this.vanilla.getName() + '-' + forgeVersion;
@@ -165,18 +167,6 @@ public abstract class AbstractForgeVersion
     {
         return this.useFileDeleter;
     }
-
-    public AbstractForgeVersion enableModFileDeleter()
-    {
-        this.useFileDeleter = true;
-        return this;
-    }
-
-    public AbstractForgeVersion disableModFileDeleter()
-    {
-        this.useFileDeleter = false;
-        return this;
-    }
     
     public void appendDownloadInfos(DownloadInfos infos)
     {
@@ -189,12 +179,6 @@ public abstract class AbstractForgeVersion
         FileUtils.compressFiles(tempInstallerDir.listFiles(), output);
         Files.move(output.toPath(), new File(output.getAbsolutePath().replace(".zip", ".jar")).toPath(), StandardCopyOption.REPLACE_EXISTING);
         tempInstallerDir.delete();
-    }
-
-    public AbstractForgeVersion withCurseMods(List<CurseModInfos> curseMods)
-    {
-        this.curseMods = curseMods;
-        return this;
     }
     
     public List<Mod> getMods()
@@ -217,7 +201,7 @@ public abstract class AbstractForgeVersion
         return this.installerUrl;
     }
 
-    public List<CurseModInfos> getCurseMods()
+    public ArrayList<CurseModInfos> getCurseMods()
     {
         return this.curseMods;
     }
