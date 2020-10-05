@@ -159,33 +159,21 @@ public class VanillaReader
     
     private void getNativeForOS(String os, JsonObject obj)
     {
-        if(os.equals("mac"))
-        {
-            final String url = obj.get("url").getAsString();
-            final int size = obj.get("size").getAsInt();
-            final String path = obj.get("path").getAsString();
-            final String name = "/natives/" + path.substring(path.lastIndexOf('/') + 1);
-            final String sha1 = obj.get("sha1").getAsString();
+        final String url = obj.get("url").getAsString();
+        final int size = obj.get("size").getAsInt();
+        final String path = obj.get("path").getAsString();
+        final String name = "/natives/" + path.substring(path.lastIndexOf('/') + 1);
+        final String sha1 = obj.get("sha1").getAsString();
 
-            if(this.isSilent)
-                this.logger.debug("Reading " + name + " from " + url + "... SHA1 is : " + sha1);
-            this.infos.getLibraryDownloadables().add(new Downloadable(url, size, sha1, name));
-        }
-        else
+        if(!os.equals("mac"))
         {
-            final String url = obj.get("url").getAsString();
-            final int size = obj.get("size").getAsInt();
-            final String path = obj.get("path").getAsString();
-            final String name = "/natives/" + path.substring(path.lastIndexOf('/') + 1);
-            final String sha1 = obj.get("sha1").getAsString();
-
             if (name.contains("-3.2.1-") && name.contains("lwjgl")) return;
             if (name.contains("-2.9.2-") && name.contains("lwjgl")) return;
-
-            if(!this.isSilent)
-                this.logger.debug("Reading " + name + " from " + url + "... SHA1 is : " + sha1);
-            this.infos.getLibraryDownloadables().add(new Downloadable(url, size, sha1, name));
         }
+
+        if(!this.isSilent)
+            this.logger.debug("Reading " + name + " from " + url + "... SHA1 is : " + sha1);
+        this.infos.getLibraryDownloadables().add(new Downloadable(url, size, sha1, name));
     }
 
     private void getAssets() throws IOException
@@ -219,10 +207,7 @@ public class VanillaReader
                     if (jsonElement.getAsJsonObject().getAsJsonObject("os") != null)
                     {
                         final String os = jsonElement.getAsJsonObject().getAsJsonObject("os").get("name").getAsString();
-
-                        if(this.check(os))
-                            canDownload.set(true);
-                        else canDownload.set(false);
+                        canDownload.set(this.check(os));
                     }
                 }
                 else if (jsonElement.getAsJsonObject().get("action").getAsString().equals("disallow"))
