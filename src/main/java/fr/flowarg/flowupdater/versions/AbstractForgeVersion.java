@@ -3,6 +3,7 @@ package fr.flowarg.flowupdater.versions;
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.FlowUpdater;
+import fr.flowarg.flowupdater.curseforgeplugin.CurseMod;
 import fr.flowarg.flowupdater.download.DownloadInfos;
 import fr.flowarg.flowupdater.download.IProgressCallback;
 import fr.flowarg.flowupdater.download.Step;
@@ -19,8 +20,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.flowarg.flowio.FileUtils.getFileSizeBytes;
-import static fr.flowarg.flowio.FileUtils.getSHA1;
+import static fr.flowarg.flowio.FileUtils.*;
 
 /**
  * The base object of a forge version.
@@ -36,6 +36,7 @@ public abstract class AbstractForgeVersion
     protected final IProgressCallback callback;
     protected final ArrayList<CurseModInfos> curseMods;
     protected final boolean useFileDeleter;
+    protected List<Object> allCurseMods;
     protected URL installerUrl;
     protected DownloadInfos downloadInfos;
 
@@ -110,9 +111,10 @@ public abstract class AbstractForgeVersion
     /**
      * This function installs mods at the specified directory.
      * @param modsDir Specified mods directory.
+     * @param cursePluginLoaded if FlowUpdater has loaded CurseForge plugin
      * @throws IOException If install fail.
      */
-    public void installMods(File modsDir) throws Exception
+    public void installMods(File modsDir, boolean cursePluginLoaded) throws Exception
     {
         this.callback.step(Step.MODS);
         this.downloadInfos.getMods().forEach(mod -> {
@@ -127,6 +129,22 @@ public abstract class AbstractForgeVersion
             this.downloadInfos.incrementDownloaded();
             this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
         });
+
+        if(cursePluginLoaded)
+        {
+            this.downloadInfos.getCurseMods().forEach(obj -> {
+                try
+                {
+                    final CurseMod curseMod = (CurseMod)obj;
+                    IOUtils.download(this.logger, new URL(curseMod.getDownloadURL()), new File(modsDir, curseMod.getName()));
+                } catch (MalformedURLException e)
+                {
+                    this.logger.printStackTrace(e);
+                }
+                this.downloadInfos.incrementDownloaded();
+                this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
+            });
+        }
         
         if(this.useFileDeleter)
         {
@@ -136,6 +154,29 @@ public abstract class AbstractForgeVersion
             {
                 if(!fileInDir.isDirectory())
                 {
+                    if(cursePluginLoaded)
+                    {
+                        for(Object obj : this.getAllCurseMods())
+                        {
+                            final CurseMod mod = (CurseMod)obj;
+                            final File file = new File(modsDir, mod.getName().endsWith(".jar") ? mod.getName() : mod.getName() + ".jar");
+                            if(file.getName().equalsIgnoreCase(fileInDir.getName()))
+                            {
+                                if(getMD5ofFile(fileInDir).equals(mod.getMd5()) && getFileSizeBytes(fileInDir) == mod.getLength())
+                                {
+                                    badFiles.remove(fileInDir);
+                                    verifiedFiles.add(fileInDir);
+                                }
+                                else badFiles.add(fileInDir);
+                            }
+                            else
+                            {
+                                if(!verifiedFiles.contains(fileInDir))
+                                    badFiles.add(fileInDir);
+                            }
+                        }
+                    }
+
                     for(Mod mod : this.mods)
                     {
                         final File file = new File(modsDir, mod.getName().endsWith(".jar") ? mod.getName() : mod.getName() + ".jar");
@@ -143,8 +184,7 @@ public abstract class AbstractForgeVersion
                         {
                             if(getSHA1(fileInDir).equals(mod.getSha1()) && getFileSizeBytes(fileInDir) == mod.getSize())
                             {
-                                if(badFiles.contains(fileInDir))
-                                    badFiles.remove(fileInDir);
+                                badFiles.remove(fileInDir);
                                 verifiedFiles.add(fileInDir);
                             }
                             else badFiles.add(fileInDir);
@@ -199,6 +239,16 @@ public abstract class AbstractForgeVersion
     public URL getInstallerUrl()
     {
         return this.installerUrl;
+    }
+
+    public List<Object> getAllCurseMods()
+    {
+        return this.allCurseMods;
+    }
+
+    public void setAllCurseMods(List<Object> allCurseMods)
+    {
+        this.allCurseMods = allCurseMods;
     }
 
     public ArrayList<CurseModInfos> getCurseMods()

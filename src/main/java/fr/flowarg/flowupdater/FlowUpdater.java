@@ -21,7 +21,6 @@ import fr.flowarg.pluginloaderapi.plugin.PluginLoader;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -209,6 +208,7 @@ public class FlowUpdater
                     else this.downloadInfos.getMods().add(mod);
                 }
 
+                final List<Object> allCurseMods = new ArrayList<>(this.forgeVersion.getCurseMods().size());
                 for (CurseModInfos infos : this.forgeVersion.getCurseMods())
                 {
                     try
@@ -217,7 +217,7 @@ public class FlowUpdater
                         this.cursePluginLoaded = true;
                         final CurseForgePlugin curseForgePlugin = CurseForgePlugin.instance;
                         final CurseMod mod = curseForgePlugin.getCurseMod(infos.getProjectID(), infos.getFileID());
-
+                        allCurseMods.add(mod);
                         final File file = new File(new File(dir, "mods/"), mod.getName());
                         if (file.exists())
                         {
@@ -236,6 +236,8 @@ public class FlowUpdater
                         break;
                     }
                 }
+
+                this.forgeVersion.setAllCurseMods(allCurseMods);
             }
 
             if (!dir.exists())
@@ -250,30 +252,10 @@ public class FlowUpdater
                     this.forgeVersion.install(dir);
                 else this.logger.info("Forge is already installed ! Skipping installation...");
                 final File modsDir = new File(dir, "mods/");
-                this.forgeVersion.installMods(modsDir);
-                this.installCurseForgeMods(modsDir);
+                this.forgeVersion.installMods(modsDir, this.cursePluginLoaded);
             }
         }
         else this.downloadInfos.init();
-    }
-
-    private void installCurseForgeMods(File dir)
-    {
-        if(this.cursePluginLoaded)
-        {
-            this.downloadInfos.getCurseMods().forEach(obj -> {
-                try
-                {
-                    final CurseMod curseMod = (CurseMod)obj;
-                    IOUtils.download(this.logger, new URL(curseMod.getDownloadURL()), new File(dir, curseMod.getName()));
-                } catch (MalformedURLException e)
-                {
-                    this.logger.printStackTrace(e);
-                }
-                this.downloadInfos.incrementDownloaded();
-                this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
-            });
-        }
     }
 
     private void updateExtFiles(File dir)
