@@ -232,7 +232,7 @@ public class FlowUpdater
                     catch (ClassNotFoundException e)
                     {
                         this.cursePluginLoaded = false;
-                        this.logger.err("Cannot install mods from curseforge: CurseAPI is not loaded. Please, enable the 'enableModsFromCurseForge' updater option !");
+                        this.logger.err("Cannot install mods from CurseForge: CurseAPI is not loaded. Please, enable the 'enableModsFromCurseForge' updater option !");
                         break;
                     }
                 }
