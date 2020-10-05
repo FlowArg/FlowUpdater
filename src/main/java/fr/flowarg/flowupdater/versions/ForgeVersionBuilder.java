@@ -36,7 +36,7 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
         return this;
     }
 
-    public ForgeVersionBuilder withVanillaArgument(VanillaVersion vanillaVersion)
+    public ForgeVersionBuilder withVanillaVersion(VanillaVersion vanillaVersion)
     {
         this.vanillaVersionArgument.set(vanillaVersion);
         return this;

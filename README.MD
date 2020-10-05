@@ -41,8 +41,10 @@ If you have specified "latest" to the version name, and that the version is a sn
 
 Then, instantiate a new FlowUpdater with ``FlowUpdaterBuilder#withXArguments#withAnotherArguemtn#build``. Check the code for more informations.
 ```java
-FlowUpdater updater = new FlowUpdaterBuilder().withVersion(version).withUpdaterOptions(new UpdaterOptions(false, true, false)).build();
+FlowUpdater updater = new FlowUpdaterBuilder().withVersion(version).withUpdaterOptions(new UpdaterOptions(false|true, true|false, false)).build();
 ```
+
+Don't forget to add a progress callback if you want to make a progress bar !
 
 Finally, call the update function :
 ```java
@@ -53,8 +55,6 @@ Replace false by true if you want to download the server Jar (useful for server 
 ### Forge
 
 (You need to setup a vanilla updater !)
-
-(Before calling update function!)
 
 First, in your vanilla version builder, change the version type to `VersionType.FORGE`.
 Next, make a List of Mod objects.
@@ -67,21 +67,30 @@ You can get a list of mods by providing a json link too : `List<Mod> mods = Mod.
 
 You can get mods from CurseForge too:
 ```java
-final List<CurseModInfos> modInfos = new ArrayList<>();
+List<CurseModInfos> modInfos = new ArrayList<>();
+// project ID and file ID
 modInfos.add(new CurseModInfos(238222, 2988823));
 You can get a list of curse mods by providing a json link too : `List<CurseModInfos> mods = CurseModInfos.getCurseModsFromJson("https://url.com/launcher/cursemods.json");`.
 
 // On updater options :
-xxx(new UpdaterOptions(true/false, true/false, true)).xx(xxxx)...
+.withUpdaterOptions(new UpdaterOptions(true|false, false|false, true))
 
-// On forge version instantiation:
-
-new NewForgeVersion(xx, xxxx, xxx, x...).xx().withCurseMods(modInfos).xx()
+Then, build a forge version. For example, I will build a NewForgeVersion.
+```java
+AbstractForgeVersion forgeVersion = new ForgeVersionBuilder(ForgeVersionBuilder.ForgeVersionType.NEW)
+			.withForgeVersion("31.2.29")
+			.withVanillaVersion(version)
+			.withLogger(logger)
+			.withProgressCallback(callback)
+			.withCurseMods(modInfos)
+			.withUseFileDeleter(true) // delete bad mods
+			.withNoGui(true) // only for new forge version: true -> don't show the forge installer gui. false -> show the forge installer gui.
+			.build();
 ```
 
 Finally, set the Forge version corresponding to the wanted Forge version :
 ```java
-... new FlowUpdaterBuilder()...()...().withForgeVersion(new NewForgeVersion("31.2.30", version, logger /* Same as the updater */, callback /* Same as the updater */, mods).enableModFileDeleter()); // NewForgeVersion -> 1.12.2-14.23.5.2851 1.16.2 ; OldForgeVersion -> 1.7 1.12 ; use enableModFileDeleter() | disableModFileDeleter() as you want.
+.withForgeVersion(forgeVersion);
 ```
 That's all!
 
@@ -91,12 +100,12 @@ That's all!
 In your vanilla version builder, change the version type to `VersionType.MCP`.
 Finally, set to vanilla version builder a MCP version :
 ```java
-... new VanillaVersionBuilder()...()...().withMCP(new MCP("clientDownloadURL", "name", "clientSha1", "author", "serverDownloadURL", "serverSha1", 1215, 20525));
+.withMCP(new MCP("clientDownloadURL", "name", "clientSha1", "author", "serverDownloadURL", "serverSha1", 1215, 20525));
 ```
 If you set an empty/null string in url and sha1 and 0 in size, the updater will use the default minecraft jar.
 Example on client-only mcp downloading :
 ```java
-... new VanillaVersionBuilder()...()...().withMCP(new MCP("https://mighya.eu/resources/Client.jar", "client.jar", "f2c219e485831af2bae9464eebbe4765128c6ad6", "Kohala", "", "", 23005862, 210052));
+.withMCP(new MCP("https://mighya.eu/resources/Client.jar", "f2c219e485831af2bae9464eebbe4765128c6ad6", "", "", 23005862, 210052));
 ```
 You can get a MCP object instance by providing a json link too : `.withMCP(MCP.getMCPFromJson("https://url.com/launcher/mcp.json"));`.
 Nothing else to add :).
@@ -125,6 +134,7 @@ And all it's done !
 
 This library has some dependencies :
 - [FlowMultitools](https://github.com/FlowArg/FlowMultitools).
+- [PluginLoaderAPI](https://github.com/FlowArg/PluginLoaderAPI).
 - [Gson](https://github.com/Google/Gson).
 
 
