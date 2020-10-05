@@ -75,6 +75,34 @@ public abstract class AbstractForgeVersion
     {
         this.callback.step(Step.FORGE);
         this.logger.info("Installing forge, version: " + this.forgeVersion + "...");
+        this.checkForgeEnv(dirToInstall);
+    }
+
+    /**
+     * Check if the minecraft installation already contains another forge installation not corresponding to this version.
+     * @param dirToInstall Forge installation directory.
+     */
+    protected boolean checkForgeEnv(File dirToInstall)
+    {
+        boolean result = false;
+        final File forgeDir = new File(dirToInstall, "libraries/net/minecraftforge/forge/");
+        if(forgeDir.exists())
+        {
+            if(forgeDir.listFiles() != null)
+            {
+                for (File contained : forgeDir.listFiles())
+                {
+                    if(!contained.getName().contains(this.forgeVersion))
+                    {
+                        if (contained.isDirectory()) FileUtils.deleteDirectory(contained);
+                        else contained.delete();
+                        result = true;
+                    }
+                }
+            }
+        }
+
+        return result;
     }
     
     /**

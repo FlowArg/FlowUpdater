@@ -88,7 +88,22 @@ public class NewForgeVersion extends AbstractForgeVersion
             }
         }
     }
-    
+
+    @Override
+    protected boolean checkForgeEnv(File dirToInstall)
+    {
+        final boolean hasAnotherVersions = super.checkForgeEnv(dirToInstall);
+        if(this.isCompatible() && !this.forgeVersion.contains("1.12.2") && hasAnotherVersions)
+        {
+            final File minecraftForgeDir = new File(dirToInstall, "libraries/net/minecraft/");
+            final File mappingsDir = new File(dirToInstall, "libraries/de/");
+            FileUtils.deleteDirectory(minecraftForgeDir);
+            FileUtils.deleteDirectory(mappingsDir);
+        }
+
+        return false;
+    }
+
     public boolean isCompatible()
     {
         for(String str : this.compatibleVersions)

@@ -42,7 +42,7 @@ public class OldForgeVersion extends AbstractForgeVersion
             catch (MalformedURLException ignored) {}
         }
     }
-    
+
     private boolean installForge(File dirToInstall, boolean first)
     {
         try (BufferedInputStream stream = new BufferedInputStream(this.installerUrl.openStream()))
