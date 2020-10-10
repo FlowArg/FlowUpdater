@@ -94,29 +94,32 @@ public class VanillaDownloader
 
     private void extractNatives() throws IOException
     {
-        boolean flag = true;
-        for(File minecraftNative : Objects.requireNonNull(this.natives.listFiles()))
+        if(this.natives.listFiles() != null)
         {
-            if(minecraftNative.getName().endsWith(".so") || minecraftNative.getName().endsWith(".dylib") || minecraftNative.getAbsolutePath().endsWith(".dll"))
+            boolean flag = true;
+            for(File minecraftNative : this.natives.listFiles())
             {
-                flag = false;
-                break;
+                if(minecraftNative.getName().endsWith(".so") || minecraftNative.getName().endsWith(".dylib") || minecraftNative.getName().endsWith(".dll"))
+                {
+                    flag = false;
+                    break;
+                }
             }
-        }
-        if(this.reextractNatives || flag)
-        {
-            this.logger.info("Extracting natives...");
-            this.callback.step(Step.EXTRACT_NATIVES);
-            for (File minecraftNative : Objects.requireNonNull(this.natives.listFiles()))
+            if(this.reextractNatives || flag)
             {
-                if (!minecraftNative.isDirectory() && minecraftNative.getName().endsWith(".jar"))
-                    unzipJar(this.natives.getAbsolutePath(), minecraftNative.getAbsolutePath(), "ignoreMetaInf");
+                this.logger.info("Extracting natives...");
+                this.callback.step(Step.EXTRACT_NATIVES);
+                for (File minecraftNative : this.natives.listFiles())
+                {
+                    if (!minecraftNative.isDirectory() && minecraftNative.getName().endsWith(".jar"))
+                        unzipJar(this.natives.getAbsolutePath(), minecraftNative.getAbsolutePath(), "ignoreMetaInf");
+                }
             }
-        }
 
-        for (File toDelete : Objects.requireNonNull(this.natives.listFiles()))
-        {
-            if (toDelete.getName().endsWith(".git") || toDelete.getName().endsWith(".sha1")) toDelete.delete();
+            for (File toDelete : this.natives.listFiles())
+            {
+                if (toDelete.getName().endsWith(".git") || toDelete.getName().endsWith(".sha1")) toDelete.delete();
+            }
         }
     }
 
