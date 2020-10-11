@@ -71,13 +71,13 @@ public class VanillaVersion
         {
             final JsonObject result = new JsonObject();
             final String sha1 = this.mcp.getClientSha1();
-            final String url = this.mcp.getClientDownloadURL();
+            final String url = this.mcp.getClientURL();
             final int size =this.mcp.getClientSize();
             if(Utils.checkString(sha1) && Utils.checkString(url) && size > 0)
             {
                 result.addProperty("sha1", this.mcp.getClientSha1());
                 result.addProperty("size", this.mcp.getClientSize());
-                result.addProperty("url", this.mcp.getClientDownloadURL());
+                result.addProperty("url", this.mcp.getClientURL());
                 return result;
             }
             else FlowUpdater.DEFAULT_LOGGER.warn("Skipped MCP Client");
@@ -91,13 +91,13 @@ public class VanillaVersion
         {
             final JsonObject result = new JsonObject();
             final String sha1 = this.mcp.getServerSha1();
-            final String url = this.mcp.getServerDownloadURL();
+            final String url = this.mcp.getServerURL();
             final int size = this.mcp.getServerSize();
             if(Utils.checkString(url) && Utils.checkString(sha1) && size > 0)
             {
                 result.addProperty("sha1", this.mcp.getServerSha1());
                 result.addProperty("size", this.mcp.getServerSize());
-                result.addProperty("url", this.mcp.getServerDownloadURL());
+                result.addProperty("url", this.mcp.getServerURL());
                 return result;
             }
             else FlowUpdater.DEFAULT_LOGGER.warn("Skipped MCP Server");

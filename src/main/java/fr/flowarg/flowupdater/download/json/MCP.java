@@ -8,27 +8,27 @@ import java.net.URL;
 
 public class MCP
 {
-    private final String clientDownloadURL;
+    private final String clientURL;
     private final String clientSha1;
     private final int clientSize;
     private final int serverSize;
-    private final String serverDownloadURL;
+    private final String serverURL;
     private final String serverSha1;
     
     /**
      * Construct a new MCP.
-     * @param clientDownloadURL URL of client.jar
+     * @param clientURL URL of client.jar
      * @param clientSha1 SHA1 of client.jar
-     * @param serverDownloadURL URL of server.jar
+     * @param serverURL URL of server.jar
      * @param serverSha1 SHA1 of server.jar
      * @param clientSize Size (bytes) of client.jar
      * @param serverSize Size (bytes) of server.jar
      */
-    public MCP(String clientDownloadURL, String clientSha1, String serverDownloadURL, String serverSha1, int clientSize, int serverSize)
+    public MCP(String clientURL, String clientSha1, String serverURL, String serverSha1, int clientSize, int serverSize)
     {
-        this.clientDownloadURL = clientDownloadURL;
+        this.clientURL = clientURL;
         this.clientSha1 = clientSha1;
-        this.serverDownloadURL = serverDownloadURL;
+        this.serverURL = serverURL;
         this.serverSha1 = serverSha1;
         this.clientSize = clientSize;
         this.serverSize = serverSize;
@@ -72,9 +72,9 @@ public class MCP
         }
     }
     
-    public String getClientDownloadURL()
+    public String getClientURL()
     {
-        return this.clientDownloadURL;
+        return this.clientURL;
     }
     
     public String getClientSha1()
@@ -82,9 +82,9 @@ public class MCP
         return this.clientSha1;
     }
     
-    public String getServerDownloadURL()
+    public String getServerURL()
     {
-        return this.serverDownloadURL;
+        return this.serverURL;
     }
     
     public String getServerSha1()
