@@ -10,8 +10,8 @@ public class MCP
 {
     private final String clientURL;
     private final String clientSha1;
-    private final int clientSize;
-    private final int serverSize;
+    private final long clientSize;
+    private final long serverSize;
     private final String serverURL;
     private final String serverSha1;
     
@@ -24,7 +24,7 @@ public class MCP
      * @param clientSize Size (bytes) of client.jar
      * @param serverSize Size (bytes) of server.jar
      */
-    public MCP(String clientURL, String clientSha1, String serverURL, String serverSha1, int clientSize, int serverSize)
+    public MCP(String clientURL, String clientSha1, String serverURL, String serverSha1, long clientSize, long serverSize)
     {
         this.clientURL = clientURL;
         this.clientSha1 = clientSha1;
@@ -56,8 +56,8 @@ public class MCP
                 object.get("clientSha1").getAsString(),
                 object.get("serverURL").getAsString(),
                 object.get("serverSha1").getAsString(),
-                object.get("clientSize").getAsInt(),
-                object.get("serverSize").getAsInt());
+                object.get("clientSize").getAsLong(),
+                object.get("serverSize").getAsLong());
     }
 
     public static MCP getMCPFromJson(String jsonUrl)
@@ -88,11 +88,11 @@ public class MCP
     {
         return this.serverSha1;
     }
-    public int getClientSize()
+    public long getClientSize()
     {
         return this.clientSize;
     }
-    public int getServerSize()
+    public long getServerSize()
     {
         return this.serverSize;
     }

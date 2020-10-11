@@ -72,7 +72,7 @@ public class VanillaVersion
             final JsonObject result = new JsonObject();
             final String sha1 = this.mcp.getClientSha1();
             final String url = this.mcp.getClientURL();
-            final int size =this.mcp.getClientSize();
+            final long size = this.mcp.getClientSize();
             if(Utils.checkString(sha1) && Utils.checkString(url) && size > 0)
             {
                 result.addProperty("sha1", this.mcp.getClientSha1());
@@ -92,7 +92,7 @@ public class VanillaVersion
             final JsonObject result = new JsonObject();
             final String sha1 = this.mcp.getServerSha1();
             final String url = this.mcp.getServerURL();
-            final int size = this.mcp.getServerSize();
+            final long size = this.mcp.getServerSize();
             if(Utils.checkString(url) && Utils.checkString(sha1) && size > 0)
             {
                 result.addProperty("sha1", this.mcp.getServerSha1());

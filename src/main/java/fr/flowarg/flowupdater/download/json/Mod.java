@@ -13,7 +13,7 @@ public class Mod
 {
     private final String name;
     private final String sha1;
-    private final int size;
+    private final long size;
     private final String downloadURL;
     
     /**
@@ -23,7 +23,7 @@ public class Mod
      * @param size Size of mod file.
      * @param downloadURL Mod download URL.
      */
-    public Mod(String name, String sha1, int size, String downloadURL)
+    public Mod(String name, String sha1, long size, String downloadURL)
     {
         this.name = name;
         this.sha1 = sha1;
@@ -63,7 +63,7 @@ public class Mod
             final String name = obj.get("name").getAsString();
             final String sha1 = obj.get("sha1").getAsString();
             final String downloadURL = obj.get("downloadURL").getAsString();
-            final int size = obj.get("size").getAsInt();
+            final long size = obj.get("size").getAsLong();
             
             result.add(new Mod(name, sha1, size, downloadURL));
         });
@@ -91,7 +91,7 @@ public class Mod
     {
         return this.sha1;
     }
-    public int getSize()
+    public long getSize()
     {
         return this.size;
     }

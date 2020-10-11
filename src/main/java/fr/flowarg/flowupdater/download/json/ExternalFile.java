@@ -14,7 +14,7 @@ public class ExternalFile
     private final String path;
     private final String downloadURL;
     private final String sha1;
-    private final int size;
+    private final long size;
     private final boolean update;
     
     /**
@@ -24,7 +24,7 @@ public class ExternalFile
      * @param size Size of external file.
      * @param downloadURL external file URL.
      */
-    public ExternalFile(String path, String downloadURL, String sha1, int size)
+    public ExternalFile(String path, String downloadURL, String sha1, long size)
     {
         this.path = path;
         this.downloadURL = downloadURL;
@@ -41,7 +41,7 @@ public class ExternalFile
      * @param downloadURL external file URL.
      * @param update false -> not checking if the file is valid. true -> checking if the file is valid.
      */
-    public ExternalFile(String path, String downloadURL, String sha1, int size, boolean update)
+    public ExternalFile(String path, String downloadURL, String sha1, long size, boolean update)
     {
         this.path = path;
         this.downloadURL = downloadURL;
@@ -82,7 +82,7 @@ public class ExternalFile
             final String path = obj.get("path").getAsString();
             final String sha1 = obj.get("sha1").getAsString();
             final String downloadURL = obj.get("downloadURL").getAsString();
-            final int size = obj.get("size").getAsInt();
+            final long size = obj.get("size").getAsLong();
             if(obj.get("update") != null)
                 result.add(new ExternalFile(path, downloadURL, sha1, size, obj.get("update").getAsBoolean()));
             else result.add(new ExternalFile(path, downloadURL, sha1, size));
@@ -114,7 +114,7 @@ public class ExternalFile
     {
         return this.sha1;
     }
-    public int getSize()
+    public long getSize()
     {
         return this.size;
     }

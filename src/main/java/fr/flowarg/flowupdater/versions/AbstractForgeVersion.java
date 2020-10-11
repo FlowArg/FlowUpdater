@@ -18,7 +18,9 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static fr.flowarg.flowio.FileUtils.*;
 
@@ -148,7 +150,7 @@ public abstract class AbstractForgeVersion
         
         if(this.useFileDeleter)
         {
-            final List<File> badFiles = new ArrayList<>();
+            final Set<File> badFiles = new HashSet<>();
             final List<File> verifiedFiles = new ArrayList<>();
             for(File fileInDir : modsDir.listFiles())
             {
@@ -157,6 +159,7 @@ public abstract class AbstractForgeVersion
                     if(this.mods.isEmpty() && this.allCurseMods.isEmpty())
                     {
                         badFiles.add(fileInDir);
+                        break;
                     }
                     else
                     {
@@ -165,10 +168,9 @@ public abstract class AbstractForgeVersion
                             for(Object obj : this.getAllCurseMods())
                             {
                                 final CurseMod mod = (CurseMod)obj;
-                                final File file = new File(modsDir, mod.getName().endsWith(".jar") ? mod.getName() : mod.getName() + ".jar");
-                                if(file.getName().equalsIgnoreCase(fileInDir.getName()))
+                                if(mod.getName().equalsIgnoreCase(fileInDir.getName()))
                                 {
-                                    if(getMD5ofFile(fileInDir).equals(mod.getMd5()) && getFileSizeBytes(fileInDir) == mod.getLength())
+                                    if(getMD5ofFile(fileInDir).equalsIgnoreCase(mod.getMd5()) && getFileSizeBytes(fileInDir) == mod.getLength())
                                     {
                                         badFiles.remove(fileInDir);
                                         verifiedFiles.add(fileInDir);
@@ -185,10 +187,9 @@ public abstract class AbstractForgeVersion
 
                         for(Mod mod : this.mods)
                         {
-                            final File file = new File(modsDir, mod.getName().endsWith(".jar") ? mod.getName() : mod.getName() + ".jar");
-                            if(file.getName().equalsIgnoreCase(fileInDir.getName()))
+                            if(mod.getName().equalsIgnoreCase(fileInDir.getName()))
                             {
-                                if(getSHA1(fileInDir).equals(mod.getSha1()) && getFileSizeBytes(fileInDir) == mod.getSize())
+                                if(getSHA1(fileInDir).equalsIgnoreCase(mod.getSha1()) && getFileSizeBytes(fileInDir) == mod.getSize())
                                 {
                                     badFiles.remove(fileInDir);
                                     verifiedFiles.add(fileInDir);
@@ -204,7 +205,7 @@ public abstract class AbstractForgeVersion
                     }
                 }
             }
-            
+
             badFiles.forEach(File::delete);
             badFiles.clear();
         }
