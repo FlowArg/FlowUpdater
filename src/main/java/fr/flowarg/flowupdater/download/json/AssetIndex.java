@@ -16,7 +16,7 @@ public class AssetIndex
     public Map<String, AssetDownloadable> getUniqueObjects()
     {
         final Map<String, AssetDownloadable> result = new HashMap<>();
-        for (Map.Entry<String, AssetDownloadable> entry : this.objects.entrySet())
+        for (Map.Entry<String, AssetDownloadable> entry : this.getObjects().entrySet())
             result.put(entry.getKey(), entry.getValue());
         return result;
     }

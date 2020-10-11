@@ -87,17 +87,14 @@ public class Mod
     {
         return this.name;
     }
-    
     public String getSha1()
     {
         return this.sha1;
     }
-    
     public int getSize()
     {
         return this.size;
     }
-    
     public String getDownloadURL()
     {
         return this.downloadURL;

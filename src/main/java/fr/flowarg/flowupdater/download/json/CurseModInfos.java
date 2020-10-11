@@ -51,7 +51,6 @@ public class CurseModInfos
     {
         return this.projectID;
     }
-
     public int getFileID()
     {
         return this.fileID;

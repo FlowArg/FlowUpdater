@@ -19,17 +19,14 @@ public class Downloadable
     {
         return this.url;
     }
-
     public int getSize()
     {
         return this.size;
     }
-
     public String getSha1()
     {
         return this.sha1;
     }
-
     public String getName()
     {
         return this.name;

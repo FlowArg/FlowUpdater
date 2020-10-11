@@ -76,27 +76,22 @@ public class MCP
     {
         return this.clientURL;
     }
-    
     public String getClientSha1()
     {
         return this.clientSha1;
     }
-    
     public String getServerURL()
     {
         return this.serverURL;
     }
-    
     public String getServerSha1()
     {
         return this.serverSha1;
     }
-    
     public int getClientSize()
     {
         return this.clientSize;
     }
-    
     public int getServerSize()
     {
         return this.serverSize;

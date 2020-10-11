@@ -106,22 +106,18 @@ public class ExternalFile
     {
         return this.path;
     }
-    
     public String getDownloadURL()
     {
         return this.downloadURL;
     }
-    
     public String getSha1()
     {
         return this.sha1;
     }
-    
     public int getSize()
     {
         return this.size;
     }
-
     public boolean isUpdate()
     {
         return this.update;
