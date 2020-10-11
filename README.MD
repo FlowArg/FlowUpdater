@@ -74,18 +74,19 @@ You can get a list of curse mods by providing a json link too : `List<CurseModIn
 
 // On updater options :
 .withUpdaterOptions(new UpdaterOptions(true|false, false|false, true))
+```
 
 Then, build a forge version. For example, I will build a NewForgeVersion.
 ```java
 AbstractForgeVersion forgeVersion = new ForgeVersionBuilder(ForgeVersionBuilder.ForgeVersionType.NEW)
-			.withForgeVersion("31.2.29")
-			.withVanillaVersion(version)
-			.withLogger(logger)
-			.withProgressCallback(callback)
-			.withCurseMods(modInfos)
-			.withUseFileDeleter(true) // delete bad mods
-			.withNoGui(true) // only for new forge version: true -> don't show the forge installer gui. false -> show the forge installer gui.
-			.build();
+            .withForgeVersion("31.2.29")
+            .withVanillaVersion(version)
+            .withLogger(logger)
+            .withProgressCallback(callback)
+            .withCurseMods(modInfos)
+            .withUseFileDeleter(true) // delete bad mods
+            .withNoGui(true) // only for new forge version: true -> don't show the forge installer gui. false -> show the forge installer gui.
+            .build();
 ```
 
 Finally, set the Forge version corresponding to the wanted Forge version :
