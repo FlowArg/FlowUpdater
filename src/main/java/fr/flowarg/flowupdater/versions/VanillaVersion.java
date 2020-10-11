@@ -158,7 +158,7 @@ public class VanillaVersion
     {
         private final BuilderArgument<String> nameArgument = new BuilderArgument<String>("Name").required();
         private final BuilderArgument<MCP> mcpArgument = new BuilderArgument<MCP>("MCP").optional();
-        private final BuilderArgument<Boolean> snapshotArgument = new BuilderArgument<>("Snapshot", false).optional();
+        private final BuilderArgument<Boolean> snapshotArgument = new BuilderArgument<>("Snapshot", () -> false).optional();
         private final BuilderArgument<VersionType> versionTypeArgument = new BuilderArgument<VersionType>("VersionType").required();
         
         public VanillaVersionBuilder withName(String name)

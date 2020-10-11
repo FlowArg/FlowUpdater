@@ -1,19 +1,21 @@
 package fr.flowarg.flowupdater.utils.builderapi;
 
 import fr.flowarg.flowupdater.FlowUpdater;
+import fr.flowarg.flowupdater.versions.AbstractForgeVersion;
 import fr.flowarg.flowupdater.versions.VanillaVersion;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Builder API
  * 
  * @author flow
- * @version 1.4
+ * @version 1.5
  * 
- * Used for {@link FlowUpdater} & {@link VanillaVersion}
+ * Used for {@link FlowUpdater} & {@link VanillaVersion} & {@link AbstractForgeVersion}
  * @param <T> Object Argument
  * 
  * Represent an argument for a Builder implementation.
@@ -23,13 +25,13 @@ public class BuilderArgument<T>
     private final String objectName;
     private T badObject = null;
     private T object = null;
-    private boolean required;
-    private final List<BuilderArgument<?>> requireds = new ArrayList<>();
+    private boolean isRequired;
+    private final List<BuilderArgument<?>> required = new ArrayList<>();
     
-    public BuilderArgument(String objectName, T initialValue)
+    public BuilderArgument(String objectName, Supplier<T> initialValue)
     {
         this.objectName = objectName;
-        this.object = initialValue;
+        this.object = initialValue.get();
     }
     
     public BuilderArgument(String objectName)
@@ -37,30 +39,32 @@ public class BuilderArgument<T>
         this.objectName = objectName;
     }
     
-    public BuilderArgument(String objectName, T initialValue, T badObject)
+    public BuilderArgument(String objectName, Supplier<T> initialValue, Supplier<T> badObject)
     {
         this.objectName = objectName;
-        this.object = initialValue;
-        this.badObject = badObject;
+        this.object = initialValue.get();
+        this.badObject = badObject.get();
     }
     
-    public BuilderArgument(T badObject, String objectName)
+    public BuilderArgument(Supplier<T> badObject, String objectName)
     {
         this.objectName = objectName;
-        this.badObject = badObject;
+        this.badObject = badObject.get();
     }
     
     public T get() throws BuilderException
     {
-        if(this.required)
+        if(this.isRequired)
         {
-            if(this.object == null || this.object == this.badObject)
-                throw new BuilderException("Argument" + this.objectName + " is null/a bad object !");
+            if(this.object == null)
+                throw new BuilderException("Argument" + this.objectName + " is null !");
+            else if(this.object == this.badObject)
+                throw new BuilderException("Argument" + this.objectName + " is a bad object !");
             else return this.object;
         }
         else
         {
-            this.requireds.forEach(arg -> {
+            this.required.forEach(arg -> {
                 try
                 {
                     if((arg.get() == null || arg.get() == arg.badObject()) && this.object != null)
@@ -80,21 +84,21 @@ public class BuilderArgument<T>
         this.object = object;
     }
     
-    public BuilderArgument<T> require(BuilderArgument<?>... requireds)
+    public BuilderArgument<T> require(BuilderArgument<?>... required)
     {
-        this.requireds.addAll(Arrays.asList(requireds));
+        this.required.addAll(Arrays.asList(required));
         return this;
     }
     
     public BuilderArgument<T> required()
     {
-        this.required = true;
+        this.isRequired = true;
         return this;
     }
     
     public BuilderArgument<T> optional()
     {
-        this.required = false;
+        this.isRequired = false;
         return this;
     }
     

@@ -22,13 +22,13 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
     }
 
     private final BuilderArgument<String> forgeVersionArgument = new BuilderArgument<String>("ForgeVersion").required();
-    private final BuilderArgument<VanillaVersion> vanillaVersionArgument = new BuilderArgument<VanillaVersion>("VanillaVersion").required();
-    private final BuilderArgument<ILogger> loggerArgument = new BuilderArgument<>("Logger", FlowUpdater.DEFAULT_LOGGER).optional();
-    private final BuilderArgument<IProgressCallback> progressCallbackArgument = new BuilderArgument<>("ProgressCallback", FlowUpdater.NULL_CALLBACK).optional();
-    private final BuilderArgument<List<Mod>> modsArgument = new BuilderArgument<List<Mod>>("Mods", new ArrayList<>()).optional();
-    private final BuilderArgument<ArrayList<CurseModInfos>> curseModsArgument = new BuilderArgument<ArrayList<CurseModInfos>>("CurseMods", new ArrayList<>()).optional();
-    private final BuilderArgument<Boolean> nogGuiArgument = new BuilderArgument<>("NoGui", true).optional();
-    private final BuilderArgument<Boolean> useFileDeleterArgument = new BuilderArgument<>("UseFileDeleter", false).optional();
+    private final BuilderArgument<VanillaVersion> vanillaVersionArgument = new BuilderArgument<>(() -> VanillaVersion.NULL_VERSION, "VanillaVersion").required();
+    private final BuilderArgument<ILogger> loggerArgument = new BuilderArgument<>("Logger", () -> FlowUpdater.DEFAULT_LOGGER).optional();
+    private final BuilderArgument<IProgressCallback> progressCallbackArgument = new BuilderArgument<>("ProgressCallback", () -> FlowUpdater.NULL_CALLBACK).optional();
+    private final BuilderArgument<List<Mod>> modsArgument = new BuilderArgument<List<Mod>>("Mods", ArrayList::new).optional();
+    private final BuilderArgument<ArrayList<CurseModInfos>> curseModsArgument = new BuilderArgument<ArrayList<CurseModInfos>>("CurseMods", ArrayList::new).optional();
+    private final BuilderArgument<Boolean> nogGuiArgument = new BuilderArgument<>("NoGui", () -> true).optional();
+    private final BuilderArgument<Boolean> useFileDeleterArgument = new BuilderArgument<>("UseFileDeleter", () -> false).optional();
 
     public ForgeVersionBuilder withForgeVersion(String forgeVersion)
     {

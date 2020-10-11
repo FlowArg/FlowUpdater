@@ -310,12 +310,12 @@ public class FlowUpdater
      */
     public static class FlowUpdaterBuilder implements IBuilder<FlowUpdater>
     {
-        private final BuilderArgument<VanillaVersion> versionArgument = new BuilderArgument<>("VanillaVersion", VanillaVersion.NULL_VERSION, VanillaVersion.NULL_VERSION).optional();
-        private final BuilderArgument<ILogger> loggerArgument = new BuilderArgument<>("Logger", DEFAULT_LOGGER).optional();
+        private final BuilderArgument<VanillaVersion> versionArgument = new BuilderArgument<>("VanillaVersion", () -> VanillaVersion.NULL_VERSION, () -> VanillaVersion.NULL_VERSION).optional();
+        private final BuilderArgument<ILogger> loggerArgument = new BuilderArgument<>("Logger", () -> DEFAULT_LOGGER).optional();
         private final BuilderArgument<UpdaterOptions> updaterOptionsArgument = new BuilderArgument<UpdaterOptions>("UpdaterOptions").required();
-        private final BuilderArgument<IProgressCallback> progressCallbackArgument = new BuilderArgument<>("Callback", NULL_CALLBACK).optional();
-        private final BuilderArgument<List<ExternalFile>> externalFilesArgument = new BuilderArgument<List<ExternalFile>>("External Files", new ArrayList<>()).optional();
-        private final BuilderArgument<List<Runnable>> postExecutionsArgument = new BuilderArgument<List<Runnable>>("Post Executions", new ArrayList<>()).optional();
+        private final BuilderArgument<IProgressCallback> progressCallbackArgument = new BuilderArgument<>("Callback", () -> NULL_CALLBACK).optional();
+        private final BuilderArgument<List<ExternalFile>> externalFilesArgument = new BuilderArgument<List<ExternalFile>>("External Files", ArrayList::new).optional();
+        private final BuilderArgument<List<Runnable>> postExecutionsArgument = new BuilderArgument<List<Runnable>>("Post Executions", ArrayList::new).optional();
         private final BuilderArgument<AbstractForgeVersion> forgeVersionArgument = new BuilderArgument<AbstractForgeVersion>("ForgeVersion").optional().require(this.versionArgument);
 
         public FlowUpdaterBuilder withVersion(VanillaVersion version)
@@ -379,53 +379,14 @@ public class FlowUpdater
 
     // Some getters
 
-    public VanillaReader getVanillaReader()
-    {
-        return this.vanillaReader;
-    }
-
-    public VanillaVersion getVersion()
-    {
-        return this.version;
-    }
-
-    public ILogger getLogger()
-    {
-        return this.logger;
-    }
-
-    public AbstractForgeVersion getForgeVersion()
-    {
-        return this.forgeVersion;
-    }
-
-    public IProgressCallback getCallback()
-    {
-        return this.callback;
-    }
-
-    public List<ExternalFile> getExternalFiles()
-    {
-        return this.externalFiles;
-    }
-
-    public List<Runnable> getPostExecutions()
-    {
-        return this.postExecutions;
-    }
-
-    public DownloadInfos getDownloadInfos()
-    {
-        return this.downloadInfos;
-    }
-
-    public UpdaterOptions getUpdaterOptions()
-    {
-        return this.updaterOptions;
-    }
-
-    public boolean canPLAShutdown()
-    {
-        return this.canPLAShutdown;
-    }
+    public VanillaReader getVanillaReader() { return this.vanillaReader; }
+    public VanillaVersion getVersion() { return this.version; }
+    public ILogger getLogger() { return this.logger; }
+    public AbstractForgeVersion getForgeVersion() { return this.forgeVersion; }
+    public IProgressCallback getCallback() { return this.callback; }
+    public List<ExternalFile> getExternalFiles() { return this.externalFiles; }
+    public List<Runnable> getPostExecutions() { return this.postExecutions; }
+    public DownloadInfos getDownloadInfos() { return this.downloadInfos; }
+    public UpdaterOptions getUpdaterOptions() { return this.updaterOptions; }
+    public boolean canPLAShutdown() { return this.canPLAShutdown; }
 }
