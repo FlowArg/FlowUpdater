@@ -5,6 +5,7 @@ import fr.flowarg.flowupdater.FlowUpdater;
 import fr.flowarg.flowupdater.download.IProgressCallback;
 import fr.flowarg.flowupdater.download.json.CurseModInfos;
 import fr.flowarg.flowupdater.download.json.Mod;
+import fr.flowarg.flowupdater.utils.ModFileDeleter;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
 import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
@@ -28,7 +29,7 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
     private final BuilderArgument<List<Mod>> modsArgument = new BuilderArgument<List<Mod>>("Mods", ArrayList::new).optional();
     private final BuilderArgument<ArrayList<CurseModInfos>> curseModsArgument = new BuilderArgument<ArrayList<CurseModInfos>>("CurseMods", ArrayList::new).optional();
     private final BuilderArgument<Boolean> nogGuiArgument = new BuilderArgument<>("NoGui", () -> true).optional();
-    private final BuilderArgument<Boolean> useFileDeleterArgument = new BuilderArgument<>("UseFileDeleter", () -> false).optional();
+    private final BuilderArgument<ModFileDeleter> fileDeleterArgument = new BuilderArgument<>("ModFileDeleter", () -> new ModFileDeleter(false)).optional();
 
     public ForgeVersionBuilder withForgeVersion(String forgeVersion)
     {
@@ -72,9 +73,9 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
         return this;
     }
 
-    public ForgeVersionBuilder withUseFileDeleter(boolean useFileDeleter)
+    public ForgeVersionBuilder withFileDeleter(ModFileDeleter fileDeleter)
     {
-        this.useFileDeleterArgument.set(useFileDeleter);
+        this.fileDeleterArgument.set(fileDeleter);
         return this;
     }
 
@@ -94,7 +95,7 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
                         this.modsArgument.get(),
                         this.curseModsArgument.get(),
                         this.nogGuiArgument.get(),
-                        this.useFileDeleterArgument.get()
+                        this.fileDeleterArgument.get()
                 );
             case OLD:
                 return new OldForgeVersion(
@@ -104,7 +105,7 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
                         this.progressCallbackArgument.get(),
                         this.modsArgument.get(),
                         this.curseModsArgument.get(),
-                        this.useFileDeleterArgument.get()
+                        this.fileDeleterArgument.get()
                 );
             default:
                 return null;

@@ -5,6 +5,7 @@ import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.download.IProgressCallback;
 import fr.flowarg.flowupdater.download.json.CurseModInfos;
 import fr.flowarg.flowupdater.download.json.Mod;
+import fr.flowarg.flowupdater.utils.ModFileDeleter;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -23,9 +24,9 @@ import java.util.List;
  */
 public class OldForgeVersion extends AbstractForgeVersion
 {
-    OldForgeVersion(String forgeVersion, VanillaVersion vanilla, ILogger logger, IProgressCallback callback, List<Mod> mods, ArrayList<CurseModInfos> curseMods, boolean useFileDeleter)
+    OldForgeVersion(String forgeVersion, VanillaVersion vanilla, ILogger logger, IProgressCallback callback, List<Mod> mods, ArrayList<CurseModInfos> curseMods, ModFileDeleter fileDeleter)
     {
-        super(logger, mods, curseMods, forgeVersion, vanilla, callback, useFileDeleter);
+        super(logger, mods, curseMods, forgeVersion, vanilla, callback, fileDeleter);
     }
     
     @Override

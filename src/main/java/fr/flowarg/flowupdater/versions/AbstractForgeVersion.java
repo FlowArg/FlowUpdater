@@ -10,6 +10,7 @@ import fr.flowarg.flowupdater.download.Step;
 import fr.flowarg.flowupdater.download.json.CurseModInfos;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.utils.IOUtils;
+import fr.flowarg.flowupdater.utils.ModFileDeleter;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,11 +19,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
-import static fr.flowarg.flowio.FileUtils.*;
 
 /**
  * The base object of a forge version.
@@ -37,16 +34,16 @@ public abstract class AbstractForgeVersion
     protected final String forgeVersion;
     protected final IProgressCallback callback;
     protected final ArrayList<CurseModInfos> curseMods;
-    protected final boolean useFileDeleter;
+    protected final ModFileDeleter fileDeleter;
     protected List<Object> allCurseMods;
     protected URL installerUrl;
     protected DownloadInfos downloadInfos;
 
-    protected AbstractForgeVersion(ILogger logger, List<Mod> mods, ArrayList<CurseModInfos> curseMods, String forgeVersion, VanillaVersion vanilla, IProgressCallback callback, boolean useFileDeleter)
+    protected AbstractForgeVersion(ILogger logger, List<Mod> mods, ArrayList<CurseModInfos> curseMods, String forgeVersion, VanillaVersion vanilla, IProgressCallback callback, ModFileDeleter fileDeleter)
     {
         this.logger = logger;
         this.mods = mods;
-        this.useFileDeleter = useFileDeleter;
+        this.fileDeleter = fileDeleter;
         this.curseMods = curseMods;
         this.vanilla = vanilla;
         if (!forgeVersion.contains("-"))
@@ -147,75 +144,15 @@ public abstract class AbstractForgeVersion
                 this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
             });
         }
-        
-        if(this.useFileDeleter)
-        {
-            final Set<File> badFiles = new HashSet<>();
-            final List<File> verifiedFiles = new ArrayList<>();
-            for(File fileInDir : modsDir.listFiles())
-            {
-                if(!fileInDir.isDirectory())
-                {
-                    if(this.mods.isEmpty() && this.allCurseMods.isEmpty())
-                    {
-                        badFiles.add(fileInDir);
-                        break;
-                    }
-                    else
-                    {
-                        if(cursePluginLoaded)
-                        {
-                            for(Object obj : this.getAllCurseMods())
-                            {
-                                final CurseMod mod = (CurseMod)obj;
-                                if(mod.getName().equalsIgnoreCase(fileInDir.getName()))
-                                {
-                                    if(getMD5ofFile(fileInDir).equalsIgnoreCase(mod.getMd5()) && getFileSizeBytes(fileInDir) == mod.getLength())
-                                    {
-                                        badFiles.remove(fileInDir);
-                                        verifiedFiles.add(fileInDir);
-                                    }
-                                    else badFiles.add(fileInDir);
-                                }
-                                else
-                                {
-                                    if(!verifiedFiles.contains(fileInDir))
-                                        badFiles.add(fileInDir);
-                                }
-                            }
-                        }
 
-                        for(Mod mod : this.mods)
-                        {
-                            if(mod.getName().equalsIgnoreCase(fileInDir.getName()))
-                            {
-                                if(getSHA1(fileInDir).equalsIgnoreCase(mod.getSha1()) && getFileSizeBytes(fileInDir) == mod.getSize())
-                                {
-                                    badFiles.remove(fileInDir);
-                                    verifiedFiles.add(fileInDir);
-                                }
-                                else badFiles.add(fileInDir);
-                            }
-                            else
-                            {
-                                if(!verifiedFiles.contains(fileInDir))
-                                    badFiles.add(fileInDir);
-                            }
-                        }
-                    }
-                }
-            }
-
-            badFiles.forEach(File::delete);
-            badFiles.clear();
-        }
+        this.fileDeleter.delete(modsDir, this.mods, cursePluginLoaded, this.allCurseMods);
     }
-    
-    public boolean isModFileDeleterEnabled()
+
+    public ModFileDeleter getFileDeleter()
     {
-        return this.useFileDeleter;
+        return this.fileDeleter;
     }
-    
+
     public void appendDownloadInfos(DownloadInfos infos)
     {
         this.downloadInfos = infos;
