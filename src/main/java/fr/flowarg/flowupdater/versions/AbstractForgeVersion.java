@@ -39,6 +39,16 @@ public abstract class AbstractForgeVersion
     protected URL installerUrl;
     protected DownloadInfos downloadInfos;
 
+    /**
+     * Use {@link ForgeVersionBuilder} to instantiate this class.
+     * @param logger {@link ILogger} used for logging.
+     * @param mods {@link List<Mod>} to install.
+     * @param curseMods {@link ArrayList<CurseModInfos>} to install.
+     * @param forgeVersion to install.
+     * @param vanilla {@link VanillaVersion}.
+     * @param callback {@link IProgressCallback} used for update progression.
+     * @param fileDeleter {@link ModFileDeleter} used to cleanup mods dir.
+     */
     protected AbstractForgeVersion(ILogger logger, List<Mod> mods, ArrayList<CurseModInfos> curseMods, String forgeVersion, VanillaVersion vanilla, IProgressCallback callback, ModFileDeleter fileDeleter)
     {
         this.logger = logger;
@@ -170,32 +180,26 @@ public abstract class AbstractForgeVersion
     {
         return this.mods;
     }
-    
     public ILogger getLogger()
     {
         return this.logger;
     }
-
     public String getForgeVersion()
     {
         return this.forgeVersion;
     }
-
     public URL getInstallerUrl()
     {
         return this.installerUrl;
     }
-
     public List<Object> getAllCurseMods()
     {
         return this.allCurseMods;
     }
-
     public void setAllCurseMods(List<Object> allCurseMods)
     {
         this.allCurseMods = allCurseMods;
     }
-
     public ArrayList<CurseModInfos> getCurseMods()
     {
         return this.curseMods;

@@ -13,6 +13,10 @@ import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Builder of {@link AbstractForgeVersion}
+ * @author Flow Arg (FlowArg)
+ */
 public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
 {
     private final ForgeVersionType type;

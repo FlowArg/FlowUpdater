@@ -7,14 +7,16 @@ public interface IProgressCallback
 {
     /**
      * This method is called at {@link FlowUpdater} initialization.
-     * @param logger Logger of FlowUpdater instance.
+     * @param logger {@link ILogger} of FlowUpdater instance.
      */
     void init(ILogger logger);
+
     /**
      * This method is called when a step started.
-     * @param step Actual step.
+     * @param step Actual {@link Step}.
      */
     void step(Step step);
+
     /**
      * This method is called when a new file is downloaded.
      * @param downloaded Number of downloaded files.

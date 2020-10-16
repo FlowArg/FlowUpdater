@@ -37,6 +37,7 @@ public class FlowUpdater
 {
     /** Vanilla version's object to update/install */
     private final VanillaVersion version;
+
     /** Vanilla version's JSON parser */
     private final VanillaReader vanillaReader;
 
@@ -45,6 +46,7 @@ public class FlowUpdater
 
     /** Forge Version to install, can be null if you want a vanilla/MCP installation */
     private final AbstractForgeVersion forgeVersion;
+
     /** Progress callback to notify installation progress */
     private final IProgressCallback callback;
 
@@ -61,7 +63,6 @@ public class FlowUpdater
     private final List<Runnable> postExecutions;
 
     private boolean canPLAShutdown;
-
     private boolean cursePluginLoaded = false;
 
     /** Default callback */
@@ -84,29 +85,29 @@ public class FlowUpdater
     public static final ILogger DEFAULT_LOGGER = new Logger("[FlowUpdater]", null);
 
     /**
-     * Basic constructor to construct a new {@link FlowUpdater}.
-     * @param version Version to update.
-     * @param logger Logger used for log information.
-     * @param updaterOptions options for this updater
-     * @param callback The callback. If it's null, it will automatically assigned as {@link FlowUpdater#NULL_CALLBACK}.
-     * @param externalFiles External files are download before postExecutions.
-     * @param postExecutions Post executions are called after update.
-     * @param forgeVersion ForgeVersion to install, can be null.
+     * Basic constructor for {@link FlowUpdater}, use {@link FlowUpdaterBuilder} to instantiate a new {@link FlowUpdater}.
+     * @param version {@link VanillaVersion} to update.
+     * @param logger {@link ILogger} used for log information.
+     * @param updaterOptions {@link UpdaterOptions} for this updater
+     * @param callback {@link IProgressCallback} used for update progression. If it's null, it will automatically assigned as {@link FlowUpdater#NULL_CALLBACK}.
+     * @param externalFiles {@link List<ExternalFile>} are downloaded before postExecutions.
+     * @param postExecutions {@link List<Runnable>} are called after update.
+     * @param forgeVersion {@link AbstractForgeVersion} to install, can be null.
      */
     private FlowUpdater(VanillaVersion version, ILogger logger, UpdaterOptions updaterOptions,
             IProgressCallback callback, List<ExternalFile> externalFiles, List<Runnable> postExecutions, AbstractForgeVersion forgeVersion)
     {
         this.logger = logger;
         this.version = version;
+       	this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.2.4"));
         this.externalFiles = externalFiles;
         this.postExecutions = postExecutions;
         this.forgeVersion = forgeVersion;
         this.updaterOptions = updaterOptions;
-        this.downloadInfos = new DownloadInfos();
         this.callback = callback;
+        this.downloadInfos = new DownloadInfos();
         this.canPLAShutdown = false;
-       	this.vanillaReader = new VanillaReader(this.version, this.logger, this.updaterOptions.isSilentRead(), this.callback, this.downloadInfos);
-       	this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.2.3"));
+        this.vanillaReader = new VanillaReader(this.version, this.logger, this.updaterOptions.isSilentRead(), this.callback, this.downloadInfos);
        	this.callback.init(this.logger);
     }
 
@@ -306,7 +307,7 @@ public class FlowUpdater
 
 	/**
      * Builder of {@link FlowUpdater}.
-     * @author FlowArg
+     * @author Flow Arg (FlowArg)
      */
     public static class FlowUpdaterBuilder implements IBuilder<FlowUpdater>
     {
@@ -318,36 +319,66 @@ public class FlowUpdater
         private final BuilderArgument<List<Runnable>> postExecutionsArgument = new BuilderArgument<List<Runnable>>("Post Executions", ArrayList::new).optional();
         private final BuilderArgument<AbstractForgeVersion> forgeVersionArgument = new BuilderArgument<AbstractForgeVersion>("ForgeVersion").optional().require(this.versionArgument);
 
+        /**
+         * Append a {@link VanillaVersion} object in the final FlowUpdater instance.
+         * @param version the {@link VanillaVersion} to append and install.
+         * @return the builder.
+         */
         public FlowUpdaterBuilder withVersion(VanillaVersion version)
         {
             this.versionArgument.set(version);
             return this;
         }
 
+        /**
+         * Append a {@link ILogger} object in the final FlowUpdater instance.
+         * @param logger the {@link ILogger} to append and use.
+         * @return the builder.
+         */
         public FlowUpdaterBuilder withLogger(ILogger logger)
         {
             this.loggerArgument.set(logger);
             return this;
         }
 
+        /**
+         * Append a {@link UpdaterOptions} object in the final FlowUpdater instance.
+         * @param updaterOptions the {@link UpdaterOptions} to append and propagate.
+         * @return the builder.
+         */
         public FlowUpdaterBuilder withUpdaterOptions(UpdaterOptions updaterOptions)
         {
             this.updaterOptionsArgument.set(updaterOptions);
             return this;
         }
 
+        /**
+         * Append a {@link IProgressCallback} object in the final FlowUpdater instance.
+         * @param callback the {@link IProgressCallback} to append and use.
+         * @return the builder.
+         */
         public FlowUpdaterBuilder withProgressCallback(IProgressCallback callback)
         {
             this.progressCallbackArgument.set(callback);
             return this;
         }
 
+        /**
+         * Append a {@link List<ExternalFile>} object in the final FlowUpdater instance.
+         * @param externalFiles the {@link List<ExternalFile>} to append and update.
+         * @return the builder.
+         */
         public FlowUpdaterBuilder withExternalFiles(List<ExternalFile> externalFiles)
         {
             this.externalFilesArgument.set(externalFiles);
             return this;
         }
 
+        /**
+         * Append a {@link List<Runnable>} object in the final FlowUpdater instance.
+         * @param postExecutions the {@link List<Runnable>} to append and run after the update.
+         * @return the builder.
+         */
         public FlowUpdaterBuilder withPostExecutions(List<Runnable> postExecutions)
         {
             this.postExecutionsArgument.set(postExecutions);
@@ -356,7 +387,9 @@ public class FlowUpdater
 
         /**
          * Necessary if you want install a Forge version.
-         * @param forgeVersion Forge version to install.
+         * Append a {@link AbstractForgeVersion} object in the final FlowUpdater instance.
+         * @param forgeVersion the {@link AbstractForgeVersion} to append and install.
+         * @return the builder.
          */
         public FlowUpdaterBuilder withForgeVersion(AbstractForgeVersion forgeVersion)
         {
@@ -364,6 +397,11 @@ public class FlowUpdater
             return this;
         }
 
+        /**
+         * Build a new {@link FlowUpdater} instance with provided arguments.
+         * @return the new {@link FlowUpdater} instance.
+         * @throws BuilderException if an error occurred on FlowUpdater instance building.
+         */
         @Override
         public FlowUpdater build() throws BuilderException
         {
