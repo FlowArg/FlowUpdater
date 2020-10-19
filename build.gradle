@@ -30,8 +30,8 @@ allprojects {
     }
 
     dependencies {
-        implementation 'com.google.code.gson:gson:2.8.6'
-        implementation 'fr.flowarg:flowmultitools:1.2.0'
+        api 'com.google.code.gson:gson:2.8.6'
+        api 'fr.flowarg:flowmultitools:1.2.0'
         implementation 'com.github.FlowArg:PluginLoaderAPI:871c5910c6'
     }
 }
