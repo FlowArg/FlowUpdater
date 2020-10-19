@@ -5,22 +5,12 @@ import java.io.Writer;
 
 public class StringBuilderWriter extends Writer implements Serializable
 {
-	private static final long serialVersionUID = 1L;
-	private final StringBuilder builder;
+    private static final long serialVersionUID = 1L;
+    private final StringBuilder builder;
 
     public StringBuilderWriter()
     {
         this.builder = new StringBuilder();
-    }
-
-    public StringBuilderWriter(final int capacity)
-    {
-        this.builder = new StringBuilder(capacity);
-    }
-
-    public StringBuilderWriter(final StringBuilder builder)
-    {
-        this.builder = builder != null ? builder : new StringBuilder();
     }
     
     @Override

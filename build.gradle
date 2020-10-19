@@ -2,31 +2,45 @@ plugins {
     id "com.jfrog.bintray" version "1.8.5"
 }
 
-apply plugin: 'java-library'
-apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-group 'fr.flowarg'
-version '1.1.12'
+allprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'idea'
+
+    group 'fr.flowarg'
+
+    compileJava {
+        options.encoding = 'UTF-8'
+        sourceCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    repositories {
+        jcenter()
+
+        maven {
+            url "https://jitpack.io/"
+            name = "JitPack"
+        }
+    }
+
+    task sourcesJar(type: Jar) {
+        classifier 'sources'
+        from sourceSets.main.allSource
+    }
+
+    dependencies {
+        implementation 'com.google.code.gson:gson:2.8.6'
+        implementation 'fr.flowarg:flowmultitools:1.2.0'
+        implementation 'com.github.FlowArg:PluginLoaderAPI:871c5910c6'
+    }
+}
+
+version '1.2.4'
 archivesBaseName = "flowupdater"
 
-
-repositories {
-	jcenter()
-}
-
-task sourcesJar(type: Jar) {
-    classifier 'sources'
-    from sourceSets.main.allSource
-    excludes = ["fr/flowarg/flowupdater/rework/**"]
-}
-
-jar {
-    excludes = ["fr/flowarg/flowupdater/rework/**"]
-}
-
 artifacts {
-	archives sourcesJar
+    archives sourcesJar
 }
 
 bintray {
@@ -34,52 +48,50 @@ bintray {
     key = System.getenv('BINTRAY_KEY')
     publications = ['mavenJava'] 
     pkg {
-    	repo = 'maven'
+        repo = 'maven'
         name = 'FlowUpdater'
         userOrg = 'flowarg'
         licenses = ['GPL-3.0']
         publicDownloadNumbers = true
         vcsUrl = 'https://github.com/FlowArg/FlowUpdater.git'
         version {
-        	name = 'v' + project.version
-        	released = new Date()
-        	vcsTag = 'v' + project.version
-    	}
+            name = 'v' + project.version
+            released = new Date()
+            vcsTag = 'v' + project.version
+        }
     }
 }
 
 publishing {
-	publications {
-		mavenJava(MavenPublication) {
+    publications {
+        mavenJava(MavenPublication) {
             from components.java
             artifact tasks.sourcesJar
-			pom {				
-				groupId = project.group
-				version = project.version
-				artifactId = 'flowupdater'
-				name = project.name
-				description = 'FlowUpdater is a library for automatically update minecraft versions !'
-				url = 'https://github.com/FlowArg/FlowUpdater'
+            pom {
+                groupId = project.group
+                version = project.version
+                artifactId = 'flowupdater'
+                name = project.name
+                description = 'FlowUpdater is a library for automatically update minecraft versions !'
+                url = 'https://github.com/FlowArg/FlowUpdater'
 
-				issueManagement {
-					system = 'github'
-					url = 'https://github.com/FlowArg/FlowUpdater/issues'
-				}
+                issueManagement {
+                    system = 'github'
+                    url = 'https://github.com/FlowArg/FlowUpdater/issues'
+                }
 
-				licenses {
-					license {
-						name = 'LICENSE'
-						url = 'https://github.com/FlowArg/FlowUpdater/blob/master/LICENSE'
-						distribution = 'repo'
-					}
-				}
-			}
-		}
-	}
+                licenses {
+                    license {
+                        name = 'LICENSE'
+                        url = 'https://github.com/FlowArg/FlowUpdater/blob/master/LICENSE'
+                        distribution = 'repo'
+                    }
+                }
+            }
+        }
+    }
 }
 
 dependencies {
-	implementation 'com.google.code.gson:gson:2.8.6'
-	implementation 'fr.flowarg:flowmultitools:1.1.0'
-	testImplementation 'junit:junit:4.13'
+    compileOnly project(":CurseForgePlugin")
 }

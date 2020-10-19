@@ -27,39 +27,36 @@ dependencies {
 ## Support, Help, Contribution
 Join the Discord server for support, help and contribution : https://discord.gg/yvv78kV
 
-### Usage
+## Usage
 
-#### Vanilla
+### Vanilla
 
-First, declare the version builder :
+First, create a new VanillaVersion, specify arguments.
+Then build the version :
 ```java
-IVanillaVersion.Builder versionBuilder = new IVanillaVersion.Builder("1.15.2");
+VanillaVersion version = new VanillaVersionBuilder().withName("1.15.2").withSnapshot(false).withVersionType(VersionType.VANILLA).build();
 ```
 You have to put the version you want as parameter, you can set a snapshot if you want or `latest`.
-
-Then, build the version :
-```java
-IVanillaVersion version = versionBuilder.build(false, VersionType.VANILLA);
-```
 If you have specified "latest" to the version name, and that the version is a snapshot, replace false by true.
 
 Then, instantiate a new FlowUpdater with ``FlowUpdaterBuilder#withXArguments#withAnotherArguemtn#build``. Check the code for more informations.
 ```java
-FlowUpdater updater = new FlowUpdaterBuilder().withVersion(version).withUpdaterOptions(new UpdaterOptions(false, true, false)).build();
+FlowUpdater updater = new FlowUpdaterBuilder().withVersion(version).withUpdaterOptions(new UpdaterOptions(false|true, true|false, false)).build();
 ```
+
+Don't forget to add a progress callback if you want to make a progress bar !
 
 Finally, call the update function :
 ```java
 updater.update(new File("/your/path/"), false);
 ```
-Replace false by true if you want to download the server Jar.
+Replace false by true if you want to download the server Jar (useful for server installation program).
 
 ### Forge
+
 (You need to setup a vanilla updater !)
 
-(Before calling update function!)
-
-First, in your versionBuilder instance, change the version type to `VersionType.FORGE`.
+First, in your vanilla version builder, change the version type to `VersionType.FORGE`.
 Next, make a List of Mod objects.
 ```java
 List<Mod> mods = new ArrayList<>();
@@ -68,40 +65,81 @@ mods.add(new Mod("AnotherMod.jar", "sha1ofanothermod", 86120, "https://link/of/a
 ```
 You can get a list of mods by providing a json link too : `List<Mod> mods = Mod.getModsFromJson("https://url.com/launcher/mods.json");`.
 
+You can get mods from CurseForge too:
+```java
+List<CurseModInfos> modInfos = new ArrayList<>();
+// project ID and file ID
+modInfos.add(new CurseModInfos(238222, 2988823));
+You can get a list of curse mods by providing a json link too : `List<CurseModInfos> mods = CurseModInfos.getCurseModsFromJson("https://url.com/launcher/cursemods.json");`.
+
+// On updater options :
+.withUpdaterOptions(new UpdaterOptions(true|false, false|false, true))
+```
+
+Then, build a forge version. For example, I will build a NewForgeVersion.
+```java
+AbstractForgeVersion forgeVersion = new ForgeVersionBuilder(ForgeVersionBuilder.ForgeVersionType.NEW)
+            .withForgeVersion("31.2.29")
+            .withVanillaVersion(version)
+            .withLogger(logger)
+            .withProgressCallback(callback)
+            .withCurseMods(modInfos)
+            .withUseFileDeleter(true) // delete bad mods
+            .withNoGui(true) // only for new forge version: true -> don't show the forge installer gui. false -> show the forge installer gui.
+            .build();
+```
+
 Finally, set the Forge version corresponding to the wanted Forge version :
 ```java
-updaterBuilder.withForgeVersion(new NewForgeVersion("31.2.30", version, updater.getLogger(), updater.getCallback(), mods)); // NewForgeVersion -> 1.12.2-14.23.5.2851 1.16.2 ; OldForgeVersion -> 1.7 1.12
+.withForgeVersion(forgeVersion);
 ```
 That's all!
 
 ### MCP
+
 (You need to setup a vanilla updater !)
-In your versionBuilder instance, change the version type to `VersionType.MCP`.
-Finally, set to versionBuilder a MCP version before building the version :
+In your vanilla version builder, change the version type to `VersionType.MCP`.
+Finally, set to vanilla version builder a MCP version :
 ```java
-versionBuilder.setMcp(new MCP("clientDownloadURL", "name", "clientSha1", "author", "serverDownloadURL", "serverSha1", 1215, 20525));
+.withMCP(new MCP("clientURL", "name", "clientSha1", "author", "serverURL", "serverSha1", 1215, 20525));
 ```
 If you set an empty/null string in url and sha1 and 0 in size, the updater will use the default minecraft jar.
 Example on client-only mcp downloading :
 ```java
-versionBuilder.setMcp(new MCP("https://mighya.eu/resources/Client.jar", "client.jar", "f2c219e485831af2bae9464eebbe4765128c6ad6", "Kohala", "", "", 23005862, 0));
+.withMCP(new MCP("https://mighya.eu/resources/Client.jar", "f2c219e485831af2bae9464eebbe4765128c6ad6", "", "", 23005862, 210052));
 ```
-You can get a MCP object instance by providing a json link too : `versionBuilder.setMcp(MCP.fromJson("https://url.com/launcher/mcp.json"));`.
+You can get a MCP object instance by providing a json link too : `.withMCP(MCP.getMCPFromJson("https://url.com/launcher/mcp.json"));`.
 Nothing else to add :).
 
+### Fabric
+
+Coming soon !!!
+
 ### External Files
+
 With FlowUpdater, you can download other files in your update dir!
-In your FlowUpdaterBuilder instance, precise an array list of ExternalFile (can be get by ExternalFile#fromJson).
+In your FlowUpdaterBuilder, precise an array list of ExternalFile (can be get by `ExternalFile#getExternalFilesFromJson`).
+
+### About json files...
 
 All json files can be generated by the [FlowUpdaterJsonCreator](https://github.com/FlowArg/FlowUpdaterJsonCreator) !
 
 ### Post executions
+
 With FlowUpdater, you can execute some actions after update, like patch a file, kill a process, launch a process, review a config etc etc...
-In your FlowUpdaterBuilder instance, precise a list of Runnable.
+In your FlowUpdaterBuilder, precise a list of Runnable.
 
 And all it's done !
 
 ### Informations
+
 This library has some dependencies :
 - [FlowMultitools](https://github.com/FlowArg/FlowMultitools).
+- [PluginLoaderAPI](https://github.com/FlowArg/PluginLoaderAPI).
 - [Gson](https://github.com/Google/Gson).
+
+
+### Donating
+
+If you want to contribute to the project, please consider providing me with some support:
+https://paypal.me/Philouse

@@ -1,15 +1,9 @@
 .gradle
 build
-/out/
 /updater/
 /run/
-/src/main/resources/jsontamer.json
-/src/main/java/fr/flowarg/flowupdater/rework/
 /src/test/
-/.idea/
-bin
-.project
-.settings
-.classpath
+.idea
+out
 forge-installer.jar.log
 forge-installer-patched.jar.log
