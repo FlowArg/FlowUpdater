@@ -1,2 +1,3 @@
 rootProject.name = 'FlowUpdater'
 include 'CurseForgePlugin'
+include 'OptifineDownloaderPlugin'

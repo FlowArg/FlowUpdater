@@ -1,0 +1,28 @@
+apply plugin: 'java-library'
+
+group 'fr.antoineok'
+version '1.0.0'
+archivesBaseName = "OptifineDownloaderPlugin"
+
+
+compileJava {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+	options.encoding = 'UTF-8'
+}
+
+task sourcesJar(type: Jar, dependsOn: build) {
+    classifier 'sources'
+	from sourceSets.main.allSource
+}
+
+repositories {
+    jcenter()
+	maven { url 'https://jitpack.io/'}
+}
+
+dependencies {
+	implementation 'com.google.code.gson:gson:2.8.6'
+	implementation 'fr.flowarg:flowmultitools:1.1.3'
+	implementation 'com.github.FlowArg:PluginLoaderAPI:c9ae321'
+	implementation 'com.squareup.okhttp:okhttp:2.5.0'
+}
