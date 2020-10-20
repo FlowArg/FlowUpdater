@@ -6,6 +6,7 @@ import fr.flowarg.flowupdater.download.json.ExternalFile;
 import fr.flowarg.flowupdater.download.json.Mod;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -20,12 +21,13 @@ public class DownloadInfos
     private final List<ExternalFile> extFiles = new ArrayList<>();
     private final List<Mod> mods = new ArrayList<>();
     private final List<Object> curseMods = new ArrayList<>();
+    private Object optifine = null;
     private int totalToDownload;
     private int downloaded;
 
     public void init()
     {
-        this.totalToDownload = this.libraryDownloadables.size() + this.assetDownloadables.size() + this.extFiles.size() + this.mods.size() + this.curseMods.size();
+        this.totalToDownload = this.libraryDownloadables.size() + this.assetDownloadables.size() + this.extFiles.size() + this.mods.size() + this.curseMods.size() + (this.optifine == null ? 0 : 1);
         this.downloaded = 0;
     }
 
@@ -69,6 +71,16 @@ public class DownloadInfos
         return this.curseMods;
     }
 
+    public Object getOptifine()
+    {
+        return this.optifine;
+    }
+
+    public void setOptifine(Object optifine)
+    {
+        this.optifine = optifine;
+    }
+
     public void clear()
     {
         this.libraryDownloadables.clear();
@@ -76,6 +88,7 @@ public class DownloadInfos
         this.assetDownloadables.clear();
         this.mods.clear();
         this.curseMods.clear();
+        this.optifine = null;
         this.totalToDownload = 0;
         this.downloaded = 0;
     }

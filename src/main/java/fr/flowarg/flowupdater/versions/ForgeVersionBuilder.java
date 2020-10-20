@@ -34,6 +34,7 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
     private final BuilderArgument<ArrayList<CurseModInfos>> curseModsArgument = new BuilderArgument<ArrayList<CurseModInfos>>("CurseMods", ArrayList::new).optional();
     private final BuilderArgument<Boolean> nogGuiArgument = new BuilderArgument<>("NoGui", () -> true).optional();
     private final BuilderArgument<ModFileDeleter> fileDeleterArgument = new BuilderArgument<>("ModFileDeleter", () -> new ModFileDeleter(false)).optional();
+    private final BuilderArgument<String> optifineArgument = new BuilderArgument<String>("Optifine").optional();
 
     public ForgeVersionBuilder withForgeVersion(String forgeVersion)
     {
@@ -83,6 +84,12 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
         return this;
     }
 
+    public ForgeVersionBuilder withOptifine(String optifine)
+    {
+        this.optifineArgument.set(optifine);
+        return this;
+    }
+
     @Override
     public AbstractForgeVersion build() throws BuilderException
     {
@@ -99,7 +106,8 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
                         this.modsArgument.get(),
                         this.curseModsArgument.get(),
                         this.nogGuiArgument.get(),
-                        this.fileDeleterArgument.get()
+                        this.fileDeleterArgument.get(),
+                        this.optifineArgument.get()
                 );
             case OLD:
                 return new OldForgeVersion(
@@ -109,7 +117,8 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
                         this.progressCallbackArgument.get(),
                         this.modsArgument.get(),
                         this.curseModsArgument.get(),
-                        this.fileDeleterArgument.get()
+                        this.fileDeleterArgument.get(),
+                        this.optifineArgument.get()
                 );
             default:
                 return null;

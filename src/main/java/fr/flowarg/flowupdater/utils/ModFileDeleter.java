@@ -1,5 +1,6 @@
 package fr.flowarg.flowupdater.utils;
 
+import fr.antoineok.flowupdater.optifineplugin.Optifine;
 import fr.flowarg.flowupdater.curseforgeplugin.CurseMod;
 import fr.flowarg.flowupdater.download.json.Mod;
 
@@ -23,12 +24,16 @@ public class ModFileDeleter implements IFileDeleter
     @Override
     public void delete(Object... parameters) throws Exception
     {
+        if (parameters.length != 6)
+            return;
         if(this.isUseFileDeleter())
         {
             final File modsDir = (File)parameters[0];
             final List<Mod> mods = (List<Mod>)parameters[1];
             final boolean cursePluginLoaded = (boolean)parameters[2];
             final List<Object> allCurseMods = (List<Object>)parameters[3];
+            final boolean optifinePluginLoaded = (boolean)parameters[4];
+            final Object optifineParam = parameters[5];
 
             final Set<File> badFiles = new HashSet<>();
             final List<File> verifiedFiles = new ArrayList<>();
@@ -37,6 +42,8 @@ public class ModFileDeleter implements IFileDeleter
             {
                 if(!fileInDir.isDirectory())
                 {
+                    if(verifiedFiles.contains(fileInDir))
+                        continue;
                     if(mods.isEmpty() && allCurseMods.isEmpty())
                     {
                         if(!verifiedFiles.contains(fileInDir))
@@ -64,6 +71,25 @@ public class ModFileDeleter implements IFileDeleter
                                     if(!verifiedFiles.contains(fileInDir))
                                         badFiles.add(fileInDir);
                                 }
+                            }
+                        }
+
+                        if(optifinePluginLoaded)
+                        {
+                            final Optifine optifine = (Optifine)optifineParam;
+                            if(optifine.getName().equalsIgnoreCase(fileInDir.getName()))
+                            {
+                                if(getFileSizeBytes(fileInDir) == optifine.getSize())
+                                {
+                                    badFiles.remove(fileInDir);
+                                    verifiedFiles.add(fileInDir);
+                                }
+                                else badFiles.add(fileInDir);
+                            }
+                            else
+                            {
+                                if(!verifiedFiles.contains(fileInDir))
+                                    badFiles.add(fileInDir);
                             }
                         }
 

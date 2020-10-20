@@ -24,9 +24,9 @@ import java.util.List;
  */
 public class OldForgeVersion extends AbstractForgeVersion
 {
-    OldForgeVersion(String forgeVersion, VanillaVersion vanilla, ILogger logger, IProgressCallback callback, List<Mod> mods, ArrayList<CurseModInfos> curseMods, ModFileDeleter fileDeleter)
+    OldForgeVersion(String forgeVersion, VanillaVersion vanilla, ILogger logger, IProgressCallback callback, List<Mod> mods, ArrayList<CurseModInfos> curseMods, ModFileDeleter fileDeleter, String optifine)
     {
-        super(logger, mods, curseMods, forgeVersion, vanilla, callback, fileDeleter);
+        super(logger, mods, curseMods, forgeVersion, vanilla, callback, fileDeleter, optifine);
     }
     
     @Override

@@ -10,18 +10,14 @@ import java.io.IOException;
 
 public class OptifinePlugin extends Plugin {
 
-    private static OptifinePlugin instance;
+    public static OptifinePlugin instance;
 
     private final OkHttpClient client = new OkHttpClient();
 
     @Override
     public void onStart() {
-        this.getLogger().info("Starting ODP (OptifinePlugin) for FlowUpdater...");
         instance = this;
-    }
-
-    public static OptifinePlugin getInstance() {
-        return instance;
+        this.getLogger().info("Starting OP (OptifinePlugin) for FlowUpdater...");
     }
 
     public Optifine getOptifine(String optifineVersion) throws IOException {
@@ -30,22 +26,21 @@ public class OptifinePlugin extends Plugin {
 
         HttpUrl.Builder urlBuilder = HttpUrl.parse("http://optifine.net/downloadx").newBuilder();
         urlBuilder.addQueryParameter("f", name);
-        urlBuilder.addQueryParameter("x", getJson(optifineVersion));
+        urlBuilder.addQueryParameter("x", this.getJson(optifineVersion));
 
         String newUrl = urlBuilder.build().toString();
 
         Request request = new Request.Builder()
                 .url(newUrl)
                 .build();
-        Response response = client.newCall(request).execute();
+        Response response = this.client.newCall(request).execute();
         final String length  = response.header("Content-Length");
         response.body().close();
 
-        this.shutdownOKHTTP();
         return new Optifine(name, newUrl, Integer.parseInt(length));
     }
 
-    private void shutdownOKHTTP()
+    public void shutdownOKHTTP()
     {
         if(this.client.getDispatcher() != null)
             this.client.getDispatcher().getExecutorService().shutdown();
@@ -67,13 +62,13 @@ public class OptifinePlugin extends Plugin {
      */
     private String getJson(String optifineVersion) throws IOException {
         if(!doesVersionExist(optifineVersion))
-            throw new IOException("Version de Optifine non trouvé");
+            throw new IOException(optifineVersion + " Optifine version doesn't exist.");
         Request request = new Request.Builder()
                 .url("http://optifine.net/adloadx?f=OptiFine_" + optifineVersion)
                 .build();
         try
         {
-            Response response = client.newCall(request).execute();
+            Response response = this.client.newCall(request).execute();
             String resp = response.body().string();
             String[] respLine = resp.split("\n");
             response.body().close();
@@ -84,9 +79,8 @@ public class OptifinePlugin extends Plugin {
                     break;
                 }
             }
-            String key = keyLine.replace("' onclick='onDownload()'>OptiFine 1.12 HD U F5</a>", "").replace("<a href='downloadx?f=OptiFine_" + optifineVersion + "&x=", "").replace(" ", "");
 
-            return key;
+            return keyLine.replace("' onclick='onDownload()'>OptiFine 1.12 HD U F5</a>", "").replace("<a href='downloadx?f=OptiFine_" + optifineVersion + "&x=", "").replace(" ", "");
         }
         catch (IOException e)
         {
@@ -107,7 +101,7 @@ public class OptifinePlugin extends Plugin {
                 .build();
         try
         {
-            Response response = client.newCall(request).execute();
+            Response response = this.client.newCall(request).execute();
             boolean succ = response.isSuccessful();
             response.body().close();
             return succ;
@@ -122,6 +116,6 @@ public class OptifinePlugin extends Plugin {
 
     @Override
     public void onStop() {
-        this.getLogger().info("Stopping ODP...");
+        this.getLogger().info("Stopping OP...");
     }
 }

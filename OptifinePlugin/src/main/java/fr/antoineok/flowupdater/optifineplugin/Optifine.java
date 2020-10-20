@@ -1,12 +1,12 @@
 package fr.antoineok.flowupdater.optifineplugin;
 
 import com.google.gson.JsonObject;
+import fr.flowarg.pluginloaderapi.api.JsonSerializable;
 
-public class Optifine {
-
-    private String name;
-    private String url;
-    private int size;
+public class Optifine implements JsonSerializable {
+    private final String name;
+    private final String url;
+    private final int size;
 
     public Optifine(String name, String url, int size) {
         this.name = name;
@@ -15,23 +15,29 @@ public class Optifine {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public String getUrl() {
-        return url;
+        return this.url;
     }
 
     public int getSize() {
-        return size;
+        return this.size;
     }
 
     @Override
     public String toString() {
-        JsonObject obj = new JsonObject();
-        obj.addProperty("name", name);
-        obj.addProperty("url", url);
-        obj.addProperty("size", size);
+        return this.toJson();
+    }
+
+    @Override
+    public String toJson()
+    {
+        final JsonObject obj = new JsonObject();
+        obj.addProperty("name", this.name);
+        obj.addProperty("url", this.url);
+        obj.addProperty("size", this.size);
         return obj.toString();
     }
 }

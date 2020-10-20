@@ -30,7 +30,6 @@ public class IOUtils
 
     public static String getContent(URL url)
     {
-        final long start = System.currentTimeMillis();
         try(InputStream stream = new BufferedInputStream(catchForbidden(url)))
         {
             final BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
@@ -39,7 +38,6 @@ public class IOUtils
             int character;
             while ((character = reader.read()) != -1) sb.append((char)character);
 
-            System.out.println(System.currentTimeMillis() - start / 100d);
             return sb.toString();
         } catch (IOException e)
         {
