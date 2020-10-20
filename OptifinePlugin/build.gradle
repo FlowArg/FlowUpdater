@@ -10,6 +10,6 @@ version '1.0.0'
 archivesBaseName = "OptifinePlugin"
 
 dependencies {
-	shadow 'com.squareup.okhttp:okhttp:2.5.0'
-	runtimeOnly 'com.squareup.okhttp:okhttp:2.5.0'
+	shadow 'com.squareup.okhttp3:okhttp:3.14.9'
+	runtimeOnly 'com.squareup.okhttp3:okhttp:3.14.9'
 }
