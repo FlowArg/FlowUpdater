@@ -1,13 +1,16 @@
 package fr.antoineok.flowupdater.optifineplugin;
 
-
+import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.pluginloaderapi.plugin.Plugin;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 
 public class OptifinePlugin extends Plugin {
@@ -31,27 +34,33 @@ public class OptifinePlugin extends Plugin {
     public Optifine getOptifine(String optifineVersion) throws IOException {
 
         String name = "OptiFine_" + optifineVersion + ".jar";
+        if(optifineVersion.startsWith("preview"))
+            name = optifineVersion + ".jar";
 
         HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse("http://optifine.net/downloadx")).newBuilder();
         urlBuilder.addQueryParameter("f", name);
-        urlBuilder.addQueryParameter("x", getJson(optifineVersion));
+        urlBuilder.addQueryParameter("x", this.getJson(optifineVersion));
 
         String newUrl = urlBuilder.build().toString();
-
-
         Request request = new Request.Builder()
                 .url(newUrl)
                 .build();
         Response response = client.newCall(request).execute();
-        final int length  = Integer.parseInt(Objects.requireNonNull(response.header("Content-Length")));
-        if(length == 16)
-            throw new IOException("Given ersion of Optifine not found.");
+        final int length = Integer.parseInt(Objects.requireNonNull(response.header("Content-Length")));
+
         assert response.body() != null;
+        final File output = new File(this.getDataPluginFolder(), name);
+        this.getLogger().info(String.format("Downloading %s from %s...", output.getName(), newUrl));
+        if(!output.exists() || FileUtils.getFileSizeBytes(output) != length)
+            Files.copy(response.body().byteStream(), output.toPath(), StandardCopyOption.REPLACE_EXISTING);
         response.body().close();
 
-        return new Optifine(name, newUrl, length);
+        if(length <= 25)
+            throw new IOException("Given version of Optifine not found.");
 
+        return new Optifine(name, length);
     }
+
 
     public void shutdownOKHTTP()
     {
@@ -82,8 +91,8 @@ public class OptifinePlugin extends Plugin {
             String[] respLine = resp.split("\n");
             response.body().close();
             String keyLine = "";
-            for(String line : respLine){
-                if(line.contains("downloadx?f=OptiFine")){
+            for(String line : respLine) {
+                if(line.contains("downloadx?f=OptiFine")) {
                     keyLine = line;
                     break;
                 }
@@ -95,7 +104,6 @@ public class OptifinePlugin extends Plugin {
         {
             this.getLogger().printStackTrace(e);
         }
-
 
         return "";
     }

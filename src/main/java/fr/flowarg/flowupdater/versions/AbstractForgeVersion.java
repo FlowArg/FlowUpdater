@@ -159,6 +159,7 @@ public abstract class AbstractForgeVersion
             });
         }
 
+        Object ofObj = null;
         if(optifinePluginLoaded)
         {
             if(this.downloadInfos.getOptifine() != null)
@@ -166,7 +167,11 @@ public abstract class AbstractForgeVersion
                 try
                 {
                     final Optifine optifine = (Optifine)this.downloadInfos.getOptifine();
-                    IOUtils.download(this.logger, new URL(optifine.getUrl()), new File(modsDir, optifine.getName()));
+                    ofObj = optifine;
+                    final File pluginDir = new File(modsDir.getParentFile(), "FUPlugins/OptifinePlugin/");
+                    final File optifineFile = new File(modsDir, optifine.getName());
+                    if(!optifineFile.exists())
+                        Files.copy(new File(pluginDir, optifine.getName()).toPath(), optifineFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 } catch (MalformedURLException e)
                 {
                     this.logger.printStackTrace(e);
@@ -176,7 +181,7 @@ public abstract class AbstractForgeVersion
             }
         }
 
-        this.fileDeleter.delete(modsDir, this.mods, cursePluginLoaded, this.allCurseMods, optifinePluginLoaded);
+        this.fileDeleter.delete(modsDir, this.mods, cursePluginLoaded, this.allCurseMods, optifinePluginLoaded, ofObj);
     }
 
     public ModFileDeleter getFileDeleter()

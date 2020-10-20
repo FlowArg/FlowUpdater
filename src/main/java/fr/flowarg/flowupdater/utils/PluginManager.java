@@ -14,6 +14,7 @@ import fr.flowarg.pluginloaderapi.PluginLoaderAPI;
 import fr.flowarg.pluginloaderapi.plugin.PluginLoader;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -103,29 +104,27 @@ public class PluginManager
         forgeVersion.setAllCurseMods(allCurseMods);
     }
 
-    public void loadOptifine(File dir, AbstractForgeVersion forgeVersion) throws Exception
+    public void loadOptifine(File dir, AbstractForgeVersion forgeVersion)
     {
         try
         {
             Class.forName("fr.antoineok.flowupdater.optifineplugin.OptifinePlugin");
             this.optifinePluginLoaded = true;
-            final OptifinePlugin optifinePlugin = OptifinePlugin.instance;
-            final Optifine optifine = optifinePlugin.getOptifine(forgeVersion.getOptifine());
-            final File file = new File(dir, optifine.getName());
-            if (file.exists())
-            {
-                if (getFileSizeBytes(file) != optifine.getSize())
-                {
-                    file.delete();
-                    this.downloadInfos.getCurseMods().add(optifine);
-                }
-            }
-            else this.downloadInfos.setOptifine(optifine);
         }
         catch (ClassNotFoundException e)
         {
             this.optifinePluginLoaded = false;
             this.logger.err("Cannot install optifine: OptifinePlugin is not loaded. Please, enable the 'installOptifineAsMod' updater option !");
+        }
+        try
+        {
+            final OptifinePlugin optifinePlugin = OptifinePlugin.instance;
+            final Optifine optifine = optifinePlugin.getOptifine(forgeVersion.getOptifine());
+            this.downloadInfos.setOptifine(optifine);
+        }
+        catch (IOException e)
+        {
+            this.logger.printStackTrace(e);
         }
     }
 

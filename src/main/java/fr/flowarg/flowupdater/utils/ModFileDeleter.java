@@ -44,11 +44,10 @@ public class ModFileDeleter implements IFileDeleter
                 {
                     if(verifiedFiles.contains(fileInDir))
                         continue;
-                    if(mods.isEmpty() && allCurseMods.isEmpty())
+                    if(mods.isEmpty() && allCurseMods.isEmpty() && optifineParam == null)
                     {
                         if(!verifiedFiles.contains(fileInDir))
                             badFiles.add(fileInDir);
-                        break;
                     }
                     else
                     {
@@ -77,19 +76,22 @@ public class ModFileDeleter implements IFileDeleter
                         if(optifinePluginLoaded)
                         {
                             final Optifine optifine = (Optifine)optifineParam;
-                            if(optifine.getName().equalsIgnoreCase(fileInDir.getName()))
+                            if(optifine != null)
                             {
-                                if(getFileSizeBytes(fileInDir) == optifine.getSize())
+                                if(optifine.getName().equalsIgnoreCase(fileInDir.getName()))
                                 {
-                                    badFiles.remove(fileInDir);
-                                    verifiedFiles.add(fileInDir);
+                                    if(getFileSizeBytes(fileInDir) == optifine.getSize())
+                                    {
+                                        badFiles.remove(fileInDir);
+                                        verifiedFiles.add(fileInDir);
+                                    }
+                                    else badFiles.add(fileInDir);
                                 }
-                                else badFiles.add(fileInDir);
-                            }
-                            else
-                            {
-                                if(!verifiedFiles.contains(fileInDir))
-                                    badFiles.add(fileInDir);
+                                else
+                                {
+                                    if(!verifiedFiles.contains(fileInDir))
+                                        badFiles.add(fileInDir);
+                                }
                             }
                         }
 
