@@ -12,19 +12,14 @@ import java.util.Objects;
 
 public class OptifinePlugin extends Plugin {
 
-    private static OptifinePlugin instance;
+    public static OptifinePlugin instance;
 
     private final OkHttpClient client = new OkHttpClient();
 
     @Override
     public void onStart() {
-        this.getLogger().info("Starting ODP (OptifineDownloaderPlugin) for FlowUpdater...");
         instance = this;
-    }
-
-    @SuppressWarnings("unused")
-    public static OptifinePlugin getInstance() {
-        return instance;
+        this.getLogger().info("Starting ODP (OptifineDownloaderPlugin) for FlowUpdater...");
     }
 
     /**
@@ -50,7 +45,7 @@ public class OptifinePlugin extends Plugin {
         Response response = client.newCall(request).execute();
         final int length  = Integer.parseInt(Objects.requireNonNull(response.header("Content-Length")));
         if(length == 16)
-            throw new IOException("Version de Optifine non trouvé");
+            throw new IOException("Given ersion of Optifine not found.");
         assert response.body() != null;
         response.body().close();
 
@@ -69,10 +64,6 @@ public class OptifinePlugin extends Plugin {
                 Objects.requireNonNull(client.cache()).close();
             } catch (IOException ignored) {}
         }
-    }
-
-    public static void main(String[] args) throws IOException {
-        System.out.println(new OptifinePlugin().getOptifine("1.9.4_HD_U_H5").toString());
     }
 
     /**
@@ -102,7 +93,7 @@ public class OptifinePlugin extends Plugin {
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            this.getLogger().printStackTrace(e);
         }
 
 
