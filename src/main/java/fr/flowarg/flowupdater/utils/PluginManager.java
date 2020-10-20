@@ -109,7 +109,7 @@ public class PluginManager
         {
             Class.forName("fr.antoineok.flowupdater.optifineplugin.OptifinePlugin");
             this.optifinePluginLoaded = true;
-            final OptifinePlugin optifinePlugin = OptifinePlugin.getInstance();
+            final OptifinePlugin optifinePlugin = OptifinePlugin.instance;
             final Optifine optifine = optifinePlugin.getOptifine(forgeVersion.getOptifine());
             final File file = new File(dir, optifine.getName());
             if (file.exists())
@@ -142,7 +142,7 @@ public class PluginManager
         if(this.cursePluginLoaded)
             CurseForgePlugin.instance.shutdownOKHTTP();
         if(this.optifinePluginLoaded)
-            OptifinePlugin.getInstance().shutdownOKHTTP();
+            OptifinePlugin.instance.shutdownOKHTTP();
         this.cursePluginLoaded = false;
         this.optifinePluginLoaded = false;
     }
