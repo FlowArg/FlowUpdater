@@ -1,7 +1,7 @@
 import java.nio.charset.StandardCharsets
 
 plugins {
-    id "com.jfrog.bintray" version "1.8.5"
+    id 'com.jfrog.bintray' version '1.8.5'
 }
 
 apply plugin: 'maven-publish'

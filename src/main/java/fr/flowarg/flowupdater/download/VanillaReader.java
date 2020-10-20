@@ -180,7 +180,7 @@ public class VanillaReader
     {
         final Set<AssetDownloadable> toDownload = new HashSet<>();
         final URL url = new URL(this.version.getMinecraftAssetsIndex().get("url").getAsString());
-        final String json = IOUtils.toString(url.openStream(), StandardCharsets.UTF_8);
+        final String json = IOUtils.getContent(url);
 
         final AssetIndex index = new GsonBuilder()
                 .disableHtmlEscaping()

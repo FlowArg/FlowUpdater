@@ -4,36 +4,23 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonParser;
 import fr.flowarg.flowlogger.ILogger;
+import fr.flowarg.flowupdater.FlowUpdater;
 
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
 public class IOUtils
 {
-    public static String toString(final InputStream input, final Charset encoding) throws IOException
-    {
-        try (final StringBuilderWriter sw = new StringBuilderWriter())
-        {
-            final InputStreamReader in = new InputStreamReader(input, encoding == null ? StandardCharsets.UTF_8 : encoding);
-            final char[] buffer = new char[4096];
-            int n;
-            while ((n = in.read(buffer)) != -1)
-                sw.write(buffer, 0, n);          
-            return sw.toString();
-        }
-    }
-    
     public static void download(ILogger logger, URL in, File out)
     {
         try
         {
             logger.info(String.format("Downloading %s from %s...", out.getName(), in.toExternalForm()));
             out.getParentFile().mkdirs();
-            Files.copy(in.openStream(), out.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(catchForbidden(in), out.toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
         catch (IOException e)
         {
@@ -43,18 +30,20 @@ public class IOUtils
 
     public static String getContent(URL url)
     {
-        try(InputStream stream = new BufferedInputStream(url.openStream()))
+        final long start = System.currentTimeMillis();
+        try(InputStream stream = new BufferedInputStream(catchForbidden(url)))
         {
-            final Reader reader = new BufferedReader(new InputStreamReader(stream));
+            final BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
             final StringBuilder sb = new StringBuilder();
 
             int character;
             while ((character = reader.read()) != -1) sb.append((char)character);
 
+            System.out.println(System.currentTimeMillis() - start / 100d);
             return sb.toString();
         } catch (IOException e)
         {
-            e.printStackTrace();
+            FlowUpdater.DEFAULT_LOGGER.printStackTrace(e);
         }
         return "";
     }
@@ -68,7 +57,7 @@ public class IOUtils
     {
         try
         {
-            return readJson(jsonURL.openStream());
+            return readJson(catchForbidden(jsonURL));
         } catch (IOException e)
         {
             e.printStackTrace();
@@ -99,5 +88,13 @@ public class IOUtils
         }
 
         return element.getAsJsonObject();
+    }
+
+    public static InputStream catchForbidden(URL url) throws IOException
+    {
+        final HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.addRequestProperty("User-Agent", "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.124 Safari/537.36");
+        connection.setInstanceFollowRedirects(true);
+        return connection.getInputStream();
     }
 }
