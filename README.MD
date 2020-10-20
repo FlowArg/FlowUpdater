@@ -70,8 +70,10 @@ You can get mods from CurseForge too:
 List<CurseModInfos> modInfos = new ArrayList<>();
 // project ID and file ID
 modInfos.add(new CurseModInfos(238222, 2988823));
+```
 You can get a list of curse mods by providing a json link too : `List<CurseModInfos> mods = CurseModInfos.getCurseModsFromJson("https://url.com/launcher/cursemods.json");`.
 
+```java
 // On updater options :
 .withUpdaterOptions(new UpdaterOptions(true|false, false|false, true))
 ```

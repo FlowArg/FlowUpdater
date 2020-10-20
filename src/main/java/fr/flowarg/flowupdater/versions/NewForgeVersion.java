@@ -26,9 +26,9 @@ public class NewForgeVersion extends AbstractForgeVersion
     private final String[] compatibleVersions = {"1.16", "1.15", "1.14", "1.13", "1.12.2-14.23.5.285"};
     private final boolean noGui;
 
-    NewForgeVersion(String forgeVersion, VanillaVersion vanilla, ILogger logger, IProgressCallback callback, List<Mod> mods, ArrayList<CurseModInfos> curseMods, boolean noGui, ModFileDeleter fileDeleter)
+    NewForgeVersion(String forgeVersion, VanillaVersion vanilla, ILogger logger, IProgressCallback callback, List<Mod> mods, ArrayList<CurseModInfos> curseMods, boolean noGui, ModFileDeleter fileDeleter, String optifine)
     {
-        super(logger, mods, curseMods, forgeVersion, vanilla, callback, fileDeleter);
+        super(logger, mods, curseMods, forgeVersion, vanilla, callback, fileDeleter, optifine);
         this.noGui = noGui;
     }
 

@@ -1,5 +1,6 @@
 package fr.flowarg.flowupdater.versions;
 
+import fr.antoineok.flowupdater.optifineplugin.Optifine;
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.FlowUpdater;
@@ -35,6 +36,7 @@ public abstract class AbstractForgeVersion
     protected final IProgressCallback callback;
     protected final ArrayList<CurseModInfos> curseMods;
     protected final ModFileDeleter fileDeleter;
+    protected final String optifine;
     protected List<Object> allCurseMods;
     protected URL installerUrl;
     protected DownloadInfos downloadInfos;
@@ -48,14 +50,16 @@ public abstract class AbstractForgeVersion
      * @param vanilla {@link VanillaVersion}.
      * @param callback {@link IProgressCallback} used for update progression.
      * @param fileDeleter {@link ModFileDeleter} used to cleanup mods dir.
+     * @param optifine Optifine version to install.
      */
-    protected AbstractForgeVersion(ILogger logger, List<Mod> mods, ArrayList<CurseModInfos> curseMods, String forgeVersion, VanillaVersion vanilla, IProgressCallback callback, ModFileDeleter fileDeleter)
+    protected AbstractForgeVersion(ILogger logger, List<Mod> mods, ArrayList<CurseModInfos> curseMods, String forgeVersion, VanillaVersion vanilla, IProgressCallback callback, ModFileDeleter fileDeleter, String optifine)
     {
         this.logger = logger;
         this.mods = mods;
         this.fileDeleter = fileDeleter;
         this.curseMods = curseMods;
         this.vanilla = vanilla;
+        this.optifine = optifine;
         if (!forgeVersion.contains("-"))
             this.forgeVersion = this.vanilla.getName() + '-' + forgeVersion;
         else this.forgeVersion = forgeVersion.trim();
@@ -121,9 +125,9 @@ public abstract class AbstractForgeVersion
      * This function installs mods at the specified directory.
      * @param modsDir Specified mods directory.
      * @param cursePluginLoaded if FlowUpdater has loaded CurseForge plugin
-     * @throws IOException If install fail.
+     * @throws IOException If the install fail.
      */
-    public void installMods(File modsDir, boolean cursePluginLoaded) throws Exception
+    public void installMods(File modsDir, boolean cursePluginLoaded, boolean optifinePluginLoaded) throws Exception
     {
         this.callback.step(Step.MODS);
         this.downloadInfos.getMods().forEach(mod -> {
@@ -155,7 +159,24 @@ public abstract class AbstractForgeVersion
             });
         }
 
-        this.fileDeleter.delete(modsDir, this.mods, cursePluginLoaded, this.allCurseMods);
+        if(optifinePluginLoaded)
+        {
+            if(this.downloadInfos.getOptifine() != null)
+            {
+                try
+                {
+                    final Optifine optifine = (Optifine)this.downloadInfos.getOptifine();
+                    IOUtils.download(this.logger, new URL(optifine.getUrl()), new File(modsDir, optifine.getName()));
+                } catch (MalformedURLException e)
+                {
+                    this.logger.printStackTrace(e);
+                }
+                this.downloadInfos.incrementDownloaded();
+                this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
+            }
+        }
+
+        this.fileDeleter.delete(modsDir, this.mods, cursePluginLoaded, this.allCurseMods, optifinePluginLoaded);
     }
 
     public ModFileDeleter getFileDeleter()
@@ -203,5 +224,9 @@ public abstract class AbstractForgeVersion
     public ArrayList<CurseModInfos> getCurseMods()
     {
         return this.curseMods;
+    }
+    public String getOptifine()
+    {
+        return this.optifine;
     }
 }

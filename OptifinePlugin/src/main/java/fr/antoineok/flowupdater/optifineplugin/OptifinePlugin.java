@@ -10,9 +10,9 @@ import okhttp3.Response;
 import java.io.IOException;
 import java.util.Objects;
 
-public class OptifineDownloaderPlugin extends Plugin {
+public class OptifinePlugin extends Plugin {
 
-    private static OptifineDownloaderPlugin instance;
+    private static OptifinePlugin instance;
 
     private final OkHttpClient client = new OkHttpClient();
 
@@ -23,7 +23,7 @@ public class OptifineDownloaderPlugin extends Plugin {
     }
 
     @SuppressWarnings("unused")
-    public static OptifineDownloaderPlugin getInstance() {
+    public static OptifinePlugin getInstance() {
         return instance;
     }
 
@@ -33,7 +33,7 @@ public class OptifineDownloaderPlugin extends Plugin {
      * @return the object that defines the plugin
      * @throws IOException if the version is invalid or not found
      */
-    public Optifine getOptifineJson(String optifineVersion) throws IOException {
+    public Optifine getOptifine(String optifineVersion) throws IOException {
 
         String name = "OptiFine_" + optifineVersion + ".jar";
 
@@ -54,12 +54,11 @@ public class OptifineDownloaderPlugin extends Plugin {
         assert response.body() != null;
         response.body().close();
 
-        shutdownOKHTTP();
         return new Optifine(name, newUrl, length);
 
     }
 
-    private void shutdownOKHTTP()
+    public void shutdownOKHTTP()
     {
         client.dispatcher().executorService().shutdown();
         client.connectionPool().evictAll();
@@ -73,7 +72,7 @@ public class OptifineDownloaderPlugin extends Plugin {
     }
 
     public static void main(String[] args) throws IOException {
-        System.out.println(new OptifineDownloaderPlugin().getOptifineJson("1.9.4_HD_U_H5").toString());
+        System.out.println(new OptifinePlugin().getOptifine("1.9.4_HD_U_H5").toString());
     }
 
     /**
