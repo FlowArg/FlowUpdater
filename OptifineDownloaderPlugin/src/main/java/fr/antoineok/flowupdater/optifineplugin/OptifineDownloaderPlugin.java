@@ -1,12 +1,14 @@
 package fr.antoineok.flowupdater.optifineplugin;
 
-import com.squareup.okhttp.HttpUrl;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
+
 import fr.flowarg.pluginloaderapi.plugin.Plugin;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class OptifineDownloaderPlugin extends Plugin {
 
@@ -20,15 +22,22 @@ public class OptifineDownloaderPlugin extends Plugin {
         instance = this;
     }
 
+    @SuppressWarnings("unused")
     public static OptifineDownloaderPlugin getInstance() {
         return instance;
     }
 
+    /**
+     *
+     * @param optifineVersion the version of Optifine
+     * @return the object that defines the plugin
+     * @throws IOException if the version is invalid or not found
+     */
     public Optifine getOptifineJson(String optifineVersion) throws IOException {
 
         String name = "OptiFine_" + optifineVersion + ".jar";
 
-        HttpUrl.Builder urlBuilder = HttpUrl.parse("http://optifine.net/downloadx").newBuilder();
+        HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse("http://optifine.net/downloadx")).newBuilder();
         urlBuilder.addQueryParameter("f", name);
         urlBuilder.addQueryParameter("x", getJson(optifineVersion));
 
@@ -39,43 +48,46 @@ public class OptifineDownloaderPlugin extends Plugin {
                 .url(newUrl)
                 .build();
         Response response = client.newCall(request).execute();
-        final String length  = response.header("Content-Length");
+        final int length  = Integer.parseInt(Objects.requireNonNull(response.header("Content-Length")));
+        if(length == 16)
+            throw new IOException("Version de Optifine non trouvé");
+        assert response.body() != null;
         response.body().close();
 
         shutdownOKHTTP();
-        return new Optifine(name, newUrl, Integer.parseInt(length));
+        return new Optifine(name, newUrl, length);
 
     }
 
     private void shutdownOKHTTP()
     {
-        if(client.getDispatcher() != null)
-            client.getDispatcher().getExecutorService().shutdown();
-        if(client.getConnectionPool() != null)
-            client.getConnectionPool().evictAll();
-        if(client.getCache() != null)
+        client.dispatcher().executorService().shutdown();
+        client.connectionPool().evictAll();
+        if(client.cache() != null)
         {
             try
             {
-                client.getCache().close();
+                Objects.requireNonNull(client.cache()).close();
             } catch (IOException ignored) {}
         }
     }
 
+    public static void main(String[] args) throws IOException {
+        System.out.println(new OptifineDownloaderPlugin().getOptifineJson("1.9.4_HD_U_H5").toString());
+    }
+
     /**
-     * @throws IOException if the version is invalid or is not found
-     * @param optifineVersion
+     * @param optifineVersion the version of Optifine
      * @return the download key
      */
-    private String getJson(String optifineVersion) throws IOException {
-        if(!doesVersionExist(optifineVersion))
-            throw new IOException("Version de Optifine non trouvé");
+    private String getJson(String optifineVersion) {
         Request request = new Request.Builder()
                 .url("http://optifine.net/adloadx?f=OptiFine_" + optifineVersion)
                 .build();
         try
         {
             Response response = client.newCall(request).execute();
+            assert response.body() != null;
             String resp = response.body().string();
             String[] respLine = resp.split("\n");
             response.body().close();
@@ -86,9 +98,8 @@ public class OptifineDownloaderPlugin extends Plugin {
                     break;
                 }
             }
-            String key = keyLine.replace("' onclick='onDownload()'>OptiFine 1.12 HD U F5</a>", "").replace("<a href='downloadx?f=OptiFine_" + optifineVersion + "&x=", "").replace(" ", "");
 
-            return key;
+            return keyLine.replace("' onclick='onDownload()'>OptiFine " + optifineVersion.replace("_", " ") +"</a>", "").replace("<a href='downloadx?f=OptiFine_" + optifineVersion + "&x=", "").replace(" ", "");
         }
         catch (IOException e)
         {
@@ -97,30 +108,6 @@ public class OptifineDownloaderPlugin extends Plugin {
 
 
         return "";
-    }
-
-    /**
-     * @param optifineVersion The version of optifine
-     * @return true if <code>optifineVersion</code> exist
-     **/
-    private boolean doesVersionExist(String optifineVersion)
-    {
-        Request request = new Request.Builder()
-                .url("http://optifine.net/adloadx?f=OptiFine_" + optifineVersion + ".jar")
-                .build();
-        try
-        {
-            Response response = client.newCall(request).execute();
-            boolean succ = response.isSuccessful();
-            response.body().close();
-            return succ;
-
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-            return false;
-        }
     }
 
 
