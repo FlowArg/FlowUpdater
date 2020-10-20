@@ -24,7 +24,7 @@ public class OptifinePlugin extends Plugin {
         return instance;
     }
 
-    public Optifine getOptifineJson(String optifineVersion) throws IOException {
+    public Optifine getOptifine(String optifineVersion) throws IOException {
 
         String name = "OptiFine_" + optifineVersion + ".jar";
 
@@ -34,7 +34,6 @@ public class OptifinePlugin extends Plugin {
 
         String newUrl = urlBuilder.build().toString();
 
-
         Request request = new Request.Builder()
                 .url(newUrl)
                 .build();
@@ -42,29 +41,28 @@ public class OptifinePlugin extends Plugin {
         final String length  = response.header("Content-Length");
         response.body().close();
 
-        shutdownOKHTTP();
+        this.shutdownOKHTTP();
         return new Optifine(name, newUrl, Integer.parseInt(length));
-
     }
 
     private void shutdownOKHTTP()
     {
-        if(client.getDispatcher() != null)
-            client.getDispatcher().getExecutorService().shutdown();
-        if(client.getConnectionPool() != null)
-            client.getConnectionPool().evictAll();
-        if(client.getCache() != null)
+        if(this.client.getDispatcher() != null)
+            this.client.getDispatcher().getExecutorService().shutdown();
+        if(this.client.getConnectionPool() != null)
+            this.client.getConnectionPool().evictAll();
+        if(this.client.getCache() != null)
         {
             try
             {
-                client.getCache().close();
+                this.client.getCache().close();
             } catch (IOException ignored) {}
         }
     }
 
     /**
      * @throws IOException if the version is invalid or is not found
-     * @param optifineVersion
+     * @param optifineVersion version of Optifine
      * @return the download key
      */
     private String getJson(String optifineVersion) throws IOException {
@@ -92,9 +90,8 @@ public class OptifinePlugin extends Plugin {
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            this.getLogger().printStackTrace(e);
         }
-
 
         return "";
     }
@@ -114,11 +111,10 @@ public class OptifinePlugin extends Plugin {
             boolean succ = response.isSuccessful();
             response.body().close();
             return succ;
-
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            this.getLogger().printStackTrace(e);
             return false;
         }
     }
