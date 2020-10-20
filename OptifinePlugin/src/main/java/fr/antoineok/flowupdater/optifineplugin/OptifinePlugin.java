@@ -8,19 +8,19 @@ import fr.flowarg.pluginloaderapi.plugin.Plugin;
 
 import java.io.IOException;
 
-public class OptifineDownloaderPlugin extends Plugin {
+public class OptifinePlugin extends Plugin {
 
-    private static OptifineDownloaderPlugin instance;
+    private static OptifinePlugin instance;
 
     private final OkHttpClient client = new OkHttpClient();
 
     @Override
     public void onStart() {
-        this.getLogger().info("Starting ODP (OptifineDownloaderPlugin) for FlowUpdater...");
+        this.getLogger().info("Starting ODP (OptifinePlugin) for FlowUpdater...");
         instance = this;
     }
 
-    public static OptifineDownloaderPlugin getInstance() {
+    public static OptifinePlugin getInstance() {
         return instance;
     }
 

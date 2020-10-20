@@ -1,0 +1,5 @@
+{
+  "name": "OptifinePlugin",
+  "pluginClass": "fr.antoineok.flowupdater.optifineplugin.OptifinePlugin",
+  "version": "1.0.0"
+}
