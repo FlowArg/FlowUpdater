@@ -6,7 +6,6 @@ import fr.flowarg.flowupdater.download.json.ExternalFile;
 import fr.flowarg.flowupdater.download.json.Mod;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**

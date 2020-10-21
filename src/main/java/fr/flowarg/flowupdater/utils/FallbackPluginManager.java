@@ -19,10 +19,10 @@ public class FallbackPluginManager extends PluginManager
     public void updatePlugin(File out, String name, String alias) {}
 
     @Override
-    public void loadCurseMods(File dir, AbstractForgeVersion forgeVersion) {}
+    public void loadCurseForgePlugin(File dir, AbstractForgeVersion forgeVersion) {}
 
     @Override
-    public void loadOptifine(File dir, AbstractForgeVersion forgeVersion) {}
+    public void loadOptifinePlugin(File dir, AbstractForgeVersion forgeVersion) {}
 
     @Override
     public void configurePLA(File dir) {}

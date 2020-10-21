@@ -3,7 +3,8 @@ package fr.flowarg.flowupdater.versions;
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.download.IProgressCallback;
-import fr.flowarg.flowupdater.download.json.CurseModInfos;
+import fr.flowarg.flowupdater.download.json.CurseFileInfos;
+import fr.flowarg.flowupdater.download.json.CurseModPackInfos;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
 
@@ -24,9 +25,9 @@ import java.util.List;
  */
 public class OldForgeVersion extends AbstractForgeVersion
 {
-    OldForgeVersion(String forgeVersion, VanillaVersion vanilla, ILogger logger, IProgressCallback callback, List<Mod> mods, ArrayList<CurseModInfos> curseMods, ModFileDeleter fileDeleter, String optifine)
+    OldForgeVersion(String forgeVersion, VanillaVersion vanilla, ILogger logger, IProgressCallback callback, List<Mod> mods, List<CurseFileInfos> curseMods, ModFileDeleter fileDeleter, String optifine, CurseModPackInfos modPack)
     {
-        super(logger, mods, curseMods, forgeVersion, vanilla, callback, fileDeleter, optifine);
+        super(logger, mods, curseMods, forgeVersion, vanilla, callback, fileDeleter, optifine, modPack);
     }
     
     @Override
@@ -109,10 +110,5 @@ public class OldForgeVersion extends AbstractForgeVersion
         FileUtils.deleteDirectory(new File(tempInstallerDir, "com"));
         new File(tempInstallerDir, "big_logo.png").delete();
         new File(tempInstallerDir, "url.png").delete();
-    }
-
-    public VanillaVersion getVanilla()
-    {
-        return this.vanilla;
     }
 }

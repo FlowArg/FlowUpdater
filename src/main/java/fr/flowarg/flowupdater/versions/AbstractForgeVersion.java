@@ -8,7 +8,8 @@ import fr.flowarg.flowupdater.curseforgeplugin.CurseMod;
 import fr.flowarg.flowupdater.download.DownloadInfos;
 import fr.flowarg.flowupdater.download.IProgressCallback;
 import fr.flowarg.flowupdater.download.Step;
-import fr.flowarg.flowupdater.download.json.CurseModInfos;
+import fr.flowarg.flowupdater.download.json.CurseFileInfos;
+import fr.flowarg.flowupdater.download.json.CurseModPackInfos;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
@@ -34,9 +35,10 @@ public abstract class AbstractForgeVersion
     protected final VanillaVersion vanilla;
     protected final String forgeVersion;
     protected final IProgressCallback callback;
-    protected final ArrayList<CurseModInfos> curseMods;
+    protected final List<CurseFileInfos> curseMods;
     protected final ModFileDeleter fileDeleter;
     protected final String optifine;
+    protected final CurseModPackInfos modPackInfos;
     protected List<Object> allCurseMods;
     protected URL installerUrl;
     protected DownloadInfos downloadInfos;
@@ -45,14 +47,14 @@ public abstract class AbstractForgeVersion
      * Use {@link ForgeVersionBuilder} to instantiate this class.
      * @param logger {@link ILogger} used for logging.
      * @param mods {@link List<Mod>} to install.
-     * @param curseMods {@link ArrayList<CurseModInfos>} to install.
+     * @param curseMods {@link ArrayList<CurseFileInfos>} to install.
      * @param forgeVersion to install.
      * @param vanilla {@link VanillaVersion}.
      * @param callback {@link IProgressCallback} used for update progression.
      * @param fileDeleter {@link ModFileDeleter} used to cleanup mods dir.
      * @param optifine Optifine version to install.
      */
-    protected AbstractForgeVersion(ILogger logger, List<Mod> mods, ArrayList<CurseModInfos> curseMods, String forgeVersion, VanillaVersion vanilla, IProgressCallback callback, ModFileDeleter fileDeleter, String optifine)
+    protected AbstractForgeVersion(ILogger logger, List<Mod> mods, List<CurseFileInfos> curseMods, String forgeVersion, VanillaVersion vanilla, IProgressCallback callback, ModFileDeleter fileDeleter, String optifine, CurseModPackInfos modPackInfos)
     {
         this.logger = logger;
         this.mods = mods;
@@ -60,6 +62,7 @@ public abstract class AbstractForgeVersion
         this.curseMods = curseMods;
         this.vanilla = vanilla;
         this.optifine = optifine;
+        this.modPackInfos = modPackInfos;
         if (!forgeVersion.contains("-"))
             this.forgeVersion = this.vanilla.getName() + '-' + forgeVersion;
         else this.forgeVersion = forgeVersion.trim();
@@ -226,12 +229,16 @@ public abstract class AbstractForgeVersion
     {
         this.allCurseMods = allCurseMods;
     }
-    public ArrayList<CurseModInfos> getCurseMods()
+    public List<CurseFileInfos> getCurseMods()
     {
         return this.curseMods;
     }
     public String getOptifine()
     {
         return this.optifine;
+    }
+    public CurseModPackInfos getModPackInfos()
+    {
+        return this.modPackInfos;
     }
 }

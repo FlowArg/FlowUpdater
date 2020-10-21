@@ -7,6 +7,7 @@ import fr.flowarg.flowupdater.utils.IOUtils;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Mod
@@ -79,7 +80,7 @@ public class Mod
         catch (MalformedURLException e)
         {
             e.printStackTrace();
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
     }
     

@@ -12,7 +12,6 @@ import fr.flowarg.flowupdater.versions.VanillaVersion;
 
 import java.io.IOException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -39,30 +38,30 @@ public class VanillaReader
     {
         this.callback.step(Step.READ);
         if(!this.isSilent)
-            this.logger.info("Reading libraries information...");
+            this.logger.debug("Reading libraries information...");
         long start = System.currentTimeMillis();
         this.getLibraries();
 
         if(!this.isSilent)
-            this.logger.info("Reading assets information...");
+            this.logger.debug("Reading assets information...");
         this.getAssetsIndex();
 
         if(!this.isSilent)
-            this.logger.info("Reading jars for client/server game...");
+            this.logger.debug("Reading jars for client/server game...");
         this.getClientServerJars();
 
         if(!this.isSilent)
-            this.logger.info("Reading natives...");
+            this.logger.debug("Reading natives...");
         this.getNatives();
 
         if(!this.isSilent)
-            this.logger.info("Reading assets...");
+            this.logger.debug("Reading assets...");
         this.getAssets();
 
         if(!this.isSilent)
         {
             final long end = System.currentTimeMillis();
-            this.logger.warn("Parsing of the json file took " + (end - start) + " milliseconds...");
+            this.logger.debug("Parsing of the json file took " + (end - start) + " milliseconds...");
         }
     }
 
@@ -70,7 +69,7 @@ public class VanillaReader
     {
         this.version.getMinecraftLibrariesJson().forEach(jsonElement ->
         {
-            boolean canDownload;
+            final boolean canDownload;
             final JsonObject element = jsonElement.getAsJsonObject();
             if (element != null)
             {

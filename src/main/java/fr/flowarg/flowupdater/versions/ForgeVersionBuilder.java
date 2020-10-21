@@ -3,7 +3,8 @@ package fr.flowarg.flowupdater.versions;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.FlowUpdater;
 import fr.flowarg.flowupdater.download.IProgressCallback;
-import fr.flowarg.flowupdater.download.json.CurseModInfos;
+import fr.flowarg.flowupdater.download.json.CurseFileInfos;
+import fr.flowarg.flowupdater.download.json.CurseModPackInfos;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
@@ -31,10 +32,11 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
     private final BuilderArgument<ILogger> loggerArgument = new BuilderArgument<>("Logger", () -> FlowUpdater.DEFAULT_LOGGER).optional();
     private final BuilderArgument<IProgressCallback> progressCallbackArgument = new BuilderArgument<>("ProgressCallback", () -> FlowUpdater.NULL_CALLBACK).optional();
     private final BuilderArgument<List<Mod>> modsArgument = new BuilderArgument<List<Mod>>("Mods", ArrayList::new).optional();
-    private final BuilderArgument<ArrayList<CurseModInfos>> curseModsArgument = new BuilderArgument<ArrayList<CurseModInfos>>("CurseMods", ArrayList::new).optional();
+    private final BuilderArgument<List<CurseFileInfos>> curseModsArgument = new BuilderArgument<List<CurseFileInfos>>("CurseMods", ArrayList::new).optional();
     private final BuilderArgument<Boolean> nogGuiArgument = new BuilderArgument<>("NoGui", () -> true).optional();
     private final BuilderArgument<ModFileDeleter> fileDeleterArgument = new BuilderArgument<>("ModFileDeleter", () -> new ModFileDeleter(false)).optional();
     private final BuilderArgument<String> optifineArgument = new BuilderArgument<String>("Optifine").optional();
+    private final BuilderArgument<CurseModPackInfos> modPackArgument = new BuilderArgument<CurseModPackInfos>("ModPack").optional();
 
     public ForgeVersionBuilder withForgeVersion(String forgeVersion)
     {
@@ -66,7 +68,7 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
         return this;
     }
 
-    public ForgeVersionBuilder withCurseMods(ArrayList<CurseModInfos> curseMods)
+    public ForgeVersionBuilder withCurseMods(List<CurseFileInfos> curseMods)
     {
         this.curseModsArgument.set(curseMods);
         return this;
@@ -90,6 +92,12 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
         return this;
     }
 
+    public ForgeVersionBuilder withModPack(CurseModPackInfos modPackInfos)
+    {
+        this.modPackArgument.set(modPackInfos);
+        return this;
+    }
+
     @Override
     public AbstractForgeVersion build() throws BuilderException
     {
@@ -107,7 +115,8 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
                         this.curseModsArgument.get(),
                         this.nogGuiArgument.get(),
                         this.fileDeleterArgument.get(),
-                        this.optifineArgument.get()
+                        this.optifineArgument.get(),
+                        this.modPackArgument.get()
                 );
             case OLD:
                 return new OldForgeVersion(
@@ -118,7 +127,8 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
                         this.modsArgument.get(),
                         this.curseModsArgument.get(),
                         this.fileDeleterArgument.get(),
-                        this.optifineArgument.get()
+                        this.optifineArgument.get(),
+                        this.modPackArgument.get()
                 );
             default:
                 return null;

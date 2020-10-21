@@ -7,43 +7,44 @@ import fr.flowarg.flowupdater.utils.IOUtils;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class CurseModInfos
+public class CurseFileInfos
 {
     private final int projectID;
     private final int fileID;
 
-    public CurseModInfos(int projectID, int fileID)
+    public CurseFileInfos(int projectID, int fileID)
     {
         this.projectID = projectID;
         this.fileID = fileID;
     }
 
-    public static List<CurseModInfos> getModsFromJson(URL jsonUrl)
+    public static List<CurseFileInfos> getFilesFromJson(URL jsonUrl)
     {
-        final List<CurseModInfos> result = new ArrayList<>();
+        final List<CurseFileInfos> result = new ArrayList<>();
         final JsonObject object = IOUtils.readJson(jsonUrl).getAsJsonObject();
-        final JsonArray mods = object.getAsJsonArray("curseMods");
+        final JsonArray mods = object.getAsJsonArray("curseFiles");
         mods.forEach(curseModElement -> {
             final JsonObject obj = curseModElement.getAsJsonObject();
             final int projectID = obj.get("projectID").getAsInt();
             final int fileID = obj.get("fileID").getAsInt();
-            result.add(new CurseModInfos(projectID, fileID));
+            result.add(new CurseFileInfos(projectID, fileID));
         });
         return result;
     }
 
-    public static List<CurseModInfos> getModsFromJson(String jsonUrl)
+    public static List<CurseFileInfos> getFilesFromJson(String jsonUrl)
     {
         try
         {
-            return getModsFromJson(new URL(jsonUrl));
+            return getFilesFromJson(new URL(jsonUrl));
         }
         catch (MalformedURLException e)
         {
             e.printStackTrace();
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
     }
 

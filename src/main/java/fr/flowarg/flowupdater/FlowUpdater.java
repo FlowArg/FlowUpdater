@@ -2,10 +2,7 @@ package fr.flowarg.flowupdater;
 
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowlogger.Logger;
-import fr.flowarg.flowupdater.curseforgeplugin.CurseForgePlugin;
-import fr.flowarg.flowupdater.curseforgeplugin.CurseMod;
 import fr.flowarg.flowupdater.download.*;
-import fr.flowarg.flowupdater.download.json.CurseModInfos;
 import fr.flowarg.flowupdater.download.json.ExternalFile;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.utils.FallbackPluginManager;
@@ -25,7 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static fr.flowarg.flowio.FileUtils.*;
+import static fr.flowarg.flowio.FileUtils.getFileSizeBytes;
+import static fr.flowarg.flowio.FileUtils.getSHA1;
 
 /**
  * Represent the base class of the updater.<br>
@@ -97,7 +95,7 @@ public class FlowUpdater
     {
         this.logger = logger;
         this.version = version;
-       	this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.2.5"));
+       	this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.2.6"));
         this.externalFiles = externalFiles;
         this.postExecutions = postExecutions;
         this.forgeVersion = forgeVersion;
@@ -171,19 +169,15 @@ public class FlowUpdater
                 {
                     final File file = new File(modsDir, mod.getName());
 
-                    if (file.exists())
+                    if(!file.exists() || !getSHA1(file).equals(mod.getSha1()) || getFileSizeBytes(file) != mod.getSize())
                     {
-                        if (!Objects.requireNonNull(getSHA1(file)).equals(mod.getSha1()) || getFileSizeBytes(file) != mod.getSize())
-                        {
-                            file.delete();
-                            this.downloadInfos.getMods().add(mod);
-                        }
+                        file.delete();
+                        this.downloadInfos.getMods().add(mod);
                     }
-                    else this.downloadInfos.getMods().add(mod);
                 }
 
-                this.pluginManager.loadCurseMods(modsDir, this.forgeVersion);
-                this.pluginManager.loadOptifine(modsDir, this.forgeVersion);
+                this.pluginManager.loadCurseForgePlugin(modsDir, this.forgeVersion);
+                this.pluginManager.loadOptifinePlugin(modsDir, this.forgeVersion);
             }
 
             if (!dir.exists())
