@@ -3,13 +3,15 @@ package fr.flowarg.flowupdater.download;
 import fr.flowarg.flowupdater.FlowUpdater;
 
 /**
- * Represent each step of an Minecraft Installation
+ * Represent each step of a Minecraft Installation
  * @author flow
  */
 public enum Step
 {
     /** Prerequisites (like plugins loading) */
     PREREQUISITES,
+    /** ModPack preparation */
+    MOD_PACK,
     /** JSON reading */
     READ,
     /** Download libraries */

@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static fr.flowarg.flowio.FileUtils.getFileSizeBytes;
 import static fr.flowarg.flowio.FileUtils.getSHA1;
@@ -59,7 +58,7 @@ public class FlowUpdater
     /** Represent a list of Runnable. Post Executions are called after update. */
     private final List<Runnable> postExecutions;
 
-    private PluginManager pluginManager = new FallbackPluginManager(this);
+    private final PluginManager pluginManager;
 
     /** Default callback */
     public static final IProgressCallback NULL_CALLBACK = new IProgressCallback()
@@ -95,31 +94,31 @@ public class FlowUpdater
     {
         this.logger = logger;
         this.version = version;
-       	this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.2.6"));
+       	this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.2.7"));
         this.externalFiles = externalFiles;
         this.postExecutions = postExecutions;
         this.forgeVersion = forgeVersion;
         this.updaterOptions = updaterOptions;
         this.callback = callback;
         this.downloadInfos = new DownloadInfos();
-        this.vanillaReader = new VanillaReader(this.version, this.logger, this.updaterOptions.isSilentRead(), this.callback, this.downloadInfos);
+        this.vanillaReader = new VanillaReader(this.version, this.logger, this.updaterOptions, this.callback, this.downloadInfos);
        	this.callback.init(this.logger);
        	if(this.updaterOptions.isEnableModsFromCurseForge() || this.updaterOptions.isInstallOptifineAsMod())
        	    this.pluginManager = new PluginManager(this);
+       	else this.pluginManager = new FallbackPluginManager(this);
     }
 
     /**
      * This method update the Minecraft Installation in the given directory. If the {@link #version} is {@link VanillaVersion#NULL_VERSION}, the updater will
-     * be only run external files and post executions.
+     * run only external files and post executions.
      * @param dir Directory where is the Minecraft installation.
-     * @param downloadServer True -> Download the server.jar : useful for server installation programs.
-     * @throws IOException if a I/O problem has occurred.
+     * @throws IOException if an I/O problem has occurred.
      */
-    public void update(File dir, boolean downloadServer) throws Exception
+    public void update(File dir) throws Exception
     {
         this.checkPrerequisites(dir);
         this.checkExtFiles(dir);
-        this.updateMinecraft(dir, downloadServer);
+        this.updateMinecraft(dir);
         this.updateExtFiles(dir);
         this.runPostExecutions();
         this.endUpdate();
@@ -143,7 +142,7 @@ public class FlowUpdater
                 {
                     if(extFile.isUpdate())
                     {
-                        if (!Objects.requireNonNull(getSHA1(file)).equals(extFile.getSha1()))
+                        if (!getSHA1(file).equals(extFile.getSha1()))
                         {
                             file.delete();
                             this.downloadInfos.getExtFiles().add(extFile);
@@ -155,7 +154,7 @@ public class FlowUpdater
         }
     }
 
-    private void updateMinecraft(File dir, boolean downloadServer) throws Exception
+    private void updateMinecraft(File dir) throws Exception
     {
         if(this.version != VanillaVersion.NULL_VERSION)
         {
@@ -170,10 +169,7 @@ public class FlowUpdater
                     final File file = new File(modsDir, mod.getName());
 
                     if(!file.exists() || !getSHA1(file).equals(mod.getSha1()) || getFileSizeBytes(file) != mod.getSize())
-                    {
-                        file.delete();
                         this.downloadInfos.getMods().add(mod);
-                    }
                 }
 
                 this.pluginManager.loadCurseForgePlugin(modsDir, this.forgeVersion);
@@ -183,7 +179,7 @@ public class FlowUpdater
             if (!dir.exists())
                 dir.mkdirs();
             final VanillaDownloader vanillaDownloader = new VanillaDownloader(dir, this.logger, this.callback, this.downloadInfos, this.updaterOptions.isReExtractNatives());
-            vanillaDownloader.download(downloadServer);
+            vanillaDownloader.download();
 
             if (this.forgeVersion != null)
             {
@@ -192,7 +188,7 @@ public class FlowUpdater
                     this.forgeVersion.install(dir);
                 else this.logger.info("Forge is already installed ! Skipping installation...");
                 final File modsDir = new File(dir, "mods/");
-                this.forgeVersion.installMods(modsDir, this.pluginManager.isCursePluginLoaded(), this.pluginManager.isOptifinePluginLoaded());
+                this.forgeVersion.installMods(modsDir, this.pluginManager);
             }
         }
         else this.downloadInfos.init();
@@ -232,11 +228,6 @@ public class FlowUpdater
     private void endUpdate()
     {
         this.callback.step(Step.END);
-        if(this.downloadInfos.getTotalToDownload() == this.downloadInfos.getDownloaded() + 1)
-        {
-            this.downloadInfos.incrementDownloaded();
-            this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
-        }
         this.downloadInfos.clear();
         this.pluginManager.shutdown();
     }

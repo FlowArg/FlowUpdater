@@ -6,46 +6,64 @@ import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
 
 /**
  * Represent some settings for FlowUpdater
+ *
  * @author flow
  */
 public class UpdaterOptions
 {
-    public static final UpdaterOptions DEFAULT = new UpdaterOptions(true, false, false, false);
+    public static final UpdaterOptions DEFAULT = new UpdaterOptions(true, false, false, false, false);
 
-    /** Is the read silent */
+    /**
+     * Is the read silent
+     */
     private final boolean silentRead;
-    
-    /** Re-extract natives at each updates ? */
+
+    /**
+     * Is the server must be downloaded
+     */
+    private final boolean downloadServer;
+
+    /**
+     * Re-extract natives at each updates ?
+     */
     private final boolean reExtractNatives;
 
-    /** Select some mods from CurseForge ?
+    /**
+     * Select some mods from CurseForge ?
      * WARNING: IF THIS FIELD IS THE TO TRUE, IT WILL DOWNLOAD AND LOAD A PLUGIN ; DISABLE THIS OPTION IF YOU DON'T USE CURSE_FORGE !!
      */
     private final boolean enableModsFromCurseForge;
 
-    /** Install optifine from the official Website (mod) ?
+    /**
+     * Install optifine from the official Website (mod) ?
      * WARNING: IF THIS FIELD IS THE TO TRUE, IT WILL DOWNLOAD AND LOAD A PLUGIN ; DISABLE THIS OPTION IF YOU DON'T USE OPTIFINE !!
      */
     private final boolean installOptifineAsMod;
-    
-    private UpdaterOptions(boolean silentRead, boolean reExtractNatives, boolean enableModsFromCurseForge, boolean installOptifineAsMod)
+
+    private UpdaterOptions(boolean silentRead, boolean reExtractNatives, boolean enableModsFromCurseForge, boolean installOptifineAsMod, boolean downloadServer)
     {
         this.silentRead = silentRead;
         this.reExtractNatives = reExtractNatives;
         this.enableModsFromCurseForge = enableModsFromCurseForge;
         this.installOptifineAsMod = installOptifineAsMod;
+        this.downloadServer = downloadServer;
     }
-    
-    public boolean isReExtractNatives()
-    {
-        return this.reExtractNatives;
-    }
-    
+
     public boolean isSilentRead()
     {
         return this.silentRead;
     }
-    
+
+    public boolean isDownloadServer()
+    {
+        return this.downloadServer;
+    }
+
+    public boolean isReExtractNatives()
+    {
+        return this.reExtractNatives;
+    }
+
     public boolean isEnableModsFromCurseForge()
     {
         return this.enableModsFromCurseForge;
@@ -62,6 +80,7 @@ public class UpdaterOptions
         private final BuilderArgument<Boolean> reExtractNativesArgument = new BuilderArgument<>("ReExtractingNatives", () -> false).optional();
         private final BuilderArgument<Boolean> enableModsFromCurseForgeArgument = new BuilderArgument<>("EnableModsFromCurseForge", () -> false).optional();
         private final BuilderArgument<Boolean> installOptifineAsModArgument = new BuilderArgument<>("InstallOptifineAsMod", () -> false).optional();
+        private final BuilderArgument<Boolean> downloadServerArgument = new BuilderArgument<>("DownloadServer", () -> false).optional();
 
         public UpdaterOptionsBuilder withSilentRead(boolean silentRead)
         {
@@ -87,10 +106,22 @@ public class UpdaterOptions
             return this;
         }
 
+        public UpdaterOptionsBuilder withDownloadServer(boolean downloadServer)
+        {
+            this.downloadServerArgument.set(downloadServer);
+            return this;
+        }
+
         @Override
         public UpdaterOptions build() throws BuilderException
         {
-            return new UpdaterOptions(this.silentReadArgument.get(), this.reExtractNativesArgument.get(), this.enableModsFromCurseForgeArgument.get(), this.installOptifineAsModArgument.get());
+            return new UpdaterOptions(
+                    this.silentReadArgument.get(),
+                    this.reExtractNativesArgument.get(),
+                    this.enableModsFromCurseForgeArgument.get(),
+                    this.installOptifineAsModArgument.get(),
+                    this.downloadServerArgument.get()
+            );
         }
     }
 }

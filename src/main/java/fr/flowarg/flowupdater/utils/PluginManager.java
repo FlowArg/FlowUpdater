@@ -9,6 +9,7 @@ import fr.flowarg.flowupdater.curseforgeplugin.CurseForgePlugin;
 import fr.flowarg.flowupdater.curseforgeplugin.CurseMod;
 import fr.flowarg.flowupdater.curseforgeplugin.CurseModPack;
 import fr.flowarg.flowupdater.download.DownloadInfos;
+import fr.flowarg.flowupdater.download.Step;
 import fr.flowarg.flowupdater.download.json.CurseFileInfos;
 import fr.flowarg.flowupdater.download.json.CurseModPackInfos;
 import fr.flowarg.flowupdater.versions.AbstractForgeVersion;
@@ -109,13 +110,14 @@ public class PluginManager
         final CurseModPackInfos modPackInfos = forgeVersion.getModPackInfos();
         if (modPackInfos != null)
         {
+            this.updater.getCallback().step(Step.MOD_PACK);
             try
             {
                 Class.forName("fr.flowarg.flowupdater.curseforgeplugin.CurseForgePlugin");
                 this.cursePluginLoaded = true;
                 final CurseForgePlugin plugin = CurseForgePlugin.instance;
                 final CurseModPack modPack = plugin.getCurseModPack(modPackInfos.getProjectID(), modPackInfos.getFileID(), modPackInfos.isInstallExtFiles());
-                this.logger.info("Loading mod pack: " + modPack.getName() + " '" + modPack.getVersion() + "' by " + modPack.getAuthor() + '.');
+                this.logger.info("Loading mod pack: " + modPack.getName() + " (" + modPack.getVersion() + ") by " + modPack.getAuthor() + '.');
                 modPack.getMods().forEach(mod -> {
                     allCurseMods.add(mod);
                     try

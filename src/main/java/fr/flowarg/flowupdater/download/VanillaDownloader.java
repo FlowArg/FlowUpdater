@@ -9,7 +9,6 @@ import fr.flowarg.flowupdater.utils.IOUtils;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Objects;
 
 import static fr.flowarg.flowio.FileUtils.*;
 
@@ -19,73 +18,58 @@ public class VanillaDownloader
     private final ILogger logger;
     private final IProgressCallback callback;
     private final DownloadInfos downloadInfos;
-    private final boolean reextractNatives;
-    
+    private final boolean reExtractNatives;
+
     private final File natives;
     private final File assets;
 
-    public VanillaDownloader(File dir, ILogger logger, IProgressCallback callback, DownloadInfos infos, boolean reextractNatives)
+    public VanillaDownloader(File dir, ILogger logger, IProgressCallback callback, DownloadInfos infos, boolean reExtractNatives)
     {
         this.dir = dir;
         this.logger = logger;
         this.callback = callback;
         this.downloadInfos = infos;
-        this.reextractNatives = reextractNatives;
-        this.natives = new File(this.dir, "/natives/");
-        this.assets = new File(this.dir, "/assets/");
-        final File libraries = new File(this.dir, "/libraries/");
-        
+        this.reExtractNatives = reExtractNatives;
+
+        this.natives = new File(this.dir, "natives/");
+        this.assets = new File(this.dir, "assets/");
+
+        new File(this.dir, "libraries/").mkdirs();
         this.dir.mkdirs();
         this.assets.mkdirs();
         this.natives.mkdirs();
-        libraries.mkdirs();
         this.downloadInfos.init();
     }
 
-    public void download(boolean downloadServer) throws Exception
+    public void download() throws Exception
     {
-        this.logger.info("Checking library files...");
-        this.callback.step(Step.DL_LIBS);
-        this.checkAllLibraries(downloadServer);
-
-        this.logger.info("Checking assets...");
-        this.callback.step(Step.DL_ASSETS);
+        this.checkAllLibraries();
         this.downloadAssets();
-        
         this.extractNatives();
 
         this.logger.info("All vanilla files are successfully downloaded !");
     }
 
-    private void checkAllLibraries(boolean downloadServer) throws Exception
+    private void checkAllLibraries() throws Exception
     {
+        this.logger.info("Checking library files...");
+        this.callback.step(Step.DL_LIBS);
+
         if (this.natives.listFiles() != null)
         {
             for (File files : this.natives.listFiles())
             {
-                if (files.isDirectory())
-                    FileUtils.deleteDirectory(files);
+                if (files.isDirectory()) FileUtils.deleteDirectory(files);
             }
         }
 
         for (Downloadable downloadable : this.downloadInfos.getLibraryDownloadables())
         {
-            if (downloadable.getName().equals("server.jar") && !downloadServer) continue;
-            else
-            {
-                final File file = new File(this.dir, downloadable.getName());
+            final File file = new File(this.dir, downloadable.getName());
 
-                if (file.exists())
-                {
-                    if (!Objects.requireNonNull(getSHA1(file)).equals(downloadable.getSha1()) || getFileSizeBytes(file) != downloadable.getSize())
-                    {
-                        file.delete();
-                        IOUtils.download(this.logger, new URL(downloadable.getUrl()), file);
-                    }
-                }
-                else IOUtils.download(this.logger, new URL(downloadable.getUrl()), file);
-            }
-            
+            if(!file.exists() || !getSHA1(file).equals(downloadable.getSha1()) || getFileSizeBytes(file) != downloadable.getSize())
+                IOUtils.download(this.logger, new URL(downloadable.getUrl()), file);
+
             this.downloadInfos.incrementDownloaded();
             this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
         }
@@ -93,18 +77,18 @@ public class VanillaDownloader
 
     private void extractNatives() throws IOException
     {
-        if(this.natives.listFiles() != null)
+        if (this.natives.listFiles() != null)
         {
             boolean flag = true;
-            for(File minecraftNative : this.natives.listFiles())
+            for (File minecraftNative : this.natives.listFiles())
             {
-                if(minecraftNative.getName().endsWith(".so") || minecraftNative.getName().endsWith(".dylib") || minecraftNative.getName().endsWith(".dll"))
+                if (minecraftNative.getName().endsWith(".so") || minecraftNative.getName().endsWith(".dylib") || minecraftNative.getName().endsWith(".dll"))
                 {
                     flag = false;
                     break;
                 }
             }
-            if(this.reextractNatives || flag)
+            if (this.reExtractNatives || flag)
             {
                 this.logger.info("Extracting natives...");
                 this.callback.step(Step.EXTRACT_NATIVES);
@@ -124,19 +108,16 @@ public class VanillaDownloader
 
     private void downloadAssets()
     {
+        this.logger.info("Checking assets...");
+        this.callback.step(Step.DL_ASSETS);
+
         for (AssetDownloadable assetDownloadable : this.downloadInfos.getAssetDownloadables())
         {
             final File download = new File(this.assets, assetDownloadable.getFile());
 
-            if (download.exists())
-            {
-                if (getFileSizeBytes(download) != assetDownloadable.getSize())
-                {
-                    download.delete();
-                    IOUtils.download(this.logger, assetDownloadable.getUrl(), download);
-                }
-            } else IOUtils.download(this.logger, assetDownloadable.getUrl(), download);
-            
+            if (!download.exists() || getFileSizeBytes(download) != assetDownloadable.getSize())
+                IOUtils.download(this.logger, assetDownloadable.getUrl(), download);
+
             this.downloadInfos.incrementDownloaded();
             this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
         }

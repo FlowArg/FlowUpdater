@@ -13,6 +13,7 @@ import fr.flowarg.flowupdater.download.json.CurseModPackInfos;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
+import fr.flowarg.flowupdater.utils.PluginManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +21,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,7 +47,7 @@ public abstract class AbstractForgeVersion
      * Use {@link ForgeVersionBuilder} to instantiate this class.
      * @param logger {@link ILogger} used for logging.
      * @param mods {@link List<Mod>} to install.
-     * @param curseMods {@link ArrayList<CurseFileInfos>} to install.
+     * @param curseMods {@link List<CurseFileInfos>} to install.
      * @param forgeVersion to install.
      * @param vanilla {@link VanillaVersion}.
      * @param callback {@link IProgressCallback} used for update progression.
@@ -127,12 +127,14 @@ public abstract class AbstractForgeVersion
     /**
      * This function installs mods at the specified directory.
      * @param modsDir Specified mods directory.
-     * @param cursePluginLoaded if FlowUpdater has loaded CurseForge plugin
+     * @param pluginManager PluginManager of FlowUpdater
      * @throws IOException If the install fail.
      */
-    public void installMods(File modsDir, boolean cursePluginLoaded, boolean optifinePluginLoaded) throws Exception
+    public void installMods(File modsDir, PluginManager pluginManager) throws Exception
     {
         this.callback.step(Step.MODS);
+        final boolean cursePluginLoaded = pluginManager.isCursePluginLoaded();
+        final boolean optifinePluginLoaded = pluginManager.isOptifinePluginLoaded();
         this.downloadInfos.getMods().forEach(mod -> {
             try
             {

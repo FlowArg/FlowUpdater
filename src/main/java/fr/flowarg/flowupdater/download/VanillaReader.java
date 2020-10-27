@@ -8,6 +8,7 @@ import fr.flowarg.flowupdater.download.json.AssetDownloadable;
 import fr.flowarg.flowupdater.download.json.AssetIndex;
 import fr.flowarg.flowupdater.download.json.Downloadable;
 import fr.flowarg.flowupdater.utils.IOUtils;
+import fr.flowarg.flowupdater.utils.UpdaterOptions;
 import fr.flowarg.flowupdater.versions.VanillaVersion;
 
 import java.io.IOException;
@@ -24,14 +25,16 @@ public class VanillaReader
     private final boolean isSilent;
     private final IProgressCallback callback;
     private final DownloadInfos infos;
+    private final boolean downloadServer;
 
-    public VanillaReader(VanillaVersion version, ILogger logger, boolean isSilent, IProgressCallback callback, DownloadInfos infos)
+    public VanillaReader(VanillaVersion version, ILogger logger, UpdaterOptions options, IProgressCallback callback, DownloadInfos infos)
     {
         this.version = version;
         this.logger = logger;
-        this.isSilent = isSilent;
+        this.isSilent = options.isSilentRead();
         this.callback = callback;
         this.infos = infos;
+        this.downloadServer = options.isDownloadServer();
     }
 
     public void read() throws IOException
@@ -128,7 +131,8 @@ public class VanillaReader
         }
         
         this.infos.getLibraryDownloadables().add(new Downloadable(clientURL, clientSize, clientSha1, clientName));
-        this.infos.getLibraryDownloadables().add(new Downloadable(serverURL, serverSize, serverSha1, serverName));
+        if(this.downloadServer)
+            this.infos.getLibraryDownloadables().add(new Downloadable(serverURL, serverSize, serverSha1, serverName));
     }
 
     private void getNatives()

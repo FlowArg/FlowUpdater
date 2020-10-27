@@ -23,11 +23,16 @@ public class DownloadInfos
     private Object optifine = null;
     private int totalToDownload;
     private int downloaded;
+    private boolean init = false;
 
     public void init()
     {
-        this.totalToDownload = this.libraryDownloadables.size() + this.assetDownloadables.size() + this.extFiles.size() + this.mods.size() + this.curseMods.size() + (this.optifine == null ? 0 : 1);
-        this.downloaded = 0;
+        if(!this.isInit())
+        {
+            this.totalToDownload = this.libraryDownloadables.size() + this.assetDownloadables.size() + this.extFiles.size() + this.mods.size() + this.curseMods.size() + (this.optifine == null ? 0 : 1);
+            this.downloaded = 0;
+            this.init = true;
+        }
     }
 
     public void incrementDownloaded()
@@ -78,6 +83,11 @@ public class DownloadInfos
     public void setOptifine(Object optifine)
     {
         this.optifine = optifine;
+    }
+
+    public boolean isInit()
+    {
+        return this.init;
     }
 
     public void clear()
