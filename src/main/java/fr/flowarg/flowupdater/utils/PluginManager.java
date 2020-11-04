@@ -166,7 +166,7 @@ public class PluginManager
         try
         {
             final OptifinePlugin optifinePlugin = OptifinePlugin.instance;
-            final Optifine optifine = optifinePlugin.getOptifine(forgeVersion.getOptifine());
+            final Optifine optifine = optifinePlugin.getOptifine(forgeVersion.getOptifine().getVersion(), forgeVersion.getOptifine().isPreview());
             this.downloadInfos.setOptifine(optifine);
         } catch (Exception e)
         {

@@ -6,6 +6,7 @@ import fr.flowarg.flowupdater.download.IProgressCallback;
 import fr.flowarg.flowupdater.download.json.CurseFileInfos;
 import fr.flowarg.flowupdater.download.json.CurseModPackInfos;
 import fr.flowarg.flowupdater.download.json.Mod;
+import fr.flowarg.flowupdater.download.json.OptifineInfo;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
@@ -35,7 +36,7 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
     private final BuilderArgument<List<CurseFileInfos>> curseModsArgument = new BuilderArgument<List<CurseFileInfos>>("CurseMods", ArrayList::new).optional();
     private final BuilderArgument<Boolean> nogGuiArgument = new BuilderArgument<>("NoGui", () -> true).optional();
     private final BuilderArgument<ModFileDeleter> fileDeleterArgument = new BuilderArgument<>("ModFileDeleter", () -> new ModFileDeleter(false)).optional();
-    private final BuilderArgument<String> optifineArgument = new BuilderArgument<String>("Optifine").optional();
+    private final BuilderArgument<OptifineInfo> optifineArgument = new BuilderArgument<OptifineInfo>("Optifine").optional();
     private final BuilderArgument<CurseModPackInfos> modPackArgument = new BuilderArgument<CurseModPackInfos>("ModPack").optional();
 
     public ForgeVersionBuilder withForgeVersion(String forgeVersion)
@@ -86,7 +87,7 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
         return this;
     }
 
-    public ForgeVersionBuilder withOptifine(String optifine)
+    public ForgeVersionBuilder withOptifine(OptifineInfo optifine)
     {
         this.optifineArgument.set(optifine);
         return this;

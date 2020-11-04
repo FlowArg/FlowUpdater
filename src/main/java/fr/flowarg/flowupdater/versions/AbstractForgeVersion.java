@@ -11,6 +11,7 @@ import fr.flowarg.flowupdater.download.Step;
 import fr.flowarg.flowupdater.download.json.CurseFileInfos;
 import fr.flowarg.flowupdater.download.json.CurseModPackInfos;
 import fr.flowarg.flowupdater.download.json.Mod;
+import fr.flowarg.flowupdater.download.json.OptifineInfo;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
 import fr.flowarg.flowupdater.utils.PluginManager;
@@ -37,7 +38,7 @@ public abstract class AbstractForgeVersion
     protected final IProgressCallback callback;
     protected final List<CurseFileInfos> curseMods;
     protected final ModFileDeleter fileDeleter;
-    protected final String optifine;
+    protected final OptifineInfo optifine;
     protected final CurseModPackInfos modPackInfos;
     protected List<Object> allCurseMods;
     protected URL installerUrl;
@@ -54,7 +55,7 @@ public abstract class AbstractForgeVersion
      * @param fileDeleter {@link ModFileDeleter} used to cleanup mods dir.
      * @param optifine Optifine version to install.
      */
-    protected AbstractForgeVersion(ILogger logger, List<Mod> mods, List<CurseFileInfos> curseMods, String forgeVersion, VanillaVersion vanilla, IProgressCallback callback, ModFileDeleter fileDeleter, String optifine, CurseModPackInfos modPackInfos)
+    protected AbstractForgeVersion(ILogger logger, List<Mod> mods, List<CurseFileInfos> curseMods, String forgeVersion, VanillaVersion vanilla, IProgressCallback callback, ModFileDeleter fileDeleter, OptifineInfo optifine, CurseModPackInfos modPackInfos)
     {
         this.logger = logger;
         this.mods = mods;
@@ -235,7 +236,7 @@ public abstract class AbstractForgeVersion
     {
         return this.curseMods;
     }
-    public String getOptifine()
+    public OptifineInfo getOptifine()
     {
         return this.optifine;
     }
