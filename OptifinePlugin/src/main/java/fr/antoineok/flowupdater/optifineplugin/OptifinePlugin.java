@@ -33,7 +33,7 @@ public class OptifinePlugin extends Plugin {
      */
     public Optifine getOptifine(String optifineVersion, boolean preview) throws IOException
     {
-        final String name = preview ? optifineVersion + ".jar" : "OptiFine_" + optifineVersion + ".jar";
+        final String name = preview ? "preview_OptiFine_" + optifineVersion + ".jar" : "OptiFine_" + optifineVersion + ".jar";
         final HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse("http://optifine.net/downloadx")).newBuilder();
         urlBuilder.addQueryParameter("f", name);
         urlBuilder.addQueryParameter("x", preview ? this.getJsonPreview(optifineVersion) : this.getJson(optifineVersion));
