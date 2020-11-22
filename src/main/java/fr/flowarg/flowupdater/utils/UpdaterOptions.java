@@ -11,7 +11,7 @@ import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
  */
 public class UpdaterOptions
 {
-    public static final UpdaterOptions DEFAULT = new UpdaterOptions(true, false, false, false, false);
+    public static final UpdaterOptions DEFAULT = new UpdaterOptions(true, false, false, false, false, 2);
 
     /**
      * Is the read silent
@@ -40,13 +40,16 @@ public class UpdaterOptions
      */
     private final boolean installOptifineAsMod;
 
-    private UpdaterOptions(boolean silentRead, boolean reExtractNatives, boolean enableModsFromCurseForge, boolean installOptifineAsMod, boolean downloadServer)
+    private final int nmbrThreadsForAssets;
+
+    private UpdaterOptions(boolean silentRead, boolean reExtractNatives, boolean enableModsFromCurseForge, boolean installOptifineAsMod, boolean downloadServer, int nmbrThreadsForAssets)
     {
         this.silentRead = silentRead;
         this.reExtractNatives = reExtractNatives;
         this.enableModsFromCurseForge = enableModsFromCurseForge;
         this.installOptifineAsMod = installOptifineAsMod;
         this.downloadServer = downloadServer;
+        this.nmbrThreadsForAssets = nmbrThreadsForAssets;
     }
 
     public boolean isSilentRead()
@@ -74,6 +77,11 @@ public class UpdaterOptions
         return this.installOptifineAsMod;
     }
 
+    public int getNmbrThreadsForAssets()
+    {
+        return this.nmbrThreadsForAssets;
+    }
+
     public static class UpdaterOptionsBuilder implements IBuilder<UpdaterOptions>
     {
         private final BuilderArgument<Boolean> silentReadArgument = new BuilderArgument<>("SilentRead", () -> true).optional();
@@ -81,6 +89,7 @@ public class UpdaterOptions
         private final BuilderArgument<Boolean> enableModsFromCurseForgeArgument = new BuilderArgument<>("EnableModsFromCurseForge", () -> false).optional();
         private final BuilderArgument<Boolean> installOptifineAsModArgument = new BuilderArgument<>("InstallOptifineAsMod", () -> false).optional();
         private final BuilderArgument<Boolean> downloadServerArgument = new BuilderArgument<>("DownloadServer", () -> false).optional();
+        private final BuilderArgument<Integer> nmbrThreadsForAssetsArgument = new BuilderArgument<>("Number of Threads for assets", () -> 2).optional();
 
         public UpdaterOptionsBuilder withSilentRead(boolean silentRead)
         {
@@ -112,6 +121,12 @@ public class UpdaterOptions
             return this;
         }
 
+        public UpdaterOptionsBuilder withNmbrThreadsForAssets(int nmbrThreadsForAssets)
+        {
+            this.nmbrThreadsForAssetsArgument.set(nmbrThreadsForAssets);
+            return this;
+        }
+
         @Override
         public UpdaterOptions build() throws BuilderException
         {
@@ -120,7 +135,8 @@ public class UpdaterOptions
                     this.reExtractNativesArgument.get(),
                     this.enableModsFromCurseForgeArgument.get(),
                     this.installOptifineAsModArgument.get(),
-                    this.downloadServerArgument.get()
+                    this.downloadServerArgument.get(),
+                    this.nmbrThreadsForAssetsArgument.get()
             );
         }
     }

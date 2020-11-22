@@ -34,11 +34,11 @@ allprojects {
     dependencies {
         api 'com.google.code.gson:gson:2.8.6'
         api 'fr.flowarg:flowmultitools:1.2.0'
-        implementation 'com.github.FlowArg:PluginLoaderAPI:871c5910c6'
+        implementation 'com.github.FlowArg:PluginLoaderAPI:6d674b6'
     }
 }
 
-version '1.2.8'
+version '1.2.9'
 archivesBaseName = "flowupdater"
 
 artifacts {

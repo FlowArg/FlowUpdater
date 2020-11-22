@@ -58,6 +58,7 @@ public class FlowUpdater
     /** Represent a list of Runnable. Post Executions are called after update. */
     private final List<Runnable> postExecutions;
 
+    /** The plugin manager object */
     private final PluginManager pluginManager;
 
     /** Default callback */
@@ -94,7 +95,7 @@ public class FlowUpdater
     {
         this.logger = logger;
         this.version = version;
-       	this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.2.8"));
+       	this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.2.9"));
         this.externalFiles = externalFiles;
         this.postExecutions = postExecutions;
         this.forgeVersion = forgeVersion;
@@ -172,13 +173,15 @@ public class FlowUpdater
                         this.downloadInfos.getMods().add(mod);
                 }
 
-                this.pluginManager.loadCurseForgePlugin(modsDir, this.forgeVersion);
-                this.pluginManager.loadOptifinePlugin(modsDir, this.forgeVersion);
+                if(this.updaterOptions.isEnableModsFromCurseForge())
+                    this.pluginManager.loadCurseForgePlugin(modsDir, this.forgeVersion);
+                if(this.updaterOptions.isInstallOptifineAsMod())
+                    this.pluginManager.loadOptifinePlugin(modsDir, this.forgeVersion);
             }
 
             if (!dir.exists())
                 dir.mkdirs();
-            final VanillaDownloader vanillaDownloader = new VanillaDownloader(dir, this.logger, this.callback, this.downloadInfos, this.updaterOptions.isReExtractNatives());
+            final VanillaDownloader vanillaDownloader = new VanillaDownloader(dir, this.logger, this.callback, this.downloadInfos, this.updaterOptions);
             vanillaDownloader.download();
 
             if (this.forgeVersion != null)

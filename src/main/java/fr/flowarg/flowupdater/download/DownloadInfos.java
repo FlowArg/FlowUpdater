@@ -7,6 +7,9 @@ import fr.flowarg.flowupdater.download.json.Mod;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Represent information about download status. Used with {@link IProgressCallback} progress system.
@@ -16,41 +19,41 @@ import java.util.List;
 public class DownloadInfos
 {
     private final List<Downloadable> libraryDownloadables = new ArrayList<>();
-    private final List<AssetDownloadable> assetDownloadables = new ArrayList<>();
+    private final Queue<AssetDownloadable> assetDownloadables = new ConcurrentLinkedDeque<>();
     private final List<ExternalFile> extFiles = new ArrayList<>();
     private final List<Mod> mods = new ArrayList<>();
     private final List<Object> curseMods = new ArrayList<>();
     private Object optifine = null;
-    private int totalToDownload;
-    private int downloaded;
+    private final AtomicInteger totalToDownload = new AtomicInteger();
+    private final AtomicInteger downloaded = new AtomicInteger();
     private boolean init = false;
 
     public void init()
     {
         if(!this.isInit())
         {
-            this.totalToDownload = this.libraryDownloadables.size() + this.assetDownloadables.size() + this.extFiles.size() + this.mods.size() + this.curseMods.size() + (this.optifine == null ? 0 : 1);
-            this.downloaded = 0;
+            this.totalToDownload.set(this.libraryDownloadables.size() + this.assetDownloadables.size() + this.extFiles.size() + this.mods.size() + this.curseMods.size() + (this.optifine == null ? 0 : 1));
+            this.downloaded.set(0);
             this.init = true;
         }
     }
 
     public void incrementDownloaded()
     {
-        ++this.downloaded;
+        this.downloaded.incrementAndGet();
     }
 
     public int getTotalToDownload()
     {
-        return this.totalToDownload;
+        return this.totalToDownload.get();
     }
 
     public int getDownloaded()
     {
-        return this.downloaded;
+        return this.downloaded.get();
     }
 
-    public List<AssetDownloadable> getAssetDownloadables()
+    public Queue<AssetDownloadable> getAssetDownloadables()
     {
         return this.assetDownloadables;
     }
@@ -98,7 +101,7 @@ public class DownloadInfos
         this.mods.clear();
         this.curseMods.clear();
         this.optifine = null;
-        this.totalToDownload = 0;
-        this.downloaded = 0;
+        this.totalToDownload.set(0);
+        this.downloaded.set(0);
     }
 }

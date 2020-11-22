@@ -158,19 +158,19 @@ public class PluginManager
         {
             Class.forName("fr.antoineok.flowupdater.optifineplugin.OptifinePlugin");
             this.optifinePluginLoaded = true;
+            try
+            {
+                final OptifinePlugin optifinePlugin = OptifinePlugin.instance;
+                final Optifine optifine = optifinePlugin.getOptifine(forgeVersion.getOptifine().getVersion(), forgeVersion.getOptifine().isPreview());
+                this.downloadInfos.setOptifine(optifine);
+            } catch (Exception e)
+            {
+                this.logger.printStackTrace(e);
+            }
         } catch (ClassNotFoundException e)
         {
             this.optifinePluginLoaded = false;
             this.logger.err("Cannot install optifine: OptifinePlugin is not loaded. Please, enable the 'installOptifineAsMod' updater option !");
-        }
-        try
-        {
-            final OptifinePlugin optifinePlugin = OptifinePlugin.instance;
-            final Optifine optifine = optifinePlugin.getOptifine(forgeVersion.getOptifine().getVersion(), forgeVersion.getOptifine().isPreview());
-            this.downloadInfos.setOptifine(optifine);
-        } catch (Exception e)
-        {
-            this.logger.printStackTrace(e);
         }
     }
 
@@ -180,6 +180,7 @@ public class PluginManager
         PluginLoaderAPI.registerPluginLoader(new PluginLoader("FlowUpdater", new File(dir, "FUPlugins/"), PluginManager.class)).complete();
         PluginLoaderAPI.removeDefaultShutdownTrigger().complete();
         PluginLoaderAPI.ready(PluginManager.class).complete();
+        while (!PluginLoaderAPI.finishedLoading()) ;
     }
 
     public void shutdown()
