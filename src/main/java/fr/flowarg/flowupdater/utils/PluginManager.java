@@ -61,7 +61,7 @@ public class PluginManager
         boolean flag = true;
         if (out.exists())
         {
-            final String crc32 = IOUtils.getContent(new URL(String.format("https://flowarg.github.io/minecraft/launcher/%s.info", name)));
+            final String crc32 = IOUtils.getContent(new URL(String.format("https://flowarg.github.io/minecraft/launcher/%s.info", name))).trim();
             if (FileUtils.getCRC32(out) == Long.parseLong(crc32)) flag = false;
         }
 
