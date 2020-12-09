@@ -51,14 +51,14 @@ I'm enabling the re-extracting of natives at each update.
 UpdaterOptions options = new UpdaterOptionsBuilder().withReExtractNatives(true).build();
 ```
 ```java
-FlowUpdater updater = new FlowUpdaterBuilder().withVersion(version).withUpdaterOptions(options).build();
+FlowUpdater updater = new FlowUpdaterBuilder().withVersion(version).withUpdaterOptions(options).withLogger(someCustomLogger).build();
 ```
 
 Don't forget to add a progress callback if you want to make a progress bar !
 
 Finally, call the update function :
 ```java
-updater.update(new File("/your/path/"), false);
+updater.update(new File("/your/path/"));
 ```
 Replace false by true if you want to download the server Jar (useful for server installation program).
 
@@ -79,7 +79,7 @@ You can get mods from CurseForge too:
 ```java
 List<CurseFileInfos> modInfos = new ArrayList<>();
 // project ID and file ID
-modInfos.add(new CurseModInfos(238222, 2988823));
+modInfos.add(new CurseFileInfos(238222, 2988823));
 ```
 You can get a list of curse mods by providing a json link too : `List<CurseFileInfos> mods = CurseFileInfos.getFilesFromJson("https://url.com/launcher/cursemods.json");`.
 
@@ -96,8 +96,8 @@ AbstractForgeVersion forgeVersion = new ForgeVersionBuilder(ForgeVersionBuilder.
             .withLogger(logger)
             .withProgressCallback(callback)
             .withCurseMods(modInfos)
-            .withOptifine("1.16.3_HD_U_G3") // installing optifine for 1.16.3
-            .withUseFileDeleter(true) // delete bad mods
+            .withOptifine(new OptifineInfo("1.16.3_HD_U_G3", false)) // installing optifine for 1.16.3, false = not a preview
+            .withUseFileDeleter(new ModFileDeleter(true, "jei.jar")) // delete bad mods, don't remove the file jei.jar if it's present in the dir.
             .withNoGui(true) // only for new forge version: true -> don't show the forge installer gui. false -> show the forge installer gui.
             .build();
 ```
