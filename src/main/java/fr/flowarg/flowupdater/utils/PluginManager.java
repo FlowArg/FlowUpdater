@@ -10,6 +10,7 @@ import fr.flowarg.flowupdater.curseforgeplugin.CurseMod;
 import fr.flowarg.flowupdater.download.DownloadInfos;
 import fr.flowarg.flowupdater.download.json.CurseModInfos;
 import fr.flowarg.flowupdater.versions.AbstractForgeVersion;
+import fr.flowarg.flowupdater.versions.FabricVersion;
 import fr.flowarg.pluginloaderapi.PluginLoaderAPI;
 import fr.flowarg.pluginloaderapi.plugin.PluginLoader;
 
@@ -67,6 +68,40 @@ public class PluginManager
             this.logger.debug(String.format("Downloading %s...", alias));
             IOUtils.download(this.logger, new URL(String.format("https://flowarg.github.io/minecraft/launcher/%s.jar", name)), out);
         }
+    }
+
+    public void loadCurseMods(File dir, FabricVersion fabricVersion) throws Exception
+    {
+        final List<Object> allCurseMods = new ArrayList<>(fabricVersion.getCurseMods().size());
+        for (CurseModInfos infos : fabricVersion.getCurseMods())
+        {
+            try
+            {
+                Class.forName("fr.flowarg.flowupdater.curseforgeplugin.CurseForgePlugin");
+                this.cursePluginLoaded = true;
+                final CurseForgePlugin curseForgePlugin = CurseForgePlugin.instance;
+                final CurseMod mod = curseForgePlugin.getCurseMod(infos.getProjectID(), infos.getFileID());
+                allCurseMods.add(mod);
+                final File file = new File(dir, mod.getName());
+                if (file.exists())
+                {
+                    if (!Objects.requireNonNull(getMD5ofFile(file)).equals(mod.getMd5()) || getFileSizeBytes(file) != mod.getLength())
+                    {
+                        file.delete();
+                        this.downloadInfos.getCurseMods().add(mod);
+                    }
+                }
+                else this.downloadInfos.getCurseMods().add(mod);
+            }
+            catch (ClassNotFoundException e)
+            {
+                this.cursePluginLoaded = false;
+                this.logger.err("Cannot install mods from CurseForge: CurseAPI is not loaded. Please, enable the 'enableModsFromCurseForge' updater option !");
+                break;
+            }
+        }
+
+        fabricVersion.setAllCurseMods(allCurseMods);
     }
 
     public void loadCurseMods(File dir, AbstractForgeVersion forgeVersion) throws Exception

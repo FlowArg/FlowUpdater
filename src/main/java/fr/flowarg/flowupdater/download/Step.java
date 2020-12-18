@@ -20,7 +20,9 @@ public enum Step
     EXTRACT_NATIVES,
     /** Install a forge version. Skipped if {@link FlowUpdater#getForgeVersion()} is null. */
     FORGE,
-    /** Download mods. Skipped if {@link FlowUpdater#getForgeVersion()} is null. */
+    /** Install a forge version. Skipped if {@link FlowUpdater#getFabricVersion()}  is null. */
+    FABRIC,
+    /** Download mods. Skipped if {@link FlowUpdater#getForgeVersion()} or {@link FlowUpdater#getFabricVersion()} is null. */
     MODS,
     /** Download other files. */
     EXTERNAL_FILES,
