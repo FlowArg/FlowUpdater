@@ -83,11 +83,6 @@ modInfos.add(new CurseFileInfos(238222, 2988823));
 ```
 You can get a list of curse mods by providing a json link too : `List<CurseFileInfos> mods = CurseFileInfos.getFilesFromJson("https://url.com/launcher/cursemods.json");`.
 
-```java
-// On updater options :
-.withUpdaterOptions(new UpdaterOptions(true|false, false|false, true))
-```
-
 Then, build a forge version. For example, I will build a NewForgeVersion.
 ```java
 AbstractForgeVersion forgeVersion = new ForgeVersionBuilder(ForgeVersionBuilder.ForgeVersionType.NEW)
@@ -126,7 +121,42 @@ Nothing else to add :).
 
 ### Fabric
 
-Coming soon !!!
+(You need to setup a vanilla updater !)
+
+First, in your vanilla version builder, change the version type to `VersionType.FABRIC`.
+Next, make a List of Mod objects.
+```java
+List<Mod> mods = new ArrayList<>();
+mods.add(new Mod("OneMod.jar", "sha1ofmod", 85120, "https://link/of/mod.jar"));
+mods.add(new Mod("AnotherMod.jar", "sha1ofanothermod", 86120, "https://link/of/another/mod.jar"));
+```
+You can get a list of mods by providing a json link too : `List<Mod> mods = Mod.getModsFromJson("https://url.com/launcher/mods.json");`.
+
+You can get mods from CurseForge too:
+```java
+List<CurseFileInfos> modInfos = new ArrayList<>();
+// project ID and file ID
+modInfos.add(new CurseFileInfos(238222, 2988823));
+```
+You can get a list of curse mods by providing a json link too : `List<CurseFileInfos> mods = CurseFileInfos.getFilesFromJson("https://url.com/launcher/cursemods.json");`.
+
+Then, build a Fabric version.
+```java
+FabricVersion fabricVersion = new FabricVersionBuilder()
+            .withFabricVersion("31.2.29")
+            .withVanillaVersion(version)
+            .withLogger(logger)
+            .withProgressCallback(callback)
+            .withCurseMods(modInfos)
+            .withUseFileDeleter(new ModFileDeleter(true, "sodium.jar")) // delete bad mods ; doesn't remove the file sodium.jar if it's present in the dir.
+            .build();
+```
+
+Finally, set the Fabric version corresponding to the wanted Fabric version :
+```java
+.withFabricVersion(forgeVersion);
+```
+That's all!
 
 ### External Files
 
