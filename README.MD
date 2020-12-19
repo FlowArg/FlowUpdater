@@ -143,7 +143,7 @@ You can get a list of curse mods by providing a json link too : `List<CurseFileI
 Then, build a Fabric version.
 ```java
 FabricVersion fabricVersion = new FabricVersionBuilder()
-            .withFabricVersion("31.2.29")
+            .withFabricVersion("0.10.8")
             .withVanillaVersion(version)
             .withLogger(logger)
             .withProgressCallback(callback)
