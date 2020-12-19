@@ -2,6 +2,7 @@ package fr.flowarg.flowupdater.utils;
 
 import fr.antoineok.flowupdater.optifineplugin.Optifine;
 import fr.antoineok.flowupdater.optifineplugin.OptifinePlugin;
+import fr.antoineok.flowupdater.versions.FabricVersion;
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.FlowUpdater;
@@ -150,6 +151,86 @@ public class PluginManager
         }
 
         forgeVersion.setAllCurseMods(allCurseMods);
+    }
+
+    public void loadCurseForgePlugin(File dir, FabricVersion fabricVersion)
+    {
+        final List<Object> allCurseMods = new ArrayList<>(fabricVersion.getCurseMods().size());
+        for (CurseFileInfos infos : fabricVersion.getCurseMods())
+        {
+            if (!this.cursePluginLoaded)
+            {
+                try
+                {
+                    Class.forName("fr.flowarg.flowupdater.curseforgeplugin.CurseForgePlugin");
+                    this.cursePluginLoaded = true;
+                } catch (ClassNotFoundException e)
+                {
+                    this.cursePluginLoaded = false;
+                    this.logger.err("Cannot install mods from CurseForge: CurseAPI is not loaded. Please, enable the 'enableModsFromCurseForge' updater option !");
+                    break;
+                }
+            }
+
+            try
+            {
+                final CurseForgePlugin curseForgePlugin = CurseForgePlugin.instance;
+                final CurseMod mod = curseForgePlugin.getCurseMod(infos.getProjectID(), infos.getFileID());
+                allCurseMods.add(mod);
+                final File file = new File(dir, mod.getName());
+                if(!file.exists() || !getMD5ofFile(file).equals(mod.getMd5()) || getFileSizeBytes(file) != mod.getLength())
+                {
+                    file.delete();
+                    this.downloadInfos.getCurseMods().add(mod);
+                }
+            } catch (Exception e)
+            {
+                this.logger.printStackTrace(e);
+            }
+        }
+        final CurseModPackInfos modPackInfos = fabricVersion.getModPackInfos();
+        if (modPackInfos != null)
+        {
+            this.updater.getCallback().step(Step.MOD_PACK);
+            try
+            {
+                Class.forName("fr.flowarg.flowupdater.curseforgeplugin.CurseForgePlugin");
+                this.cursePluginLoaded = true;
+                final CurseForgePlugin plugin = CurseForgePlugin.instance;
+                final CurseModPack modPack = plugin.getCurseModPack(modPackInfos.getProjectID(), modPackInfos.getFileID(), modPackInfos.isInstallExtFiles());
+                this.logger.info("Loading mod pack: " + modPack.getName() + " (" + modPack.getVersion() + ") by " + modPack.getAuthor() + '.');
+                modPack.getMods().forEach(mod -> {
+                    allCurseMods.add(mod);
+                    try
+                    {
+                        final File file = new File(dir, mod.getName());
+                        boolean flag = false;
+                        for (String exclude : modPackInfos.getExcluded())
+                        {
+                            if (mod.getName().equalsIgnoreCase(exclude))
+                            {
+                                flag = !mod.isRequired();
+                                break;
+                            }
+                        }
+                        if(!flag && (!file.exists() || !getMD5ofFile(file).equals(mod.getMd5()) || getFileSizeBytes(file) != mod.getLength()))
+                        {
+                            file.delete();
+                            this.downloadInfos.getCurseMods().add(mod);
+                        }
+                    } catch (NoSuchAlgorithmException | IOException e)
+                    {
+                        this.logger.printStackTrace(e);
+                    }
+                });
+            } catch (ClassNotFoundException e)
+            {
+                this.cursePluginLoaded = false;
+                this.logger.err("Cannot install mod pack from CurseForge: CurseAPI is not loaded. Please, enable the 'enableModsFromCurseForge' updater option !");
+            }
+        }
+
+        fabricVersion.setAllCurseMods(allCurseMods);
     }
 
     public void loadOptifinePlugin(File dir, AbstractForgeVersion forgeVersion)
