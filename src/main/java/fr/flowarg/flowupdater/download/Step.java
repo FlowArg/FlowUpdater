@@ -22,12 +22,14 @@ public enum Step
     EXTRACT_NATIVES,
     /** Install a forge version. Skipped if {@link FlowUpdater#getForgeVersion()} is null. */
     FORGE,
-    /** Download mods. Skipped if {@link FlowUpdater#getForgeVersion()} is null. */
+    /** Install a fabric version. Skipped if {@link FlowUpdater#getFabricVersion()} is null. */
+    FABRIC,
+    /** Download mods. Skipped if {@link FlowUpdater#getForgeVersion()} or {@link FlowUpdater#getFabricVersion()} is null. */
     MODS,
     /** Download other files. */
     EXTERNAL_FILES,
     /** Runs a list of runnable at the end of update. */
     POST_EXECUTIONS,
     /** All tasks are finished */
-    END
+    END;
 }
