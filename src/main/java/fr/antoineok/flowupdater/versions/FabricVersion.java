@@ -131,10 +131,10 @@ public class FabricVersion {
     }
 
     /**
-     * Check if forge is already installed. Used by {@link FlowUpdater} on update task.
+     * Check if fabric is already installed. Used by {@link FlowUpdater} on update task.
      *
      * @param installDir the minecraft installation dir.
-     * @return true if forge is already installed or not.
+     * @return true if fabric is already installed or not.
      */
     public boolean isFabricAlreadyInstalled(File installDir) {
         return new File(installDir, "libraries/net/fabricmc/fabric-loader/" + this.fabricVersion + "/" + "fabric-loader-" + this.fabricVersion + ".jar").exists();
@@ -150,7 +150,8 @@ public class FabricVersion {
         this.callback.step(Step.FABRIC);
         this.logger.info("Installing fabric, version: " + this.fabricVersion + "...");
         this.checkFabricEnv(dirToInstall);
-        if(this.isCompatible()){
+        if(this.isCompatible())
+        {
             try (BufferedInputStream stream = new BufferedInputStream(this.installerUrl.openStream()))
             {
                 this.logger.info("Downloading fabric installer...");
@@ -207,7 +208,7 @@ public class FabricVersion {
                 this.logger.info("Successfully installed Fabric !");
                 FileUtils.deleteDirectory(tempDir);
             } catch (IOException | InterruptedException e) {
-            this.logger.printStackTrace(e);
+                this.logger.printStackTrace(e);
             }
         }
     }
@@ -219,10 +220,10 @@ public class FabricVersion {
      */
     protected boolean checkFabricEnv(File dirToInstall) {
         boolean result = false;
-        final File forgeDir = new File(dirToInstall, "libraries/net/fabricmc/fabric-loader/");
-        if (forgeDir.exists()) {
-            if (forgeDir.listFiles() != null) {
-                for (File contained : forgeDir.listFiles()) {
+        final File fabricDir = new File(dirToInstall, "libraries/net/fabricmc/fabric-loader/");
+        if (fabricDir.exists()) {
+            if (fabricDir.listFiles() != null) {
+                for (File contained : fabricDir.listFiles()) {
                     if (!contained.getName().contains(this.fabricVersion)) {
                         if (contained.isDirectory()) FileUtils.deleteDirectory(contained);
                         else contained.delete();
@@ -391,9 +392,17 @@ public class FabricVersion {
         @Override
         public FabricVersion build() throws BuilderException {
             if(this.progressCallbackArgument.get() == FlowUpdater.NULL_CALLBACK)
-                this.loggerArgument.get().warn("You are using default callback for forge installation. If you're using a custom callback for vanilla files, it will not updated when forge and mods will be installed.");
+                this.loggerArgument.get().warn("You are using default callback for fabric installation. If you're using a custom callback for vanilla files, it will not updated when fabric and mods will be installed.");
 
-            return new FabricVersion(this.loggerArgument.get(), this.modsArgument.get(), this.curseModsArgument.get(), this.fabricVersionArgument.get(), this.vanillaVersionArgument.get(), this.progressCallbackArgument.get(), this.fileDeleterArgument.get(), this.modPackArgument.get());
+            return new FabricVersion(this.loggerArgument.get(),
+                                     this.modsArgument.get(),
+                                     this.curseModsArgument.get(),
+                                     this.fabricVersionArgument.get(),
+                                     this.vanillaVersionArgument.get(),
+                                     this.progressCallbackArgument.get(),
+                                     this.fileDeleterArgument.get(),
+                                     this.modPackArgument.get()
+           );
         }
     }
 }
