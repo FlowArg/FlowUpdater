@@ -1,6 +1,5 @@
 package fr.flowarg.flowupdater;
 
-import fr.flowarg.flowupdater.versions.FabricVersion;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowlogger.Logger;
 import fr.flowarg.flowupdater.download.*;
@@ -14,6 +13,8 @@ import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
 import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
 import fr.flowarg.flowupdater.versions.AbstractForgeVersion;
+import fr.flowarg.flowupdater.versions.FabricVersion;
+import fr.flowarg.flowupdater.versions.IModLoaderVersion;
 import fr.flowarg.flowupdater.versions.VanillaVersion;
 
 import java.io.File;
@@ -204,27 +205,23 @@ public class FlowUpdater
             final VanillaDownloader vanillaDownloader = new VanillaDownloader(dir, this.logger, this.callback, this.downloadInfos, this.updaterOptions);
             vanillaDownloader.download();
 
-            if (this.forgeVersion != null)
-            {
-                this.forgeVersion.appendDownloadInfos(this.downloadInfos);
-                if(!this.forgeVersion.isForgeAlreadyInstalled(dir))
-                    this.forgeVersion.install(dir);
-                else this.logger.info("Forge is already installed ! Skipping installation...");
-                final File modsDir = new File(dir, "mods/");
-                this.forgeVersion.installMods(modsDir, this.pluginManager);
-            }
-
-            if (this.fabricVersion != null)
-            {
-                this.fabricVersion.appendDownloadInfos(this.downloadInfos);
-                if(!this.fabricVersion.isFabricAlreadyInstalled(dir))
-                    this.fabricVersion.install(dir);
-                else this.logger.info("Fabric is already installed ! Skipping installation...");
-                final File modsDir = new File(dir, "mods/");
-                this.fabricVersion.installMods(modsDir, this.pluginManager);
-            }
+            this.installModLoader(this.forgeVersion, dir, "Forge");
+            this.installModLoader(this.fabricVersion, dir, "Fabric");
         }
         else this.downloadInfos.init();
+    }
+
+    private void installModLoader(IModLoaderVersion modLoader, File dir, String name) throws Exception
+    {
+        if(modLoader != null)
+        {
+            modLoader.appendDownloadInfos(this.downloadInfos);
+            if(!modLoader.isModLoaderAlreadyInstalled(dir))
+                modLoader.install(dir);
+            else this.logger.info(name + " is already installed ! Skipping installation...");
+            final File modsDir = new File(dir, "mods/");
+            modLoader.installMods(modsDir, this.pluginManager);
+        }
     }
 
     private void updateExtFiles(File dir)

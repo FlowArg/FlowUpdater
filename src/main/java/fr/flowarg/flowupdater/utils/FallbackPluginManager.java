@@ -1,6 +1,7 @@
 package fr.flowarg.flowupdater.utils;
 
 import fr.flowarg.flowupdater.FlowUpdater;
+import fr.flowarg.flowupdater.download.ICurseFeaturesUser;
 import fr.flowarg.flowupdater.versions.AbstractForgeVersion;
 
 import java.io.File;
@@ -19,7 +20,7 @@ public class FallbackPluginManager extends PluginManager
     public void updatePlugin(File out, String name, String alias) {}
 
     @Override
-    public void loadCurseForgePlugin(File dir, AbstractForgeVersion forgeVersion) {}
+    public void loadCurseForgePlugin(File dir, ICurseFeaturesUser curseFeaturesUser) {}
 
     @Override
     public void loadOptifinePlugin(File dir, AbstractForgeVersion forgeVersion) {}

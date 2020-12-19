@@ -4,15 +4,11 @@ import fr.antoineok.flowupdater.optifineplugin.Optifine;
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.FlowUpdater;
-import fr.flowarg.flowupdater.curseforgeplugin.CurseMod;
-import fr.flowarg.flowupdater.download.DownloadInfos;
-import fr.flowarg.flowupdater.download.IProgressCallback;
-import fr.flowarg.flowupdater.download.Step;
+import fr.flowarg.flowupdater.download.*;
 import fr.flowarg.flowupdater.download.json.CurseFileInfos;
 import fr.flowarg.flowupdater.download.json.CurseModPackInfos;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.download.json.OptifineInfo;
-import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
 import fr.flowarg.flowupdater.utils.PluginManager;
 
@@ -29,7 +25,7 @@ import java.util.List;
  * Implemented by {@link OldForgeVersion} & {@link NewForgeVersion}
  * @author flow
  */
-public abstract class AbstractForgeVersion
+public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLoaderVersion
 {
     protected final ILogger logger;
     protected final List<Mod> mods;
@@ -76,21 +72,24 @@ public abstract class AbstractForgeVersion
             this.logger.printStackTrace(e);
         }
     }
-    
+
     /**
      * Check if forge is already installed. Used by {@link FlowUpdater} on update task.
      * @param installDir the minecraft installation dir.
      * @return true if forge is already installed or not.
      */
-    public boolean isForgeAlreadyInstalled(File installDir)
+    @Override
+    public boolean isModLoaderAlreadyInstalled(File installDir)
     {
         return new File(installDir, "libraries/net/minecraftforge/forge/" + this.forgeVersion + "/" + "forge-" + this.forgeVersion + ".jar").exists();
     }
-    
+
     /**
      * This function installs a Forge version at the specified directory.
      * @param dirToInstall Specified directory.
      */
+    // TODO Optimize this.
+    @Override
     public void install(final File dirToInstall)
     {
         this.callback.step(Step.FORGE);
@@ -131,39 +130,13 @@ public abstract class AbstractForgeVersion
      * @param pluginManager PluginManager of FlowUpdater
      * @throws IOException If the install fail.
      */
+    @Override
     public void installMods(File modsDir, PluginManager pluginManager) throws Exception
     {
         this.callback.step(Step.MODS);
         final boolean cursePluginLoaded = pluginManager.isCursePluginLoaded();
         final boolean optifinePluginLoaded = pluginManager.isOptifinePluginLoaded();
-        this.downloadInfos.getMods().forEach(mod -> {
-            try
-            {
-                IOUtils.download(this.logger, new URL(mod.getDownloadURL()), new File(modsDir, mod.getName()));
-            }
-            catch (MalformedURLException e)
-            {
-                this.logger.printStackTrace(e);
-            }
-            this.downloadInfos.incrementDownloaded();
-            this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
-        });
-
-        if(cursePluginLoaded)
-        {
-            this.downloadInfos.getCurseMods().forEach(obj -> {
-                try
-                {
-                    final CurseMod curseMod = (CurseMod)obj;
-                    IOUtils.download(this.logger, new URL(curseMod.getDownloadURL()), new File(modsDir, curseMod.getName()));
-                } catch (MalformedURLException e)
-                {
-                    this.logger.printStackTrace(e);
-                }
-                this.downloadInfos.incrementDownloaded();
-                this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
-            });
-        }
+        ModCommons.installAllMods(downloadInfos, this.logger, modsDir, this.callback, cursePluginLoaded);
 
         Object ofObj = null;
         if(optifinePluginLoaded)
@@ -195,6 +168,7 @@ public abstract class AbstractForgeVersion
         return this.fileDeleter;
     }
 
+    @Override
     public void appendDownloadInfos(DownloadInfos infos)
     {
         this.downloadInfos = infos;
@@ -228,18 +202,25 @@ public abstract class AbstractForgeVersion
     {
         return this.allCurseMods;
     }
+
+    @Override
     public void setAllCurseMods(List<Object> allCurseMods)
     {
         this.allCurseMods = allCurseMods;
     }
+
+    @Override
     public List<CurseFileInfos> getCurseMods()
     {
         return this.curseMods;
     }
+
     public OptifineInfo getOptifine()
     {
         return this.optifine;
     }
+
+    @Override
     public CurseModPackInfos getModPackInfos()
     {
         return this.modPackInfos;

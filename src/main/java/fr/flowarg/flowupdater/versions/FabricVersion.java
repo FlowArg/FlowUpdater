@@ -1,18 +1,17 @@
 package fr.flowarg.flowupdater.versions;
 
-import com.google.gson.*;
-import fr.flowarg.flowupdater.utils.ArtifactsDownloader;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.FlowUpdater;
-import fr.flowarg.flowupdater.curseforgeplugin.CurseMod;
-import fr.flowarg.flowupdater.download.DownloadInfos;
-import fr.flowarg.flowupdater.download.IProgressCallback;
-import fr.flowarg.flowupdater.download.Step;
+import fr.flowarg.flowupdater.download.*;
 import fr.flowarg.flowupdater.download.json.CurseFileInfos;
 import fr.flowarg.flowupdater.download.json.CurseModPackInfos;
 import fr.flowarg.flowupdater.download.json.Mod;
-import fr.flowarg.flowupdater.utils.IOUtils;
+import fr.flowarg.flowupdater.utils.ArtifactsDownloader;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
 import fr.flowarg.flowupdater.utils.PluginManager;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
@@ -36,19 +35,20 @@ import java.util.List;
 /**
  * @author antoineok <https://github.com/antoineok>
  */
-public class FabricVersion {
-    protected final ILogger logger;
-    protected final List<Mod> mods;
-    protected final VanillaVersion vanilla;
-    protected final String fabricVersion;
-    protected final IProgressCallback callback;
-    protected final ArrayList<CurseFileInfos> curseMods;
-    protected final ModFileDeleter fileDeleter;
-    protected List<Object> allCurseMods;
-    protected URL installerUrl;
-    protected DownloadInfos downloadInfos;
-    final String installerVersion;
-    protected final CurseModPackInfos modPackInfos;
+public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
+{
+    private final ILogger logger;
+    private final List<Mod> mods;
+    private final VanillaVersion vanilla;
+    private final String fabricVersion;
+    private final IProgressCallback callback;
+    private final ArrayList<CurseFileInfos> curseMods;
+    private final ModFileDeleter fileDeleter;
+    private List<Object> allCurseMods;
+    private URL installerUrl;
+    private DownloadInfos downloadInfos;
+    private final String installerVersion;
+    private final CurseModPackInfos modPackInfos;
 
     private final String[] compatibleVersions = {"1.16", "1.15", "1.14", "1.13"};
 
@@ -71,7 +71,7 @@ public class FabricVersion {
         this.vanilla = vanilla;
         this.fabricVersion = fabricVersion;
         this.modPackInfos = modPackInfos;
-        this.installerVersion = getLatestInstallerVersion();
+        this.installerVersion = this.getLatestInstallerVersion();
         this.callback = callback;
         try {
             this.installerUrl = new URL(String.format("https://maven.fabricmc.net/net/fabricmc/fabric-installer/%s/fabric-installer-%s.jar", installerVersion, installerVersion));
@@ -80,24 +80,14 @@ public class FabricVersion {
         }
     }
 
-    protected static String getLatestFabricVersion() {
-        try {
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.parse(new URL("https://maven.fabricmc.net/net/fabricmc/fabric-loader/maven-metadata.xml").openStream());
+    private static String getLatestFabricVersion() {
+        try
+        {
+            final DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            final DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            final Document doc = dBuilder.parse(new URL("https://maven.fabricmc.net/net/fabricmc/fabric-loader/maven-metadata.xml").openStream());
 
-            doc.getDocumentElement().normalize();
-
-            Element root = doc.getDocumentElement();
-            NodeList nList = root.getElementsByTagName("versioning");
-            String version = "";
-            for (int temp = 0; temp < nList.getLength(); temp++) {
-                Node node = nList.item(temp);
-                if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    version = ((Element) node).getElementsByTagName("release").item(0).getTextContent();
-                }
-            }
-            return version;
+            return getLatestVersionOfArtifact(doc);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -106,26 +96,33 @@ public class FabricVersion {
 
     private String getLatestInstallerVersion() {
         try {
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.parse(new URL("https://maven.fabricmc.net/net/fabricmc/fabric-installer/maven-metadata.xml").openStream());
+            final DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            final DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            final Document doc = dBuilder.parse(new URL("https://maven.fabricmc.net/net/fabricmc/fabric-installer/maven-metadata.xml").openStream());
 
-            doc.getDocumentElement().normalize();
-
-            Element root = doc.getDocumentElement();
-            NodeList nList = root.getElementsByTagName("versioning");
-            String version = "";
-            for (int temp = 0; temp < nList.getLength(); temp++) {
-                Node node = nList.item(temp);
-                if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    version = ((Element) node).getElementsByTagName("release").item(0).getTextContent();
-                }
-            }
-            return version;
-        } catch (Exception e) {
+            return getLatestVersionOfArtifact(doc);
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private static String getLatestVersionOfArtifact(Document doc)
+    {
+        doc.getDocumentElement().normalize();
+
+        Element root = doc.getDocumentElement();
+        NodeList nList = root.getElementsByTagName("versioning");
+        String version = "";
+        for (int temp = 0; temp < nList.getLength(); temp++) {
+            Node node = nList.item(temp);
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                version = ((Element) node).getElementsByTagName("release").item(0).getTextContent();
+            }
+        }
+        return version;
     }
 
     /**
@@ -134,16 +131,17 @@ public class FabricVersion {
      * @param installDir the minecraft installation dir.
      * @return true if fabric is already installed or not.
      */
-    public boolean isFabricAlreadyInstalled(File installDir) {
+    @Override
+    public boolean isModLoaderAlreadyInstalled(File installDir) {
         return new File(installDir, "libraries/net/fabricmc/fabric-loader/" + this.fabricVersion + "/" + "fabric-loader-" + this.fabricVersion + ".jar").exists();
     }
 
     /**
      * This function installs a Fabric version at the specified directory.
-     *
      * @param dirToInstall Specified directory.
      */
-    //TODO: optimize this
+    // TODO optimize this
+    @Override
     public void install(final File dirToInstall) {
         this.callback.step(Step.FABRIC);
         this.logger.info("Installing fabric, version: " + this.fabricVersion + "...");
@@ -158,9 +156,11 @@ public class FabricVersion {
                 final File fabric = new File(tempDir, "zeWorld");
                 final File install = new File(tempDir, String.format("fabric-installer-%s.jar", installerVersion));
                 final File libraries = new File(dirToInstall, "libraries");
+
                 install.delete();
                 fabric.mkdirs();
                 tempDir.mkdirs();
+
                 Files.copy(stream, install.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 this.logger.info("Launching fabric installer...");
                 final ArrayList<String> command = new ArrayList<>();
@@ -180,29 +180,31 @@ public class FabricVersion {
 
                 processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
                 final Process process = processBuilder.start();
-                BufferedReader reader = new BufferedReader (new InputStreamReader(process.getInputStream()));
+                BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
                 String line;
-                while ((line = reader.readLine ()) != null) {
-                    System.out.println(line);
-                }
-                reader = new BufferedReader (new InputStreamReader(process.getErrorStream()));
-                while ((line = reader.readLine ()) != null) {
-                    System.out.println(line);
-                }
-                process.waitFor();
-                File json = new File(fabric, String.format("versions" + File.separatorChar + "fabric-loader-%s-%s" , fabricVersion, this.vanilla.getName()));
 
-                File jsonFile = new File(json, json.getName() + ".json");
-                System.out.println(json.exists());
-                String jsonString = FileUtils.loadFile(jsonFile);
-                JsonObject obj = JsonParser.parseString(jsonString).getAsJsonObject();
-                JsonArray libs = obj.getAsJsonArray("libraries");
+                while ((line = reader.readLine ()) != null)
+                    System.out.println(line);
+
+                reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+                while ((line = reader.readLine ()) != null)
+                    System.out.println(line);
+
+                process.waitFor();
+
+                final File json = new File(fabric, String.format("versions" + File.separatorChar + "fabric-loader-%s-%s" , fabricVersion, this.vanilla.getName()));
+                final File jsonFile = new File(json, json.getName() + ".json");
+                final String jsonString = FileUtils.loadFile(jsonFile);
+                final JsonObject obj = JsonParser.parseString(jsonString).getAsJsonObject();
+                final JsonArray libs = obj.getAsJsonArray("libraries");
+
                 for(JsonElement el : libs){
-                    JsonObject artifact = el.getAsJsonObject();
-                    String id = artifact.get("name").getAsString();
-                    String url = artifact.get("url").getAsString();
+                    final JsonObject artifact = el.getAsJsonObject();
+                    final String id = artifact.get("name").getAsString();
+                    final String url = artifact.get("url").getAsString();
                     ArtifactsDownloader.downloadArtifacts(libraries, url, id, logger);
                 }
+
                 this.logger.info("Successfully installed Fabric !");
                 FileUtils.deleteDirectory(tempDir);
             } catch (IOException | InterruptedException e) {
@@ -216,8 +218,7 @@ public class FabricVersion {
      *
      * @param dirToInstall Fabric installation directory.
      */
-    protected boolean checkFabricEnv(File dirToInstall) {
-        boolean result = false;
+    protected void checkFabricEnv(File dirToInstall) {
         final File fabricDir = new File(dirToInstall, "libraries/net/fabricmc/fabric-loader/");
         if (fabricDir.exists()) {
             if (fabricDir.listFiles() != null) {
@@ -225,13 +226,10 @@ public class FabricVersion {
                     if (!contained.getName().contains(this.fabricVersion)) {
                         if (contained.isDirectory()) FileUtils.deleteDirectory(contained);
                         else contained.delete();
-                        result = true;
                     }
                 }
             }
         }
-
-        return result;
     }
 
     public boolean isCompatible()
@@ -250,39 +248,13 @@ public class FabricVersion {
      * @param pluginManager PluginManager of FlowUpdater
      * @throws IOException If the install fail.
      */
+    @Override
     public void installMods(File modsDir, PluginManager pluginManager) throws Exception
     {
         this.callback.step(Step.MODS);
         final boolean cursePluginLoaded = pluginManager.isCursePluginLoaded();
-        this.downloadInfos.getMods().forEach(mod -> {
-            try
-            {
-                IOUtils.download(this.logger, new URL(mod.getDownloadURL()), new File(modsDir, mod.getName()));
-            }
-            catch (MalformedURLException e)
-            {
-                this.logger.printStackTrace(e);
-            }
-            this.downloadInfos.incrementDownloaded();
-            this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
-        });
 
-        if(cursePluginLoaded)
-        {
-            this.downloadInfos.getCurseMods().forEach(obj -> {
-                try
-                {
-                    final CurseMod curseMod = (CurseMod)obj;
-                    IOUtils.download(this.logger, new URL(curseMod.getDownloadURL()), new File(modsDir, curseMod.getName()));
-                } catch (MalformedURLException e)
-                {
-                    this.logger.printStackTrace(e);
-                }
-                this.downloadInfos.incrementDownloaded();
-                this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
-            });
-        }
-
+        ModCommons.installAllMods(downloadInfos, this.logger, modsDir, this.callback, cursePluginLoaded);
         this.fileDeleter.delete(modsDir, this.mods, cursePluginLoaded, this.allCurseMods, false, null);
     }
 
@@ -290,6 +262,7 @@ public class FabricVersion {
         return this.fileDeleter;
     }
 
+    @Override
     public void appendDownloadInfos(DownloadInfos infos) {
         this.downloadInfos = infos;
     }
@@ -314,19 +287,22 @@ public class FabricVersion {
         return this.allCurseMods;
     }
 
+    @Override
     public void setAllCurseMods(List<Object> allCurseMods) {
         this.allCurseMods = allCurseMods;
     }
 
-    public ArrayList<CurseFileInfos> getCurseMods() {
+    @Override
+    public List<CurseFileInfos> getCurseMods() {
         return this.curseMods;
     }
 
+    @Override
     public CurseModPackInfos getModPackInfos() { return modPackInfos; }
 
     public static class FabricVersionBuilder implements IBuilder<FabricVersion> {
 
-        private final BuilderArgument<String> fabricVersionArgument = new BuilderArgument<String>("fabricVerion", FabricVersion::getLatestFabricVersion).required();
+        private final BuilderArgument<String> fabricVersionArgument = new BuilderArgument<>("FabricVersion", FabricVersion::getLatestFabricVersion).required();
         private final BuilderArgument<VanillaVersion> vanillaVersionArgument = new BuilderArgument<>(() -> VanillaVersion.NULL_VERSION, "VanillaVersion").required();
         private final BuilderArgument<ILogger> loggerArgument = new BuilderArgument<>("Logger", () -> FlowUpdater.DEFAULT_LOGGER).optional();
         private final BuilderArgument<IProgressCallback> progressCallbackArgument = new BuilderArgument<>("ProgressCallback", () -> FlowUpdater.NULL_CALLBACK).optional();
