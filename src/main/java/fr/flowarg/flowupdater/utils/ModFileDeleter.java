@@ -38,7 +38,7 @@ public class ModFileDeleter implements IFileDeleter
             final Set<File> badFiles = new HashSet<>();
             final List<File> verifiedFiles = new ArrayList<>();
             Arrays.stream(this.modsToIgnore).forEach(fileName -> verifiedFiles.add(new File(modsDir, fileName)));
-            if(modsDir.listFiles().length != 0)
+            if(modsDir.listFiles() != null && modsDir.listFiles().length != 0)
             {
                 for(File fileInDir : modsDir.listFiles())
                 {
