@@ -1,4 +1,4 @@
-package fr.antoineok.flowupdater.utils;
+package fr.flowarg.flowupdater.utils;
 
 import fr.flowarg.flowlogger.ILogger;
 
@@ -9,18 +9,16 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
 /**
- * @author antoineok
+ * @author antoineok <https://github.com/antoineok>
  */
-public class ArtiefactsDownloader {
-
-    public static void donwloadArtifacts(File dir, String repositoryUrl, String id, ILogger logger){
+public class ArtifactsDownloader
+{
+    public static void downloadArtifacts(File dir, String repositoryUrl, String id, ILogger logger){
         String[] parts = id.split(":");
-        donwloadArtifacts(dir, repositoryUrl, parts[0], parts[1], parts[2], logger);
-
-
+        downloadArtifacts(dir, repositoryUrl, parts[0], parts[1], parts[2], logger);
     }
 
-    public static void donwloadArtifacts(File dir, String repositoryUrl, String group, String name, String version, ILogger logger){
+    public static void downloadArtifacts(File dir, String repositoryUrl, String group, String name, String version, ILogger logger){
         File groupDir = new File(dir, group.replace('.', File.separatorChar));
         if(!groupDir.exists())
             groupDir.mkdirs();

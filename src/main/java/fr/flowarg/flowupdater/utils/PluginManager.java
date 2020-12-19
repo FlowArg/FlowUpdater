@@ -2,7 +2,7 @@ package fr.flowarg.flowupdater.utils;
 
 import fr.antoineok.flowupdater.optifineplugin.Optifine;
 import fr.antoineok.flowupdater.optifineplugin.OptifinePlugin;
-import fr.antoineok.flowupdater.versions.FabricVersion;
+import fr.flowarg.flowupdater.versions.FabricVersion;
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.FlowUpdater;

@@ -1,6 +1,6 @@
 package fr.flowarg.flowupdater;
 
-import fr.antoineok.flowupdater.versions.FabricVersion;
+import fr.flowarg.flowupdater.versions.FabricVersion;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowlogger.Logger;
 import fr.flowarg.flowupdater.download.*;

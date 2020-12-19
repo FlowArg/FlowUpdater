@@ -1,8 +1,7 @@
-package fr.antoineok.flowupdater.versions;
+package fr.flowarg.flowupdater.versions;
 
 import com.google.gson.*;
-import fr.antoineok.flowupdater.optifineplugin.Optifine;
-import fr.antoineok.flowupdater.utils.ArtiefactsDownloader;
+import fr.flowarg.flowupdater.utils.ArtifactsDownloader;
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.FlowUpdater;
@@ -19,7 +18,6 @@ import fr.flowarg.flowupdater.utils.PluginManager;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
 import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
-import fr.flowarg.flowupdater.versions.VanillaVersion;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -36,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author antoineok
+ * @author antoineok <https://github.com/antoineok>
  */
 public class FabricVersion {
     protected final ILogger logger;
@@ -203,7 +201,7 @@ public class FabricVersion {
                     JsonObject artifact = el.getAsJsonObject();
                     String id = artifact.get("name").getAsString();
                     String url = artifact.get("url").getAsString();
-                    ArtiefactsDownloader.donwloadArtifacts(libraries, url, id, logger);
+                    ArtifactsDownloader.downloadArtifacts(libraries, url, id, logger);
                 }
                 this.logger.info("Successfully installed Fabric !");
                 FileUtils.deleteDirectory(tempDir);
