@@ -32,5 +32,4 @@ public enum Step
     POST_EXECUTIONS,
     /** All tasks are finished */
     END;
-
 }
