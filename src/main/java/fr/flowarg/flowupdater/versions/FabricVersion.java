@@ -263,11 +263,14 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
     }
 
     @Override
-    public void appendDownloadInfos(DownloadInfos infos) {
+    public void appendDownloadInfos(DownloadInfos infos)
+    {
         this.downloadInfos = infos;
     }
 
-    public List<Mod> getMods() {
+    @Override
+    public List<Mod> getMods()
+    {
         return this.mods;
     }
 

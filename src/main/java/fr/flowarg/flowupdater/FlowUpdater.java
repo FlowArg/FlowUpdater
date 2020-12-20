@@ -169,35 +169,25 @@ public class FlowUpdater
             this.logger.info(String.format("Reading data about %s Minecraft version...", version.getName()));
             this.vanillaReader.read();
 
+            final File modsDir = new File(dir, "mods/");
+
+            if(this.forgeVersion != null)
+                this.checkMods(this.forgeVersion, dir);
+            if (this.fabricVersion != null)
+                this.checkMods(this.fabricVersion, dir);
+
+            if(this.fabricVersion != null)
+            {
+                if(this.updaterOptions.isEnableModsFromCurseForge())
+                    this.pluginManager.loadCurseForgePlugin(modsDir, this.fabricVersion);
+            }
+
             if(this.forgeVersion != null)
             {
-                final File modsDir = new File(dir, "mods/");
-                for(Mod mod : this.forgeVersion.getMods())
-                {
-                    final File file = new File(modsDir, mod.getName());
-
-                    if(!file.exists() || !getSHA1(file).equals(mod.getSha1()) || getFileSizeBytes(file) != mod.getSize())
-                        this.downloadInfos.getMods().add(mod);
-                }
-
                 if(this.updaterOptions.isEnableModsFromCurseForge())
                     this.pluginManager.loadCurseForgePlugin(modsDir, this.forgeVersion);
                 if(this.updaterOptions.isInstallOptifineAsMod())
                     this.pluginManager.loadOptifinePlugin(modsDir, this.forgeVersion);
-            }
-            if(this.fabricVersion != null)
-            {
-                final File modsDir = new File(dir, "mods/");
-                for(Mod mod : this.fabricVersion.getMods())
-                {
-                    final File file = new File(modsDir, mod.getName());
-
-                    if(!file.exists() || !getSHA1(file).equals(mod.getSha1()) || getFileSizeBytes(file) != mod.getSize())
-                        this.downloadInfos.getMods().add(mod);
-                }
-
-                if(this.updaterOptions.isEnableModsFromCurseForge())
-                    this.pluginManager.loadCurseForgePlugin(modsDir, this.fabricVersion);
             }
 
             if (!dir.exists())
@@ -209,6 +199,17 @@ public class FlowUpdater
             this.installModLoader(this.fabricVersion, dir, "Fabric");
         }
         else this.downloadInfos.init();
+    }
+
+    private void checkMods(IModLoaderVersion modLoader, File modsDir) throws Exception
+    {
+        for(Mod mod : modLoader.getMods())
+        {
+            final File file = new File(modsDir, mod.getName());
+
+            if(!file.exists() || !getSHA1(file).equals(mod.getSha1()) || getFileSizeBytes(file) != mod.getSize())
+                this.downloadInfos.getMods().add(mod);
+        }
     }
 
     private void installModLoader(IModLoaderVersion modLoader, File dir, String name) throws Exception

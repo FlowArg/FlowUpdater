@@ -181,11 +181,13 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         Files.move(output.toPath(), new File(output.getAbsolutePath().replace(".zip", ".jar")).toPath(), StandardCopyOption.REPLACE_EXISTING);
         tempInstallerDir.delete();
     }
-    
+
+    @Override
     public List<Mod> getMods()
     {
         return this.mods;
     }
+
     public ILogger getLogger()
     {
         return this.logger;
