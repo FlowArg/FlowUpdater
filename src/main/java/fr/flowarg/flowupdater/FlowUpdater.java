@@ -140,26 +140,7 @@ public class FlowUpdater
 
     private void checkExtFiles(File dir) throws Exception
     {
-        if(!this.externalFiles.isEmpty())
-        {
-            for(ExternalFile extFile : this.externalFiles)
-            {
-                final File file = new File(dir, extFile.getPath());
-
-                if (file.exists())
-                {
-                    if(extFile.isUpdate())
-                    {
-                        if (!getSHA1(file).equals(extFile.getSha1()))
-                        {
-                            file.delete();
-                            this.downloadInfos.getExtFiles().add(extFile);
-                        }
-                    }
-                }
-                else this.downloadInfos.getExtFiles().add(extFile);
-            }
-        }
+        this.updaterOptions.getExternalFileDeleter().delete(this.externalFiles, this.downloadInfos, dir);
     }
 
     private void updateMinecraft(File dir) throws Exception

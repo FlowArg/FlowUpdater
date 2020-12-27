@@ -63,7 +63,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
      * @param fileDeleter {@link ModFileDeleter} used to cleanup mods dir.
      * @param modPackInfos {@link CurseModPackInfos} the modpack you want to install.
      */
-    protected FabricVersion(ILogger logger, List<Mod> mods, ArrayList<CurseFileInfos> curseMods, String fabricVersion, VanillaVersion vanilla, IProgressCallback callback, ModFileDeleter fileDeleter, CurseModPackInfos modPackInfos) {
+    private FabricVersion(ILogger logger, List<Mod> mods, ArrayList<CurseFileInfos> curseMods, String fabricVersion, VanillaVersion vanilla, IProgressCallback callback, ModFileDeleter fileDeleter, CurseModPackInfos modPackInfos) {
         this.logger = logger;
         this.mods = mods;
         this.fileDeleter = fileDeleter;
@@ -218,7 +218,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
      *
      * @param dirToInstall Fabric installation directory.
      */
-    protected void checkFabricEnv(File dirToInstall) {
+    private void checkFabricEnv(File dirToInstall) {
         final File fabricDir = new File(dirToInstall, "libraries/net/fabricmc/fabric-loader/");
         if (fabricDir.exists()) {
             if (fabricDir.listFiles() != null) {

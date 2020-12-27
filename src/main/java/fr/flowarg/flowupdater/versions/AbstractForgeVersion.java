@@ -188,23 +188,6 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         return this.mods;
     }
 
-    public ILogger getLogger()
-    {
-        return this.logger;
-    }
-    public String getForgeVersion()
-    {
-        return this.forgeVersion;
-    }
-    public URL getInstallerUrl()
-    {
-        return this.installerUrl;
-    }
-    public List<Object> getAllCurseMods()
-    {
-        return this.allCurseMods;
-    }
-
     @Override
     public void setAllCurseMods(List<Object> allCurseMods)
     {
@@ -226,5 +209,25 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     public CurseModPackInfos getModPackInfos()
     {
         return this.modPackInfos;
+    }
+
+    public ILogger getLogger()
+    {
+        return this.logger;
+    }
+
+    public String getForgeVersion()
+    {
+        return this.forgeVersion;
+    }
+
+    public URL getInstallerUrl()
+    {
+        return this.installerUrl;
+    }
+
+    public List<Object> getAllCurseMods()
+    {
+        return this.allCurseMods;
     }
 }

@@ -11,7 +11,7 @@ import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
  */
 public class UpdaterOptions
 {
-    public static final UpdaterOptions DEFAULT = new UpdaterOptions(true, false, false, false, false, 2);
+    public static final UpdaterOptions DEFAULT = new UpdaterOptions(true, false, false, false, false, 2, new ExternalFileDeleter());
 
     /**
      * Is the read silent
@@ -42,7 +42,9 @@ public class UpdaterOptions
 
     private final int nmbrThreadsForAssets;
 
-    private UpdaterOptions(boolean silentRead, boolean reExtractNatives, boolean enableModsFromCurseForge, boolean installOptifineAsMod, boolean downloadServer, int nmbrThreadsForAssets)
+    private final IFileDeleter externalFileDeleter;
+
+    private UpdaterOptions(boolean silentRead, boolean reExtractNatives, boolean enableModsFromCurseForge, boolean installOptifineAsMod, boolean downloadServer, int nmbrThreadsForAssets, IFileDeleter externalFileDeleter)
     {
         this.silentRead = silentRead;
         this.reExtractNatives = reExtractNatives;
@@ -50,6 +52,7 @@ public class UpdaterOptions
         this.installOptifineAsMod = installOptifineAsMod;
         this.downloadServer = downloadServer;
         this.nmbrThreadsForAssets = nmbrThreadsForAssets;
+        this.externalFileDeleter = externalFileDeleter;
     }
 
     public boolean isSilentRead()
@@ -82,6 +85,11 @@ public class UpdaterOptions
         return this.nmbrThreadsForAssets;
     }
 
+    public IFileDeleter getExternalFileDeleter()
+    {
+        return this.externalFileDeleter;
+    }
+
     public static class UpdaterOptionsBuilder implements IBuilder<UpdaterOptions>
     {
         private final BuilderArgument<Boolean> silentReadArgument = new BuilderArgument<>("SilentRead", () -> true).optional();
@@ -90,6 +98,7 @@ public class UpdaterOptions
         private final BuilderArgument<Boolean> installOptifineAsModArgument = new BuilderArgument<>("InstallOptifineAsMod", () -> false).optional();
         private final BuilderArgument<Boolean> downloadServerArgument = new BuilderArgument<>("DownloadServer", () -> false).optional();
         private final BuilderArgument<Integer> nmbrThreadsForAssetsArgument = new BuilderArgument<>("Number of Threads for assets", () -> 2).optional();
+        private final BuilderArgument<IFileDeleter> externalFileDeleterArgument = new BuilderArgument<IFileDeleter>("External FileDeleter", ExternalFileDeleter::new).optional();
 
         public UpdaterOptionsBuilder withSilentRead(boolean silentRead)
         {
@@ -136,7 +145,8 @@ public class UpdaterOptions
                     this.enableModsFromCurseForgeArgument.get(),
                     this.installOptifineAsModArgument.get(),
                     this.downloadServerArgument.get(),
-                    this.nmbrThreadsForAssetsArgument.get()
+                    this.nmbrThreadsForAssetsArgument.get(),
+                    this.externalFileDeleterArgument.get()
             );
         }
     }
