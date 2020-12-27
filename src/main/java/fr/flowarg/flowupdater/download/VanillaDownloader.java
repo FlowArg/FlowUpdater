@@ -10,7 +10,6 @@ import fr.flowarg.flowupdater.utils.UpdaterOptions;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -128,7 +127,7 @@ public class VanillaDownloader
                         if (!download.exists() || getFileSizeBytes(download) != assetDownloadable.getSize())
                         {
                             final File localAsset = new File(IOUtils.getMinecraftFolder(), assetDownloadable.getFile());
-                            if(localAsset.exists()) Files.copy(localAsset.toPath(), download.toPath());
+                            if(localAsset.exists() && getFileSizeBytes(localAsset) == assetDownloadable.getSize()) IOUtils.copy(this.logger, localAsset, download);
                             else IOUtils.download(this.logger, assetDownloadable.getUrl(), download);
                         }
 

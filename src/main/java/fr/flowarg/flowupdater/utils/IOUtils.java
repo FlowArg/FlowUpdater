@@ -15,7 +15,7 @@ import java.nio.file.StandardCopyOption;
 
 public class IOUtils
 {
-    private static File minecraftDir = null;
+    private static File cachedMinecraftDir = null;
 
     public static void download(ILogger logger, URL in, File out)
     {
@@ -24,6 +24,20 @@ public class IOUtils
             logger.info(String.format("Downloading %s from %s...", out.getName(), in.toExternalForm()));
             out.getParentFile().mkdirs();
             Files.copy(catchForbidden(in), out.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }
+        catch (IOException e)
+        {
+            logger.printStackTrace(e);
+        }
+    }
+
+    public static void copy(ILogger logger, File in, File out)
+    {
+        try
+        {
+            logger.info(String.format("Copying %s to %s...", out.getAbsolutePath(), in.getAbsolutePath()));
+            out.getParentFile().mkdirs();
+            Files.copy(in.toPath(), out.toPath());
         }
         catch (IOException e)
         {
@@ -101,7 +115,7 @@ public class IOUtils
 
     public static File getMinecraftFolder()
     {
-        if(minecraftDir == null) minecraftDir = new File(Platform.isOnWindows() ? System.getenv("APPDATA") : (Platform.isOnMac() ? System.getProperty("user.home") + "/Library/Application Support/" : System.getProperty("user.home")), ".minecraft/");
-        return minecraftDir;
+        if(cachedMinecraftDir == null) cachedMinecraftDir = new File(Platform.isOnWindows() ? System.getenv("APPDATA") : (Platform.isOnMac() ? System.getProperty("user.home") + "/Library/Application Support/" : System.getProperty("user.home")), ".minecraft/");
+        return cachedMinecraftDir;
     }
 }
