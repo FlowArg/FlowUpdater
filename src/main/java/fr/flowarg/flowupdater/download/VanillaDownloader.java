@@ -10,6 +10,7 @@ import fr.flowarg.flowupdater.utils.UpdaterOptions;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -118,16 +119,25 @@ public class VanillaDownloader
         for (int i = 0; i < threadPool.getMaximumPoolSize(); i++)
         {
             threadPool.submit(() -> {
-                AssetDownloadable assetDownloadable;
-                while ((assetDownloadable = this.downloadInfos.getAssetDownloadables().poll()) != null)
+                try {
+                    AssetDownloadable assetDownloadable;
+                    while ((assetDownloadable = this.downloadInfos.getAssetDownloadables().poll()) != null)
+                    {
+                        final File download = new File(this.assets, assetDownloadable.getFile());
+
+                        if (!download.exists() || getFileSizeBytes(download) != assetDownloadable.getSize())
+                        {
+                            final File localAsset = new File(IOUtils.getMinecraftFolder(), assetDownloadable.getFile());
+                            if(localAsset.exists()) Files.copy(localAsset.toPath(), download.toPath());
+                            else IOUtils.download(this.logger, assetDownloadable.getUrl(), download);
+                        }
+
+                        this.downloadInfos.incrementDownloaded();
+                        this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
+                    }
+                } catch (Exception e)
                 {
-                    final File download = new File(this.assets, assetDownloadable.getFile());
-
-                    if (!download.exists() || getFileSizeBytes(download) != assetDownloadable.getSize())
-                        IOUtils.download(this.logger, assetDownloadable.getUrl(), download);
-
-                    this.downloadInfos.incrementDownloaded();
-                    this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
+                    this.logger.printStackTrace(e);
                 }
             });
         }

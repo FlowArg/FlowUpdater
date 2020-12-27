@@ -4,6 +4,8 @@ import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
 import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
 
+import java.util.Random;
+
 /**
  * Represent some settings for FlowUpdater
  *
@@ -11,7 +13,7 @@ import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
  */
 public class UpdaterOptions
 {
-    public static final UpdaterOptions DEFAULT = new UpdaterOptions(true, false, false, false, false, 2, new ExternalFileDeleter());
+    public static final UpdaterOptions DEFAULT = new UpdaterOptions(true, false, false, false, false, new Random().nextInt(2) + 2, new ExternalFileDeleter());
 
     /**
      * Is the read silent

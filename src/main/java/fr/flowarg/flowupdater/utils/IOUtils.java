@@ -3,6 +3,7 @@ package fr.flowarg.flowupdater.utils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonParser;
+import fr.flowarg.flowcompat.Platform;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.FlowUpdater;
 
@@ -14,6 +15,8 @@ import java.nio.file.StandardCopyOption;
 
 public class IOUtils
 {
+    private static File minecraftDir = null;
+
     public static void download(ILogger logger, URL in, File out)
     {
         try
@@ -94,5 +97,11 @@ public class IOUtils
         connection.addRequestProperty("User-Agent", "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.124 Safari/537.36");
         connection.setInstanceFollowRedirects(true);
         return connection.getInputStream();
+    }
+
+    public static File getMinecraftFolder()
+    {
+        if(minecraftDir == null) minecraftDir = new File(Platform.isOnWindows() ? System.getenv("APPDATA") : (Platform.isOnMac() ? System.getProperty("user.home") + "/Library/Application Support/" : System.getProperty("user.home")), ".minecraft/");
+        return minecraftDir;
     }
 }
