@@ -254,7 +254,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
         this.callback.step(Step.MODS);
         final boolean cursePluginLoaded = pluginManager.isCursePluginLoaded();
 
-        ModCommons.installAllMods(downloadInfos, this.logger, modsDir, this.callback, cursePluginLoaded);
+        ModCommons.installAllMods(this.downloadInfos, this.logger, modsDir, this.callback, cursePluginLoaded);
         this.fileDeleter.delete(modsDir, this.mods, cursePluginLoaded, this.allCurseMods, false, null);
     }
 

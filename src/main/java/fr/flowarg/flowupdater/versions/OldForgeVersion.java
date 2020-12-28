@@ -8,6 +8,7 @@ import fr.flowarg.flowupdater.download.json.CurseModPackInfos;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.download.json.OptifineInfo;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
+import fr.flowarg.flowzipper.ZipUtils;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -69,9 +70,9 @@ public class OldForgeVersion extends AbstractForgeVersion
             Files.copy(new URL("https://flowarg.github.io/minecraft/launcher/oldpatches.jar").openStream(), patches.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
             this.logger.info("Applying patches...");
-            FileUtils.unzipJarWithLZMACompat(tempInstallerDir, install);
+            ZipUtils.unzipJarWithLZMACompat(tempInstallerDir, install);
             this.cleaningInstaller(tempInstallerDir);
-            FileUtils.unzipJarWithLZMACompat(tempInstallerDir, patches);
+            ZipUtils.unzipJarWithLZMACompat(tempInstallerDir, patches);
             this.logger.info("Repack installer...");
             this.packPatchedInstaller(tempDir, tempInstallerDir);
             patches.delete();

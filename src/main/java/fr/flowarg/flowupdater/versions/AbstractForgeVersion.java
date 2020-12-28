@@ -11,6 +11,7 @@ import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.download.json.OptifineInfo;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
 import fr.flowarg.flowupdater.utils.PluginManager;
+import fr.flowarg.flowzipper.ZipUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -136,7 +137,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         this.callback.step(Step.MODS);
         final boolean cursePluginLoaded = pluginManager.isCursePluginLoaded();
         final boolean optifinePluginLoaded = pluginManager.isOptifinePluginLoaded();
-        ModCommons.installAllMods(downloadInfos, this.logger, modsDir, this.callback, cursePluginLoaded);
+        ModCommons.installAllMods(this.downloadInfos, this.logger, modsDir, this.callback, cursePluginLoaded);
 
         Object ofObj = null;
         if(optifinePluginLoaded)
@@ -177,7 +178,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     protected void packPatchedInstaller(final File tempDir, final File tempInstallerDir) throws IOException
     {
         final File output = new File(tempDir, "forge-installer-patched.zip");
-        FileUtils.compressFiles(tempInstallerDir.listFiles(), output);
+        ZipUtils.compressFiles(tempInstallerDir.listFiles(), output);
         Files.move(output.toPath(), new File(output.getAbsolutePath().replace(".zip", ".jar")).toPath(), StandardCopyOption.REPLACE_EXISTING);
         tempInstallerDir.delete();
     }

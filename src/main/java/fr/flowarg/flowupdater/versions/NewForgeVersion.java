@@ -8,6 +8,7 @@ import fr.flowarg.flowupdater.download.json.CurseModPackInfos;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.download.json.OptifineInfo;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
+import fr.flowarg.flowzipper.ZipUtils;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represent a new Forge version (1.12.2-14.23.5.2851 -> 1.16.3)
+ * Represent a new Forge version (1.12.2-14.23.5.2851 -> 1.16.4)
  * @author FlowArg
  */
 public class NewForgeVersion extends AbstractForgeVersion
@@ -60,9 +61,9 @@ public class NewForgeVersion extends AbstractForgeVersion
                 Files.copy(new URL("https://flowarg.github.io/minecraft/launcher/patches.jar").openStream(), patches.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
                 this.logger.info("Applying patches...");
-                FileUtils.unzipJarWithLZMACompat(tempInstallerDir, install);
+                ZipUtils.unzipJarWithLZMACompat(tempInstallerDir, install);
                 this.cleaningInstaller(tempInstallerDir);
-                FileUtils.unzipJarWithLZMACompat(tempInstallerDir, patches);
+                ZipUtils.unzipJarWithLZMACompat(tempInstallerDir, patches);
                 this.logger.info("Repack installer...");
                 this.packPatchedInstaller(tempDir, tempInstallerDir);
                 patches.delete();

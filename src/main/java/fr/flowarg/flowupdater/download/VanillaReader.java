@@ -4,11 +4,11 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import fr.flowarg.flowcompat.Platform;
 import fr.flowarg.flowlogger.ILogger;
+import fr.flowarg.flowupdater.FlowUpdater;
 import fr.flowarg.flowupdater.download.json.AssetDownloadable;
 import fr.flowarg.flowupdater.download.json.AssetIndex;
 import fr.flowarg.flowupdater.download.json.Downloadable;
 import fr.flowarg.flowupdater.utils.IOUtils;
-import fr.flowarg.flowupdater.utils.UpdaterOptions;
 import fr.flowarg.flowupdater.versions.VanillaVersion;
 
 import java.io.IOException;
@@ -27,14 +27,14 @@ public class VanillaReader
     private final DownloadInfos infos;
     private final boolean downloadServer;
 
-    public VanillaReader(VanillaVersion version, ILogger logger, UpdaterOptions options, IProgressCallback callback, DownloadInfos infos)
+    public VanillaReader(FlowUpdater flowUpdater)
     {
-        this.version = version;
-        this.logger = logger;
-        this.isSilent = options.isSilentRead();
-        this.callback = callback;
-        this.infos = infos;
-        this.downloadServer = options.isDownloadServer();
+        this.version = flowUpdater.getVersion();
+        this.logger = flowUpdater.getLogger();
+        this.isSilent = flowUpdater.getUpdaterOptions().isSilentRead();
+        this.callback = flowUpdater.getCallback();
+        this.infos = flowUpdater.getDownloadInfos();
+        this.downloadServer = flowUpdater.getUpdaterOptions().isDownloadServer();
     }
 
     public void read() throws IOException

@@ -2,10 +2,10 @@ package fr.flowarg.flowupdater.download;
 
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
+import fr.flowarg.flowupdater.FlowUpdater;
 import fr.flowarg.flowupdater.download.json.AssetDownloadable;
 import fr.flowarg.flowupdater.download.json.Downloadable;
 import fr.flowarg.flowupdater.utils.IOUtils;
-import fr.flowarg.flowupdater.utils.UpdaterOptions;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,14 +28,14 @@ public class VanillaDownloader
     private final File natives;
     private final File assets;
 
-    public VanillaDownloader(File dir, ILogger logger, IProgressCallback callback, DownloadInfos infos, UpdaterOptions options)
+    public VanillaDownloader(File dir, FlowUpdater flowUpdater)
     {
         this.dir = dir;
-        this.logger = logger;
-        this.callback = callback;
-        this.downloadInfos = infos;
-        this.reExtractNatives = options.isReExtractNatives();
-        this.threadsForAssets = options.getNmbrThreadsForAssets();
+        this.logger = flowUpdater.getLogger();
+        this.callback = flowUpdater.getCallback();
+        this.downloadInfos = flowUpdater.getDownloadInfos();
+        this.reExtractNatives = flowUpdater.getUpdaterOptions().isReExtractNatives();
+        this.threadsForAssets = flowUpdater.getUpdaterOptions().getNmbrThreadsForAssets();
 
         this.natives = new File(this.dir, "natives/");
         this.assets = new File(this.dir, "assets/");

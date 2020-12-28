@@ -102,14 +102,14 @@ public class FlowUpdater
         this.logger = logger;
         this.version = version;
         this.fabricVersion = fabricVersion;
-        this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.2.9"));
+        this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.3.1"));
         this.externalFiles = externalFiles;
         this.postExecutions = postExecutions;
         this.forgeVersion = forgeVersion;
         this.updaterOptions = updaterOptions;
         this.callback = callback;
         this.downloadInfos = new DownloadInfos();
-        this.vanillaReader = new VanillaReader(this.version, this.logger, this.updaterOptions, this.callback, this.downloadInfos);
+        this.vanillaReader = new VanillaReader(this);
        	this.callback.init(this.logger);
        	if(this.updaterOptions.isEnableModsFromCurseForge() || this.updaterOptions.isInstallOptifineAsMod())
        	    this.pluginManager = new PluginManager(this);
@@ -173,7 +173,7 @@ public class FlowUpdater
 
             if (!dir.exists())
                 dir.mkdirs();
-            final VanillaDownloader vanillaDownloader = new VanillaDownloader(dir, this.logger, this.callback, this.downloadInfos, this.updaterOptions);
+            final VanillaDownloader vanillaDownloader = new VanillaDownloader(dir, this);
             vanillaDownloader.download();
 
             this.installModLoader(this.forgeVersion, dir, "Forge");

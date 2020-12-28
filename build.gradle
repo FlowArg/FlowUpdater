@@ -33,7 +33,7 @@ allprojects {
 
     dependencies {
         api 'com.google.code.gson:gson:2.8.6'
-        api 'fr.flowarg:flowmultitools:1.2.1'
+        api 'fr.flowarg:flowmultitools:1.2.2'
         implementation 'com.github.FlowArg:PluginLoaderAPI:6d674b6'
     }
 }
