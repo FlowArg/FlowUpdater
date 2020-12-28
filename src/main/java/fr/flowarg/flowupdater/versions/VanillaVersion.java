@@ -3,13 +3,13 @@ package fr.flowarg.flowupdater.versions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import fr.flowarg.flowstringer.StringUtils;
 import fr.flowarg.flowupdater.FlowUpdater;
 import fr.flowarg.flowupdater.download.json.MCP;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
 import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
-import fr.flowarg.flowutils.Utils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -73,7 +73,7 @@ public class VanillaVersion
             final String sha1 = this.mcp.getClientSha1();
             final String url = this.mcp.getClientURL();
             final long size = this.mcp.getClientSize();
-            if(Utils.checkString(sha1) && Utils.checkString(url) && size > 0)
+            if(StringUtils.checkString(sha1) && StringUtils.checkString(url) && size > 0)
             {
                 result.addProperty("sha1", this.mcp.getClientSha1());
                 result.addProperty("size", this.mcp.getClientSize());
@@ -93,7 +93,7 @@ public class VanillaVersion
             final String sha1 = this.mcp.getServerSha1();
             final String url = this.mcp.getServerURL();
             final long size = this.mcp.getServerSize();
-            if(Utils.checkString(url) && Utils.checkString(sha1) && size > 0)
+            if(StringUtils.checkString(url) && StringUtils.checkString(sha1) && size > 0)
             {
                 result.addProperty("sha1", this.mcp.getServerSha1());
                 result.addProperty("size", this.mcp.getServerSize());
