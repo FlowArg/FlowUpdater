@@ -68,7 +68,7 @@ public class CurseForgePlugin extends Plugin
             if (connection != null) connection.disconnect();
         }
 
-        return new CurseMod("", "", "", -1);
+        return CurseMod.BAD;
     }
 
     public CurseModPack getCurseModPack(int projectID, int fileID, boolean installExtFiles)
