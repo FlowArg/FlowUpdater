@@ -61,12 +61,9 @@ public class VanillaDownloader
         this.logger.info("Checking library files...");
         this.callback.step(Step.DL_LIBS);
 
-        if (this.natives.listFiles() != null)
+        for (File files : FileUtils.list(this.natives))
         {
-            for (File files : this.natives.listFiles())
-            {
-                if (files.isDirectory()) FileUtils.deleteDirectory(files);
-            }
+            if (files.isDirectory()) FileUtils.deleteDirectory(files);
         }
 
         for (Downloadable downloadable : this.downloadInfos.getLibraryDownloadables())
@@ -83,31 +80,28 @@ public class VanillaDownloader
 
     private void extractNatives() throws IOException
     {
-        if (this.natives.listFiles() != null)
+        boolean flag = true;
+        for (File minecraftNative : FileUtils.list(this.natives))
         {
-            boolean flag = true;
-            for (File minecraftNative : this.natives.listFiles())
+            if (minecraftNative.getName().endsWith(".so") || minecraftNative.getName().endsWith(".dylib") || minecraftNative.getName().endsWith(".dll"))
             {
-                if (minecraftNative.getName().endsWith(".so") || minecraftNative.getName().endsWith(".dylib") || minecraftNative.getName().endsWith(".dll"))
-                {
-                    flag = false;
-                    break;
-                }
+                flag = false;
+                break;
             }
-            if (this.reExtractNatives || flag)
-            {
-                this.logger.info("Extracting natives...");
-                this.callback.step(Step.EXTRACT_NATIVES);
-                for (File minecraftNative : this.natives.listFiles())
-                {
-                    if (!minecraftNative.isDirectory() && minecraftNative.getName().endsWith(".jar"))
-                        unzipJar(this.natives.getAbsolutePath(), minecraftNative.getAbsolutePath(), "ignoreMetaInf");
-                }
-            }
-
-            for (File toDelete : this.natives.listFiles())
-                if (toDelete.getName().endsWith(".git") || toDelete.getName().endsWith(".sha1")) toDelete.delete();
         }
+        if (this.reExtractNatives || flag)
+        {
+            this.logger.info("Extracting natives...");
+            this.callback.step(Step.EXTRACT_NATIVES);
+            for (File minecraftNative : FileUtils.list(this.natives))
+            {
+                if (!minecraftNative.isDirectory() && minecraftNative.getName().endsWith(".jar"))
+                    unzipJar(this.natives.getAbsolutePath(), minecraftNative.getAbsolutePath(), "ignoreMetaInf");
+            }
+        }
+
+        for (File toDelete : FileUtils.list(this.natives))
+            if (toDelete.getName().endsWith(".git") || toDelete.getName().endsWith(".sha1")) toDelete.delete();
     }
 
     private void downloadAssets()

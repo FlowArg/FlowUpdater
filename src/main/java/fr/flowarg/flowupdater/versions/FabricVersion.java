@@ -163,7 +163,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
 
                 Files.copy(stream, install.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 this.logger.info("Launching fabric installer...");
-                final ArrayList<String> command = new ArrayList<>();
+                final List<String> command = new ArrayList<>();
                 command.add("java");
                 command.add("-Xmx256M");
                 command.add("-jar");
@@ -183,11 +183,11 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
                 BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
                 String line;
 
-                while ((line = reader.readLine ()) != null)
+                while ((line = reader.readLine()) != null)
                     System.out.println(line);
 
                 reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-                while ((line = reader.readLine ()) != null)
+                while ((line = reader.readLine()) != null)
                     System.out.println(line);
 
                 process.waitFor();
@@ -198,11 +198,10 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
                 final JsonObject obj = JsonParser.parseString(jsonString).getAsJsonObject();
                 final JsonArray libs = obj.getAsJsonArray("libraries");
 
-                for(JsonElement el : libs){
+                for(JsonElement el : libs)
+                {
                     final JsonObject artifact = el.getAsJsonObject();
-                    final String id = artifact.get("name").getAsString();
-                    final String url = artifact.get("url").getAsString();
-                    ArtifactsDownloader.downloadArtifacts(libraries, url, id, logger);
+                    ArtifactsDownloader.downloadArtifacts(libraries, artifact.get("url").getAsString(), artifact.get("name").getAsString(), this.logger);
                 }
 
                 this.logger.info("Successfully installed Fabric !");
@@ -218,15 +217,17 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
      *
      * @param dirToInstall Fabric installation directory.
      */
-    private void checkFabricEnv(File dirToInstall) {
+    private void checkFabricEnv(File dirToInstall)
+    {
         final File fabricDir = new File(dirToInstall, "libraries/net/fabricmc/fabric-loader/");
-        if (fabricDir.exists()) {
-            if (fabricDir.listFiles() != null) {
-                for (File contained : fabricDir.listFiles()) {
-                    if (!contained.getName().contains(this.fabricVersion)) {
-                        if (contained.isDirectory()) FileUtils.deleteDirectory(contained);
-                        else contained.delete();
-                    }
+        if (fabricDir.exists())
+        {
+            for (File contained : FileUtils.list(fabricDir))
+            {
+                if (!contained.getName().contains(this.fabricVersion))
+                {
+                    if (contained.isDirectory()) FileUtils.deleteDirectory(contained);
+                    else contained.delete();
                 }
             }
         }
@@ -371,14 +372,15 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
             if(this.progressCallbackArgument.get() == FlowUpdater.NULL_CALLBACK)
                 this.loggerArgument.get().warn("You are using default callback for fabric installation. If you're using a custom callback for vanilla files, it will not updated when fabric and mods will be installed.");
 
-            return new FabricVersion(this.loggerArgument.get(),
-                                     this.modsArgument.get(),
-                                     this.curseModsArgument.get(),
-                                     this.fabricVersionArgument.get(),
-                                     this.vanillaVersionArgument.get(),
-                                     this.progressCallbackArgument.get(),
-                                     this.fileDeleterArgument.get(),
-                                     this.modPackArgument.get()
+            return new FabricVersion(
+                    this.loggerArgument.get(),
+                    this.modsArgument.get(),
+                    this.curseModsArgument.get(),
+                    this.fabricVersionArgument.get(),
+                    this.vanillaVersionArgument.get(),
+                    this.progressCallbackArgument.get(),
+                    this.fileDeleterArgument.get(),
+                    this.modPackArgument.get()
            );
         }
     }

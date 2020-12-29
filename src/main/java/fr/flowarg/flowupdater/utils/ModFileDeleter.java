@@ -1,6 +1,7 @@
 package fr.flowarg.flowupdater.utils;
 
 import fr.antoineok.flowupdater.optifineplugin.Optifine;
+import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowupdater.curseforgeplugin.CurseMod;
 import fr.flowarg.flowupdater.download.json.Mod;
 
@@ -38,70 +39,27 @@ public class ModFileDeleter implements IFileDeleter
             final Set<File> badFiles = new HashSet<>();
             final List<File> verifiedFiles = new ArrayList<>();
             Arrays.stream(this.modsToIgnore).forEach(fileName -> verifiedFiles.add(new File(modsDir, fileName)));
-            if(modsDir.listFiles() != null && modsDir.listFiles().length != 0)
+            for(File fileInDir : FileUtils.list(modsDir))
             {
-                for(File fileInDir : modsDir.listFiles())
+                if(!fileInDir.isDirectory())
                 {
-                    if(!fileInDir.isDirectory())
+                    if(verifiedFiles.contains(fileInDir))
+                        continue;
+                    if(mods.isEmpty() && allCurseMods.isEmpty() && optifineParam == null)
                     {
-                        if(verifiedFiles.contains(fileInDir))
-                            continue;
-                        if(mods.isEmpty() && allCurseMods.isEmpty() && optifineParam == null)
+                        if(!verifiedFiles.contains(fileInDir))
+                            badFiles.add(fileInDir);
+                    }
+                    else
+                    {
+                        if(cursePluginLoaded)
                         {
-                            if(!verifiedFiles.contains(fileInDir))
-                                badFiles.add(fileInDir);
-                        }
-                        else
-                        {
-                            if(cursePluginLoaded)
+                            for(Object obj : allCurseMods)
                             {
-                                for(Object obj : allCurseMods)
-                                {
-                                    final CurseMod mod = (CurseMod)obj;
-                                    if(mod.getName().equalsIgnoreCase(fileInDir.getName()))
-                                    {
-                                        if(getMD5ofFile(fileInDir).equalsIgnoreCase(mod.getMd5()) && getFileSizeBytes(fileInDir) == mod.getLength())
-                                        {
-                                            badFiles.remove(fileInDir);
-                                            verifiedFiles.add(fileInDir);
-                                        }
-                                        else badFiles.add(fileInDir);
-                                    }
-                                    else
-                                    {
-                                        if(!verifiedFiles.contains(fileInDir))
-                                            badFiles.add(fileInDir);
-                                    }
-                                }
-                            }
-
-                            if(optifinePluginLoaded)
-                            {
-                                final Optifine optifine = (Optifine)optifineParam;
-                                if(optifine != null)
-                                {
-                                    if(optifine.getName().equalsIgnoreCase(fileInDir.getName()))
-                                    {
-                                        if(getFileSizeBytes(fileInDir) == optifine.getSize())
-                                        {
-                                            badFiles.remove(fileInDir);
-                                            verifiedFiles.add(fileInDir);
-                                        }
-                                        else badFiles.add(fileInDir);
-                                    }
-                                    else
-                                    {
-                                        if(!verifiedFiles.contains(fileInDir))
-                                            badFiles.add(fileInDir);
-                                    }
-                                }
-                            }
-
-                            for(Mod mod : mods)
-                            {
+                                final CurseMod mod = (CurseMod)obj;
                                 if(mod.getName().equalsIgnoreCase(fileInDir.getName()))
                                 {
-                                    if(getSHA1(fileInDir).equalsIgnoreCase(mod.getSha1()) && getFileSizeBytes(fileInDir) == mod.getSize())
+                                    if(getMD5ofFile(fileInDir).equalsIgnoreCase(mod.getMd5()) && getFileSizeBytes(fileInDir) == mod.getLength())
                                     {
                                         badFiles.remove(fileInDir);
                                         verifiedFiles.add(fileInDir);
@@ -113,6 +71,46 @@ public class ModFileDeleter implements IFileDeleter
                                     if(!verifiedFiles.contains(fileInDir))
                                         badFiles.add(fileInDir);
                                 }
+                            }
+                        }
+
+                        if(optifinePluginLoaded)
+                        {
+                            final Optifine optifine = (Optifine)optifineParam;
+                            if(optifine != null)
+                            {
+                                if(optifine.getName().equalsIgnoreCase(fileInDir.getName()))
+                                {
+                                    if(getFileSizeBytes(fileInDir) == optifine.getSize())
+                                    {
+                                        badFiles.remove(fileInDir);
+                                        verifiedFiles.add(fileInDir);
+                                    }
+                                    else badFiles.add(fileInDir);
+                                }
+                                else
+                                {
+                                    if(!verifiedFiles.contains(fileInDir))
+                                        badFiles.add(fileInDir);
+                                }
+                            }
+                        }
+
+                        for(Mod mod : mods)
+                        {
+                            if(mod.getName().equalsIgnoreCase(fileInDir.getName()))
+                            {
+                                if(getSHA1(fileInDir).equalsIgnoreCase(mod.getSha1()) && getFileSizeBytes(fileInDir) == mod.getSize())
+                                {
+                                    badFiles.remove(fileInDir);
+                                    verifiedFiles.add(fileInDir);
+                                }
+                                else badFiles.add(fileInDir);
+                            }
+                            else
+                            {
+                                if(!verifiedFiles.contains(fileInDir))
+                                    badFiles.add(fileInDir);
                             }
                         }
                     }

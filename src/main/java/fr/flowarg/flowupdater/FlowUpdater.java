@@ -357,13 +357,16 @@ public class FlowUpdater
         @Override
         public FlowUpdater build() throws BuilderException
         {
-            return new FlowUpdater(this.versionArgument.get(),
+            return new FlowUpdater(
+                    this.versionArgument.get(),
                     this.loggerArgument.get(),
                     this.updaterOptionsArgument.get(),
                     this.progressCallbackArgument.get(),
                     this.externalFilesArgument.get(),
                     this.postExecutionsArgument.get(),
-                    this.forgeVersionArgument.get(), this.fabricVersionArgument.get());
+                    this.forgeVersionArgument.get(),
+                    this.fabricVersionArgument.get()
+            );
         }
     }
 

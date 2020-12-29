@@ -13,12 +13,14 @@ import fr.flowarg.flowupdater.utils.ModFileDeleter;
 import fr.flowarg.flowupdater.utils.PluginManager;
 import fr.flowarg.flowzipper.ZipUtils;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,6 +39,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     protected final ModFileDeleter fileDeleter;
     protected final OptifineInfo optifine;
     protected final CurseModPackInfos modPackInfos;
+    protected final boolean old;
     protected List<Object> allCurseMods;
     protected URL installerUrl;
     protected DownloadInfos downloadInfos;
@@ -52,7 +55,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
      * @param fileDeleter {@link ModFileDeleter} used to cleanup mods dir.
      * @param optifine Optifine version to install.
      */
-    protected AbstractForgeVersion(ILogger logger, List<Mod> mods, List<CurseFileInfos> curseMods, String forgeVersion, VanillaVersion vanilla, IProgressCallback callback, ModFileDeleter fileDeleter, OptifineInfo optifine, CurseModPackInfos modPackInfos)
+    protected AbstractForgeVersion(ILogger logger, List<Mod> mods, List<CurseFileInfos> curseMods, String forgeVersion, VanillaVersion vanilla, IProgressCallback callback, ModFileDeleter fileDeleter, OptifineInfo optifine, CurseModPackInfos modPackInfos, boolean old)
     {
         this.logger = logger;
         this.mods = mods;
@@ -61,6 +64,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         this.vanilla = vanilla;
         this.optifine = optifine;
         this.modPackInfos = modPackInfos;
+        this.old = old;
         if (!forgeVersion.contains("-"))
             this.forgeVersion = this.vanilla.getName() + '-' + forgeVersion;
         else this.forgeVersion = forgeVersion.trim();
@@ -98,6 +102,70 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         this.checkForgeEnv(dirToInstall);
     }
 
+    protected ReadyToLaunchResult prepareForgePatches(File dirToInstall, BufferedInputStream stream) throws IOException
+    {
+        this.logger.info("Downloading " + (this.old ? "old" : "new") + " forge installer...");
+
+        final File tempDir = new File(dirToInstall, ".flowupdater");
+        final File tempInstallerDir = new File(tempDir, "installer/");
+        final File install = new File(tempDir, "forge-installer.jar");
+        final File patches = new File(tempDir, "patches.jar");
+        final File patchedInstaller = new File(tempDir, "forge-installer-patched.jar");
+        FileUtils.deleteDirectory(tempInstallerDir);
+        install.delete();
+        patchedInstaller.delete();
+        patches.delete();
+        tempDir.mkdirs();
+        tempInstallerDir.mkdirs();
+
+        Files.copy(stream, install.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        this.logger.info("Downloading patches...");
+        Files.copy(new URL("https://flowarg.github.io/minecraft/launcher/" + (this.old ? "old" : "") + "patches.jar").openStream(), patches.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+        this.logger.info("Applying patches...");
+        ZipUtils.unzipJarWithLZMACompat(tempInstallerDir, install);
+        this.cleaningInstaller(tempInstallerDir);
+        ZipUtils.unzipJarWithLZMACompat(tempInstallerDir, patches);
+        this.logger.info("Repacking installer...");
+        this.packPatchedInstaller(tempDir, tempInstallerDir);
+        patches.delete();
+        this.logger.info("Launching forge installer...");
+
+        final List<String> command = new ArrayList<>();
+        command.add("java");
+        command.add("-Xmx256M");
+        command.add("-jar");
+        command.add(patchedInstaller.getAbsolutePath());
+        command.add("--installClient");
+        command.add(dirToInstall.getAbsolutePath());
+
+        return new ReadyToLaunchResult(command, tempDir);
+    }
+
+    protected abstract void cleaningInstaller(File tempInstallerDir);
+
+    protected static class ReadyToLaunchResult
+    {
+        private final List<String> command;
+        private final File tempDir;
+
+        public ReadyToLaunchResult(List<String> command, File tempDir)
+        {
+            this.command = command;
+            this.tempDir = tempDir;
+        }
+
+        public List<String> getCommand()
+        {
+            return this.command;
+        }
+
+        public File getTempDir()
+        {
+            return this.tempDir;
+        }
+    }
+
     /**
      * Check if the minecraft installation already contains another forge installation not corresponding to this version.
      * @param dirToInstall Forge installation directory.
@@ -108,16 +176,13 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         final File forgeDir = new File(dirToInstall, "libraries/net/minecraftforge/forge/");
         if(forgeDir.exists())
         {
-            if(forgeDir.listFiles() != null)
+            for (File contained : FileUtils.list(forgeDir))
             {
-                for (File contained : forgeDir.listFiles())
+                if(!contained.getName().contains(this.forgeVersion))
                 {
-                    if(!contained.getName().contains(this.forgeVersion))
-                    {
-                        if (contained.isDirectory()) FileUtils.deleteDirectory(contained);
-                        else contained.delete();
-                        result = true;
-                    }
+                    if (contained.isDirectory()) FileUtils.deleteDirectory(contained);
+                    else contained.delete();
+                    result = true;
                 }
             }
         }
@@ -178,7 +243,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     protected void packPatchedInstaller(final File tempDir, final File tempInstallerDir) throws IOException
     {
         final File output = new File(tempDir, "forge-installer-patched.zip");
-        ZipUtils.compressFiles(tempInstallerDir.listFiles(), output);
+        ZipUtils.compressFiles(FileUtils.list(tempInstallerDir), output);
         Files.move(output.toPath(), new File(output.getAbsolutePath().replace(".zip", ".jar")).toPath(), StandardCopyOption.REPLACE_EXISTING);
         tempInstallerDir.delete();
     }
