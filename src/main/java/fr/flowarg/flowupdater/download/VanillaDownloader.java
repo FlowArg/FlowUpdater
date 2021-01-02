@@ -120,7 +120,7 @@ public class VanillaDownloader
 
                         if (!download.exists() || getFileSizeBytes(download) != assetDownloadable.getSize())
                         {
-                            final File localAsset = new File(IOUtils.getMinecraftFolder(), assetDownloadable.getFile());
+                            final File localAsset = new File(IOUtils.getMinecraftFolder(), "assets/" + assetDownloadable.getFile());
                             if(localAsset.exists() && getFileSizeBytes(localAsset) == assetDownloadable.getSize()) IOUtils.copy(this.logger, localAsset, download);
                             else IOUtils.download(this.logger, assetDownloadable.getUrl(), download);
                         }

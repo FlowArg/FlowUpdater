@@ -36,9 +36,6 @@ public class FlowUpdater
     /** Vanilla version's object to update/install */
     private final VanillaVersion version;
 
-    /** Vanilla version's JSON parser */
-    private final VanillaReader vanillaReader;
-
     /** Logger object */
     private final ILogger logger;
 
@@ -102,18 +99,17 @@ public class FlowUpdater
         this.logger = logger;
         this.version = version;
         this.fabricVersion = fabricVersion;
-        this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.3.1"));
+        this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.3.2"));
         this.externalFiles = externalFiles;
         this.postExecutions = postExecutions;
         this.forgeVersion = forgeVersion;
         this.updaterOptions = updaterOptions;
         this.callback = callback;
         this.downloadInfos = new DownloadInfos();
-        this.vanillaReader = new VanillaReader(this);
-       	this.callback.init(this.logger);
-       	if(this.updaterOptions.isEnableModsFromCurseForge() || this.updaterOptions.isInstallOptifineAsMod())
-       	    this.pluginManager = new PluginManager(this);
-       	else this.pluginManager = new FallbackPluginManager(this);
+        this.callback.init(this.logger);
+        if(this.updaterOptions.isEnableModsFromCurseForge() || this.updaterOptions.isInstallOptifineAsMod())
+            this.pluginManager = new PluginManager(this);
+        else this.pluginManager = new FallbackPluginManager(this);
     }
 
     /**
@@ -148,7 +144,7 @@ public class FlowUpdater
         if(this.version != VanillaVersion.NULL_VERSION)
         {
             this.logger.info(String.format("Reading data about %s Minecraft version...", version.getName()));
-            this.vanillaReader.read();
+            new VanillaReader(this).read();
 
             final File modsDir = new File(dir, "mods/");
 
@@ -244,7 +240,7 @@ public class FlowUpdater
         this.pluginManager.shutdown();
     }
 
-	/**
+    /**
      * Builder of {@link FlowUpdater}.
      * @author Flow Arg (FlowArg)
      */
@@ -372,7 +368,6 @@ public class FlowUpdater
 
     // Some getters
 
-    public VanillaReader getVanillaReader() { return this.vanillaReader; }
     public VanillaVersion getVersion() { return this.version; }
     public ILogger getLogger() { return this.logger; }
     public AbstractForgeVersion getForgeVersion() { return this.forgeVersion; }
