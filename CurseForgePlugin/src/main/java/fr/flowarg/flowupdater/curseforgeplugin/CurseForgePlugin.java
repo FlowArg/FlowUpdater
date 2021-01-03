@@ -16,6 +16,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -73,78 +74,47 @@ public class CurseForgePlugin extends Plugin
 
     public CurseModPack getCurseModPack(int projectID, int fileID, boolean installExtFiles)
     {
+        try
+        {
+            final File out = this.checkForUpdates(projectID, fileID);
+            this.extractModPack(out, installExtFiles);
+            return this.parseMods(installExtFiles);
+        }
+        catch (Exception e)
+        {
+            this.getLogger().printStackTrace(e);
+        }
+        return new CurseModPack("", "", "", Collections.emptyList(), false);
+    }
+
+    private File checkForUpdates(int projectID, int fileID) throws Exception
+    {
         final URL link = this.getURLOfFile(projectID, fileID);
         final String linkStr = link.toExternalForm();
+        final File out = new File(this.getDataPluginFolder(), linkStr.substring(linkStr.lastIndexOf('/') + 1));
 
+        if(!out.exists() || !FileUtils.getMD5ofFile(out).equalsIgnoreCase(this.getMD5(link)))
+        {
+            this.getLogger().info(String.format("Downloading %s from %s...", out.getName(), linkStr));
+            out.getParentFile().mkdirs();
+            Files.copy(this.catchForbidden(link), out.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }
+        return out;
+    }
+
+    private String getMD5(URL link)
+    {
         HttpsURLConnection connection = null;
-
         try
         {
             connection = (HttpsURLConnection)link.openConnection();
             connection.setRequestMethod("GET");
             connection.setInstanceFollowRedirects(true);
             connection.setUseCaches(false);
-            final String md5 = connection.getHeaderField("ETag").replace("\"", "");
-            final File out = new File(this.getDataPluginFolder(), linkStr.substring(linkStr.lastIndexOf('/') + 1));
 
-            if(!out.exists() || !FileUtils.getMD5ofFile(out).equalsIgnoreCase(md5))
-            {
-                this.getLogger().info(String.format("Downloading %s from %s...", out.getName(), link.toExternalForm()));
-                out.getParentFile().mkdirs();
-                Files.copy(this.catchForbidden(link), out.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            }
-
-            this.getLogger().info("Extracting mod pack...");
-            final ZipFile zipFile = new ZipFile(out, ZipFile.OPEN_READ, StandardCharsets.UTF_8);
-            final Enumeration<? extends ZipEntry> entries = zipFile.entries();
-            final File dir = this.getDataPluginFolder().getParentFile().getParentFile();
-            while (entries.hasMoreElements())
-            {
-                final ZipEntry entry = entries.nextElement();
-                final File fl = new File(dir, entry.getName().replace("overrides/", ""));
-                if(entry.getName().equalsIgnoreCase("manifest.json") && fl.exists() && entry.getCrc() == FileUtils.getCRC32(fl))
-                    break;
-                if(installExtFiles && !entry.getName().equals("modlist.html"))
-                {
-                    if(!fl.exists())
-                    {
-                        if (fl.getName().endsWith(File.separator)) fl.mkdirs();
-                        if (!fl.exists()) fl.getParentFile().mkdirs();
-                        if (entry.isDirectory()) continue;
-
-                        final InputStream is = zipFile.getInputStream(entry);
-                        final BufferedOutputStream fo = new BufferedOutputStream(new FileOutputStream(fl));
-                        while (is.available() > 0) fo.write(is.read());
-                        fo.close();
-                        is.close();
-                    }
-                }
-                else if(entry.getName().equals("manifest.json"))
-                {
-                    final InputStream is = zipFile.getInputStream(entry);
-                    final BufferedOutputStream fo = new BufferedOutputStream(new FileOutputStream(fl));
-                    while (is.available() > 0) fo.write(is.read());
-                    fo.close();
-                    is.close();
-                }
-            }
-            zipFile.close();
-
-            final BufferedReader reader = new BufferedReader(new FileReader(new File(dir, "manifest.json")));
-            final JsonObject obj = JsonParser.parseReader(reader).getAsJsonObject();
-            final String name = obj.get("name").getAsString();
-            final String version = obj.get("version").getAsString();
-            final String author = obj.get("author").getAsString();
-            final List<CurseModPack.CurseModPackMod> mods = new ArrayList<>();
-
-            this.getLogger().info("Fetching mods...");
-            obj.getAsJsonArray("files").forEach(jsonElement -> {
-                final JsonObject object = jsonElement.getAsJsonObject();
-                mods.add(new CurseModPack.CurseModPackMod(this.getCurseMod(object.get("projectID").getAsInt(), object.get("fileID").getAsInt()), object.get("required").getAsBoolean()));
-            });
-            reader.close();
-            return new CurseModPack(name, version, author, mods, installExtFiles);
-        } catch (Exception e)
+            return connection.getHeaderField("ETag").replace("\"", "");
+        }
+        catch (Exception e)
         {
             this.getLogger().printStackTrace(e);
         }
@@ -153,7 +123,64 @@ public class CurseForgePlugin extends Plugin
             if(connection != null)
                 connection.disconnect();
         }
-        return new CurseModPack("", "", "", Collections.emptyList(), false);
+        return "";
+    }
+
+    private void extractModPack(File out, boolean installExtFiles) throws Exception
+    {
+        this.getLogger().info("Extracting mod pack...");
+        final ZipFile zipFile = new ZipFile(out, ZipFile.OPEN_READ, StandardCharsets.UTF_8);
+        final Enumeration<? extends ZipEntry> entries = zipFile.entries();
+        final File dir = this.getDataPluginFolder().getParentFile().getParentFile();
+        while (entries.hasMoreElements())
+        {
+            final ZipEntry entry = entries.nextElement();
+            final File fl = new File(dir, entry.getName().replace("overrides/", ""));
+            if(entry.getName().equalsIgnoreCase("manifest.json") && fl.exists() && entry.getCrc() == FileUtils.getCRC32(fl))
+                break;
+            if(installExtFiles && !entry.getName().equals("modlist.html"))
+            {
+                if(!fl.exists())
+                {
+                    if (fl.getName().endsWith(File.separator)) fl.mkdirs();
+                    if (!fl.exists()) fl.getParentFile().mkdirs();
+                    if (entry.isDirectory()) continue;
+
+                    final InputStream is = zipFile.getInputStream(entry);
+                    final BufferedOutputStream fo = new BufferedOutputStream(new FileOutputStream(fl));
+                    while (is.available() > 0) fo.write(is.read());
+                    fo.close();
+                    is.close();
+                }
+            }
+            else if(entry.getName().equals("manifest.json"))
+            {
+                final InputStream is = zipFile.getInputStream(entry);
+                final BufferedOutputStream fo = new BufferedOutputStream(new FileOutputStream(fl));
+                while (is.available() > 0) fo.write(is.read());
+                fo.close();
+                is.close();
+            }
+        }
+        zipFile.close();
+    }
+
+    private CurseModPack parseMods(boolean installExtFiles) throws Exception
+    {
+        final BufferedReader reader = new BufferedReader(new FileReader(new File(this.getDataPluginFolder().getParentFile().getParentFile(), "manifest.json")));
+        final JsonObject obj = JsonParser.parseReader(reader).getAsJsonObject();
+        final String name = obj.get("name").getAsString();
+        final String version = obj.get("version").getAsString();
+        final String author = obj.get("author").getAsString();
+        final List<CurseModPack.CurseModPackMod> mods = new ArrayList<>();
+
+        this.getLogger().info("Fetching mods...");
+        obj.getAsJsonArray("files").forEach(jsonElement -> {
+            final JsonObject object = jsonElement.getAsJsonObject();
+            mods.add(new CurseModPack.CurseModPackMod(this.getCurseMod(object.get("projectID").getAsInt(), object.get("fileID").getAsInt()), object.get("required").getAsBoolean()));
+        });
+        reader.close();
+        return new CurseModPack(name, version, author, mods, installExtFiles);
     }
 
     public void shutdownOKHTTP()
