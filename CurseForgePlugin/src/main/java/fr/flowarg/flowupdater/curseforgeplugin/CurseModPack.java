@@ -1,9 +1,12 @@
 package fr.flowarg.flowupdater.curseforgeplugin;
 
+import java.util.Collections;
 import java.util.List;
 
 public class CurseModPack
 {
+    public static final CurseModPack BAD = new CurseModPack("", "", "", Collections.emptyList(), false);
+
     private final String name;
     private final String version;
     private final String author;

@@ -84,7 +84,7 @@ public class CurseForgePlugin extends Plugin
         {
             this.getLogger().printStackTrace(e);
         }
-        return new CurseModPack("", "", "", Collections.emptyList(), false);
+        return CurseModPack.BAD;
     }
 
     private File checkForUpdates(int projectID, int fileID) throws Exception
