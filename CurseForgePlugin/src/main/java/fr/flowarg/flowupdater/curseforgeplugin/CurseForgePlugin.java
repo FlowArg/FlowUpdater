@@ -1,5 +1,6 @@
 package fr.flowarg.flowupdater.curseforgeplugin;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.therandomlabs.curseapi.CurseAPI;
@@ -8,6 +9,7 @@ import com.therandomlabs.curseapi.util.OkHttpUtils;
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.pluginloaderapi.plugin.Plugin;
 import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
@@ -16,9 +18,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -45,6 +45,11 @@ public class CurseForgePlugin extends Plugin
             this.getLogger().printStackTrace(e);
         }
         return null;
+    }
+
+    public CurseMod getCurseMod(ProjectMod mod)
+    {
+        return this.getCurseMod(mod.getProjectID(), mod.getFileID());
     }
 
     public CurseMod getCurseMod(int projectID, int fileID)
@@ -167,33 +172,72 @@ public class CurseForgePlugin extends Plugin
 
     private CurseModPack parseMods(boolean installExtFiles) throws Exception
     {
-        final BufferedReader reader = new BufferedReader(new FileReader(new File(this.getDataPluginFolder().getParentFile().getParentFile(), "manifest.json")));
-        final JsonObject obj = JsonParser.parseReader(reader).getAsJsonObject();
-        final String name = obj.get("name").getAsString();
-        final String version = obj.get("version").getAsString();
-        final String author = obj.get("author").getAsString();
+        this.getLogger().info("Fetching mods...");
+
+        final File dir = this.getDataPluginFolder().getParentFile().getParentFile();
+        final BufferedReader manifestReader = new BufferedReader(new FileReader(new File(dir, "manifest.json")));
+        final JsonObject manifestObj = JsonParser.parseReader(manifestReader).getAsJsonObject();
+        final String modPackName = manifestObj.get("name").getAsString();
+        final String modPackVersion = manifestObj.get("version").getAsString();
+        final String modPackAuthor = manifestObj.get("author").getAsString();
+        final List<ProjectMod> manifestFiles = new ArrayList<>();
         final List<CurseModPack.CurseModPackMod> mods = new ArrayList<>();
 
-        this.getLogger().info("Fetching mods...");
-        obj.getAsJsonArray("files").forEach(jsonElement -> {
+        manifestObj.getAsJsonArray("files").forEach(jsonElement -> manifestFiles.add(ProjectMod.fromJsonObject(jsonElement.getAsJsonObject())));
+
+        final File cache = new File(dir, "manifest.cache.json");
+        if(!cache.exists())
+            FileUtils.saveFile(cache, "[]");
+        final BufferedReader cacheReader = new BufferedReader(new FileReader(cache));
+        final JsonArray cacheArray = JsonParser.parseReader(cacheReader).getAsJsonArray();
+
+        cacheArray.forEach(jsonElement -> {
             final JsonObject object = jsonElement.getAsJsonObject();
-            mods.add(new CurseModPack.CurseModPackMod(this.getCurseMod(object.get("projectID").getAsInt(), object.get("fileID").getAsInt()), object.get("required").getAsBoolean()));
+            final String name = object.get("name").getAsString();
+            final String downloadURL = object.get("downloadURL").getAsString();
+            final String md5 = object.get("md5").getAsString();
+            final int length = object.get("length").getAsInt();
+            final ProjectMod projectMod = ProjectMod.fromJsonObject(object);
+            final boolean required = projectMod.isRequired();
+            mods.add(new CurseModPack.CurseModPackMod(name, downloadURL, md5, length, required));
+            manifestFiles.remove(projectMod);
         });
-        reader.close();
-        return new CurseModPack(name, version, author, mods, installExtFiles);
+
+        manifestFiles.forEach(projectMod -> {
+            final boolean required = projectMod.isRequired();
+            final CurseModPack.CurseModPackMod mod = new CurseModPack.CurseModPackMod(this.getCurseMod(projectMod), required);
+            final JsonObject inCache = new JsonObject();
+
+            inCache.addProperty("name", mod.getName());
+            inCache.addProperty("downloadURL", mod.getDownloadURL());
+            inCache.addProperty("md5", mod.getMd5());
+            inCache.addProperty("length", mod.getLength());
+            inCache.addProperty("required", required);
+            inCache.addProperty("projectID", projectMod.getProjectID());
+            inCache.addProperty("fileID", projectMod.getFileID());
+
+            cacheArray.add(inCache);
+            mods.add(mod);
+        });
+
+        manifestReader.close();
+        cacheReader.close();
+        FileUtils.saveFile(cache, cacheArray.toString());
+        return new CurseModPack(modPackName, modPackVersion, modPackAuthor, mods, installExtFiles);
     }
 
     public void shutdownOKHTTP()
     {
-        if(OkHttpUtils.getClient() != null)
+        final OkHttpClient client = OkHttpUtils.getClient();
+        if(client != null)
         {
-            OkHttpUtils.getClient().dispatcher().executorService().shutdown();
-            OkHttpUtils.getClient().connectionPool().evictAll();
-            if(OkHttpUtils.getClient().cache() != null)
+            client.dispatcher().executorService().shutdown();
+            client.connectionPool().evictAll();
+            if(client.cache() != null)
             {
                 try
                 {
-                    OkHttpUtils.getClient().cache().close();
+                    client.cache().close();
                 } catch (IOException ignored) {}
             }
         }
@@ -211,5 +255,61 @@ public class CurseForgePlugin extends Plugin
     public void onStop()
     {
         this.getLogger().info("Stopping CFP...");
+    }
+
+    private static class ProjectMod
+    {
+        private final int projectID;
+        private final int fileID;
+        private final boolean required;
+
+        public ProjectMod(int projectID, int fileID, boolean required)
+        {
+            this.projectID = projectID;
+            this.fileID = fileID;
+            this.required = required;
+        }
+
+        private static ProjectMod fromJsonObject(JsonObject object)
+        {
+            return new ProjectMod(object.get("projectID").getAsInt(), object.get("fileID").getAsInt(), object.get("required").getAsBoolean());
+        }
+
+        public int getProjectID()
+        {
+            return this.projectID;
+        }
+
+        public int getFileID()
+        {
+            return this.fileID;
+        }
+
+        public boolean isRequired()
+        {
+            return this.required;
+        }
+
+        @Override
+        public boolean equals(Object o)
+        {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            final ProjectMod that = (ProjectMod)o;
+
+            if (this.projectID != that.projectID) return false;
+            if (this.fileID != that.fileID) return false;
+            return this.required == that.required;
+        }
+
+        @Override
+        public int hashCode()
+        {
+            int result = this.projectID;
+            result = 31 * result + this.fileID;
+            result = 31 * result + (this.required ? 1 : 0);
+            return result;
+        }
     }
 }
