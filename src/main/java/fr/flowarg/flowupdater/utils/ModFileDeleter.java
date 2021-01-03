@@ -59,7 +59,12 @@ public class ModFileDeleter implements IFileDeleter
                                 final CurseMod mod = (CurseMod)obj;
                                 if(mod.getName().equalsIgnoreCase(fileInDir.getName()))
                                 {
-                                    if(getMD5ofFile(fileInDir).equalsIgnoreCase(mod.getMd5()) && getFileSizeBytes(fileInDir) == mod.getLength())
+                                    if(mod.getMd5().contains("-"))
+                                    {
+                                        badFiles.remove(fileInDir);
+                                        verifiedFiles.add(fileInDir);
+                                    }
+                                    else if(getMD5ofFile(fileInDir).equalsIgnoreCase(mod.getMd5()) && getFileSizeBytes(fileInDir) == mod.getLength())
                                     {
                                         badFiles.remove(fileInDir);
                                         verifiedFiles.add(fileInDir);

@@ -47,9 +47,11 @@ public class OptifinePlugin extends Plugin {
 
         assert response.body() != null;
         final File output = new File(this.getDataPluginFolder(), name);
-        this.getLogger().info(String.format("Downloading %s from %s...", output.getName(), newUrl));
         if(!output.exists() || FileUtils.getFileSizeBytes(output) != length)
+        {
+            this.getLogger().info(String.format("Downloading %s from %s...", output.getName(), newUrl));
             Files.copy(response.body().byteStream(), output.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }
         response.body().close();
 
         if(length <= 40)

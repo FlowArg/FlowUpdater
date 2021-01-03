@@ -101,8 +101,11 @@ public class PluginManager
                 final File file = new File(dir, mod.getName());
                 if(!file.exists() || !getMD5ofFile(file).equals(mod.getMd5()) || getFileSizeBytes(file) != mod.getLength())
                 {
-                    file.delete();
-                    this.downloadInfos.getCurseMods().add(mod);
+                    if (!mod.getMd5().contains("-"))
+                    {
+                        file.delete();
+                        this.downloadInfos.getCurseMods().add(mod);
+                    }
                 }
             } catch (Exception e)
             {
@@ -136,8 +139,11 @@ public class PluginManager
                         }
                         if(!flag && (!file.exists() || !getMD5ofFile(file).equals(mod.getMd5()) || getFileSizeBytes(file) != mod.getLength()))
                         {
-                            file.delete();
-                            this.downloadInfos.getCurseMods().add(mod);
+                            if (!mod.getMd5().contains("-"))
+                            {
+                                file.delete();
+                                this.downloadInfos.getCurseMods().add(mod);
+                            }
                         }
                     } catch (NoSuchAlgorithmException | IOException e)
                     {
