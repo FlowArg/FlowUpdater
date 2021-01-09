@@ -9,6 +9,7 @@ import okhttp3.Response;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
@@ -34,24 +35,17 @@ public class OptifinePlugin extends Plugin {
     public Optifine getOptifine(String optifineVersion, boolean preview) throws IOException
     {
         final String name = preview ? (optifineVersion.contains("preview_") && optifineVersion.contains("OptiFine_") ? optifineVersion + ".jar" : "preview_OptiFine_" + optifineVersion + ".jar") : "OptiFine_" + optifineVersion + ".jar";
-        final HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse("http://optifine.net/downloadx")).newBuilder();
-        urlBuilder.addQueryParameter("f", name);
-        urlBuilder.addQueryParameter("x", preview ? this.getJsonPreview(optifineVersion) : this.getJson(optifineVersion));
-
-        final String newUrl = urlBuilder.build().toString();
+        final String newUrl = this.getNewURL(name, preview, optifineVersion);
         final Request request = new Request.Builder()
                 .url(newUrl)
                 .build();
-        final Response response = client.newCall(request).execute();
+
+        final Response response = this.client.newCall(request).execute();
         final int length = Integer.parseInt(Objects.requireNonNull(response.header("Content-Length")));
 
         assert response.body() != null;
-        final File output = new File(this.getDataPluginFolder(), name);
-        if(!output.exists() || FileUtils.getFileSizeBytes(output) != length)
-        {
-            this.getLogger().info(String.format("Downloading %s from %s...", output.getName(), newUrl));
-            Files.copy(response.body().byteStream(), output.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        }
+        this.checkForUpdates(name, response.body().byteStream(), length, newUrl);
+
         response.body().close();
 
         if(length <= 40)
@@ -60,15 +54,34 @@ public class OptifinePlugin extends Plugin {
         return new Optifine(name, length);
     }
 
+    private String getNewURL(String name, boolean preview, String optifineVersion)
+    {
+        final HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse("http://optifine.net/downloadx")).newBuilder();
+        urlBuilder.addQueryParameter("f", name);
+        urlBuilder.addQueryParameter("x", preview ? this.getJsonPreview(optifineVersion) : this.getJson(optifineVersion));
+
+        return urlBuilder.build().toString();
+    }
+
+    private void checkForUpdates(String name, InputStream byteStream, int length, String newUrl) throws IOException
+    {
+        final File output = new File(this.getDataPluginFolder(), name);
+        if(!output.exists() || FileUtils.getFileSizeBytes(output) != length)
+        {
+            this.getLogger().info(String.format("Downloading %s from %s...", output.getName(), newUrl));
+            Files.copy(byteStream, output.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }
+    }
+
     public void shutdownOKHTTP()
     {
-        client.dispatcher().executorService().shutdown();
-        client.connectionPool().evictAll();
-        if(client.cache() != null)
+        this.client.dispatcher().executorService().shutdown();
+        this.client.connectionPool().evictAll();
+        if(this.client.cache() != null)
         {
             try
             {
-                Objects.requireNonNull(client.cache()).close();
+                Objects.requireNonNull(this.client.cache()).close();
             } catch (IOException ignored) {}
         }
     }
