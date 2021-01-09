@@ -81,8 +81,7 @@ public class CurseForgePlugin extends Plugin
     {
         try
         {
-            final File out = this.checkForUpdates(projectID, fileID);
-            this.extractModPack(out, installExtFiles);
+            this.extractModPack(this.checkForUpdates(projectID, fileID), installExtFiles);
             return this.parseMods(installExtFiles);
         }
         catch (Exception e)
@@ -135,8 +134,8 @@ public class CurseForgePlugin extends Plugin
     {
         this.getLogger().info("Extracting mod pack...");
         final ZipFile zipFile = new ZipFile(out, ZipFile.OPEN_READ, StandardCharsets.UTF_8);
-        final Enumeration<? extends ZipEntry> entries = zipFile.entries();
         final File dir = this.getDataPluginFolder().getParentFile().getParentFile();
+        final Enumeration<? extends ZipEntry> entries = zipFile.entries();
         while (entries.hasMoreElements())
         {
             final ZipEntry entry = entries.nextElement();
@@ -177,11 +176,7 @@ public class CurseForgePlugin extends Plugin
         final File dir = this.getDataPluginFolder().getParentFile().getParentFile();
         final BufferedReader manifestReader = new BufferedReader(new FileReader(new File(dir, "manifest.json")));
         final JsonObject manifestObj = JsonParser.parseReader(manifestReader).getAsJsonObject();
-        final String modPackName = manifestObj.get("name").getAsString();
-        final String modPackVersion = manifestObj.get("version").getAsString();
-        final String modPackAuthor = manifestObj.get("author").getAsString();
         final List<ProjectMod> manifestFiles = new ArrayList<>();
-        final List<CurseModPack.CurseModPackMod> mods = new ArrayList<>();
 
         manifestObj.getAsJsonArray("files").forEach(jsonElement -> manifestFiles.add(ProjectMod.fromJsonObject(jsonElement.getAsJsonObject())));
 
@@ -190,6 +185,7 @@ public class CurseForgePlugin extends Plugin
             FileUtils.saveFile(cache, "[]");
         final BufferedReader cacheReader = new BufferedReader(new FileReader(cache));
         final JsonArray cacheArray = JsonParser.parseReader(cacheReader).getAsJsonArray();
+        final List<CurseModPack.CurseModPackMod> mods = new ArrayList<>();
 
         cacheArray.forEach(jsonElement -> {
             final JsonObject object = jsonElement.getAsJsonObject();
@@ -223,6 +219,11 @@ public class CurseForgePlugin extends Plugin
         manifestReader.close();
         cacheReader.close();
         FileUtils.saveFile(cache, cacheArray.toString());
+
+        final String modPackName = manifestObj.get("name").getAsString();
+        final String modPackVersion = manifestObj.get("version").getAsString();
+        final String modPackAuthor = manifestObj.get("author").getAsString();
+
         return new CurseModPack(modPackName, modPackVersion, modPackAuthor, mods, installExtFiles);
     }
 
