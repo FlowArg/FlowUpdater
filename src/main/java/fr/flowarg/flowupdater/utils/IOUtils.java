@@ -12,6 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 
 public class IOUtils
 {
@@ -35,7 +36,7 @@ public class IOUtils
     {
         try
         {
-            logger.info(String.format("Copying %s to %s...", out.getAbsolutePath(), in.getAbsolutePath()));
+            logger.info(String.format("Copying %s to %s...", in.getAbsolutePath(), out.getAbsolutePath()));
             out.getParentFile().mkdirs();
             Files.copy(in.toPath(), out.toPath());
         }
@@ -117,5 +118,12 @@ public class IOUtils
     {
         if(cachedMinecraftDir == null) cachedMinecraftDir = new File(Platform.isOnWindows() ? System.getenv("APPDATA") : (Platform.isOnMac() ? System.getProperty("user.home") + "/Library/Application Support/" : System.getProperty("user.home")), ".minecraft/");
         return cachedMinecraftDir;
+    }
+
+    public static String consumeStringList(List<String> stringList)
+    {
+        final StringBuilder sb = new StringBuilder();
+        stringList.forEach(sb::append);
+        return sb.toString();
     }
 }

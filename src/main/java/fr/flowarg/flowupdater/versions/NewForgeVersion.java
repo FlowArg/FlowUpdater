@@ -16,7 +16,7 @@ import java.lang.ProcessBuilder.Redirect;
 import java.util.List;
 
 /**
- * Represent a new Forge version (1.12.2-14.23.5.2851 -> 1.16.4)
+ * Represent a new Forge version (1.12.2-14.23.5.2851 -> 1.16.5)
  * @author FlowArg
  */
 public class NewForgeVersion extends AbstractForgeVersion
@@ -38,8 +38,7 @@ public class NewForgeVersion extends AbstractForgeVersion
         {
             try (BufferedInputStream stream = new BufferedInputStream(this.installerUrl.openStream()))
             {
-                final ForgeLauncherEnvironment forgeLauncherEnvironment = this.prepareForgeLaunch(dirToInstall, stream);
-
+                final ModLoaderLauncherEnvironment forgeLauncherEnvironment = this.prepareModLoaderLauncher(dirToInstall, stream);
                 if(this.noGui)
                 	forgeLauncherEnvironment.getCommand().add("--nogui");
                 final ProcessBuilder processBuilder = new ProcessBuilder(forgeLauncherEnvironment.getCommand());
@@ -61,8 +60,7 @@ public class NewForgeVersion extends AbstractForgeVersion
     @Override
     protected boolean checkForgeEnv(File dirToInstall)
     {
-        final boolean hasAnotherVersions = super.checkForgeEnv(dirToInstall);
-        if(this.isCompatible() && !this.forgeVersion.contains("1.12.2") && hasAnotherVersions)
+        if(this.isCompatible() && !this.forgeVersion.contains("1.12.2") && super.checkForgeEnv(dirToInstall))
         {
             final File minecraftForgeDir = new File(dirToInstall, "libraries/net/minecraft/");
             final File mappingsDir = new File(dirToInstall, "libraries/de/");

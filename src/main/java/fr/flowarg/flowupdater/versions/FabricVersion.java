@@ -12,6 +12,7 @@ import fr.flowarg.flowupdater.download.json.CurseFileInfos;
 import fr.flowarg.flowupdater.download.json.CurseModPackInfos;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.utils.ArtifactsDownloader;
+import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
 import fr.flowarg.flowupdater.utils.PluginManager;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
@@ -137,78 +138,110 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
         return new File(installDir, "libraries/net/fabricmc/fabric-loader/" + this.fabricVersion + "/" + "fabric-loader-" + this.fabricVersion + ".jar").exists();
     }
 
+    private static class FabricLauncherEnvironment extends ModLoaderLauncherEnvironment
+    {
+        private final File fabric;
+
+        public FabricLauncherEnvironment(List<String> command, File tempDir, File fabric)
+        {
+            super(command, tempDir);
+            this.fabric = fabric;
+        }
+
+        public File getFabric()
+        {
+            return this.fabric;
+        }
+
+        public void launchFabricInstaller() throws Exception
+        {
+            final ProcessBuilder processBuilder = new ProcessBuilder(this.getCommand());
+
+            processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+            final Process process = processBuilder.start();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+
+            while ((line = reader.readLine()) != null) System.out.println(line);
+
+            reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            while ((line = reader.readLine()) != null) System.out.println(line);
+
+            process.waitFor();
+        }
+    }
+
+    @Override
+    public FabricLauncherEnvironment prepareModLoaderLauncher(File dirToInstall, InputStream stream) throws IOException
+    {
+        this.logger.info("Downloading fabric installer...");
+
+        final File tempDir = new File(dirToInstall, ".flowupdater");
+        FileUtils.deleteDirectory(tempDir);
+        final File fabric = new File(tempDir, "zeWorld");
+        final File install = new File(tempDir, String.format("fabric-installer-%s.jar", installerVersion));
+
+        tempDir.mkdirs();
+        fabric.mkdirs();
+
+        Files.copy(stream, install.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        return this.makeCommand(tempDir, install, fabric);
+    }
+
+    private FabricLauncherEnvironment makeCommand(File tempDir, File install, File fabric)
+    {
+        final List<String> command = new ArrayList<>();
+        command.add("java");
+        command.add("-Xmx256M");
+        command.add("-jar");
+        command.add(install.getAbsolutePath());
+        command.add("client");
+        command.add("-dir");
+        command.add(fabric.getAbsolutePath());
+        command.add("-mcversion");
+        command.add(this.vanilla.getName());
+        command.add("-loader");
+        command.add(this.fabricVersion);
+        command.add("-noprofile");
+        return new FabricLauncherEnvironment(command, tempDir, fabric);
+    }
+
     /**
      * This function installs a Fabric version at the specified directory.
+     *
      * @param dirToInstall Specified directory.
      */
     // TODO optimize this
     @Override
-    public void install(final File dirToInstall) {
+    public void install(final File dirToInstall)
+    {
         this.callback.step(Step.FABRIC);
         this.logger.info("Installing fabric, version: " + this.fabricVersion + "...");
         this.checkFabricEnv(dirToInstall);
-        if(this.isCompatible())
+        if (this.isCompatible())
         {
             try (BufferedInputStream stream = new BufferedInputStream(this.installerUrl.openStream()))
             {
-                this.logger.info("Downloading fabric installer...");
 
-                final File tempDir = new File(dirToInstall, ".flowupdater");
-                final File fabric = new File(tempDir, "zeWorld");
-                final File install = new File(tempDir, String.format("fabric-installer-%s.jar", installerVersion));
-                final File libraries = new File(dirToInstall, "libraries");
-
-                install.delete();
-                fabric.mkdirs();
-                tempDir.mkdirs();
-
-                Files.copy(stream, install.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                final FabricLauncherEnvironment fabricLauncherEnvironment = this.prepareModLoaderLauncher(dirToInstall, stream);
                 this.logger.info("Launching fabric installer...");
-                final List<String> command = new ArrayList<>();
-                command.add("java");
-                command.add("-Xmx256M");
-                command.add("-jar");
-                command.add(install.getAbsolutePath());
-                command.add("client");
-                command.add("-dir");
-                command.add(fabric.getAbsolutePath());
-                command.add("-mcversion");
-                command.add(this.vanilla.getName());
-                command.add("-loader");
-                command.add(this.fabricVersion);
-                command.add("-noprofile");
-                final ProcessBuilder processBuilder = new ProcessBuilder(command);
+                fabricLauncherEnvironment.launchFabricInstaller();
 
-                processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
-                final Process process = processBuilder.start();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                String line;
-
-                while ((line = reader.readLine()) != null)
-                    System.out.println(line);
-
-                reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-                while ((line = reader.readLine()) != null)
-                    System.out.println(line);
-
-                process.waitFor();
-
-                final File json = new File(fabric, String.format("versions" + File.separatorChar + "fabric-loader-%s-%s" , fabricVersion, this.vanilla.getName()));
+                final File json = new File(fabricLauncherEnvironment.getFabric(), String.format("versions" + File.separatorChar + "fabric-loader-%s-%s", fabricVersion, this.vanilla.getName()));
                 final File jsonFile = new File(json, json.getName() + ".json");
-                final StringBuilder sb = new StringBuilder();
-                Files.readAllLines(jsonFile.toPath(), StandardCharsets.UTF_8).forEach(sb::append);
-                final JsonObject obj = JsonParser.parseString(sb.toString()).getAsJsonObject();
+                final JsonObject obj = JsonParser.parseString(IOUtils.consumeStringList(Files.readAllLines(jsonFile.toPath(), StandardCharsets.UTF_8))).getAsJsonObject();
                 final JsonArray libs = obj.getAsJsonArray("libraries");
 
-                for(JsonElement el : libs)
-                {
+                final File libraries = new File(dirToInstall, "libraries");
+                libs.forEach(el -> {
                     final JsonObject artifact = el.getAsJsonObject();
                     ArtifactsDownloader.downloadArtifacts(libraries, artifact.get("url").getAsString(), artifact.get("name").getAsString(), this.logger);
-                }
+                });
 
                 this.logger.info("Successfully installed Fabric !");
-                FileUtils.deleteDirectory(tempDir);
-            } catch (IOException | InterruptedException e) {
+                FileUtils.deleteDirectory(fabricLauncherEnvironment.getTempDir());
+            } catch (Exception e)
+            {
                 this.logger.printStackTrace(e);
             }
         }

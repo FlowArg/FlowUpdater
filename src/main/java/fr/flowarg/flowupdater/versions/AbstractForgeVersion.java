@@ -13,12 +13,11 @@ import fr.flowarg.flowupdater.utils.ModFileDeleter;
 import fr.flowarg.flowupdater.utils.PluginManager;
 import fr.flowarg.flowzipper.ZipUtils;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.Buffer;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
@@ -103,7 +102,8 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         this.checkForgeEnv(dirToInstall);
     }
 
-    protected ForgeLauncherEnvironment prepareForgeLaunch(File dirToInstall, BufferedInputStream stream) throws IOException
+    @Override
+    public ModLoaderLauncherEnvironment prepareModLoaderLauncher(File dirToInstall, InputStream stream) throws IOException
     {
         final File tempDir = new File(dirToInstall, ".flowupdater");
         FileUtils.deleteDirectory(tempDir);
@@ -117,7 +117,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         return this.makeCommand(new File(tempDir, "forge-installer-patched.jar"), dirToInstall, tempDir);
     }
 
-    protected void downloadForgeInstaller(BufferedInputStream stream, File install, File patches) throws IOException
+    protected void downloadForgeInstaller(InputStream stream, File install, File patches) throws IOException
     {
         this.logger.info("Downloading " + (this.old ? "old" : "new") + " forge installer...");
         Files.copy(stream, install.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -138,7 +138,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         patches.delete();
     }
 
-    protected ForgeLauncherEnvironment makeCommand(File patchedInstaller, File dirToInstall, File tempDir)
+    protected ModLoaderLauncherEnvironment makeCommand(File patchedInstaller, File dirToInstall, File tempDir)
     {
         final List<String> command = new ArrayList<>();
         command.add("java");
@@ -149,32 +149,10 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         command.add(dirToInstall.getAbsolutePath());
         this.logger.info("Launching forge installer...");
 
-        return new ForgeLauncherEnvironment(command, tempDir);
+        return new ModLoaderLauncherEnvironment(command, tempDir);
     }
 
     protected abstract void cleanInstaller(File tempInstallerDir);
-
-    protected static class ForgeLauncherEnvironment
-    {
-        private final List<String> command;
-        private final File tempDir;
-
-        public ForgeLauncherEnvironment(List<String> command, File tempDir)
-        {
-            this.command = command;
-            this.tempDir = tempDir;
-        }
-
-        public List<String> getCommand()
-        {
-            return this.command;
-        }
-
-        public File getTempDir()
-        {
-            return this.tempDir;
-        }
-    }
 
     /**
      * Check if the minecraft installation already contains another forge installation not corresponding to this version.

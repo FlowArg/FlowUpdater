@@ -12,6 +12,7 @@ import fr.flowarg.flowupdater.utils.ModFileDeleter;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.ProcessBuilder.Redirect;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -48,7 +49,7 @@ public class OldForgeVersion extends AbstractForgeVersion
     {
         try (BufferedInputStream stream = new BufferedInputStream(this.installerUrl.openStream()))
         {
-            final ForgeLauncherEnvironment forgeLauncherEnvironment = this.prepareForgeLaunch(dirToInstall, stream);
+            final ModLoaderLauncherEnvironment forgeLauncherEnvironment = this.prepareModLoaderLauncher(dirToInstall, stream);
             final ProcessBuilder processBuilder = new ProcessBuilder(forgeLauncherEnvironment.getCommand());
             
             processBuilder.redirectOutput(Redirect.INHERIT);
