@@ -96,8 +96,8 @@ public class UpdaterOptions
     {
         private final BuilderArgument<Boolean> silentReadArgument = new BuilderArgument<>("SilentRead", () -> true).optional();
         private final BuilderArgument<Boolean> reExtractNativesArgument = new BuilderArgument<>("ReExtractingNatives", () -> false).optional();
-        private final BuilderArgument<Boolean> enableCurseForgePluginArgument = new BuilderArgument<>("EnableModsFromCurseForge", () -> false).optional();
-        private final BuilderArgument<Boolean> enableOptifineDownloaderPluginArgument = new BuilderArgument<>("InstallOptifineAsMod", () -> false).optional();
+        private final BuilderArgument<Boolean> enableCurseForgePluginArgument = new BuilderArgument<>("EnableCurseForgePlugin", () -> false).optional();
+        private final BuilderArgument<Boolean> enableOptifineDownloaderPluginArgument = new BuilderArgument<>("EnableOptifineDownloaderPlugin", () -> false).optional();
         private final BuilderArgument<Boolean> downloadServerArgument = new BuilderArgument<>("DownloadServer", () -> false).optional();
         private final BuilderArgument<Integer> nmbrThreadsForAssetsArgument = new BuilderArgument<>("Number of Threads for assets", () -> 2).optional();
         private final BuilderArgument<IFileDeleter> externalFileDeleterArgument = new BuilderArgument<IFileDeleter>("External FileDeleter", ExternalFileDeleter::new).optional();
