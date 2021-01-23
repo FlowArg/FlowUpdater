@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -182,7 +183,7 @@ public class CurseForgePlugin extends Plugin
 
         final File cache = new File(dir, "manifest.cache.json");
         if(!cache.exists())
-            FileUtils.saveFile(cache, "[]");
+            Files.write(cache.toPath(), Collections.singletonList("[]"), StandardCharsets.UTF_8);
         final BufferedReader cacheReader = new BufferedReader(new FileReader(cache));
         final JsonArray cacheArray = JsonParser.parseReader(cacheReader).getAsJsonArray();
         final List<CurseModPack.CurseModPackMod> mods = new ArrayList<>();
@@ -218,7 +219,7 @@ public class CurseForgePlugin extends Plugin
 
         manifestReader.close();
         cacheReader.close();
-        FileUtils.saveFile(cache, cacheArray.toString());
+        Files.write(cache.toPath(), Collections.singletonList(cacheArray.toString()), StandardCharsets.UTF_8);
 
         final String modPackName = manifestObj.get("name").getAsString();
         final String modPackVersion = manifestObj.get("version").getAsString();

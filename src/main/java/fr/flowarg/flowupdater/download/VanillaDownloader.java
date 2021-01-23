@@ -15,6 +15,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import static fr.flowarg.flowio.FileUtils.*;
+import static fr.flowarg.flowzipper.ZipUtils.unzipJar;
 
 public class VanillaDownloader
 {

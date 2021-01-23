@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.Buffer;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
@@ -102,35 +103,43 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         this.checkForgeEnv(dirToInstall);
     }
 
-    protected ReadyToLaunchResult prepareForgePatches(File dirToInstall, BufferedInputStream stream) throws IOException
+    protected ForgeLauncherEnvironment prepareForgeLaunch(File dirToInstall, BufferedInputStream stream) throws IOException
     {
-        this.logger.info("Downloading " + (this.old ? "old" : "new") + " forge installer...");
-
         final File tempDir = new File(dirToInstall, ".flowupdater");
-        final File tempInstallerDir = new File(tempDir, "installer/");
+        FileUtils.deleteDirectory(tempDir);
+        tempDir.mkdirs();
+
         final File install = new File(tempDir, "forge-installer.jar");
         final File patches = new File(tempDir, "patches.jar");
-        final File patchedInstaller = new File(tempDir, "forge-installer-patched.jar");
-        FileUtils.deleteDirectory(tempInstallerDir);
-        install.delete();
-        patchedInstaller.delete();
-        patches.delete();
-        tempDir.mkdirs();
-        tempInstallerDir.mkdirs();
+        this.downloadForgeInstaller(stream, install, patches);
+        this.patchForgeInstaller(install, patches, tempDir);
 
+        return this.makeCommand(new File(tempDir, "forge-installer-patched.jar"), dirToInstall, tempDir);
+    }
+
+    protected void downloadForgeInstaller(BufferedInputStream stream, File install, File patches) throws IOException
+    {
+        this.logger.info("Downloading " + (this.old ? "old" : "new") + " forge installer...");
         Files.copy(stream, install.toPath(), StandardCopyOption.REPLACE_EXISTING);
         this.logger.info("Downloading patches...");
         Files.copy(new URL("https://flowarg.github.io/minecraft/launcher/" + (this.old ? "old" : "") + "patches.jar").openStream(), patches.toPath(), StandardCopyOption.REPLACE_EXISTING);
+    }
 
+    protected void patchForgeInstaller(File install, File patches, File tempDir) throws IOException
+    {
+        final File tempInstallerDir = new File(tempDir, "installer/");
+        tempInstallerDir.mkdirs();
         this.logger.info("Applying patches...");
         ZipUtils.unzipJarWithLZMACompat(tempInstallerDir, install);
-        this.cleaningInstaller(tempInstallerDir);
+        this.cleanInstaller(tempInstallerDir);
         ZipUtils.unzipJarWithLZMACompat(tempInstallerDir, patches);
         this.logger.info("Repacking installer...");
         this.packPatchedInstaller(tempDir, tempInstallerDir);
         patches.delete();
-        this.logger.info("Launching forge installer...");
+    }
 
+    protected ForgeLauncherEnvironment makeCommand(File patchedInstaller, File dirToInstall, File tempDir)
+    {
         final List<String> command = new ArrayList<>();
         command.add("java");
         command.add("-Xmx256M");
@@ -138,18 +147,19 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         command.add(patchedInstaller.getAbsolutePath());
         command.add("--installClient");
         command.add(dirToInstall.getAbsolutePath());
+        this.logger.info("Launching forge installer...");
 
-        return new ReadyToLaunchResult(command, tempDir);
+        return new ForgeLauncherEnvironment(command, tempDir);
     }
 
-    protected abstract void cleaningInstaller(File tempInstallerDir);
+    protected abstract void cleanInstaller(File tempInstallerDir);
 
-    protected static class ReadyToLaunchResult
+    protected static class ForgeLauncherEnvironment
     {
         private final List<String> command;
         private final File tempDir;
 
-        public ReadyToLaunchResult(List<String> command, File tempDir)
+        public ForgeLauncherEnvironment(List<String> command, File tempDir)
         {
             this.command = command;
             this.tempDir = tempDir;

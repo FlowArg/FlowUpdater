@@ -27,6 +27,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
@@ -194,8 +195,9 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
 
                 final File json = new File(fabric, String.format("versions" + File.separatorChar + "fabric-loader-%s-%s" , fabricVersion, this.vanilla.getName()));
                 final File jsonFile = new File(json, json.getName() + ".json");
-                final String jsonString = FileUtils.loadFile(jsonFile);
-                final JsonObject obj = JsonParser.parseString(jsonString).getAsJsonObject();
+                final StringBuilder sb = new StringBuilder();
+                Files.readAllLines(jsonFile.toPath(), StandardCharsets.UTF_8).forEach(sb::append);
+                final JsonObject obj = JsonParser.parseString(sb.toString()).getAsJsonObject();
                 final JsonArray libs = obj.getAsJsonArray("libraries");
 
                 for(JsonElement el : libs)

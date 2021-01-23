@@ -38,18 +38,18 @@ public class NewForgeVersion extends AbstractForgeVersion
         {
             try (BufferedInputStream stream = new BufferedInputStream(this.installerUrl.openStream()))
             {
-                final ReadyToLaunchResult readyToLaunchResult = this.prepareForgePatches(dirToInstall, stream);
+                final ForgeLauncherEnvironment forgeLauncherEnvironment = this.prepareForgeLaunch(dirToInstall, stream);
 
                 if(this.noGui)
-                	readyToLaunchResult.getCommand().add("--nogui");
-                final ProcessBuilder processBuilder = new ProcessBuilder(readyToLaunchResult.getCommand());
+                	forgeLauncherEnvironment.getCommand().add("--nogui");
+                final ProcessBuilder processBuilder = new ProcessBuilder(forgeLauncherEnvironment.getCommand());
                 
                 processBuilder.redirectOutput(Redirect.INHERIT);
                 final Process process = processBuilder.start();
                 process.waitFor();
                 
                 this.logger.info("Successfully installed Forge !");
-                FileUtils.deleteDirectory(readyToLaunchResult.getTempDir());
+                FileUtils.deleteDirectory(forgeLauncherEnvironment.getTempDir());
             }
             catch (IOException | InterruptedException e)
             {
@@ -84,7 +84,7 @@ public class NewForgeVersion extends AbstractForgeVersion
     }
 
     @Override
-    protected void cleaningInstaller(File tempInstallerDir)
+    protected void cleanInstaller(File tempInstallerDir)
     {
         FileUtils.deleteDirectory(new File(tempInstallerDir, "net"));
         FileUtils.deleteDirectory(new File(tempInstallerDir, "com"));

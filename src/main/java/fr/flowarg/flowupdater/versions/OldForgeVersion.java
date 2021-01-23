@@ -48,8 +48,8 @@ public class OldForgeVersion extends AbstractForgeVersion
     {
         try (BufferedInputStream stream = new BufferedInputStream(this.installerUrl.openStream()))
         {
-            final ReadyToLaunchResult readyToLaunchResult = this.prepareForgePatches(dirToInstall, stream);
-            final ProcessBuilder processBuilder = new ProcessBuilder(readyToLaunchResult.getCommand());
+            final ForgeLauncherEnvironment forgeLauncherEnvironment = this.prepareForgeLaunch(dirToInstall, stream);
+            final ProcessBuilder processBuilder = new ProcessBuilder(forgeLauncherEnvironment.getCommand());
             
             processBuilder.redirectOutput(Redirect.INHERIT);
             processBuilder.directory(dirToInstall);
@@ -57,7 +57,7 @@ public class OldForgeVersion extends AbstractForgeVersion
             process.waitFor();
             
             this.logger.info("Successfully installed Forge !");
-            FileUtils.deleteDirectory(readyToLaunchResult.getTempDir());
+            FileUtils.deleteDirectory(forgeLauncherEnvironment.getTempDir());
             return true;
         }
         catch (IOException | InterruptedException e)
@@ -69,7 +69,7 @@ public class OldForgeVersion extends AbstractForgeVersion
     }
 
     @Override
-    protected void cleaningInstaller(File tempInstallerDir)
+    protected void cleanInstaller(File tempInstallerDir)
     {
         FileUtils.deleteDirectory(new File(tempInstallerDir, "net"));
         FileUtils.deleteDirectory(new File(tempInstallerDir, "joptisimple"));
