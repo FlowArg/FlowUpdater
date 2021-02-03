@@ -2,9 +2,9 @@ apply plugin: 'com.github.johnrengelman.shadow'
 
 shadowJar {
     configurations = [project.configurations.shadow]
+    classifier ''
 }
 
-version '1.0.1'
 archivesBaseName = "CurseForgePlugin"
 
 dependencies {

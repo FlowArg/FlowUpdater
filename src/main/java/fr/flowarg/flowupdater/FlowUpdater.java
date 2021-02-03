@@ -149,9 +149,9 @@ public class FlowUpdater
             final File modsDir = new File(dir, "mods/");
 
             if(this.forgeVersion != null)
-                this.checkMods(this.forgeVersion, dir);
+                this.checkMods(this.forgeVersion, modsDir);
             if (this.fabricVersion != null)
-                this.checkMods(this.fabricVersion, dir);
+                this.checkMods(this.fabricVersion, modsDir);
 
             if(this.fabricVersion != null)
             {
