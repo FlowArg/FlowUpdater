@@ -11,6 +11,12 @@ allprojects {
 
     group 'fr.flowarg'
 
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(8)
+        }
+    }
+
     compileJava {
         options.encoding = 'UTF-8'
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -33,7 +39,7 @@ allprojects {
     dependencies {
         api 'com.google.code.gson:gson:2.8.6'
         api 'fr.flowarg:flowmultitools:1.2.4'
-        implementation 'com.github.FlowArg:PluginLoaderAPI:604fcd3'
+        implementation 'com.github.FlowArg:PluginLoaderAPI:94e88e0'
     }
 }
 

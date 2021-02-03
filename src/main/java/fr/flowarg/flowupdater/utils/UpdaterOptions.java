@@ -32,13 +32,13 @@ public class UpdaterOptions
 
     /**
      * Enable CurseForgePlugin (CPF) ?
-     * WARNING: IF THIS FIELD IS THE TO TRUE, IT WILL DOWNLOAD AND LOAD A PLUGIN ; DISABLE THIS OPTION IF YOU DON'T USE CURSE_FORGE !!
+     * WARNING: IF THIS FIELD IS SET TO TRUE, IT WILL DOWNLOAD AND LOAD A PLUGIN ; DISABLE THIS OPTION IF YOU DON'T USE CURSE_FORGE !!
      */
     private final boolean enableCurseForgePlugin;
 
     /**
      * Enable OptifineDownloaderPlugin (ODP) ?
-     * WARNING: IF THIS FIELD IS THE TO TRUE, IT WILL DOWNLOAD AND LOAD A PLUGIN ; DISABLE THIS OPTION IF YOU DON'T USE OPTIFINE !!
+     * WARNING: IF THIS FIELD IS SET TO TRUE, IT WILL DOWNLOAD AND LOAD A PLUGIN ; DISABLE THIS OPTION IF YOU DON'T USE OPTIFINE !!
      */
     private final boolean enableOptifineDownloaderPlugin;
 

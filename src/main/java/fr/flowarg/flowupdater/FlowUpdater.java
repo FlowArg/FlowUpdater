@@ -107,7 +107,7 @@ public class FlowUpdater
         this.callback = callback;
         this.downloadInfos = new DownloadInfos();
         this.callback.init(this.logger);
-        if(this.updaterOptions.isEnableModsFromCurseForge() || this.updaterOptions.isInstallOptifineAsMod())
+        if(this.updaterOptions.isEnableCurseForgePlugin() || this.updaterOptions.isEnableOptifineDownloaderPlugin())
             this.pluginManager = new PluginManager(this);
         else this.pluginManager = new FallbackPluginManager(this);
     }
@@ -155,15 +155,15 @@ public class FlowUpdater
 
             if(this.fabricVersion != null)
             {
-                if(this.updaterOptions.isEnableModsFromCurseForge())
+                if(this.updaterOptions.isEnableCurseForgePlugin())
                     this.pluginManager.loadCurseForgePlugin(modsDir, this.fabricVersion);
             }
 
             if(this.forgeVersion != null)
             {
-                if(this.updaterOptions.isEnableModsFromCurseForge())
+                if(this.updaterOptions.isEnableCurseForgePlugin())
                     this.pluginManager.loadCurseForgePlugin(modsDir, this.forgeVersion);
-                if(this.updaterOptions.isInstallOptifineAsMod())
+                if(this.updaterOptions.isEnableOptifineDownloaderPlugin())
                     this.pluginManager.loadOptifinePlugin(modsDir, this.forgeVersion);
             }
 

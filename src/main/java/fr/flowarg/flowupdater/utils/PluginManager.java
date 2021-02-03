@@ -24,6 +24,9 @@ import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import static fr.flowarg.flowio.FileUtils.getFileSizeBytes;
 import static fr.flowarg.flowio.FileUtils.getMD5ofFile;
@@ -48,23 +51,32 @@ public class PluginManager
 
     public void loadPlugins(File dir) throws Exception
     {
-        if (this.options.isEnableModsFromCurseForge())
+        if (this.options.isEnableCurseForgePlugin())
             this.updatePlugin(new File(dir, "FUPlugins/CurseForgePlugin.jar"), "CurseForgePlugin", "CFP");
 
-        if (this.options.isInstallOptifineAsMod())
+        if (this.options.isEnableOptifineDownloaderPlugin())
             this.updatePlugin(new File(dir, "FUPlugins/OptifinePlugin.jar"), "OptifinePlugin", "OP");
 
         this.logger.debug("Configuring PLA...");
         this.configurePLA(dir);
     }
 
+    /**
+     * Manually update if the plugin isn't up to date.
+     */
     public void updatePlugin(File out, String name, String alias) throws Exception
     {
         boolean flag = true;
         if (out.exists())
         {
-            final String crc32 = IOUtils.getContent(new URL(String.format("https://flowarg.github.io/minecraft/launcher/%s.info", name))).trim();
-            if (FileUtils.getCRC32(out) == Long.parseLong(crc32)) flag = false;
+            final JarFile jarFile = new JarFile(out, false, ZipFile.OPEN_READ);
+            final ZipEntry entryUpdate = jarFile.getEntry("update.json");
+            if(entryUpdate == null)
+            {
+                final String crc32 = IOUtils.getContent(new URL(String.format("https://flowarg.github.io/minecraft/launcher/%s.info", name))).trim();
+                if (FileUtils.getCRC32(out) == Long.parseLong(crc32)) flag = false;
+            }
+            else flag = false;
         }
 
         if (flag)
