@@ -6,12 +6,12 @@ import java.net.URL;
 public class AssetDownloadable
 {
     private final String hash;
-    private final int size;
+    private final long size;
     private final String urlString;
     private final URL url;
     private final String file;
 
-    public AssetDownloadable(String hash, int size) throws MalformedURLException
+    public AssetDownloadable(String hash, long size) throws MalformedURLException
     {
         this.hash = hash;
         this.size = size;
@@ -21,7 +21,7 @@ public class AssetDownloadable
     }
 
     public String getHash() { return this.hash; }
-    public int getSize() { return this.size; }
+    public long getSize() { return this.size; }
     public String getUrlString() { return this.urlString; }
     public URL getUrl() { return this.url; }
     public String getFile() { return this.file; }

@@ -21,23 +21,23 @@ public class ModCommons
             {
                 logger.printStackTrace(e);
             }
-            downloadInfos.incrementDownloaded();
-            callback.update(downloadInfos.getDownloaded(), downloadInfos.getTotalToDownload());
+            downloadInfos.incrementDownloaded(mod.getSize());
+            callback.update(downloadInfos.getDownloadedBytes(), downloadInfos.getTotalToDownloadBytes());
         });
 
         if(cursePluginLoaded)
         {
             downloadInfos.getCurseMods().forEach(obj -> {
+                final CurseMod curseMod = (CurseMod)obj;
                 try
                 {
-                    final CurseMod curseMod = (CurseMod)obj;
                     IOUtils.download(logger, new URL(curseMod.getDownloadURL()), new File(modsDir, curseMod.getName()));
                 } catch (MalformedURLException e)
                 {
                     logger.printStackTrace(e);
                 }
-                downloadInfos.incrementDownloaded();
-                callback.update(downloadInfos.getDownloaded(), downloadInfos.getTotalToDownload());
+                downloadInfos.incrementDownloaded(curseMod.getLength());
+                callback.update(downloadInfos.getDownloadedBytes(), downloadInfos.getTotalToDownloadBytes());
             });
         }
     }

@@ -89,22 +89,22 @@ public class PluginManager
     public void loadCurseForgePlugin(File dir, ICurseFeaturesUser curseFeaturesUser)
     {
         final List<Object> allCurseMods = new ArrayList<>(curseFeaturesUser.getCurseMods().size());
+        if (!this.cursePluginLoaded)
+        {
+            try
+            {
+                Class.forName("fr.flowarg.flowupdater.curseforgeplugin.CurseForgePlugin");
+                this.cursePluginLoaded = true;
+            } catch (ClassNotFoundException e)
+            {
+                this.cursePluginLoaded = false;
+                this.logger.err("Cannot install mods from CurseForge: CurseAPI is not loaded. Please, enable the 'enableCurseForgePlugin' updater option !");
+                return;
+            }
+        }
+
         for (CurseFileInfos infos : curseFeaturesUser.getCurseMods())
         {
-            if (!this.cursePluginLoaded)
-            {
-                try
-                {
-                    Class.forName("fr.flowarg.flowupdater.curseforgeplugin.CurseForgePlugin");
-                    this.cursePluginLoaded = true;
-                } catch (ClassNotFoundException e)
-                {
-                    this.cursePluginLoaded = false;
-                    this.logger.err("Cannot install mods from CurseForge: CurseAPI is not loaded. Please, enable the 'enableModsFromCurseForge' updater option !");
-                    break;
-                }
-            }
-
             try
             {
                 final CurseForgePlugin curseForgePlugin = CurseForgePlugin.instance;
@@ -128,45 +128,36 @@ public class PluginManager
         if (modPackInfos != null)
         {
             this.progressCallback.step(Step.MOD_PACK);
-            try
-            {
-                Class.forName("fr.flowarg.flowupdater.curseforgeplugin.CurseForgePlugin");
-                this.cursePluginLoaded = true;
-                final CurseForgePlugin plugin = CurseForgePlugin.instance;
-                final CurseModPack modPack = plugin.getCurseModPack(modPackInfos.getProjectID(), modPackInfos.getFileID(), modPackInfos.isInstallExtFiles());
-                this.logger.info("Loading mod pack: " + modPack.getName() + " (" + modPack.getVersion() + ") by " + modPack.getAuthor() + '.');
-                modPack.getMods().forEach(mod -> {
-                    allCurseMods.add(mod);
-                    try
+            final CurseForgePlugin plugin = CurseForgePlugin.instance;
+            final CurseModPack modPack = plugin.getCurseModPack(modPackInfos.getProjectID(), modPackInfos.getFileID(), modPackInfos.isInstallExtFiles());
+            this.logger.info("Loading mod pack: " + modPack.getName() + " (" + modPack.getVersion() + ") by " + modPack.getAuthor() + '.');
+            modPack.getMods().forEach(mod -> {
+                allCurseMods.add(mod);
+                try
+                {
+                    final File file = new File(dir, mod.getName());
+                    boolean flag = false;
+                    for (String exclude : modPackInfos.getExcluded())
                     {
-                        final File file = new File(dir, mod.getName());
-                        boolean flag = false;
-                        for (String exclude : modPackInfos.getExcluded())
+                        if (mod.getName().equalsIgnoreCase(exclude))
                         {
-                            if (mod.getName().equalsIgnoreCase(exclude))
-                            {
-                                flag = !mod.isRequired();
-                                break;
-                            }
+                            flag = !mod.isRequired();
+                            break;
                         }
-                        if(!flag && (!file.exists() || !getMD5ofFile(file).equals(mod.getMd5()) || getFileSizeBytes(file) != mod.getLength()))
-                        {
-                            if (!mod.getMd5().contains("-"))
-                            {
-                                file.delete();
-                                this.downloadInfos.getCurseMods().add(mod);
-                            }
-                        }
-                    } catch (NoSuchAlgorithmException | IOException e)
-                    {
-                        this.logger.printStackTrace(e);
                     }
-                });
-            } catch (ClassNotFoundException e)
-            {
-                this.cursePluginLoaded = false;
-                this.logger.err("Cannot install mod pack from CurseForge: CurseAPI is not loaded. Please, enable the 'enableModsFromCurseForge' updater option !");
-            }
+                    if(!flag && (!file.exists() || !getMD5ofFile(file).equals(mod.getMd5()) || getFileSizeBytes(file) != mod.getLength()))
+                    {
+                        if (!mod.getMd5().contains("-"))
+                        {
+                            file.delete();
+                            this.downloadInfos.getCurseMods().add(mod);
+                        }
+                    }
+                } catch (NoSuchAlgorithmException | IOException e)
+                {
+                    this.logger.printStackTrace(e);
+                }
+            });
         }
 
         curseFeaturesUser.setAllCurseMods(allCurseMods);
@@ -190,7 +181,7 @@ public class PluginManager
         } catch (ClassNotFoundException e)
         {
             this.optifinePluginLoaded = false;
-            this.logger.err("Cannot install optifine: OptifinePlugin is not loaded. Please, enable the 'installOptifineAsMod' updater option !");
+            this.logger.err("Cannot install optifine: OptifinePlugin is not loaded. Please, enable the 'enableOptifineDownloaderPlugin' updater option !");
         }
     }
 

@@ -74,8 +74,8 @@ public class VanillaDownloader
             if(!file.exists() || !getSHA1(file).equals(downloadable.getSha1()) || getFileSizeBytes(file) != downloadable.getSize())
                 IOUtils.download(this.logger, new URL(downloadable.getUrl()), file);
 
-            this.downloadInfos.incrementDownloaded();
-            this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
+            this.downloadInfos.incrementDownloaded(downloadable.getSize());
+            this.callback.update(this.downloadInfos.getDownloadedBytes(), this.downloadInfos.getTotalToDownloadBytes());
         }
     }
 
@@ -126,8 +126,8 @@ public class VanillaDownloader
                             else IOUtils.download(this.logger, assetDownloadable.getUrl(), download);
                         }
 
-                        this.downloadInfos.incrementDownloaded();
-                        this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
+                        this.downloadInfos.incrementDownloaded(assetDownloadable.getSize());
+                        this.callback.update(this.downloadInfos.getDownloadedBytes(), this.downloadInfos.getTotalToDownloadBytes());
                     }
                 } catch (Exception e)
                 {

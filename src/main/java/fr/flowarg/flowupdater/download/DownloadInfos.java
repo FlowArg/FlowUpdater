@@ -1,5 +1,7 @@
 package fr.flowarg.flowupdater.download;
 
+import fr.antoineok.flowupdater.optifineplugin.Optifine;
+import fr.flowarg.flowupdater.curseforgeplugin.CurseMod;
 import fr.flowarg.flowupdater.download.json.AssetDownloadable;
 import fr.flowarg.flowupdater.download.json.Downloadable;
 import fr.flowarg.flowupdater.download.json.ExternalFile;
@@ -10,6 +12,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Represent information about download status. Used with {@link IProgressCallback} progress system.
@@ -24,33 +27,38 @@ public class DownloadInfos
     private final List<Mod> mods = new ArrayList<>();
     private final List<Object> curseMods = new ArrayList<>();
     private Object optifine = null;
-    private final AtomicInteger totalToDownload = new AtomicInteger();
-    private final AtomicInteger downloaded = new AtomicInteger();
+    private final AtomicLong totalToDownloadBytes = new AtomicLong(0);
+    private final AtomicLong downloadedBytes = new AtomicLong(0);
     private boolean init = false;
 
     public void init()
     {
         if(!this.isInit())
         {
-            this.totalToDownload.set(this.libraryDownloadables.size() + this.assetDownloadables.size() + this.extFiles.size() + this.mods.size() + this.curseMods.size() + (this.optifine == null ? 0 : 1));
-            this.downloaded.set(0);
+            this.libraryDownloadables.forEach(downloadable -> this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + downloadable.getSize()));
+            this.assetDownloadables.forEach(downloadable -> this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + downloadable.getSize()));
+            this.extFiles.forEach(externalFile -> this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + externalFile.getSize()));
+            this.mods.forEach(mod -> this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + mod.getSize()));
+            this.curseMods.forEach(obj -> this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + (long)(((CurseMod)obj).getLength())));
+            if (this.optifine != null)
+                this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + (long)(((Optifine)this.optifine).getSize()));
             this.init = true;
         }
     }
 
-    public void incrementDownloaded()
+    public void incrementDownloaded(long bytes)
     {
-        this.downloaded.incrementAndGet();
+        this.downloadedBytes.set(this.downloadedBytes.get() + bytes);
     }
 
-    public int getTotalToDownload()
+    public long getTotalToDownloadBytes()
     {
-        return this.totalToDownload.get();
+        return this.totalToDownloadBytes.get();
     }
 
-    public int getDownloaded()
+    public long getDownloadedBytes()
     {
-        return this.downloaded.get();
+        return this.downloadedBytes.get();
     }
 
     public Queue<AssetDownloadable> getAssetDownloadables()
@@ -101,7 +109,8 @@ public class DownloadInfos
         this.mods.clear();
         this.curseMods.clear();
         this.optifine = null;
-        this.totalToDownload.set(0);
-        this.downloaded.set(0);
+        this.totalToDownloadBytes.set(0);
+        this.downloadedBytes.set(0);
+        this.init = false;
     }
 }

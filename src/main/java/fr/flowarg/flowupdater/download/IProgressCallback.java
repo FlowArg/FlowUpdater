@@ -19,8 +19,8 @@ public interface IProgressCallback
 
     /**
      * This method is called when a new file is downloaded.
-     * @param downloaded Number of downloaded files.
-     * @param max Total files to download.
+     * @param downloaded Number of downloaded/checked bytes.
+     * @param max Total bytes to download/check.
      */
-    void update(int downloaded, int max);
+    void update(long downloaded, long max);
 }

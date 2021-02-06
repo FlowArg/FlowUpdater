@@ -67,7 +67,7 @@ public class FlowUpdater
     public static final IProgressCallback NULL_CALLBACK = new IProgressCallback()
     {
         @Override
-        public void update(int downloaded, int max) {}
+        public void update(long downloaded, long max) {}
         
         @Override
         public void step(Step step) {}
@@ -217,8 +217,8 @@ public class FlowUpdater
                 {
                     this.logger.printStackTrace(e);
                 }
-                this.downloadInfos.incrementDownloaded();
-                this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
+                this.downloadInfos.incrementDownloaded(extFile.getSize());
+                this.callback.update(this.downloadInfos.getDownloadedBytes(), this.downloadInfos.getTotalToDownloadBytes());
             });
         }
     }
@@ -236,6 +236,7 @@ public class FlowUpdater
     private void endUpdate()
     {
         this.callback.step(Step.END);
+        this.callback.update(this.downloadInfos.getTotalToDownloadBytes(), this.downloadInfos.getTotalToDownloadBytes());
         this.downloadInfos.clear();
         this.pluginManager.shutdown();
     }

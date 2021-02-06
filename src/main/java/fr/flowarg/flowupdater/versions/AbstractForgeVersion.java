@@ -197,10 +197,10 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         {
             if(this.downloadInfos.getOptifine() != null)
             {
+                final Optifine optifine = (Optifine)this.downloadInfos.getOptifine();
+                ofObj = optifine;
                 try
                 {
-                    final Optifine optifine = (Optifine)this.downloadInfos.getOptifine();
-                    ofObj = optifine;
                     final File pluginDir = new File(modsDir.getParentFile(), "FUPlugins/OptifinePlugin/");
                     final File optifineFile = new File(modsDir, optifine.getName());
                     if(!optifineFile.exists())
@@ -209,8 +209,8 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
                 {
                     this.logger.printStackTrace(e);
                 }
-                this.downloadInfos.incrementDownloaded();
-                this.callback.update(this.downloadInfos.getDownloaded(), this.downloadInfos.getTotalToDownload());
+                this.downloadInfos.incrementDownloaded(optifine.getSize());
+                this.callback.update(this.downloadInfos.getDownloadedBytes(), this.downloadInfos.getTotalToDownloadBytes());
             }
         }
 

@@ -3,11 +3,11 @@ package fr.flowarg.flowupdater.download.json;
 public class Downloadable
 {
     private final String url;
-    private final int size;
+    private final long size;
     private final String sha1;
     private final String name;
 
-    public Downloadable(String url, int size, String sha1, String name)
+    public Downloadable(String url, long size, String sha1, String name)
     {
         this.url = url;
         this.size = size;
@@ -19,7 +19,7 @@ public class Downloadable
     {
         return this.url;
     }
-    public int getSize()
+    public long getSize()
     {
         return this.size;
     }
