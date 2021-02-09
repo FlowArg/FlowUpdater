@@ -10,7 +10,7 @@ import fr.flowarg.flowupdater.versions.VanillaVersion;
  * @author flow
  * @version 1.5
  * 
- * Used for {@link FlowUpdater} & {@link VanillaVersion} & {@link AbstractForgeVersion}
+ * Used for {@link FlowUpdater} and {@link VanillaVersion} and {@link AbstractForgeVersion}
  * 
  * This exception is threw when an error occurred with Builder API.
  */

@@ -15,7 +15,7 @@ import java.util.function.Supplier;
  * @author flow
  * @version 1.5
  * 
- * Used for {@link FlowUpdater} & {@link VanillaVersion} & {@link AbstractForgeVersion}
+ * Used for {@link FlowUpdater} and {@link VanillaVersion} and {@link AbstractForgeVersion}
  * @param <T> Object Argument
  * 
  * Represent an argument for a Builder implementation.

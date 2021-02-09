@@ -9,7 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
 /**
- * @author antoineok <https://github.com/antoineok>
+ * @author antoineok https://github.com/antoineok
  */
 public class ArtifactsDownloader
 {

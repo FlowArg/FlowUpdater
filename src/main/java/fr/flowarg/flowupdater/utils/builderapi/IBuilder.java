@@ -10,7 +10,7 @@ import fr.flowarg.flowupdater.versions.VanillaVersion;
  * @version 1.5
  * @author flow
  *
- * Used for {@link FlowUpdater} & {@link VanillaVersion} & {@link AbstractForgeVersion}
+ * Used for {@link FlowUpdater} and {@link VanillaVersion} and {@link AbstractForgeVersion}
  * @param <T> Object returned.
  * 
  * Builder interface.

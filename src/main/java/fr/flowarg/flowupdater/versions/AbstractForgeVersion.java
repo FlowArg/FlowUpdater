@@ -25,7 +25,7 @@ import java.util.List;
 
 /**
  * The base object of a forge version.
- * Implemented by {@link OldForgeVersion} & {@link NewForgeVersion}
+ * Implemented by {@link OldForgeVersion} and {@link NewForgeVersion}
  * @author flow
  */
 public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLoaderVersion
@@ -47,8 +47,8 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     /**
      * Use {@link ForgeVersionBuilder} to instantiate this class.
      * @param logger {@link ILogger} used for logging.
-     * @param mods {@link List<Mod>} to install.
-     * @param curseMods {@link List<CurseFileInfos>} to install.
+     * @param mods {@link List} to install.
+     * @param curseMods {@link List} to install.
      * @param forgeVersion to install.
      * @param vanilla {@link VanillaVersion}.
      * @param callback {@link IProgressCallback} used for update progression.

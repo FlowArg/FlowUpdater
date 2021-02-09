@@ -16,7 +16,7 @@ import java.lang.ProcessBuilder.Redirect;
 import java.util.List;
 
 /**
- * Represent a new Forge version (1.12.2-14.23.5.2851 -> 1.16.5)
+ * Represent a new Forge version (1.12.2-14.23.5.2851 to 1.16.5)
  * @author FlowArg
  */
 public class NewForgeVersion extends AbstractForgeVersion

@@ -19,7 +19,7 @@ import java.net.URL;
 import java.util.List;
 
 /**
- * Represent an old Forge version (1.7 -> 1.12.2) (No support for versions older than 1.7)
+ * Represent an old Forge version (1.7 to 1.12.2) (No support for versions older than 1.7)
  * @author FlowArg
  */
 public class OldForgeVersion extends AbstractForgeVersion

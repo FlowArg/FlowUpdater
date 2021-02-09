@@ -99,7 +99,7 @@ public class FlowUpdater
         this.logger = logger;
         this.version = version;
         this.fabricVersion = fabricVersion;
-        this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.3.3"));
+        this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.3.4"));
         this.externalFiles = externalFiles;
         this.postExecutions = postExecutions;
         this.forgeVersion = forgeVersion;
@@ -301,8 +301,8 @@ public class FlowUpdater
         }
 
         /**
-         * Append a {@link List<ExternalFile>} object in the final FlowUpdater instance.
-         * @param externalFiles the {@link List<ExternalFile>} to append and update.
+         * Append a {@link List} object in the final FlowUpdater instance.
+         * @param externalFiles the {@link List} to append and update.
          * @return the builder.
          */
         public FlowUpdaterBuilder withExternalFiles(List<ExternalFile> externalFiles)
@@ -312,8 +312,8 @@ public class FlowUpdater
         }
 
         /**
-         * Append a {@link List<Runnable>} object in the final FlowUpdater instance.
-         * @param postExecutions the {@link List<Runnable>} to append and run after the update.
+         * Append a {@link List} object in the final FlowUpdater instance.
+         * @param postExecutions the {@link List} to append and run after the update.
          * @return the builder.
          */
         public FlowUpdaterBuilder withPostExecutions(List<Runnable> postExecutions)

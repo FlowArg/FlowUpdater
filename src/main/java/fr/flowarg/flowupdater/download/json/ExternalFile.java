@@ -40,7 +40,7 @@ public class ExternalFile
      * @param sha1 Sha1 of external file.
      * @param size Size of external file.
      * @param downloadURL external file URL.
-     * @param update false -> not checking if the file is valid. true -> checking if the file is valid.
+     * @param update false: not checking if the file is valid. true: checking if the file is valid.
      */
     public ExternalFile(String path, String downloadURL, String sha1, long size, boolean update)
     {

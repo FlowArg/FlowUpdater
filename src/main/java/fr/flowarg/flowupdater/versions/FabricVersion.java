@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author antoineok <https://github.com/antoineok>
+ * @author antoineok https://github.com/antoineok
  */
 public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
 {
@@ -351,7 +351,6 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
         private final BuilderArgument<CurseModPackInfos> modPackArgument = new BuilderArgument<CurseModPackInfos>("ModPack").optional();
 
         /**
-         *
          * @param fabricVersion the fabric version you want to install (don't use this function if you want to use the latest fabric version automatically).
          */
         public FabricVersionBuilder withFabricVersion(String fabricVersion)
