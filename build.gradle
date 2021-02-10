@@ -72,7 +72,7 @@ publishing {
 
                 scm {
                     connection = 'scm:git:git://github.com/FlowArg/FlowUpdater.git'
-                    developerConnection = 'cm:git:ssh://github.com:FlowArg/FlowUpdater.git'
+                    developerConnection = 'scm:git:ssh://github.com:FlowArg/FlowUpdater.git'
                     url = 'http://github.com/FlowArg/FlowUpdater/tree/master'
                 }
 
