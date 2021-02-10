@@ -1,5 +1,6 @@
-[version]: https://api.bintray.com/packages/flowarg/maven/FlowUpdater/images/download.svg
-[download]: https://bintray.com/flowarg/maven/FlowUpdater/_latestVersion
+[version]: https://img.shields.io/maven-central/v/fr.flowarg/flowupdater.svg?label=Download
+[download]: https://search.maven.org/search?q=g:%22fr.flowarg%22%20AND%20a:%22flowupdater%22
+
 [discord-shield]: https://discordapp.com/api/guilds/730758985376071750/widget.png
 [discord-invite]: https://discord.gg/dN6HWHp
 
@@ -13,7 +14,7 @@
 In your block `repositories`, add this lines :
 ```groovy
 repositories {
-    jcenter()
+    mavenCentral() // FlowUpdater has migrated to MavenCentral and abandoned jcenter. Old libraries are still avaiable in jcenter repo until it is down.
     maven {
         url "https://jitpack.io/"
         name = "JitPack"

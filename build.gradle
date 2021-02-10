@@ -1,9 +1,9 @@
 plugins {
-    id 'com.jfrog.bintray' version '1.8.5'
     id "com.github.johnrengelman.shadow" version "6.1.0" apply false
 }
 
 apply plugin: 'maven-publish'
+apply plugin: 'signing'
 
 allprojects {
     apply plugin: 'java-library'
@@ -35,6 +35,11 @@ allprojects {
         classifier 'sources'
         from sourceSets.main.allSource
     }
+    
+    task javadocJar(type: Jar) {
+        classifier = 'javadoc'
+        from javadoc
+    }
 
     dependencies {
         api 'com.google.code.gson:gson:2.8.6'
@@ -43,30 +48,11 @@ allprojects {
     }
 }
 
-version '1.3.3'
+version '1.3.4'
 archivesBaseName = "flowupdater"
 
 artifacts {
-    archives sourcesJar
-}
-
-bintray {
-    user = System.getenv('BINTRAY_USERNAME')
-    key = System.getenv('BINTRAY_KEY')
-    publications = ['mavenJava'] 
-    pkg {
-        repo = 'maven'
-        name = 'FlowUpdater'
-        userOrg = 'flowarg'
-        licenses = ['GPL-3.0']
-        publicDownloadNumbers = true
-        vcsUrl = 'https://github.com/FlowArg/FlowUpdater.git'
-        version {
-            name = 'v' + project.version
-            released = new Date()
-            vcsTag = 'v' + project.version
-        }
-    }
+    archives sourcesJar, javadocJar
 }
 
 publishing {
@@ -74,6 +60,8 @@ publishing {
         mavenJava(MavenPublication) {
             from components.java
             artifact tasks.sourcesJar
+            artifact tasks.javadocJar
+            
             pom {
                 groupId = project.group
                 version = project.version
@@ -82,21 +70,45 @@ publishing {
                 description = 'FlowUpdater is a library for automatically update minecraft versions !'
                 url = 'https://github.com/FlowArg/FlowUpdater'
 
-                issueManagement {
-                    system = 'github'
-                    url = 'https://github.com/FlowArg/FlowUpdater/issues'
+                scm {
+                    connection = 'scm:git:git://github.com/FlowArg/FlowUpdater.git'
+                    developerConnection = 'cm:git:ssh://github.com:FlowArg/FlowUpdater.git'
+                    url = 'http://github.com/FlowArg/FlowUpdater/tree/master'
                 }
 
                 licenses {
                     license {
-                        name = 'LICENSE'
-                        url = 'https://github.com/FlowArg/FlowUpdater/blob/master/LICENSE'
-                        distribution = 'repo'
+                        name = 'GNU General Public License v3.0'
+                        url = 'https://www.gnu.org/licenses/gpl-3.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'flowarg'
+                        name = 'Flow Arg'
+                        email = 'coutureflorence3@gmail.com'
                     }
                 }
             }
         }
     }
+    
+    repositories {
+        maven {
+            credentials {
+                username ossrhUsername
+                password ossrhPassword
+            }
+            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+            url = project.version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava
 }
 
 dependencies {
