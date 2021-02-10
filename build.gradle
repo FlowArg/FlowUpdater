@@ -37,7 +37,7 @@ allprojects {
     }
     
     task javadocJar(type: Jar) {
-        classifier = 'javadoc'
+        classifier 'javadoc'
         from javadoc
     }
 
