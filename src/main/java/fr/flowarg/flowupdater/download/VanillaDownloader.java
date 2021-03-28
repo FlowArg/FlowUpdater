@@ -10,6 +10,7 @@ import fr.flowarg.flowupdater.utils.IOUtils;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -62,10 +63,7 @@ public class VanillaDownloader
         this.logger.info("Checking library files...");
         this.callback.step(Step.DL_LIBS);
 
-        for (File files : FileUtils.list(this.natives))
-        {
-            if (files.isDirectory()) FileUtils.deleteDirectory(files);
-        }
+        Arrays.stream(list(this.natives)).filter(File::isDirectory).forEach(FileUtils::deleteDirectory);
 
         for (Downloadable downloadable : this.downloadInfos.getLibraryDownloadables())
         {
@@ -82,7 +80,7 @@ public class VanillaDownloader
         }
     }
 
-    private void extractNatives() throws IOException
+    private void extractNatives()
     {
         boolean flag = true;
         for (File minecraftNative : FileUtils.list(this.natives))
@@ -97,15 +95,23 @@ public class VanillaDownloader
         {
             this.logger.info("Extracting natives...");
             this.callback.step(Step.EXTRACT_NATIVES);
-            for (File minecraftNative : FileUtils.list(this.natives))
-            {
-                if (!minecraftNative.isDirectory() && minecraftNative.getName().endsWith(".jar"))
-                    unzipJar(this.natives.getAbsolutePath(), minecraftNative.getAbsolutePath(), "ignoreMetaInf");
-            }
+
+            Arrays.stream(FileUtils.list(this.natives))
+                    .filter(file -> !file.isDirectory() && file.getName().endsWith(".jar"))
+                    .forEach(file -> {
+                        try
+                        {
+                            unzipJar(this.natives.getAbsolutePath(), file.getAbsolutePath(), "ignoreMetaInf");
+                        } catch (IOException e)
+                        {
+                            this.logger.printStackTrace(e);
+                        }
+                    });
         }
 
-        for (File toDelete : FileUtils.list(this.natives))
-            if (toDelete.getName().endsWith(".git") || toDelete.getName().endsWith(".sha1")) toDelete.delete();
+        Arrays.stream(FileUtils.list(this.natives))
+                .filter(file -> file.getName().endsWith(".git") || file.getName().endsWith(".sha1"))
+                .forEach(File::delete);
     }
 
     private void downloadAssets()

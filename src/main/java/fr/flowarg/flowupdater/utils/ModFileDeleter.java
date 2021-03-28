@@ -27,6 +27,7 @@ public class ModFileDeleter implements IFileDeleter
     {
         if (parameters.length != 6)
             return;
+
         if(this.isUseFileDeleter())
         {
             final File modsDir = (File)parameters[0];
