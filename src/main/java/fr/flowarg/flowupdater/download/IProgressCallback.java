@@ -3,6 +3,8 @@ package fr.flowarg.flowupdater.download;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.FlowUpdater;
 
+import java.io.File;
+
 public interface IProgressCallback
 {
     /**
@@ -23,4 +25,10 @@ public interface IProgressCallback
      * @param max Total bytes to download/check.
      */
     default void update(long downloaded, long max) {}
+
+    /**
+     * This method is called before {@link #update(long, long)} when a file is downloaded.
+     * @param file the file downloaded.
+     */
+    default void onFileDownloaded(File file) {}
 }

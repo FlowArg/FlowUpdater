@@ -15,7 +15,9 @@ public class ModCommons
         downloadInfos.getMods().forEach(mod -> {
             try
             {
-                IOUtils.download(logger, new URL(mod.getDownloadURL()), new File(modsDir, mod.getName()));
+                final File modFile = new File(modsDir, mod.getName());
+                IOUtils.download(logger, new URL(mod.getDownloadURL()), modFile);
+                callback.onFileDownloaded(modFile);
             }
             catch (MalformedURLException e)
             {
@@ -31,7 +33,9 @@ public class ModCommons
                 final CurseMod curseMod = (CurseMod)obj;
                 try
                 {
-                    IOUtils.download(logger, new URL(curseMod.getDownloadURL()), new File(modsDir, curseMod.getName()));
+                    final File modFile = new File(modsDir, curseMod.getName());
+                    IOUtils.download(logger, new URL(curseMod.getDownloadURL()), modFile);
+                    callback.onFileDownloaded(modFile);
                 } catch (MalformedURLException e)
                 {
                     logger.printStackTrace(e);

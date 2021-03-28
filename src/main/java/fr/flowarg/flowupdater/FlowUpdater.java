@@ -211,7 +211,9 @@ public class FlowUpdater
             this.downloadInfos.getExtFiles().forEach(extFile -> {
                 try
                 {
-                    IOUtils.download(this.logger, new URL(extFile.getDownloadURL()), new File(dir, extFile.getPath()));
+                    final File file = new File(dir, extFile.getPath());
+                    IOUtils.download(this.logger, new URL(extFile.getDownloadURL()), file);
+                    this.callback.onFileDownloaded(file);
                 }
                 catch (IOException e)
                 {

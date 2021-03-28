@@ -72,7 +72,10 @@ public class VanillaDownloader
             final File file = new File(this.dir, downloadable.getName());
 
             if(!file.exists() || !getSHA1(file).equals(downloadable.getSha1()) || getFileSizeBytes(file) != downloadable.getSize())
+            {
                 IOUtils.download(this.logger, new URL(downloadable.getUrl()), file);
+                this.callback.onFileDownloaded(file);
+            }
 
             this.downloadInfos.incrementDownloaded(downloadable.getSize());
             this.callback.update(this.downloadInfos.getDownloadedBytes(), this.downloadInfos.getTotalToDownloadBytes());
@@ -123,7 +126,11 @@ public class VanillaDownloader
                         {
                             final File localAsset = new File(IOUtils.getMinecraftFolder(), "assets/" + assetDownloadable.getFile());
                             if(localAsset.exists() && getFileSizeBytes(localAsset) == assetDownloadable.getSize()) IOUtils.copy(this.logger, localAsset, download);
-                            else IOUtils.download(this.logger, assetDownloadable.getUrl(), download);
+                            else
+                            {
+                                IOUtils.download(this.logger, assetDownloadable.getUrl(), download);
+                                this.callback.onFileDownloaded(download);
+                            }
                         }
 
                         this.downloadInfos.incrementDownloaded(assetDownloadable.getSize());
