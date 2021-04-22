@@ -24,9 +24,6 @@ import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.jar.JarFile;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import static fr.flowarg.flowio.FileUtils.getFileSizeBytes;
 import static fr.flowarg.flowio.FileUtils.getMD5ofFile;
@@ -69,14 +66,8 @@ public class PluginManager
         boolean flag = true;
         if (out.exists())
         {
-            final JarFile jarFile = new JarFile(out, false, ZipFile.OPEN_READ);
-            final ZipEntry entryUpdate = jarFile.getEntry("update.json");
-            if(entryUpdate == null)
-            {
-                final String crc32 = IOUtils.getContent(new URL(String.format("https://flowarg.github.io/minecraft/launcher/%s.info", name))).trim();
-                if (FileUtils.getCRC32(out) == Long.parseLong(crc32)) flag = false;
-            }
-            else flag = false;
+            final String crc32 = IOUtils.getContent(new URL(String.format("https://flowarg.github.io/minecraft/launcher/%s.info", name))).trim();
+            if (FileUtils.getCRC32(out) == Long.parseLong(crc32)) flag = false;
         }
 
         if (flag)

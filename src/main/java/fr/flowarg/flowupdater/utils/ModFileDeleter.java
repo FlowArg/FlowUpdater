@@ -46,7 +46,10 @@ public class ModFileDeleter implements IFileDeleter
                 {
                     if(verifiedFiles.contains(fileInDir))
                         continue;
-                    if(mods.isEmpty() && allCurseMods.isEmpty() && optifineParam == null)
+                    System.out.println("Mods: " + mods);
+                    System.out.println("CurseMods: " + allCurseMods);
+                    System.out.println("OptifineParam: " + optifineParam);
+                    if((mods == null || mods.isEmpty()) && (allCurseMods == null || allCurseMods.isEmpty()) && optifineParam == null)
                     {
                         if(!verifiedFiles.contains(fileInDir))
                             badFiles.add(fileInDir);

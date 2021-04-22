@@ -23,6 +23,7 @@ allprojects {
     }
 
     repositories {
+        mavenCentral()
         jcenter()
         mavenLocal()
         maven {
@@ -43,7 +44,7 @@ allprojects {
 
     dependencies {
         api 'com.google.code.gson:gson:2.8.6'
-        api 'fr.flowarg:flowmultitools:1.2.4'
+        api 'fr.flowarg:flowmultitools:1.2.5'
         implementation 'com.github.FlowArg:PluginLoaderAPI:94e88e0'
     }
 }
@@ -114,4 +115,7 @@ signing {
 dependencies {
     compileOnly project(":CurseForgePlugin")
     compileOnly project (":OptifinePlugin")
+
+    // Only for internal tests
+    testImplementation 'fr.flowarg:openlauncherlib:3.1.+'
 }

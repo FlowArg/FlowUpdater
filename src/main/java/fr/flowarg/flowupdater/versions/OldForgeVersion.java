@@ -2,6 +2,7 @@ package fr.flowarg.flowupdater.versions;
 
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
+import fr.flowarg.flowstringer.StringUtils;
 import fr.flowarg.flowupdater.download.IProgressCallback;
 import fr.flowarg.flowupdater.download.json.CurseFileInfos;
 import fr.flowarg.flowupdater.download.json.CurseModPackInfos;
@@ -12,10 +13,10 @@ import fr.flowarg.flowupdater.utils.ModFileDeleter;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.ProcessBuilder.Redirect;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.List;
 
 /**
@@ -69,11 +70,29 @@ public class OldForgeVersion extends AbstractForgeVersion
         }
     }
 
+    // Hacky
+    @Override
+    protected void fixInstaller(File tempInstallerDir) throws IOException
+    {
+        for (File file : FileUtils.list(tempInstallerDir))
+        {
+            final String fileName = file.getName();
+            if(fileName.contains("universal") && fileName.endsWith(".jar"))
+            {
+                final File dir = new File(tempInstallerDir, "maven/net/minecraftforge/forge/" );
+                dir.mkdirs();
+                Files.copy(file.toPath(), new File(dir, fileName).toPath());
+                Files.copy(file.toPath(), new File(dir, "net/minecraftforge/forge/" + StringUtils.empty(fileName, ".jar") + '/' + file.getName()).toPath());
+                break;
+            }
+        }
+    }
+
     @Override
     protected void cleanInstaller(File tempInstallerDir)
     {
         FileUtils.deleteDirectory(new File(tempInstallerDir, "net"));
-        FileUtils.deleteDirectory(new File(tempInstallerDir, "joptisimple"));
+        FileUtils.deleteDirectory(new File(tempInstallerDir, "joptsimple"));
         FileUtils.deleteDirectory(new File(tempInstallerDir, "META-INF"));
         FileUtils.deleteDirectory(new File(tempInstallerDir, "com"));
         new File(tempInstallerDir, "big_logo.png").delete();

@@ -82,6 +82,9 @@ public class NewForgeVersion extends AbstractForgeVersion
     }
 
     @Override
+    protected void fixInstaller(File tempInstallerDir) {}
+
+    @Override
     protected void cleanInstaller(File tempInstallerDir)
     {
         FileUtils.deleteDirectory(new File(tempInstallerDir, "net"));

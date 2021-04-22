@@ -133,6 +133,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         ZipUtils.unzipJarWithLZMACompat(tempInstallerDir, install);
         this.cleanInstaller(tempInstallerDir);
         ZipUtils.unzipJarWithLZMACompat(tempInstallerDir, patches);
+        this.fixInstaller(tempInstallerDir);
         this.logger.info("Repacking installer...");
         this.packPatchedInstaller(tempDir, tempInstallerDir);
         patches.delete();
@@ -153,6 +154,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     }
 
     protected abstract void cleanInstaller(File tempInstallerDir);
+    protected abstract void fixInstaller(File tempInstallerDir) throws IOException;
 
     /**
      * Check if the minecraft installation already contains another forge installation not corresponding to this version.
