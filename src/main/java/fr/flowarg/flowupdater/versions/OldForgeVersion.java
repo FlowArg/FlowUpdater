@@ -1,22 +1,22 @@
 package fr.flowarg.flowupdater.versions;
 
-import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
-import fr.flowarg.flowstringer.StringUtils;
 import fr.flowarg.flowupdater.download.IProgressCallback;
 import fr.flowarg.flowupdater.download.json.CurseFileInfos;
 import fr.flowarg.flowupdater.download.json.CurseModPackInfos;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.download.json.OptifineInfo;
+import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
 
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.lang.ProcessBuilder.Redirect;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -31,7 +31,7 @@ public class OldForgeVersion extends AbstractForgeVersion
     }
     
     @Override
-    public void install(File dirToInstall)
+    public void install(Path dirToInstall) throws Exception
     {
         super.install(dirToInstall);
         if(!this.installForge(dirToInstall, true))
@@ -46,7 +46,7 @@ public class OldForgeVersion extends AbstractForgeVersion
         }
     }
 
-    private boolean installForge(File dirToInstall, boolean first)
+    private boolean installForge(Path dirToInstall, boolean first) throws Exception
     {
         try (BufferedInputStream stream = new BufferedInputStream(this.installerUrl.openStream()))
         {
@@ -54,12 +54,12 @@ public class OldForgeVersion extends AbstractForgeVersion
             final ProcessBuilder processBuilder = new ProcessBuilder(forgeLauncherEnvironment.getCommand());
             
             processBuilder.redirectOutput(Redirect.INHERIT);
-            processBuilder.directory(dirToInstall);
+            processBuilder.directory(dirToInstall.toFile());
             final Process process = processBuilder.start();
             process.waitFor();
             
             this.logger.info("Successfully installed Forge !");
-            FileUtils.deleteDirectory(forgeLauncherEnvironment.getTempDir());
+            IOUtils.deleteDirectory(forgeLauncherEnvironment.getTempDir());
             return true;
         }
         catch (IOException | InterruptedException e)
@@ -70,32 +70,15 @@ public class OldForgeVersion extends AbstractForgeVersion
         }
     }
 
-    // Hacky
     @Override
-    protected void fixInstaller(File tempInstallerDir) throws IOException
+    protected void cleanInstaller(Path tempInstallerDir) throws Exception
     {
-        for (File file : FileUtils.list(tempInstallerDir))
-        {
-            final String fileName = file.getName();
-            if(fileName.contains("universal") && fileName.endsWith(".jar"))
-            {
-                final File dir = new File(tempInstallerDir, "maven/net/minecraftforge/forge/" );
-                dir.mkdirs();
-                Files.copy(file.toPath(), new File(dir, fileName).toPath());
-                Files.copy(file.toPath(), new File(dir, "net/minecraftforge/forge/" + StringUtils.empty(fileName, ".jar") + '/' + file.getName()).toPath());
-                break;
-            }
-        }
-    }
-
-    @Override
-    protected void cleanInstaller(File tempInstallerDir)
-    {
-        FileUtils.deleteDirectory(new File(tempInstallerDir, "net"));
-        FileUtils.deleteDirectory(new File(tempInstallerDir, "joptsimple"));
-        FileUtils.deleteDirectory(new File(tempInstallerDir, "META-INF"));
-        FileUtils.deleteDirectory(new File(tempInstallerDir, "com"));
-        new File(tempInstallerDir, "big_logo.png").delete();
-        new File(tempInstallerDir, "url.png").delete();
+        final String path = tempInstallerDir.toString();
+        IOUtils.deleteDirectory(Paths.get(path, "net"));
+        IOUtils.deleteDirectory(Paths.get(path, "com"));
+        IOUtils.deleteDirectory(Paths.get(path, "joptsimple"));
+        IOUtils.deleteDirectory(Paths.get(path, "META-INF"));
+        Files.deleteIfExists(Paths.get(path, "big_logo.png"));
+        Files.deleteIfExists(Paths.get(path, "url.png"));
     }
 }

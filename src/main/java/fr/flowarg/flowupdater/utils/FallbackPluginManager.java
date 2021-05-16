@@ -1,11 +1,10 @@
 package fr.flowarg.flowupdater.utils;
 
-import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowupdater.FlowUpdater;
 import fr.flowarg.flowupdater.download.ICurseFeaturesUser;
 import fr.flowarg.flowupdater.versions.AbstractForgeVersion;
 
-import java.io.File;
+import java.nio.file.Path;
 
 public class FallbackPluginManager extends PluginManager
 {
@@ -15,22 +14,10 @@ public class FallbackPluginManager extends PluginManager
     }
 
     @Override
-    public void loadPlugins(File dir)
-    {
-        FileUtils.deleteDirectory(new File(dir, "FUPlugins"));
-    }
+    public void loadCurseForgePlugin(Path dir, ICurseFeaturesUser curseFeaturesUser) {}
 
     @Override
-    public void updatePlugin(File out, String name, String alias) {}
-
-    @Override
-    public void loadCurseForgePlugin(File dir, ICurseFeaturesUser curseFeaturesUser) {}
-
-    @Override
-    public void loadOptifinePlugin(File dir, AbstractForgeVersion forgeVersion) {}
-
-    @Override
-    public void configurePLA(File dir) {}
+    public void loadOptifinePlugin(Path dir, AbstractForgeVersion forgeVersion) {}
 
     @Override
     public void shutdown() {}

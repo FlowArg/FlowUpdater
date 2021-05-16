@@ -2,8 +2,8 @@ package fr.flowarg.flowupdater.utils;
 
 import fr.antoineok.flowupdater.optifineplugin.Optifine;
 import fr.antoineok.flowupdater.optifineplugin.OptifinePlugin;
-import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
+import fr.flowarg.flowlogger.Logger;
 import fr.flowarg.flowupdater.FlowUpdater;
 import fr.flowarg.flowupdater.curseforgeplugin.CurseForgePlugin;
 import fr.flowarg.flowupdater.curseforgeplugin.CurseMod;
@@ -15,12 +15,11 @@ import fr.flowarg.flowupdater.download.Step;
 import fr.flowarg.flowupdater.download.json.CurseFileInfos;
 import fr.flowarg.flowupdater.download.json.CurseModPackInfos;
 import fr.flowarg.flowupdater.versions.AbstractForgeVersion;
-import fr.flowarg.pluginloaderapi.PluginLoaderAPI;
-import fr.flowarg.pluginloaderapi.plugin.PluginLoader;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +30,6 @@ import static fr.flowarg.flowio.FileUtils.getMD5ofFile;
 public class PluginManager
 {
     private final IProgressCallback progressCallback;
-    private final UpdaterOptions options;
     private final ILogger logger;
     private final DownloadInfos downloadInfos;
 
@@ -41,51 +39,20 @@ public class PluginManager
     public PluginManager(FlowUpdater updater)
     {
         this.progressCallback = updater.getCallback();
-        this.options = updater.getUpdaterOptions();
         this.logger = updater.getLogger();
         this.downloadInfos = updater.getDownloadInfos();
     }
 
-    public void loadPlugins(File dir) throws Exception
+    public void loadCurseForgePlugin(Path dir, ICurseFeaturesUser curseFeaturesUser)
     {
-        if (this.options.isEnableCurseForgePlugin())
-            this.updatePlugin(new File(dir, "FUPlugins/CurseForgePlugin.jar"), "CurseForgePlugin", "CFP");
-
-        if (this.options.isEnableOptifineDownloaderPlugin())
-            this.updatePlugin(new File(dir, "FUPlugins/OptifinePlugin.jar"), "OptifinePlugin", "OP");
-
-        this.logger.debug("Configuring PLA...");
-        this.configurePLA(dir);
-    }
-
-    /**
-     * Manually update if the plugin isn't up to date.
-     */
-    public void updatePlugin(File out, String name, String alias) throws Exception
-    {
-        boolean flag = true;
-        if (out.exists())
-        {
-            final String crc32 = IOUtils.getContent(new URL(String.format("https://flowarg.github.io/minecraft/launcher/%s.info", name))).trim();
-            if (FileUtils.getCRC32(out) == Long.parseLong(crc32)) flag = false;
-        }
-
-        if (flag)
-        {
-            this.logger.debug(String.format("Downloading %s...", alias));
-            IOUtils.download(this.logger, new URL(String.format("https://flowarg.github.io/minecraft/launcher/%s.jar", name)), out);
-        }
-    }
-
-    public void loadCurseForgePlugin(File dir, ICurseFeaturesUser curseFeaturesUser)
-    {
-        final List<Object> allCurseMods = new ArrayList<>(curseFeaturesUser.getCurseMods().size());
         if (!this.cursePluginLoaded)
         {
             try
             {
                 Class.forName("fr.flowarg.flowupdater.curseforgeplugin.CurseForgePlugin");
                 this.cursePluginLoaded = true;
+                CurseForgePlugin.INSTANCE.setLogger(new Logger("[CurseForgePlugin]", this.logger.getLogFile(), true));
+                CurseForgePlugin.INSTANCE.setFolder(Paths.get(dir.getParent().toString(), ".cfp"));
             } catch (ClassNotFoundException e)
             {
                 this.cursePluginLoaded = false;
@@ -94,19 +61,22 @@ public class PluginManager
             }
         }
 
+        final List<Object> allCurseMods = new ArrayList<>(curseFeaturesUser.getCurseMods().size());
+
         for (CurseFileInfos infos : curseFeaturesUser.getCurseMods())
         {
             try
             {
-                final CurseForgePlugin curseForgePlugin = CurseForgePlugin.instance;
+                final CurseForgePlugin curseForgePlugin = CurseForgePlugin.INSTANCE;
                 final CurseMod mod = curseForgePlugin.getCurseMod(infos.getProjectID(), infos.getFileID());
                 allCurseMods.add(mod);
-                final File file = new File(dir, mod.getName());
-                if(!file.exists() || !getMD5ofFile(file).equals(mod.getMd5()) || getFileSizeBytes(file) != mod.getLength())
+
+                final Path filePath = Paths.get(dir.toString(), mod.getName());
+                if(Files.notExists(filePath) || !getMD5ofFile(filePath.toFile()).equals(mod.getMd5()) || getFileSizeBytes(filePath) != mod.getLength())
                 {
                     if (!mod.getMd5().contains("-"))
                     {
-                        file.delete();
+                        Files.deleteIfExists(filePath);
                         this.downloadInfos.getCurseMods().add(mod);
                     }
                 }
@@ -119,14 +89,14 @@ public class PluginManager
         if (modPackInfos != null)
         {
             this.progressCallback.step(Step.MOD_PACK);
-            final CurseForgePlugin plugin = CurseForgePlugin.instance;
+            final CurseForgePlugin plugin = CurseForgePlugin.INSTANCE;
             final CurseModPack modPack = plugin.getCurseModPack(modPackInfos.getProjectID(), modPackInfos.getFileID(), modPackInfos.isInstallExtFiles());
             this.logger.info("Loading mod pack: " + modPack.getName() + " (" + modPack.getVersion() + ") by " + modPack.getAuthor() + '.');
             modPack.getMods().forEach(mod -> {
                 allCurseMods.add(mod);
                 try
                 {
-                    final File file = new File(dir, mod.getName());
+                    final Path filePath = Paths.get(dir.toString(), mod.getName());
                     boolean flag = false;
                     for (String exclude : modPackInfos.getExcluded())
                     {
@@ -136,11 +106,11 @@ public class PluginManager
                             break;
                         }
                     }
-                    if(!flag && (!file.exists() || !getMD5ofFile(file).equals(mod.getMd5()) || getFileSizeBytes(file) != mod.getLength()))
+                    if(!flag && (Files.notExists(filePath) || !getMD5ofFile(filePath.toFile()).equals(mod.getMd5()) || getFileSizeBytes(filePath) != mod.getLength()))
                     {
                         if (!mod.getMd5().contains("-"))
                         {
-                            file.delete();
+                            Files.deleteIfExists(filePath);
                             this.downloadInfos.getCurseMods().add(mod);
                         }
                     }
@@ -154,7 +124,7 @@ public class PluginManager
         curseFeaturesUser.setAllCurseMods(allCurseMods);
     }
 
-    public void loadOptifinePlugin(File dir, AbstractForgeVersion forgeVersion)
+    public void loadOptifinePlugin(Path dir, AbstractForgeVersion forgeVersion)
     {
         try
         {
@@ -162,7 +132,9 @@ public class PluginManager
             this.optifinePluginLoaded = true;
             try
             {
-                final OptifinePlugin optifinePlugin = OptifinePlugin.instance;
+                final OptifinePlugin optifinePlugin = OptifinePlugin.INSTANCE;
+                optifinePlugin.setLogger(new Logger("[OptifinePlugin]", this.logger.getLogFile(), true));
+                optifinePlugin.setFolder(Paths.get(dir.getParent().toString(), ".op"));
                 final Optifine optifine = optifinePlugin.getOptifine(forgeVersion.getOptifine().getVersion(), forgeVersion.getOptifine().isPreview());
                 this.downloadInfos.setOptifine(optifine);
             } catch (Exception e)
@@ -176,19 +148,10 @@ public class PluginManager
         }
     }
 
-    public void configurePLA(File dir)
-    {
-        PluginLoaderAPI.setLogger(this.logger);
-        PluginLoaderAPI.registerPluginLoader(new PluginLoader("FlowUpdater", new File(dir, "FUPlugins/"), PluginManager.class)).complete();
-        PluginLoaderAPI.removeDefaultShutdownTrigger().complete();
-        PluginLoaderAPI.ready(PluginManager.class).complete();
-        while (!PluginLoaderAPI.finishedLoading()) ;
-    }
-
     public void shutdown()
     {
-        if (this.cursePluginLoaded) CurseForgePlugin.instance.shutdownOKHTTP();
-        if (this.optifinePluginLoaded) OptifinePlugin.instance.shutdownOKHTTP();
+        if (this.cursePluginLoaded) CurseForgePlugin.INSTANCE.shutdownOKHTTP();
+        if (this.optifinePluginLoaded) OptifinePlugin.INSTANCE.shutdownOKHTTP();
         this.cursePluginLoaded = false;
         this.optifinePluginLoaded = false;
     }

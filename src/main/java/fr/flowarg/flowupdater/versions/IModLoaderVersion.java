@@ -4,26 +4,25 @@ import fr.flowarg.flowupdater.download.DownloadInfos;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.utils.PluginManager;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.List;
 
 public interface IModLoaderVersion
 {
     void appendDownloadInfos(DownloadInfos infos);
-    boolean isModLoaderAlreadyInstalled(File installDir);
-    void install(File dirToInstall);
-    ModLoaderLauncherEnvironment prepareModLoaderLauncher(File dirToInstall, InputStream stream) throws IOException;
-    void installMods(File modsDir, PluginManager pluginManager) throws Exception;
+    boolean isModLoaderAlreadyInstalled(Path installDir);
+    void install(Path dirToInstall) throws Exception;
+    ModLoaderLauncherEnvironment prepareModLoaderLauncher(Path dirToInstall, InputStream stream) throws Exception;
+    void installMods(Path modsDir, PluginManager pluginManager) throws Exception;
     List<Mod> getMods();
 
     class ModLoaderLauncherEnvironment
     {
         private final List<String> command;
-        private final File tempDir;
+        private final Path tempDir;
 
-        public ModLoaderLauncherEnvironment(List<String> command, File tempDir)
+        public ModLoaderLauncherEnvironment(List<String> command, Path tempDir)
         {
             this.command = command;
             this.tempDir = tempDir;
@@ -34,7 +33,7 @@ public interface IModLoaderVersion
             return this.command;
         }
 
-        public File getTempDir()
+        public Path getTempDir()
         {
             return this.tempDir;
         }

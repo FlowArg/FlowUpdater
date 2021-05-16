@@ -10,21 +10,29 @@ import fr.flowarg.flowupdater.FlowUpdater;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class IOUtils
 {
-    private static File cachedMinecraftDir = null;
+    private static Path cachedMinecraftPath = null;
 
-    public static void download(ILogger logger, URL in, File out)
+    public static void download(ILogger logger, URL in, Path out)
     {
         try
         {
-            logger.info(String.format("Downloading %s from %s...", out.getName(), in.toExternalForm()));
-            out.getParentFile().mkdirs();
-            Files.copy(catchForbidden(in), out.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            logger.info(String.format("Downloading %s from %s...", out.getFileName().toString(), in.toExternalForm()));
+            Files.createDirectories(out.getParent());
+            Files.copy(catchForbidden(in), out, StandardCopyOption.REPLACE_EXISTING);
         }
         catch (IOException e)
         {
@@ -32,13 +40,13 @@ public class IOUtils
         }
     }
 
-    public static void copy(ILogger logger, File in, File out)
+    public static void copy(ILogger logger, Path in, Path out)
     {
         try
         {
-            logger.info(String.format("Copying %s to %s...", in.getAbsolutePath(), out.getAbsolutePath()));
-            out.getParentFile().mkdirs();
-            Files.copy(in.toPath(), out.toPath());
+            logger.info(String.format("Copying %s to %s...", in.toString(), out.toString()));
+            Files.createDirectories(out.getParent());
+            Files.copy(in, out, StandardCopyOption.REPLACE_EXISTING);
         }
         catch (IOException e)
         {
@@ -48,20 +56,26 @@ public class IOUtils
 
     public static String getContent(URL url)
     {
+        final StringBuilder sb = new StringBuilder();
+
         try(InputStream stream = new BufferedInputStream(catchForbidden(url)))
         {
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-            final StringBuilder sb = new StringBuilder();
+            final ReadableByteChannel rbc = Channels.newChannel(stream);
+            final Reader enclosedReader = Channels.newReader(rbc, StandardCharsets.UTF_8.newDecoder(), -1);
+            final BufferedReader reader = new BufferedReader(enclosedReader);
 
             int character;
             while ((character = reader.read()) != -1) sb.append((char)character);
 
-            return sb.toString();
+            reader.close();
+            enclosedReader.close();
+            rbc.close();
+
         } catch (IOException e)
         {
             FlowUpdater.DEFAULT_LOGGER.printStackTrace(e);
         }
-        return "";
+        return sb.toString();
     }
 
     /**
@@ -91,13 +105,19 @@ public class IOUtils
         JsonElement element = JsonNull.INSTANCE;
         try(InputStream stream = new BufferedInputStream(inputStream))
         {
-            final Reader reader = new BufferedReader(new InputStreamReader(stream));
+            final ReadableByteChannel rbc = Channels.newChannel(stream);
+            final Reader enclosedReader = Channels.newReader(rbc, StandardCharsets.UTF_8.newDecoder(), -1);
+            final BufferedReader reader = new BufferedReader(enclosedReader);
             final StringBuilder sb = new StringBuilder();
 
             int character;
             while ((character = reader.read()) != -1) sb.append((char)character);
 
-            element =  JsonParser.parseString(sb.toString());
+            element = JsonParser.parseString(sb.toString());
+
+            reader.close();
+            enclosedReader.close();
+            rbc.close();
         } catch (IOException e)
         {
             e.printStackTrace();
@@ -114,10 +134,15 @@ public class IOUtils
         return connection.getInputStream();
     }
 
-    public static File getMinecraftFolder()
+    public static Path getMinecraftFolder()
     {
-        if(cachedMinecraftDir == null) cachedMinecraftDir = new File(Platform.isOnWindows() ? System.getenv("APPDATA") : (Platform.isOnMac() ? System.getProperty("user.home") + "/Library/Application Support/" : System.getProperty("user.home")), ".minecraft/");
-        return cachedMinecraftDir;
+        if(cachedMinecraftPath == null)
+            cachedMinecraftPath = Paths.get(
+                    Platform.isOnWindows() ? System.getenv("APPDATA")
+                    : (Platform.isOnMac() ? System.getProperty("user.home") + "/Library/Application Support/" : System.getProperty("user.home")),
+                    ".minecraft"
+            );
+        return cachedMinecraftPath;
     }
 
     public static String consumeStringList(List<String> stringList)
@@ -125,5 +150,35 @@ public class IOUtils
         final StringBuilder sb = new StringBuilder();
         stringList.forEach(sb::append);
         return sb.toString();
+    }
+
+    public static void deleteDirectory(final Path folder) throws IOException
+    {
+        if (Files.exists(folder) && Files.isDirectory(folder))
+        {
+            final List<Path> files = listRecursive(folder);
+            for (final Path f : files)
+                Files.delete(f);
+
+            Files.delete(folder);
+        }
+    }
+
+    public static List<Path> listRecursive(final Path directory) throws IOException
+    {
+        final List<Path> files = new ArrayList<>();
+        final List<Path> fs = list(directory).collect(Collectors.toList());
+
+        for (final Path f : fs)
+        {
+            if (Files.isDirectory(f)) files.addAll(listRecursive(f));
+            files.add(f);
+        }
+        return files;
+    }
+
+    public static Stream<Path> list(final Path dir) throws IOException
+    {
+        return Files.exists(dir) ? Files.list(dir) : Stream.empty();
     }
 }

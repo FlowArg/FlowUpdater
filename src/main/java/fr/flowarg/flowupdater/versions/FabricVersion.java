@@ -1,10 +1,8 @@
 package fr.flowarg.flowupdater.versions;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.FlowUpdater;
 import fr.flowarg.flowupdater.download.*;
@@ -30,9 +28,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author antoineok https://github.com/antoineok
@@ -52,7 +53,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
     private final String installerVersion;
     private final CurseModPackInfos modPackInfos;
 
-    private final String[] compatibleVersions = {"1.16", "1.15", "1.14", "1.13"};
+    private final String[] compatibleVersions = {"1.17", "1.16", "1.15", "1.14", "1.13"};
 
     /**
      * Use {@link FabricVersionBuilder} to instantiate this class.
@@ -134,21 +135,22 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
      * @return true if fabric is already installed or not.
      */
     @Override
-    public boolean isModLoaderAlreadyInstalled(File installDir) {
-        return new File(installDir, "libraries/net/fabricmc/fabric-loader/" + this.fabricVersion + "/" + "fabric-loader-" + this.fabricVersion + ".jar").exists();
+    public boolean isModLoaderAlreadyInstalled(Path installDir)
+    {
+        return Files.exists(Paths.get(installDir.toString(), "libraries", "net", "fabricmc", "fabric-loader", this.fabricVersion, "fabric-loader-" + this.fabricVersion + ".jar"));
     }
 
     private static class FabricLauncherEnvironment extends ModLoaderLauncherEnvironment
     {
-        private final File fabric;
+        private final Path fabric;
 
-        public FabricLauncherEnvironment(List<String> command, File tempDir, File fabric)
+        public FabricLauncherEnvironment(List<String> command, Path tempDir, Path fabric)
         {
             super(command, tempDir);
             this.fabric = fabric;
         }
 
-        public File getFabric()
+        public Path getFabric()
         {
             return this.fabric;
         }
@@ -162,42 +164,44 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
 
-            while ((line = reader.readLine()) != null) System.out.println(line);
+            while ((line = reader.readLine()) != null) System.out.printf("%s\n", line);
 
             reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-            while ((line = reader.readLine()) != null) System.out.println(line);
+            while ((line = reader.readLine()) != null) System.out.printf("%s\n", line);
 
             process.waitFor();
+
+            reader.close();
         }
     }
 
     @Override
-    public FabricLauncherEnvironment prepareModLoaderLauncher(File dirToInstall, InputStream stream) throws IOException
+    public FabricLauncherEnvironment prepareModLoaderLauncher(Path dirToInstall, InputStream stream) throws IOException
     {
         this.logger.info("Downloading fabric installer...");
 
-        final File tempDir = new File(dirToInstall, ".flowupdater");
-        FileUtils.deleteDirectory(tempDir);
-        final File fabric = new File(tempDir, "zeWorld");
-        final File install = new File(tempDir, String.format("fabric-installer-%s.jar", installerVersion));
+        final Path tempDirPath = Paths.get(dirToInstall.toString(), ".flowupdater");
+        IOUtils.deleteDirectory(tempDirPath);
+        final Path fabricPath = Paths.get(tempDirPath.toString(), "zeWorld");
+        final Path installPath = Paths.get(tempDirPath.toString(), String.format("fabric-installer-%s.jar", installerVersion));
 
-        tempDir.mkdirs();
-        fabric.mkdirs();
+        Files.createDirectories(tempDirPath);
+        Files.createDirectories(fabricPath);
 
-        Files.copy(stream, install.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        return this.makeCommand(tempDir, install, fabric);
+        Files.copy(stream, installPath, StandardCopyOption.REPLACE_EXISTING);
+        return this.makeCommand(tempDirPath, installPath, fabricPath);
     }
 
-    private FabricLauncherEnvironment makeCommand(File tempDir, File install, File fabric)
+    private FabricLauncherEnvironment makeCommand(Path tempDir, Path install, Path fabric)
     {
         final List<String> command = new ArrayList<>();
         command.add("java");
         command.add("-Xmx256M");
         command.add("-jar");
-        command.add(install.getAbsolutePath());
+        command.add(install.toString());
         command.add("client");
         command.add("-dir");
-        command.add(fabric.getAbsolutePath());
+        command.add(fabric.toString());
         command.add("-mcversion");
         command.add(this.vanilla.getName());
         command.add("-loader");
@@ -211,9 +215,8 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
      *
      * @param dirToInstall Specified directory.
      */
-    // TODO optimize this
     @Override
-    public void install(final File dirToInstall)
+    public void install(final Path dirToInstall) throws Exception
     {
         this.callback.step(Step.FABRIC);
         this.logger.info("Installing fabric, version: " + this.fabricVersion + "...");
@@ -227,19 +230,20 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
                 this.logger.info("Launching fabric installer...");
                 fabricLauncherEnvironment.launchFabricInstaller();
 
-                final File json = new File(fabricLauncherEnvironment.getFabric(), String.format("versions" + File.separatorChar + "fabric-loader-%s-%s", fabricVersion, this.vanilla.getName()));
-                final File jsonFile = new File(json, json.getName() + ".json");
-                final JsonObject obj = JsonParser.parseString(IOUtils.consumeStringList(Files.readAllLines(jsonFile.toPath(), StandardCharsets.UTF_8))).getAsJsonObject();
+                final Path jsonPath = Paths.get(fabricLauncherEnvironment.getFabric().toString(), "versions", String.format("fabric-loader-%s-%s", this.fabricVersion, this.vanilla.getName()));
+                final Path jsonFilePath = Paths.get(jsonPath.toString(), jsonPath.getFileName().toString() + ".json");
+
+                final JsonObject obj = JsonParser.parseString(IOUtils.consumeStringList(Files.readAllLines(jsonFilePath, StandardCharsets.UTF_8))).getAsJsonObject();
                 final JsonArray libs = obj.getAsJsonArray("libraries");
 
-                final File libraries = new File(dirToInstall, "libraries");
+                final Path libraries = Paths.get(dirToInstall.toString(), "libraries");
                 libs.forEach(el -> {
                     final JsonObject artifact = el.getAsJsonObject();
                     ArtifactsDownloader.downloadArtifacts(libraries, artifact.get("url").getAsString(), artifact.get("name").getAsString(), this.logger);
                 });
 
                 this.logger.info("Successfully installed Fabric !");
-                FileUtils.deleteDirectory(fabricLauncherEnvironment.getTempDir());
+                IOUtils.deleteDirectory(fabricLauncherEnvironment.getTempDir());
             } catch (Exception e)
             {
                 this.logger.printStackTrace(e);
@@ -252,18 +256,15 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
      *
      * @param dirToInstall Fabric installation directory.
      */
-    private void checkFabricEnv(File dirToInstall)
+    private void checkFabricEnv(Path dirToInstall) throws IOException
     {
-        final File fabricDir = new File(dirToInstall, "libraries/net/fabricmc/fabric-loader/");
-        if (fabricDir.exists())
+        final Path fabricDirPath = Paths.get(dirToInstall.toString(), "libraries", "net", "fabricmc", "fabric-loader");
+        if (Files.exists(fabricDirPath))
         {
-            for (File contained : FileUtils.list(fabricDir))
+            for (Path contained : Files.list(fabricDirPath).collect(Collectors.toList()))
             {
-                if (!contained.getName().contains(this.fabricVersion))
-                {
-                    if (contained.isDirectory()) FileUtils.deleteDirectory(contained);
-                    else contained.delete();
-                }
+                if (!contained.getFileName().toString().contains(this.fabricVersion))
+                    IOUtils.deleteDirectory(contained);
             }
         }
     }
@@ -285,7 +286,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
      * @throws IOException If the install fail.
      */
     @Override
-    public void installMods(File modsDir, PluginManager pluginManager) throws Exception
+    public void installMods(Path modsDir, PluginManager pluginManager) throws Exception
     {
         this.callback.step(Step.MODS);
         final boolean cursePluginLoaded = pluginManager.isCursePluginLoaded();
@@ -352,6 +353,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
 
         /**
          * @param fabricVersion the fabric version you want to install (don't use this function if you want to use the latest fabric version automatically).
+         * @return the builder.
          */
         public FabricVersionBuilder withFabricVersion(String fabricVersion)
         {

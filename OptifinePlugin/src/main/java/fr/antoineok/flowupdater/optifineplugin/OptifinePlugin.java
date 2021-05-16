@@ -1,34 +1,32 @@
 package fr.antoineok.flowupdater.optifineplugin;
 
 import fr.flowarg.flowio.FileUtils;
-import fr.flowarg.pluginloaderapi.plugin.Plugin;
+import fr.flowarg.flowlogger.ILogger;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 
-public class OptifinePlugin extends Plugin {
+public class OptifinePlugin {
 
-    public static OptifinePlugin instance;
+    public static final OptifinePlugin INSTANCE = new OptifinePlugin();
 
     private final OkHttpClient client = new OkHttpClient();
-
-    @Override
-    public void onStart() {
-        instance = this;
-        this.getLogger().info("Starting ODP (OptifineDownloaderPlugin) for FlowUpdater...");
-    }
+    private ILogger logger;
+    private Path folder;
 
     /**
      *
      * @param optifineVersion the version of Optifine
+     * @param preview if the optifine version is a preview.
      * @return the object that defines the plugin
      * @throws IOException if the version is invalid or not found
      */
@@ -65,12 +63,13 @@ public class OptifinePlugin extends Plugin {
 
     private void checkForUpdates(String name, InputStream byteStream, int length, String newUrl) throws IOException
     {
-        final File output = new File(this.getDataPluginFolder(), name);
-        if(!output.exists() || FileUtils.getFileSizeBytes(output) != length)
+        final Path outputPath = Paths.get(this.getFolder().toString(), name);
+        if(Files.notExists(outputPath) || FileUtils.getFileSizeBytes(outputPath) != length)
         {
-            this.getLogger().info(String.format("Downloading %s from %s...", output.getName(), newUrl));
-            Files.copy(byteStream, output.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            this.getLogger().info(String.format("Downloading %s from %s...", outputPath.getFileName().toString(), newUrl));
+            Files.copy(byteStream, outputPath, StandardCopyOption.REPLACE_EXISTING);
         }
+        byteStream.close();
     }
 
     public void shutdownOKHTTP()
@@ -91,15 +90,15 @@ public class OptifinePlugin extends Plugin {
      * @return the download key
      */
     private String getJson(String optifineVersion) {
-        Request request = new Request.Builder()
+        final Request request = new Request.Builder()
                 .url("http://optifine.net/adloadx?f=OptiFine_" + optifineVersion)
                 .build();
         try
         {
-            Response response = client.newCall(request).execute();
+            final Response response = client.newCall(request).execute();
             assert response.body() != null;
-            String resp = response.body().string();
-            String[] respLine = resp.split("\n");
+            final String resp = response.body().string();
+            final String[] respLine = resp.split("\n");
             response.body().close();
             String keyLine = "";
             for(String line : respLine) {
@@ -120,15 +119,15 @@ public class OptifinePlugin extends Plugin {
     }
 
     private String getJsonPreview(String optifineVersion) {
-        Request request = new Request.Builder()
+        final Request request = new Request.Builder()
                 .url("http://optifine.net/adloadx?f=" + optifineVersion)
                 .build();
         try
         {
-            Response response = client.newCall(request).execute();
+            final Response response = client.newCall(request).execute();
             assert response.body() != null;
-            String resp = response.body().string();
-            String[] respLine = resp.split("\n");
+            final String resp = response.body().string();
+            final String[] respLine = resp.split("\n");
             response.body().close();
             String keyLine = "";
             for(String line : respLine) {
@@ -148,9 +147,30 @@ public class OptifinePlugin extends Plugin {
         return "";
     }
 
+    public ILogger getLogger()
+    {
+        return this.logger;
+    }
 
-    @Override
-    public void onStop() {
-        this.getLogger().info("Stopping ODP...");
+    public void setLogger(ILogger logger)
+    {
+        this.logger = logger;
+    }
+
+    public Path getFolder()
+    {
+        return this.folder;
+    }
+
+    public void setFolder(Path folder)
+    {
+        this.folder = folder;
+        try
+        {
+            Files.createDirectories(this.folder);
+        } catch (IOException e)
+        {
+            this.logger.printStackTrace(e);
+        }
     }
 }

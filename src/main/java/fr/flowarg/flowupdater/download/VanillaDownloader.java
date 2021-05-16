@@ -1,36 +1,38 @@
 package fr.flowarg.flowupdater.download;
 
-import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.FlowUpdater;
 import fr.flowarg.flowupdater.download.json.AssetDownloadable;
 import fr.flowarg.flowupdater.download.json.Downloadable;
 import fr.flowarg.flowupdater.utils.IOUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
-import static fr.flowarg.flowio.FileUtils.*;
+import static fr.flowarg.flowio.FileUtils.getFileSizeBytes;
+import static fr.flowarg.flowio.FileUtils.getSHA1;
 import static fr.flowarg.flowzipper.ZipUtils.unzipJar;
 
 public class VanillaDownloader
 {
-    private final File dir;
+    private final Path dir;
     private final ILogger logger;
     private final IProgressCallback callback;
     private final DownloadInfos downloadInfos;
     private final boolean reExtractNatives;
     private final int threadsForAssets;
 
-    private final File natives;
-    private final File assets;
+    private final Path natives;
+    private final Path assets;
 
-    public VanillaDownloader(File dir, FlowUpdater flowUpdater)
+    public VanillaDownloader(Path dir, FlowUpdater flowUpdater) throws IOException
     {
         this.dir = dir;
         this.logger = flowUpdater.getLogger();
@@ -39,13 +41,13 @@ public class VanillaDownloader
         this.reExtractNatives = flowUpdater.getUpdaterOptions().isReExtractNatives();
         this.threadsForAssets = flowUpdater.getUpdaterOptions().getNmbrThreadsForAssets();
 
-        this.natives = new File(this.dir, "natives/");
-        this.assets = new File(this.dir, "assets/");
+        this.natives = Paths.get(this.dir.toString(), "natives");
+        this.assets = Paths.get(this.dir.toString(), "assets");
 
-        new File(this.dir, "libraries/").mkdirs();
-        this.dir.mkdirs();
-        this.assets.mkdirs();
-        this.natives.mkdirs();
+        Files.createDirectories(Paths.get(this.dir.toString(), "libraries"));
+        Files.createDirectories(this.assets);
+        Files.createDirectories(this.natives);
+
         this.downloadInfos.init();
     }
 
@@ -63,16 +65,24 @@ public class VanillaDownloader
         this.logger.info("Checking library files...");
         this.callback.step(Step.DL_LIBS);
 
-        Arrays.stream(list(this.natives)).filter(File::isDirectory).forEach(FileUtils::deleteDirectory);
+        Files.list(this.natives).filter(Files::isDirectory).forEach(path -> {
+            try
+            {
+                IOUtils.deleteDirectory(path);
+            } catch (IOException e)
+            {
+                this.logger.printStackTrace(e);
+            }
+        });
 
         for (Downloadable downloadable : this.downloadInfos.getLibraryDownloadables())
         {
-            final File file = new File(this.dir, downloadable.getName());
+            final Path filePath = Paths.get(this.dir.toString(), downloadable.getName());
 
-            if(!file.exists() || !getSHA1(file).equals(downloadable.getSha1()) || getFileSizeBytes(file) != downloadable.getSize())
+            if(Files.notExists(filePath) || !getSHA1(filePath.toFile()).equals(downloadable.getSha1()) || getFileSizeBytes(filePath) != downloadable.getSize())
             {
-                IOUtils.download(this.logger, new URL(downloadable.getUrl()), file);
-                this.callback.onFileDownloaded(file);
+                IOUtils.download(this.logger, new URL(downloadable.getUrl()), filePath);
+                this.callback.onFileDownloaded(filePath);
             }
 
             this.downloadInfos.incrementDownloaded(downloadable.getSize());
@@ -80,12 +90,14 @@ public class VanillaDownloader
         }
     }
 
-    private void extractNatives()
+    private void extractNatives() throws IOException
     {
         boolean flag = true;
-        for (File minecraftNative : FileUtils.list(this.natives))
+        for (Path minecraftNative : Files.list(this.natives).collect(Collectors.toList()))
         {
-            if (minecraftNative.getName().endsWith(".so") || minecraftNative.getName().endsWith(".dylib") || minecraftNative.getName().endsWith(".dll"))
+            if (minecraftNative.getFileName().toString().endsWith(".so") ||
+                    minecraftNative.getFileName().toString().endsWith(".dylib") ||
+                    minecraftNative.getFileName().toString().endsWith(".dll"))
             {
                 flag = false;
                 break;
@@ -96,12 +108,12 @@ public class VanillaDownloader
             this.logger.info("Extracting natives...");
             this.callback.step(Step.EXTRACT_NATIVES);
 
-            Arrays.stream(FileUtils.list(this.natives))
-                    .filter(file -> !file.isDirectory() && file.getName().endsWith(".jar"))
+            Files.list(this.natives)
+                    .filter(file -> !Files.isDirectory(file) && file.getFileName().toString().endsWith(".jar"))
                     .forEach(file -> {
                         try
                         {
-                            unzipJar(this.natives.getAbsolutePath(), file.getAbsolutePath(), "ignoreMetaInf");
+                            unzipJar(this.natives.toString(), file.toString(), "ignoreMetaInf");
                         } catch (IOException e)
                         {
                             this.logger.printStackTrace(e);
@@ -109,9 +121,17 @@ public class VanillaDownloader
                     });
         }
 
-        Arrays.stream(FileUtils.list(this.natives))
-                .filter(file -> file.getName().endsWith(".git") || file.getName().endsWith(".sha1"))
-                .forEach(File::delete);
+        Files.list(this.natives)
+                .filter(file -> file.getFileName().toString().endsWith(".git") || file.getFileName().toString().endsWith(".sha1"))
+                .forEach(path -> {
+                    try
+                    {
+                        Files.delete(path);
+                    } catch (IOException e)
+                    {
+                        this.logger.printStackTrace(e);
+                    }
+                });
     }
 
     private void downloadAssets()
@@ -126,16 +146,16 @@ public class VanillaDownloader
                     AssetDownloadable assetDownloadable;
                     while ((assetDownloadable = this.downloadInfos.getAssetDownloadables().poll()) != null)
                     {
-                        final File download = new File(this.assets, assetDownloadable.getFile());
+                        final Path downloadPath = Paths.get(this.assets.toString(), assetDownloadable.getFile());
 
-                        if (!download.exists() || getFileSizeBytes(download) != assetDownloadable.getSize())
+                        if (Files.notExists(downloadPath) || getFileSizeBytes(downloadPath) != assetDownloadable.getSize())
                         {
-                            final File localAsset = new File(IOUtils.getMinecraftFolder(), "assets/" + assetDownloadable.getFile());
-                            if(localAsset.exists() && getFileSizeBytes(localAsset) == assetDownloadable.getSize()) IOUtils.copy(this.logger, localAsset, download);
+                            final Path localAssetPath = Paths.get(IOUtils.getMinecraftFolder().toString(), "assets", assetDownloadable.getFile());
+                            if(Files.exists(localAssetPath) && getFileSizeBytes(localAssetPath) == assetDownloadable.getSize()) IOUtils.copy(this.logger, localAssetPath, downloadPath);
                             else
                             {
-                                IOUtils.download(this.logger, assetDownloadable.getUrl(), download);
-                                this.callback.onFileDownloaded(download);
+                                IOUtils.download(this.logger, assetDownloadable.getUrl(), downloadPath);
+                                this.callback.onFileDownloaded(downloadPath);
                             }
                         }
 

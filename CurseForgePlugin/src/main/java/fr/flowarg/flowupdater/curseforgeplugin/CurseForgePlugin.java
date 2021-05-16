@@ -7,7 +7,8 @@ import com.therandomlabs.curseapi.CurseAPI;
 import com.therandomlabs.curseapi.CurseException;
 import com.therandomlabs.curseapi.util.OkHttpUtils;
 import fr.flowarg.flowio.FileUtils;
-import fr.flowarg.pluginloaderapi.plugin.Plugin;
+import fr.flowarg.flowlogger.ILogger;
+import fr.flowarg.flowstringer.StringUtils;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 
@@ -17,24 +18,19 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-public class CurseForgePlugin extends Plugin
+public class CurseForgePlugin
 {
-    public static CurseForgePlugin instance;
+    public static final CurseForgePlugin INSTANCE = new CurseForgePlugin();
 
-    @Override
-    public void onStart()
-    {
-        instance = this;
-        this.getLogger().info("Starting CFP (CurseForgePlugin) for FlowUpdater...");
-    }
+    private ILogger logger;
+    private Path folder;
 
     public URL getURLOfFile(int projectID, int fileID)
     {
@@ -92,19 +88,19 @@ public class CurseForgePlugin extends Plugin
         return CurseModPack.BAD;
     }
 
-    private File checkForUpdates(int projectID, int fileID) throws Exception
+    private Path checkForUpdates(int projectID, int fileID) throws Exception
     {
         final URL link = this.getURLOfFile(projectID, fileID);
         final String linkStr = link.toExternalForm();
-        final File out = new File(this.getDataPluginFolder(), linkStr.substring(linkStr.lastIndexOf('/') + 1));
+        final Path outPath = Paths.get(this.getFolder().toString(), linkStr.substring(linkStr.lastIndexOf('/') + 1));
 
-        if(!out.exists() || !FileUtils.getMD5ofFile(out).equalsIgnoreCase(this.getMD5(link)))
+        if(Files.notExists(outPath) || !FileUtils.getMD5ofFile(outPath.toFile()).equalsIgnoreCase(this.getMD5(link)))
         {
-            this.getLogger().info(String.format("Downloading %s from %s...", out.getName(), linkStr));
-            out.getParentFile().mkdirs();
-            Files.copy(this.catchForbidden(link), out.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            this.getLogger().info(String.format("Downloading %s from %s...", outPath.getFileName().toString(), linkStr));
+            Files.createDirectories(outPath.getParent());
+            Files.copy(this.catchForbidden(link), outPath, StandardCopyOption.REPLACE_EXISTING);
         }
-        return out;
+        return outPath;
     }
 
     private String getMD5(URL link)
@@ -131,60 +127,82 @@ public class CurseForgePlugin extends Plugin
         return "";
     }
 
-    private void extractModPack(File out, boolean installExtFiles) throws Exception
+    private void extractModPack(Path out, boolean installExtFiles) throws Exception
     {
         this.getLogger().info("Extracting mod pack...");
-        final ZipFile zipFile = new ZipFile(out, ZipFile.OPEN_READ, StandardCharsets.UTF_8);
-        final File dir = this.getDataPluginFolder().getParentFile().getParentFile();
+        final ZipFile zipFile = new ZipFile(out.toFile(), ZipFile.OPEN_READ, StandardCharsets.UTF_8);
+        final Path dirPath = this.getFolder().getParent();
         final Enumeration<? extends ZipEntry> entries = zipFile.entries();
         while (entries.hasMoreElements())
         {
             final ZipEntry entry = entries.nextElement();
-            final File fl = new File(dir, entry.getName().replace("overrides/", ""));
-            if(entry.getName().equalsIgnoreCase("manifest.json") && fl.exists() && entry.getCrc() == FileUtils.getCRC32(fl))
+            final Path flPath = Paths.get(dirPath.toString(), StringUtils.empty(entry.getName(), "overrides/"));
+            if(entry.getName().equalsIgnoreCase("manifest.json") && Files.exists(flPath) && entry.getCrc() == FileUtils.getCRC32(flPath.toFile()))
                 break;
             if(installExtFiles && !entry.getName().equals("modlist.html"))
             {
-                if(!fl.exists())
+                if(Files.notExists(flPath))
                 {
-                    if (fl.getName().endsWith(File.separator)) fl.mkdirs();
-                    if (!fl.exists()) fl.getParentFile().mkdirs();
+                    if (flPath.getFileName().toString().endsWith(flPath.getFileSystem().getSeparator())) Files.createDirectories(flPath);
                     if (entry.isDirectory()) continue;
 
-                    final InputStream is = zipFile.getInputStream(entry);
-                    final BufferedOutputStream fo = new BufferedOutputStream(new FileOutputStream(fl));
-                    while (is.available() > 0) fo.write(is.read());
-                    fo.close();
-                    is.close();
+                    final NioZipObject nioZipObject = new NioZipObject(flPath, zipFile.getInputStream(entry));
+                    nioZipObject.transfer();
+                    nioZipObject.close();
                 }
             }
             else if(entry.getName().equals("manifest.json"))
             {
-                final InputStream is = zipFile.getInputStream(entry);
-                final BufferedOutputStream fo = new BufferedOutputStream(new FileOutputStream(fl));
-                while (is.available() > 0) fo.write(is.read());
-                fo.close();
-                is.close();
+                final NioZipObject nioZipObject = new NioZipObject(flPath, zipFile.getInputStream(entry));
+                nioZipObject.transfer();
+                nioZipObject.close();
             }
         }
         zipFile.close();
+    }
+
+    private static class NioZipObject
+    {
+        private final OutputStream pathStream;
+        private final BufferedOutputStream fo;
+        private final InputStream is;
+
+        public NioZipObject(Path path, InputStream is) throws IOException
+        {
+            this.pathStream = Files.newOutputStream(path);
+            this.fo = new BufferedOutputStream(this.pathStream);
+            this.is = is;
+        }
+
+        public void transfer() throws IOException
+        {
+            while (this.is.available() > 0) this.fo.write(this.is.read());
+        }
+
+        public void close() throws IOException
+        {
+            this.fo.close();
+            this.pathStream.close();
+            this.is.close();
+        }
     }
 
     private CurseModPack parseMods(boolean installExtFiles) throws Exception
     {
         this.getLogger().info("Fetching mods...");
 
-        final File dir = this.getDataPluginFolder().getParentFile().getParentFile();
-        final BufferedReader manifestReader = new BufferedReader(new FileReader(new File(dir, "manifest.json")));
+        final Path dirPath = Paths.get(this.getFolder().getParent().toString());
+        final BufferedReader manifestReader = Files.newBufferedReader(Paths.get(dirPath.toString(), "manifest.json"));
         final JsonObject manifestObj = JsonParser.parseReader(manifestReader).getAsJsonObject();
         final List<ProjectMod> manifestFiles = new ArrayList<>();
 
         manifestObj.getAsJsonArray("files").forEach(jsonElement -> manifestFiles.add(ProjectMod.fromJsonObject(jsonElement.getAsJsonObject())));
 
-        final File cache = new File(dir, "manifest.cache.json");
-        if(!cache.exists())
-            Files.write(cache.toPath(), Collections.singletonList("[]"), StandardCharsets.UTF_8);
-        final BufferedReader cacheReader = new BufferedReader(new FileReader(cache));
+        final Path cachePath = Paths.get(dirPath.toString(), "manifest.cache.json");
+        if(Files.notExists(cachePath))
+            Files.write(cachePath, Collections.singletonList("[]"), StandardCharsets.UTF_8);
+
+        final BufferedReader cacheReader = Files.newBufferedReader(cachePath);
         final JsonArray cacheArray = JsonParser.parseReader(cacheReader).getAsJsonArray();
         final List<CurseModPack.CurseModPackMod> mods = new ArrayList<>();
 
@@ -219,7 +237,7 @@ public class CurseForgePlugin extends Plugin
 
         manifestReader.close();
         cacheReader.close();
-        Files.write(cache.toPath(), Collections.singletonList(cacheArray.toString()), StandardCharsets.UTF_8);
+        Files.write(cachePath, Collections.singletonList(cacheArray.toString()), StandardCharsets.UTF_8);
 
         final String modPackName = manifestObj.get("name").getAsString();
         final String modPackVersion = manifestObj.get("version").getAsString();
@@ -239,7 +257,7 @@ public class CurseForgePlugin extends Plugin
             {
                 try
                 {
-                    client.cache().close();
+                    Objects.requireNonNull(client.cache()).close();
                 } catch (IOException ignored) {}
             }
         }
@@ -251,12 +269,6 @@ public class CurseForgePlugin extends Plugin
         connection.addRequestProperty("User-Agent", "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.124 Safari/537.36");
         connection.setInstanceFollowRedirects(true);
         return connection.getInputStream();
-    }
-
-    @Override
-    public void onStop()
-    {
-        this.getLogger().info("Stopping CFP...");
     }
 
     private static class ProjectMod
@@ -312,6 +324,33 @@ public class CurseForgePlugin extends Plugin
             result = 31 * result + this.fileID;
             result = 31 * result + (this.required ? 1 : 0);
             return result;
+        }
+    }
+
+    public ILogger getLogger()
+    {
+        return this.logger;
+    }
+
+    public void setLogger(ILogger logger)
+    {
+        this.logger = logger;
+    }
+
+    public Path getFolder()
+    {
+        return this.folder;
+    }
+
+    public void setFolder(Path folder)
+    {
+        this.folder = folder;
+        try
+        {
+            Files.createDirectories(this.folder);
+        } catch (IOException e)
+        {
+            this.logger.printStackTrace(e);
         }
     }
 }

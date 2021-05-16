@@ -8,7 +8,11 @@ import fr.flowarg.flowupdater.FlowUpdater;
  */
 public enum Step
 {
-    /** Prerequisites (like plugins loading) */
+    /**
+     * Prerequisites (like plugins loading)
+     * @deprecated Not used anymore.
+     */
+    @Deprecated
     PREREQUISITES,
     /** ModPack preparation */
     MOD_PACK,
@@ -31,5 +35,5 @@ public enum Step
     /** Runs a list of runnable at the end of update. */
     POST_EXECUTIONS,
     /** All tasks are finished */
-    END;
+    END
 }

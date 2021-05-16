@@ -1,13 +1,8 @@
-plugins {
-    id "com.github.johnrengelman.shadow" version "6.1.0" apply false
-}
-
-apply plugin: 'maven-publish'
-apply plugin: 'signing'
-
 allprojects {
     apply plugin: 'java-library'
     apply plugin: 'idea'
+    apply plugin: 'maven-publish'
+    apply plugin: 'signing'
 
     group 'fr.flowarg'
 
@@ -24,7 +19,6 @@ allprojects {
 
     repositories {
         mavenCentral()
-        jcenter()
         mavenLocal()
         maven {
             url "https://jitpack.io/"
@@ -44,17 +38,27 @@ allprojects {
 
     dependencies {
         api 'com.google.code.gson:gson:2.8.6'
-        api 'fr.flowarg:flowmultitools:1.2.5'
-        implementation 'com.github.FlowArg:PluginLoaderAPI:94e88e0'
+        api 'fr.flowarg:flowmultitools:1.2.7'
+    }
+
+    artifacts {
+        archives sourcesJar, javadocJar
     }
 }
 
-version '1.3.5'
+version '1.4.0'
 archivesBaseName = "flowupdater"
 
-artifacts {
-    archives sourcesJar, javadocJar
+dependencies {
+    compileOnly project(":CurseForgePlugin")
+    compileOnly project (":OptifinePlugin")
+
+    // Only for internal tests
+    testImplementation 'fr.flowarg:openlauncherlib:3.1.+'
+    testRuntimeOnly project(':CurseForgePlugin')
+    testRuntimeOnly project(':OptifinePlugin')
 }
+
 
 publishing {
     publications {
@@ -62,7 +66,7 @@ publishing {
             from components.java
             artifact tasks.sourcesJar
             artifact tasks.javadocJar
-            
+
             pom {
                 groupId = project.group
                 version = project.version
@@ -74,7 +78,7 @@ publishing {
                 scm {
                     connection = 'scm:git:git://github.com/FlowArg/FlowUpdater.git'
                     developerConnection = 'scm:git:ssh://github.com:FlowArg/FlowUpdater.git'
-                    url = 'http://github.com/FlowArg/FlowUpdater/tree/master'
+                    url = 'https://github.com/FlowArg/FlowUpdater/tree/master'
                 }
 
                 licenses {
@@ -94,7 +98,7 @@ publishing {
             }
         }
     }
-    
+
     repositories {
         maven {
             credentials {
@@ -110,12 +114,4 @@ publishing {
 
 signing {
     sign publishing.publications.mavenJava
-}
-
-dependencies {
-    compileOnly project(":CurseForgePlugin")
-    compileOnly project (":OptifinePlugin")
-
-    // Only for internal tests
-    testImplementation 'fr.flowarg:openlauncherlib:3.1.+'
 }

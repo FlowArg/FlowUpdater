@@ -75,6 +75,13 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
         return this;
     }
 
+    /**
+     * A useless function. Will be removed soon.
+     * @param noGui true/false.
+     * @return the builder.
+     * @deprecated Useless.
+     */
+    @Deprecated
     public ForgeVersionBuilder withNoGui(boolean noGui)
     {
         this.nogGuiArgument.set(noGui);
@@ -114,7 +121,6 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
                         this.progressCallbackArgument.get(),
                         this.modsArgument.get(),
                         this.curseModsArgument.get(),
-                        this.nogGuiArgument.get(),
                         this.fileDeleterArgument.get(),
                         this.optifineArgument.get(),
                         this.modPackArgument.get()

@@ -1,13 +1,62 @@
-apply plugin: 'com.github.johnrengelman.shadow'
-
-shadowJar {
-    configurations = [project.configurations.shadow]
-    classifier ''
-}
-
-archivesBaseName = "OptifinePlugin"
+archivesBaseName = "flowupdater-optifineplugin"
+version '2.0.0'
 
 dependencies {
-	shadow 'com.squareup.okhttp3:okhttp:3.14.9'
-	runtimeOnly 'com.squareup.okhttp3:okhttp:3.14.9'
+    implementation 'com.squareup.okhttp3:okhttp:3.14.9'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifact tasks.sourcesJar
+            artifact tasks.javadocJar
+
+            pom {
+                groupId = project.group
+                version = project.version
+                artifactId = 'flowupdater-optifineplugin'
+                name = project.name
+                description = 'Add-on for FlowUpdater to download OptiFine from the official website.'
+                url = 'https://github.com/FlowArg/FlowUpdater'
+
+                scm {
+                    connection = 'scm:git:git://github.com/FlowArg/FlowUpdater.git'
+                    developerConnection = 'scm:git:ssh://github.com:FlowArg/FlowUpdater.git'
+                    url = 'https://github.com/FlowArg/FlowUpdater/tree/master'
+                }
+
+                licenses {
+                    license {
+                        name = 'GNU General Public License v3.0'
+                        url = 'https://www.gnu.org/licenses/gpl-3.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'flowarg'
+                        name = 'Flow Arg'
+                        email = 'coutureflorence3@gmail.com'
+                    }
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            credentials {
+                username ossrhUsername
+                password ossrhPassword
+            }
+            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+            url = project.version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava
 }

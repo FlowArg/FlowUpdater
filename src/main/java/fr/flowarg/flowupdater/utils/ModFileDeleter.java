@@ -1,12 +1,15 @@
 package fr.flowarg.flowupdater.utils;
 
 import fr.antoineok.flowupdater.optifineplugin.Optifine;
-import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowupdater.curseforgeplugin.CurseMod;
 import fr.flowarg.flowupdater.download.json.Mod;
 
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static fr.flowarg.flowio.FileUtils.*;
 
@@ -30,86 +33,42 @@ public class ModFileDeleter implements IFileDeleter
 
         if(this.isUseFileDeleter())
         {
-            final File modsDir = (File)parameters[0];
+            final Path modsDir = (Path)parameters[0];
             final List<Mod> mods = (List<Mod>)parameters[1];
             final boolean cursePluginLoaded = (boolean)parameters[2];
             final List<Object> allCurseMods = (List<Object>)parameters[3];
             final boolean optifinePluginLoaded = (boolean)parameters[4];
             final Object optifineParam = parameters[5];
 
-            final Set<File> badFiles = new HashSet<>();
-            final List<File> verifiedFiles = new ArrayList<>();
-            Arrays.stream(this.modsToIgnore).forEach(fileName -> verifiedFiles.add(new File(modsDir, fileName)));
-            for(File fileInDir : FileUtils.list(modsDir))
+            final Set<Path> badFiles = new HashSet<>();
+            final List<Path> verifiedFiles = new ArrayList<>();
+            Arrays.stream(this.modsToIgnore).forEach(fileName -> verifiedFiles.add(Paths.get(modsDir.toString(), fileName)));
+
+            for(Path fileInDir : IOUtils.list(modsDir).filter(path -> !Files.isDirectory(path)).collect(Collectors.toList()))
             {
-                if(!fileInDir.isDirectory())
+                if(verifiedFiles.contains(fileInDir))
+                    continue;
+
+                if((mods == null || mods.isEmpty()) && (allCurseMods == null || allCurseMods.isEmpty()) && optifineParam == null)
                 {
-                    if(verifiedFiles.contains(fileInDir))
-                        continue;
-                    System.out.println("Mods: " + mods);
-                    System.out.println("CurseMods: " + allCurseMods);
-                    System.out.println("OptifineParam: " + optifineParam);
-                    if((mods == null || mods.isEmpty()) && (allCurseMods == null || allCurseMods.isEmpty()) && optifineParam == null)
+                    if (!verifiedFiles.contains(fileInDir))
+                        badFiles.add(fileInDir);
+                }
+                else
+                {
+                    if (cursePluginLoaded)
                     {
-                        if(!verifiedFiles.contains(fileInDir))
-                            badFiles.add(fileInDir);
-                    }
-                    else
-                    {
-                        if(cursePluginLoaded)
+                        for (Object obj : allCurseMods)
                         {
-                            for(Object obj : allCurseMods)
+                            final CurseMod mod = (CurseMod)obj;
+                            if (mod.getName().equalsIgnoreCase(fileInDir.getFileName().toString()))
                             {
-                                final CurseMod mod = (CurseMod)obj;
-                                if(mod.getName().equalsIgnoreCase(fileInDir.getName()))
+                                if (mod.getMd5().contains("-"))
                                 {
-                                    if(mod.getMd5().contains("-"))
-                                    {
-                                        badFiles.remove(fileInDir);
-                                        verifiedFiles.add(fileInDir);
-                                    }
-                                    else if(getMD5ofFile(fileInDir).equalsIgnoreCase(mod.getMd5()) && getFileSizeBytes(fileInDir) == mod.getLength())
-                                    {
-                                        badFiles.remove(fileInDir);
-                                        verifiedFiles.add(fileInDir);
-                                    }
-                                    else badFiles.add(fileInDir);
+                                    badFiles.remove(fileInDir);
+                                    verifiedFiles.add(fileInDir);
                                 }
-                                else
-                                {
-                                    if(!verifiedFiles.contains(fileInDir))
-                                        badFiles.add(fileInDir);
-                                }
-                            }
-                        }
-
-                        if(optifinePluginLoaded)
-                        {
-                            final Optifine optifine = (Optifine)optifineParam;
-                            if(optifine != null)
-                            {
-                                if(optifine.getName().equalsIgnoreCase(fileInDir.getName()))
-                                {
-                                    if(getFileSizeBytes(fileInDir) == optifine.getSize())
-                                    {
-                                        badFiles.remove(fileInDir);
-                                        verifiedFiles.add(fileInDir);
-                                    }
-                                    else badFiles.add(fileInDir);
-                                }
-                                else
-                                {
-                                    if(!verifiedFiles.contains(fileInDir))
-                                        badFiles.add(fileInDir);
-                                }
-                            }
-                        }
-
-                        for(Mod mod : mods)
-                        {
-                            if(mod.getName().equalsIgnoreCase(fileInDir.getName()))
-                            {
-                                if(getSHA1(fileInDir).equalsIgnoreCase(mod.getSha1()) && getFileSizeBytes(fileInDir) == mod.getSize())
+                                else if (getMD5ofFile(fileInDir.toFile()).equalsIgnoreCase(mod.getMd5()) && getFileSizeBytes(fileInDir) == mod.getLength())
                                 {
                                     badFiles.remove(fileInDir);
                                     verifiedFiles.add(fileInDir);
@@ -118,15 +77,60 @@ public class ModFileDeleter implements IFileDeleter
                             }
                             else
                             {
-                                if(!verifiedFiles.contains(fileInDir))
-                                    badFiles.add(fileInDir);
+                                if (!verifiedFiles.contains(fileInDir)) badFiles.add(fileInDir);
                             }
+                        }
+                    }
+
+                    if (optifinePluginLoaded)
+                    {
+                        final Optifine optifine = (Optifine)optifineParam;
+                        if (optifine != null)
+                        {
+                            if (optifine.getName().equalsIgnoreCase(fileInDir.getFileName().toString()))
+                            {
+                                if (getFileSizeBytes(fileInDir) == optifine.getSize())
+                                {
+                                    badFiles.remove(fileInDir);
+                                    verifiedFiles.add(fileInDir);
+                                }
+                                else badFiles.add(fileInDir);
+                            }
+                            else
+                            {
+                                if (!verifiedFiles.contains(fileInDir)) badFiles.add(fileInDir);
+                            }
+                        }
+                    }
+
+                    for (Mod mod : mods)
+                    {
+                        if (mod.getName().equalsIgnoreCase(fileInDir.getFileName().toString()))
+                        {
+                            if (getSHA1(fileInDir.toFile()).equalsIgnoreCase(mod.getSha1()) && getFileSizeBytes(fileInDir) == mod.getSize())
+                            {
+                                badFiles.remove(fileInDir);
+                                verifiedFiles.add(fileInDir);
+                            }
+                            else badFiles.add(fileInDir);
+                        }
+                        else
+                        {
+                            if (!verifiedFiles.contains(fileInDir)) badFiles.add(fileInDir);
                         }
                     }
                 }
             }
 
-            badFiles.forEach(File::delete);
+            badFiles.forEach(path -> {
+                try
+                {
+                    Files.delete(path);
+                } catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+            });
             badFiles.clear();
         }
     }

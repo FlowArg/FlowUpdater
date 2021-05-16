@@ -114,28 +114,6 @@ public class UpdaterOptions
             return this;
         }
 
-        /**
-         * @deprecated Since 1.2.3. Use {@link UpdaterOptionsBuilder#withEnableCurseForgePlugin(boolean)} instead.
-         * It will be removed in a future release.
-         */
-        @Deprecated
-        public UpdaterOptionsBuilder withEnableModsFromCurseForge(boolean enableModsFromCurseForge)
-        {
-            this.enableCurseForgePluginArgument.set(enableModsFromCurseForge);
-            return this;
-        }
-
-        /**
-         * @deprecated Since 1.2.3. Use {@link UpdaterOptionsBuilder#withEnableOptifineDownloaderPlugin(boolean)} (boolean)} instead.
-         * It will be removed in a future release.
-         */
-        @Deprecated
-        public UpdaterOptionsBuilder withInstallOptifineAsMod(boolean installOptifineAsMod)
-        {
-            this.enableOptifineDownloaderPluginArgument.set(installOptifineAsMod);
-            return this;
-        }
-
         public UpdaterOptionsBuilder withEnableCurseForgePlugin(boolean enableModsFromCurseForge)
         {
             this.enableCurseForgePluginArgument.set(enableModsFromCurseForge);

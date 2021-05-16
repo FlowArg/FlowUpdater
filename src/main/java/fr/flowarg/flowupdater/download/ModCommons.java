@@ -4,20 +4,21 @@ import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.curseforgeplugin.CurseMod;
 import fr.flowarg.flowupdater.utils.IOUtils;
 
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class ModCommons
 {
-    public static void installAllMods(DownloadInfos downloadInfos, ILogger logger, File modsDir, IProgressCallback callback, boolean cursePluginLoaded)
+    public static void installAllMods(DownloadInfos downloadInfos, ILogger logger, Path modsDir, IProgressCallback callback, boolean cursePluginLoaded)
     {
         downloadInfos.getMods().forEach(mod -> {
             try
             {
-                final File modFile = new File(modsDir, mod.getName());
-                IOUtils.download(logger, new URL(mod.getDownloadURL()), modFile);
-                callback.onFileDownloaded(modFile);
+                final Path modFilePath = Paths.get(modsDir.toString(), mod.getName());
+                IOUtils.download(logger, new URL(mod.getDownloadURL()), modFilePath);
+                callback.onFileDownloaded(modFilePath);
             }
             catch (MalformedURLException e)
             {
@@ -33,9 +34,9 @@ public class ModCommons
                 final CurseMod curseMod = (CurseMod)obj;
                 try
                 {
-                    final File modFile = new File(modsDir, curseMod.getName());
-                    IOUtils.download(logger, new URL(curseMod.getDownloadURL()), modFile);
-                    callback.onFileDownloaded(modFile);
+                    final Path modFilePath = Paths.get(modsDir.toString(), curseMod.getName());
+                    IOUtils.download(logger, new URL(curseMod.getDownloadURL()), modFilePath);
+                    callback.onFileDownloaded(modFilePath);
                 } catch (MalformedURLException e)
                 {
                     logger.printStackTrace(e);

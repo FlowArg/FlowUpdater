@@ -20,6 +20,9 @@ import fr.flowarg.flowupdater.versions.VanillaVersion;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,11 +101,11 @@ public class FlowUpdater
     {
         this.logger = logger;
         this.version = version;
-        this.fabricVersion = fabricVersion;
-        this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.3.5"));
+        this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.4.0"));
         this.externalFiles = externalFiles;
         this.postExecutions = postExecutions;
         this.forgeVersion = forgeVersion;
+        this.fabricVersion = fabricVersion;
         this.updaterOptions = updaterOptions;
         this.callback = callback;
         this.downloadInfos = new DownloadInfos();
@@ -117,10 +120,22 @@ public class FlowUpdater
      * run only external files and post executions.
      * @param dir Directory where is the Minecraft installation.
      * @throws IOException if an I/O problem has occurred.
+     * @deprecated Prefer using {@link #update(Path)}
      */
+    @Deprecated
     public void update(File dir) throws Exception
     {
-        this.checkPrerequisites(dir);
+        this.update(dir.toPath());
+    }
+
+    /**
+     * This method update the Minecraft Installation in the given directory. If the {@link #version} is {@link VanillaVersion#NULL_VERSION}, the updater will
+     * run only external files and post executions.
+     * @param dir Directory where is the Minecraft installation.
+     * @throws IOException if an I/O problem has occurred.
+     */
+    public void update(Path dir) throws Exception
+    {
         this.checkExtFiles(dir);
         this.updateMinecraft(dir);
         this.updateExtFiles(dir);
@@ -128,47 +143,41 @@ public class FlowUpdater
         this.endUpdate();
     }
 
-    private void checkPrerequisites(File dir) throws Exception
-    {
-        this.callback.step(Step.PREREQUISITES);
-        this.pluginManager.loadPlugins(dir);
-    }
-
-    private void checkExtFiles(File dir) throws Exception
+    private void checkExtFiles(Path dir) throws Exception
     {
         this.updaterOptions.getExternalFileDeleter().delete(this.externalFiles, this.downloadInfos, dir);
     }
 
-    private void updateMinecraft(File dir) throws Exception
+    private void updateMinecraft(Path dir) throws Exception
     {
         if(this.version != VanillaVersion.NULL_VERSION)
         {
             this.logger.info(String.format("Reading data about %s Minecraft version...", version.getName()));
             new VanillaReader(this).read();
 
-            final File modsDir = new File(dir, "mods/");
+            final Path modsDirPath = Paths.get(dir.toString(), "mods");
 
             if(this.forgeVersion != null)
-                this.checkMods(this.forgeVersion, modsDir);
+                this.checkMods(this.forgeVersion, modsDirPath);
             if (this.fabricVersion != null)
-                this.checkMods(this.fabricVersion, modsDir);
+                this.checkMods(this.fabricVersion, modsDirPath);
 
             if(this.fabricVersion != null)
             {
                 if(this.updaterOptions.isEnableCurseForgePlugin())
-                    this.pluginManager.loadCurseForgePlugin(modsDir, this.fabricVersion);
+                    this.pluginManager.loadCurseForgePlugin(modsDirPath, this.fabricVersion);
             }
 
             if(this.forgeVersion != null)
             {
                 if(this.updaterOptions.isEnableCurseForgePlugin())
-                    this.pluginManager.loadCurseForgePlugin(modsDir, this.forgeVersion);
+                    this.pluginManager.loadCurseForgePlugin(modsDirPath, this.forgeVersion);
                 if(this.updaterOptions.isEnableOptifineDownloaderPlugin())
-                    this.pluginManager.loadOptifinePlugin(modsDir, this.forgeVersion);
+                    this.pluginManager.loadOptifinePlugin(modsDirPath, this.forgeVersion);
             }
 
-            if (!dir.exists())
-                dir.mkdirs();
+            if (Files.notExists(dir))
+                Files.createDirectories(dir);
             final VanillaDownloader vanillaDownloader = new VanillaDownloader(dir, this);
             vanillaDownloader.download();
 
@@ -178,18 +187,18 @@ public class FlowUpdater
         else this.downloadInfos.init();
     }
 
-    private void checkMods(IModLoaderVersion modLoader, File modsDir) throws Exception
+    private void checkMods(IModLoaderVersion modLoader, Path modsDir) throws Exception
     {
         for(Mod mod : modLoader.getMods())
         {
-            final File file = new File(modsDir, mod.getName());
+            final Path filePath = Paths.get(modsDir.toString(), mod.getName());
 
-            if(!file.exists() || !getSHA1(file).equals(mod.getSha1()) || getFileSizeBytes(file) != mod.getSize())
+            if(Files.notExists(filePath) || !getSHA1(filePath.toFile()).equals(mod.getSha1()) || getFileSizeBytes(filePath) != mod.getSize())
                 this.downloadInfos.getMods().add(mod);
         }
     }
 
-    private void installModLoader(IModLoaderVersion modLoader, File dir, String name) throws Exception
+    private void installModLoader(IModLoaderVersion modLoader, Path dir, String name) throws Exception
     {
         if(modLoader != null)
         {
@@ -197,12 +206,11 @@ public class FlowUpdater
             if(!modLoader.isModLoaderAlreadyInstalled(dir))
                 modLoader.install(dir);
             else this.logger.info(name + " is already installed ! Skipping installation...");
-            final File modsDir = new File(dir, "mods/");
-            modLoader.installMods(modsDir, this.pluginManager);
+            modLoader.installMods(Paths.get(dir.toString(), "mods"), this.pluginManager);
         }
     }
 
-    private void updateExtFiles(File dir)
+    private void updateExtFiles(Path dir)
     {
         if(!this.downloadInfos.getExtFiles().isEmpty())
         {
@@ -211,9 +219,9 @@ public class FlowUpdater
             this.downloadInfos.getExtFiles().forEach(extFile -> {
                 try
                 {
-                    final File file = new File(dir, extFile.getPath());
-                    IOUtils.download(this.logger, new URL(extFile.getDownloadURL()), file);
-                    this.callback.onFileDownloaded(file);
+                    final Path filePath = Paths.get(dir.toString(), extFile.getPath());
+                    IOUtils.download(this.logger, new URL(extFile.getDownloadURL()), filePath);
+                    this.callback.onFileDownloaded(filePath);
                 }
                 catch (IOException e)
                 {

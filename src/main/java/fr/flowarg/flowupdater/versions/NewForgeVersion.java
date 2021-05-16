@@ -1,18 +1,20 @@
 package fr.flowarg.flowupdater.versions;
 
-import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.download.IProgressCallback;
 import fr.flowarg.flowupdater.download.json.CurseFileInfos;
 import fr.flowarg.flowupdater.download.json.CurseModPackInfos;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.download.json.OptifineInfo;
+import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
 
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.lang.ProcessBuilder.Redirect;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -21,17 +23,15 @@ import java.util.List;
  */
 public class NewForgeVersion extends AbstractForgeVersion
 {
-    private final String[] compatibleVersions = {"1.16", "1.15", "1.14", "1.13", "1.12.2-14.23.5.285"};
-    private final boolean noGui;
+    private final String[] compatibleVersions = {"1.17", "1.16", "1.15", "1.14", "1.13", "1.12.2-14.23.5.285"};
 
-    NewForgeVersion(String forgeVersion, VanillaVersion vanilla, ILogger logger, IProgressCallback callback, List<Mod> mods, List<CurseFileInfos> curseMods, boolean noGui, ModFileDeleter fileDeleter, OptifineInfo optifine, CurseModPackInfos modPack)
+    NewForgeVersion(String forgeVersion, VanillaVersion vanilla, ILogger logger, IProgressCallback callback, List<Mod> mods, List<CurseFileInfos> curseMods, ModFileDeleter fileDeleter, OptifineInfo optifine, CurseModPackInfos modPack)
     {
         super(logger, mods, curseMods, forgeVersion, vanilla, callback, fileDeleter, optifine, modPack, false);
-        this.noGui = noGui;
     }
 
     @Override
-    public void install(final File dirToInstall)
+    public void install(final Path dirToInstall) throws Exception
     {
         super.install(dirToInstall);
         if (this.isCompatible())
@@ -39,8 +39,7 @@ public class NewForgeVersion extends AbstractForgeVersion
             try (BufferedInputStream stream = new BufferedInputStream(this.installerUrl.openStream()))
             {
                 final ModLoaderLauncherEnvironment forgeLauncherEnvironment = this.prepareModLoaderLauncher(dirToInstall, stream);
-                if(this.noGui)
-                	forgeLauncherEnvironment.getCommand().add("--nogui");
+                forgeLauncherEnvironment.getCommand().add("--nogui");
                 final ProcessBuilder processBuilder = new ProcessBuilder(forgeLauncherEnvironment.getCommand());
                 
                 processBuilder.redirectOutput(Redirect.INHERIT);
@@ -48,7 +47,7 @@ public class NewForgeVersion extends AbstractForgeVersion
                 process.waitFor();
                 
                 this.logger.info("Successfully installed Forge !");
-                FileUtils.deleteDirectory(forgeLauncherEnvironment.getTempDir());
+                IOUtils.deleteDirectory(forgeLauncherEnvironment.getTempDir());
             }
             catch (IOException | InterruptedException e)
             {
@@ -58,14 +57,17 @@ public class NewForgeVersion extends AbstractForgeVersion
     }
 
     @Override
-    protected boolean checkForgeEnv(File dirToInstall)
+    protected boolean checkForgeEnv(Path dirToInstall) throws Exception
     {
         if(this.isCompatible() && !this.forgeVersion.contains("1.12.2") && super.checkForgeEnv(dirToInstall))
         {
-            final File minecraftForgeDir = new File(dirToInstall, "libraries/net/minecraft/");
-            final File mappingsDir = new File(dirToInstall, "libraries/de/");
-            FileUtils.deleteDirectory(minecraftForgeDir);
-            FileUtils.deleteDirectory(mappingsDir);
+            final Path minecraftDirPath = Paths.get(dirToInstall.toString(), "libraries", "net", "minecraft");
+            final Path minecraftForgeDirPath = Paths.get(dirToInstall.toString(), "libraries", "net", "minecraftforge");
+            final Path mappingsDirPath = Paths.get(dirToInstall.toString(), "libraries", "de", "oceanlabs");
+
+            IOUtils.deleteDirectory(minecraftDirPath);
+            IOUtils.deleteDirectory(minecraftForgeDirPath);
+            IOUtils.deleteDirectory(mappingsDirPath);
         }
 
         return false;
@@ -73,32 +75,25 @@ public class NewForgeVersion extends AbstractForgeVersion
 
     public boolean isCompatible()
     {
-        for(String str : this.compatibleVersions)
+        for (String str : this.compatibleVersions)
         {
-            if(this.forgeVersion.startsWith(str))
+            if (this.forgeVersion.startsWith(str))
                 return true;
         }
         return false;
     }
 
     @Override
-    protected void fixInstaller(File tempInstallerDir) {}
-
-    @Override
-    protected void cleanInstaller(File tempInstallerDir)
+    protected void cleanInstaller(Path tempInstallerDir) throws Exception
     {
-        FileUtils.deleteDirectory(new File(tempInstallerDir, "net"));
-        FileUtils.deleteDirectory(new File(tempInstallerDir, "com"));
-        FileUtils.deleteDirectory(new File(tempInstallerDir, "joptisimple"));
-        new File(tempInstallerDir, "META-INF/MANIFEST.MF").delete();
-        new File(tempInstallerDir, "lekeystore.jks").delete();
-        new File(tempInstallerDir, "big_logo.png").delete();
-        new File(tempInstallerDir, "META-INF/FORGE.DSA").delete();
-        new File(tempInstallerDir, "META-INF/FORGE.SF").delete();
-    }
-    
-    public boolean isNoGui()
-    {
-        return this.noGui;
+        final String path = tempInstallerDir.toString();
+        IOUtils.deleteDirectory(Paths.get(path, "net"));
+        IOUtils.deleteDirectory(Paths.get(path, "com"));
+        IOUtils.deleteDirectory(Paths.get(path, "joptsimple"));
+        Files.deleteIfExists(Paths.get(path, "META-INF", "MANIFEST.MF"));
+        Files.deleteIfExists(Paths.get(path, "lekeystore.jks"));
+        Files.deleteIfExists(Paths.get(path, "big_logo.png"));
+        Files.deleteIfExists(Paths.get(path, "META-INF", "FORGE.DSA"));
+        Files.deleteIfExists(Paths.get(path, "META-INF", "FORGE.SF"));
     }
 }
