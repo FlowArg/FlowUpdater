@@ -15,7 +15,7 @@ public class AssetDownloadable
     {
         this.hash = hash;
         this.size = size;
-        this.urlString = "http://resources.download.minecraft.net/" + this.hash.substring(0, 2) + "/" + this.hash;
+        this.urlString = "https://resources.download.minecraft.net/" + this.hash.substring(0, 2) + "/" + this.hash;
         this.url = new URL(this.urlString);
         this.file = "/objects/" + this.hash.substring(0, 2) + "/" + this.hash;
     }

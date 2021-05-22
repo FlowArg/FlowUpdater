@@ -15,16 +15,17 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 
-public class OptifinePlugin {
-
+public class OptifinePlugin
+{
     public static final OptifinePlugin INSTANCE = new OptifinePlugin();
 
     private final OkHttpClient client = new OkHttpClient();
+
     private ILogger logger;
     private Path folder;
 
     /**
-     *
+     * Get an OptiFine object from the official website.
      * @param optifineVersion the version of Optifine
      * @param preview if the optifine version is a preview.
      * @return the object that defines the plugin
@@ -54,7 +55,7 @@ public class OptifinePlugin {
 
     private String getNewURL(String name, boolean preview, String optifineVersion)
     {
-        final HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse("http://optifine.net/downloadx")).newBuilder();
+        final HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse("https://optifine.net/downloadx")).newBuilder();
         urlBuilder.addQueryParameter("f", name);
         urlBuilder.addQueryParameter("x", preview ? this.getJsonPreview(optifineVersion) : this.getJson(optifineVersion));
 
@@ -91,7 +92,7 @@ public class OptifinePlugin {
      */
     private String getJson(String optifineVersion) {
         final Request request = new Request.Builder()
-                .url("http://optifine.net/adloadx?f=OptiFine_" + optifineVersion)
+                .url("https://optifine.net/adloadx?f=OptiFine_" + optifineVersion)
                 .build();
         try
         {
@@ -120,7 +121,7 @@ public class OptifinePlugin {
 
     private String getJsonPreview(String optifineVersion) {
         final Request request = new Request.Builder()
-                .url("http://optifine.net/adloadx?f=" + optifineVersion)
+                .url("https://optifine.net/adloadx?f=" + optifineVersion)
                 .build();
         try
         {

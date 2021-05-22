@@ -2,8 +2,8 @@ package fr.flowarg.flowupdater.utils;
 
 import fr.antoineok.flowupdater.optifineplugin.Optifine;
 import fr.antoineok.flowupdater.optifineplugin.OptifinePlugin;
+import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
-import fr.flowarg.flowlogger.Logger;
 import fr.flowarg.flowupdater.FlowUpdater;
 import fr.flowarg.flowupdater.curseforgeplugin.CurseForgePlugin;
 import fr.flowarg.flowupdater.curseforgeplugin.CurseMod;
@@ -20,12 +20,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static fr.flowarg.flowio.FileUtils.getFileSizeBytes;
-import static fr.flowarg.flowio.FileUtils.getMD5ofFile;
 
 public class PluginManager
 {
@@ -51,7 +47,7 @@ public class PluginManager
             {
                 Class.forName("fr.flowarg.flowupdater.curseforgeplugin.CurseForgePlugin");
                 this.cursePluginLoaded = true;
-                CurseForgePlugin.INSTANCE.setLogger(new Logger("[CurseForgePlugin]", this.logger.getLogFile(), true));
+                CurseForgePlugin.INSTANCE.setLogger(this.logger);
                 CurseForgePlugin.INSTANCE.setFolder(Paths.get(dir.getParent().toString(), ".cfp"));
             } catch (ClassNotFoundException e)
             {
@@ -72,7 +68,7 @@ public class PluginManager
                 allCurseMods.add(mod);
 
                 final Path filePath = Paths.get(dir.toString(), mod.getName());
-                if(Files.notExists(filePath) || !getMD5ofFile(filePath.toFile()).equals(mod.getMd5()) || getFileSizeBytes(filePath) != mod.getLength())
+                if(Files.notExists(filePath) || !FileUtils.getMD5(filePath).equals(mod.getMd5()) || FileUtils.getFileSizeBytes(filePath) != mod.getLength())
                 {
                     if (!mod.getMd5().contains("-"))
                     {
@@ -106,7 +102,7 @@ public class PluginManager
                             break;
                         }
                     }
-                    if(!flag && (Files.notExists(filePath) || !getMD5ofFile(filePath.toFile()).equals(mod.getMd5()) || getFileSizeBytes(filePath) != mod.getLength()))
+                    if(!flag && (Files.notExists(filePath) || !FileUtils.getMD5(filePath).equalsIgnoreCase(mod.getMd5()) || FileUtils.getFileSizeBytes(filePath) != mod.getLength()))
                     {
                         if (!mod.getMd5().contains("-"))
                         {
@@ -114,7 +110,7 @@ public class PluginManager
                             this.downloadInfos.getCurseMods().add(mod);
                         }
                     }
-                } catch (NoSuchAlgorithmException | IOException e)
+                } catch (IOException e)
                 {
                     this.logger.printStackTrace(e);
                 }
@@ -133,7 +129,7 @@ public class PluginManager
             try
             {
                 final OptifinePlugin optifinePlugin = OptifinePlugin.INSTANCE;
-                optifinePlugin.setLogger(new Logger("[OptifinePlugin]", this.logger.getLogFile(), true));
+                optifinePlugin.setLogger(this.logger);
                 optifinePlugin.setFolder(Paths.get(dir.getParent().toString(), ".op"));
                 final Optifine optifine = optifinePlugin.getOptifine(forgeVersion.getOptifine().getVersion(), forgeVersion.getOptifine().isPreview());
                 this.downloadInfos.setOptifine(optifine);

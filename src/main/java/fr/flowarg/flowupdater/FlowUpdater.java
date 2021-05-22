@@ -1,5 +1,6 @@
 package fr.flowarg.flowupdater;
 
+import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowlogger.Logger;
 import fr.flowarg.flowupdater.download.*;
@@ -25,9 +26,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-
-import static fr.flowarg.flowio.FileUtils.getFileSizeBytes;
-import static fr.flowarg.flowio.FileUtils.getSHA1;
 
 /**
  * Represent the base class of the updater.<br>
@@ -82,8 +80,8 @@ public class FlowUpdater
         }
     };
 
-    /** Default logger, null for file argument = no file logger */
-    public static final ILogger DEFAULT_LOGGER = new Logger("[FlowUpdater]", null);
+    /** Default logger, null for path argument = no file logger */
+    public static final ILogger DEFAULT_LOGGER = new Logger("[FlowUpdater]", (Path)null);
 
     /**
      * Basic constructor for {@link FlowUpdater}, use {@link FlowUpdaterBuilder} to instantiate a new {@link FlowUpdater}.
@@ -96,8 +94,10 @@ public class FlowUpdater
      * @param forgeVersion {@link AbstractForgeVersion} to install, can be null.
      * @param fabricVersion {@link FabricVersion} to install, can be null.
      */
-    private FlowUpdater(VanillaVersion version, ILogger logger, UpdaterOptions updaterOptions,
-                        IProgressCallback callback, List<ExternalFile> externalFiles, List<Runnable> postExecutions, AbstractForgeVersion forgeVersion, FabricVersion fabricVersion)
+    private FlowUpdater(VanillaVersion version, ILogger logger,
+            UpdaterOptions updaterOptions, IProgressCallback callback,
+            List<ExternalFile> externalFiles, List<Runnable> postExecutions,
+            AbstractForgeVersion forgeVersion, FabricVersion fabricVersion)
     {
         this.logger = logger;
         this.version = version;
@@ -119,8 +119,8 @@ public class FlowUpdater
      * This method update the Minecraft Installation in the given directory. If the {@link #version} is {@link VanillaVersion#NULL_VERSION}, the updater will
      * run only external files and post executions.
      * @param dir Directory where is the Minecraft installation.
-     * @throws IOException if an I/O problem has occurred.
-     * @deprecated Prefer using {@link #update(Path)}
+     * @throws IOException if an I/O problem occurred.
+     * @deprecated Prefer using {@link #update(Path)}. Will be deleted soon!
      */
     @Deprecated
     public void update(File dir) throws Exception
@@ -132,7 +132,7 @@ public class FlowUpdater
      * This method update the Minecraft Installation in the given directory. If the {@link #version} is {@link VanillaVersion#NULL_VERSION}, the updater will
      * run only external files and post executions.
      * @param dir Directory where is the Minecraft installation.
-     * @throws IOException if an I/O problem has occurred.
+     * @throws IOException if an I/O problem occurred.
      */
     public void update(Path dir) throws Exception
     {
@@ -193,7 +193,7 @@ public class FlowUpdater
         {
             final Path filePath = Paths.get(modsDir.toString(), mod.getName());
 
-            if(Files.notExists(filePath) || !getSHA1(filePath.toFile()).equals(mod.getSha1()) || getFileSizeBytes(filePath) != mod.getSize())
+            if(Files.notExists(filePath) || !FileUtils.getSHA1(filePath).equalsIgnoreCase(mod.getSha1()) || FileUtils.getFileSizeBytes(filePath) != mod.getSize())
                 this.downloadInfos.getMods().add(mod);
         }
     }

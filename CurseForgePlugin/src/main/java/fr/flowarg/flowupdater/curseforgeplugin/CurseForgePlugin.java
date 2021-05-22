@@ -94,7 +94,7 @@ public class CurseForgePlugin
         final String linkStr = link.toExternalForm();
         final Path outPath = Paths.get(this.getFolder().toString(), linkStr.substring(linkStr.lastIndexOf('/') + 1));
 
-        if(Files.notExists(outPath) || !FileUtils.getMD5ofFile(outPath.toFile()).equalsIgnoreCase(this.getMD5(link)))
+        if(Files.notExists(outPath) || !FileUtils.getMD5(outPath).equalsIgnoreCase(this.getMD5(link)))
         {
             this.getLogger().info(String.format("Downloading %s from %s...", outPath.getFileName().toString(), linkStr));
             Files.createDirectories(outPath.getParent());
@@ -137,7 +137,7 @@ public class CurseForgePlugin
         {
             final ZipEntry entry = entries.nextElement();
             final Path flPath = Paths.get(dirPath.toString(), StringUtils.empty(entry.getName(), "overrides/"));
-            if(entry.getName().equalsIgnoreCase("manifest.json") && Files.exists(flPath) && entry.getCrc() == FileUtils.getCRC32(flPath.toFile()))
+            if(entry.getName().equalsIgnoreCase("manifest.json") && Files.exists(flPath) && entry.getCrc() == FileUtils.getCRC32(flPath))
                 break;
             if(installExtFiles && !entry.getName().equals("modlist.html"))
             {

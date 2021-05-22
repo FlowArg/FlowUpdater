@@ -95,19 +95,23 @@ public class VanillaReader
                 }
             }
         });
+        this.infos.getLibraryDownloadables().addAll(this.version.getAnotherLibraries());
     }
 
     private void getAssetsIndex()
     {
-        final JsonObject assetIndex = this.version.getMinecraftAssetsIndex();
-        final String url = assetIndex.get("url").getAsString();
-        final int size = assetIndex.get("size").getAsInt();
-        final String name = "/assets/indexes/" + url.substring(url.lastIndexOf('/') + 1);
-        final String sha1 = assetIndex.get("sha1").getAsString();
+        if(this.version.getCustomAssetIndex() == null)
+        {
+            final JsonObject assetIndex = this.version.getMinecraftAssetsIndex();
+            final String url = assetIndex.get("url").getAsString();
+            final int size = assetIndex.get("size").getAsInt();
+            final String name = "/assets/indexes/" + url.substring(url.lastIndexOf('/') + 1);
+            final String sha1 = assetIndex.get("sha1").getAsString();
 
-        if(!this.isSilent)
-            this.logger.debug("Reading assets index from " + url + "... SHA1 is : " + sha1);
-        this.infos.getLibraryDownloadables().add(new Downloadable(url, size, sha1, name));
+            if(!this.isSilent)
+                this.logger.debug("Reading assets index from " + url + "... SHA1 is : " + sha1);
+            this.infos.getLibraryDownloadables().add(new Downloadable(url, size, sha1, name));
+        }
     }
 
     private void getClientServerJars()
@@ -118,21 +122,23 @@ public class VanillaReader
         final String clientName = clientURL.substring(clientURL.lastIndexOf('/') + 1);
         final String clientSha1 = client.get("sha1").getAsString();
 
-        final JsonObject server = this.version.getMinecraftServer();
-        final String serverURL = server.get("url").getAsString();
-        final int serverSize = server.get("size").getAsInt();
-        final String serverName = serverURL.substring(serverURL.lastIndexOf('/') + 1);
-        final String serverSha1 = server.get("sha1").getAsString();
-
         if(!this.isSilent)
-        {
             this.logger.debug("Reading client jar from " + clientURL + "... SHA1 is : " + this.version.getMinecraftClient().get("sha1").getAsString());
-            this.logger.debug("Reading server jar from " + serverURL + "... SHA1 is : " + this.version.getMinecraftServer().get("sha1").getAsString());
-        }
-        
         this.infos.getLibraryDownloadables().add(new Downloadable(clientURL, clientSize, clientSha1, clientName));
+
         if(this.downloadServer)
+        {
+            final JsonObject server = this.version.getMinecraftServer();
+            final String serverURL = server.get("url").getAsString();
+            final int serverSize = server.get("size").getAsInt();
+            final String serverName = serverURL.substring(serverURL.lastIndexOf('/') + 1);
+            final String serverSha1 = server.get("sha1").getAsString();
+
+            if(!this.isSilent)
+                this.logger.debug("Reading server jar from " + serverURL + "... SHA1 is : " + this.version.getMinecraftServer().get("sha1").getAsString());
+
             this.infos.getLibraryDownloadables().add(new Downloadable(serverURL, serverSize, serverSha1, serverName));
+        }
     }
 
     private void getNatives()
@@ -181,14 +187,12 @@ public class VanillaReader
 
     private void getAssets() throws IOException
     {
-        final Set<AssetDownloadable> toDownload = new HashSet<>();
+        final Set<AssetDownloadable> toDownload = new HashSet<>(this.version.getAnotherAssets());
         final URL url = new URL(this.version.getMinecraftAssetsIndex().get("url").getAsString());
         final String json = IOUtils.getContent(url);
 
         final AssetIndex index = new GsonBuilder()
                 .disableHtmlEscaping()
-                .serializeNulls()
-                .setPrettyPrinting()
                 .create()
                 .fromJson(json, AssetIndex.class);
 

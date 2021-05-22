@@ -96,7 +96,6 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
      * This function installs a Forge version at the specified directory.
      * @param dirToInstall Specified directory.
      */
-    // TODO Optimize this.
     @Override
     public void install(final Path dirToInstall) throws Exception
     {
@@ -109,7 +108,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     public ModLoaderLauncherEnvironment prepareModLoaderLauncher(Path dirToInstall, InputStream stream) throws Exception
     {
         final Path tempDirPath = Paths.get(dirToInstall.toString(), ".flowupdater");
-        IOUtils.deleteDirectory(tempDirPath);
+        FileUtils.deleteDirectory(tempDirPath);
         Files.createDirectories(tempDirPath);
 
         final Path installPath = Paths.get(tempDirPath.toString(), "forge-installer.jar");
@@ -129,19 +128,25 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         Files.copy(new URL("https://flowarg.github.io/minecraft/launcher/" + (this.old ? "old" : "") + "patches.jar").openStream(), patches, StandardCopyOption.REPLACE_EXISTING);
     }
 
-    protected void patchForgeInstaller(Path install, Path patches, Path tempDir) throws Exception
+    protected void patchForgeInstaller(Path install, Path patches, Path tempDir)
     {
-        final Path tempInstallerDirPath = Paths.get(tempDir.toString(), "installer");
-        Files.createDirectories(tempInstallerDirPath);
+        try {
+            final Path tempInstallerDirPath = Paths.get(tempDir.toString(), "installer");
+            Files.createDirectories(tempInstallerDirPath);
 
-        this.logger.info("Applying patches...");
-        ZipUtils.unzipJarWithLZMACompat(tempInstallerDirPath.toFile(), install.toFile());
-        this.cleanInstaller(tempInstallerDirPath);
-        ZipUtils.unzipJarWithLZMACompat(tempInstallerDirPath.toFile(), patches.toFile());
+            this.logger.info("Applying patches...");
+            ZipUtils.unzipJar(tempInstallerDirPath.toString(), install.toString());
+            this.cleanInstaller(tempInstallerDirPath);
+            ZipUtils.unzipJar(tempInstallerDirPath.toString(), patches.toString());
 
-        this.logger.info("Repacking installer...");
-        this.packPatchedInstaller(tempDir, tempInstallerDirPath);
-        Files.delete(patches);
+            this.logger.info("Repacking installer...");
+            this.packPatchedInstaller(tempDir, tempInstallerDirPath);
+            Files.delete(patches);
+        }
+        catch(Exception e)
+        {
+            this.logger.printStackTrace(e);
+        }
     }
 
     protected ModLoaderLauncherEnvironment makeCommand(Path patchedInstaller, Path dirToInstall, Path tempDir)
@@ -176,7 +181,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
             {
                 if(!contained.getFileName().toString().contains(this.forgeVersion))
                 {
-                    IOUtils.deleteDirectory(contained);
+                    FileUtils.deleteDirectory(contained);
                     result = true;
                 }
             }
@@ -197,7 +202,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         this.callback.step(Step.MODS);
         final boolean cursePluginLoaded = pluginManager.isCursePluginLoaded();
         final boolean optifinePluginLoaded = pluginManager.isOptifinePluginLoaded();
-        ModCommons.installAllMods(this.downloadInfos, this.logger, modsDir, this.callback, cursePluginLoaded);
+        this.installAllMods(modsDir, cursePluginLoaded);
 
         Object ofObj = null;
         if(optifinePluginLoaded)
@@ -208,11 +213,10 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
                 ofObj = optifine;
                 try
                 {
-                    final Path pluginDirPath = Paths.get(modsDir.getParent().toString(), ".op");
                     final Path optifineFilePath = Paths.get(modsDir.toString(), optifine.getName());
 
                     if(Files.notExists(optifineFilePath))
-                        Files.copy(Paths.get(pluginDirPath.toString(), optifine.getName()), optifineFilePath, StandardCopyOption.REPLACE_EXISTING);
+                        IOUtils.copy(this.logger, Paths.get(modsDir.getParent().toString(), ".op", optifine.getName()), optifineFilePath);
                 } catch (Exception e)
                 {
                     this.logger.printStackTrace(e);
@@ -224,24 +228,13 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
 
         this.fileDeleter.delete(modsDir, this.mods, cursePluginLoaded, this.allCurseMods, optifinePluginLoaded, ofObj);
     }
-
-    public ModFileDeleter getFileDeleter()
-    {
-        return this.fileDeleter;
-    }
-
-    @Override
-    public void appendDownloadInfos(DownloadInfos infos)
-    {
-        this.downloadInfos = infos;
-    }
     
     protected void packPatchedInstaller(final Path tempDir, final Path tempInstallerDir) throws Exception
     {
         final Path outputPath = Paths.get(tempDir.toString(), "forge-installer-patched.zip");
-        ZipUtils.compressFiles(FileUtils.list(tempInstallerDir.toFile()), outputPath.toFile());
+        ZipUtils.compressFiles(FileUtils.list(tempInstallerDir).toArray(Path[]::new), outputPath);
         Files.move(outputPath, Paths.get(outputPath.toString().replace(".zip", ".jar")), StandardCopyOption.REPLACE_EXISTING);
-        IOUtils.deleteDirectory(tempInstallerDir);
+        FileUtils.deleteDirectory(tempInstallerDir);
     }
 
     @Override
@@ -254,6 +247,17 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     public void setAllCurseMods(List<Object> allCurseMods)
     {
         this.allCurseMods = allCurseMods;
+    }
+
+    public ModFileDeleter getFileDeleter()
+    {
+        return this.fileDeleter;
+    }
+
+    @Override
+    public void appendDownloadInfos(DownloadInfos infos)
+    {
+        this.downloadInfos = infos;
     }
 
     @Override
@@ -291,5 +295,17 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     public List<Object> getAllCurseMods()
     {
         return this.allCurseMods;
+    }
+
+    @Override
+    public IProgressCallback getCallback()
+    {
+        return this.callback;
+    }
+
+    @Override
+    public DownloadInfos getDownloadInfos()
+    {
+        return this.downloadInfos;
     }
 }

@@ -1,10 +1,12 @@
 package fr.flowarg.flowupdater.download;
 
+import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.FlowUpdater;
 import fr.flowarg.flowupdater.download.json.AssetDownloadable;
 import fr.flowarg.flowupdater.download.json.Downloadable;
 import fr.flowarg.flowupdater.utils.IOUtils;
+import fr.flowarg.flowzipper.ZipUtils;
 
 import java.io.IOException;
 import java.net.URL;
@@ -15,10 +17,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
-import static fr.flowarg.flowio.FileUtils.getFileSizeBytes;
-import static fr.flowarg.flowio.FileUtils.getSHA1;
-import static fr.flowarg.flowzipper.ZipUtils.unzipJar;
 
 public class VanillaDownloader
 {
@@ -68,7 +66,7 @@ public class VanillaDownloader
         Files.list(this.natives).filter(Files::isDirectory).forEach(path -> {
             try
             {
-                IOUtils.deleteDirectory(path);
+                FileUtils.deleteDirectory(path);
             } catch (IOException e)
             {
                 this.logger.printStackTrace(e);
@@ -79,7 +77,7 @@ public class VanillaDownloader
         {
             final Path filePath = Paths.get(this.dir.toString(), downloadable.getName());
 
-            if(Files.notExists(filePath) || !getSHA1(filePath.toFile()).equals(downloadable.getSha1()) || getFileSizeBytes(filePath) != downloadable.getSize())
+            if(Files.notExists(filePath) || !FileUtils.getSHA1(filePath).equalsIgnoreCase(downloadable.getSha1()) || FileUtils.getFileSizeBytes(filePath) != downloadable.getSize())
             {
                 IOUtils.download(this.logger, new URL(downloadable.getUrl()), filePath);
                 this.callback.onFileDownloaded(filePath);
@@ -113,7 +111,7 @@ public class VanillaDownloader
                     .forEach(file -> {
                         try
                         {
-                            unzipJar(this.natives.toString(), file.toString(), "ignoreMetaInf");
+                            ZipUtils.unzipJar(this.natives.toString(), file.toString(), "ignoreMetaInf");
                         } catch (IOException e)
                         {
                             this.logger.printStackTrace(e);
@@ -148,10 +146,10 @@ public class VanillaDownloader
                     {
                         final Path downloadPath = Paths.get(this.assets.toString(), assetDownloadable.getFile());
 
-                        if (Files.notExists(downloadPath) || getFileSizeBytes(downloadPath) != assetDownloadable.getSize())
+                        if (Files.notExists(downloadPath) || FileUtils.getFileSizeBytes(downloadPath) != assetDownloadable.getSize())
                         {
                             final Path localAssetPath = Paths.get(IOUtils.getMinecraftFolder().toString(), "assets", assetDownloadable.getFile());
-                            if(Files.exists(localAssetPath) && getFileSizeBytes(localAssetPath) == assetDownloadable.getSize()) IOUtils.copy(this.logger, localAssetPath, downloadPath);
+                            if(Files.exists(localAssetPath) && FileUtils.getFileSizeBytes(localAssetPath) == assetDownloadable.getSize()) IOUtils.copy(this.logger, localAssetPath, downloadPath);
                             else
                             {
                                 IOUtils.download(this.logger, assetDownloadable.getUrl(), downloadPath);

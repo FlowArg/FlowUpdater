@@ -1,12 +1,12 @@
 package fr.flowarg.flowupdater.versions;
 
+import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.download.IProgressCallback;
 import fr.flowarg.flowupdater.download.json.CurseFileInfos;
 import fr.flowarg.flowupdater.download.json.CurseModPackInfos;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.download.json.OptifineInfo;
-import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
 
 import java.io.BufferedInputStream;
@@ -47,7 +47,7 @@ public class NewForgeVersion extends AbstractForgeVersion
                 process.waitFor();
                 
                 this.logger.info("Successfully installed Forge !");
-                IOUtils.deleteDirectory(forgeLauncherEnvironment.getTempDir());
+                FileUtils.deleteDirectory(forgeLauncherEnvironment.getTempDir());
             }
             catch (IOException | InterruptedException e)
             {
@@ -65,9 +65,9 @@ public class NewForgeVersion extends AbstractForgeVersion
             final Path minecraftForgeDirPath = Paths.get(dirToInstall.toString(), "libraries", "net", "minecraftforge");
             final Path mappingsDirPath = Paths.get(dirToInstall.toString(), "libraries", "de", "oceanlabs");
 
-            IOUtils.deleteDirectory(minecraftDirPath);
-            IOUtils.deleteDirectory(minecraftForgeDirPath);
-            IOUtils.deleteDirectory(mappingsDirPath);
+            FileUtils.deleteDirectory(minecraftDirPath);
+            FileUtils.deleteDirectory(minecraftForgeDirPath);
+            FileUtils.deleteDirectory(mappingsDirPath);
         }
 
         return false;
@@ -87,9 +87,9 @@ public class NewForgeVersion extends AbstractForgeVersion
     protected void cleanInstaller(Path tempInstallerDir) throws Exception
     {
         final String path = tempInstallerDir.toString();
-        IOUtils.deleteDirectory(Paths.get(path, "net"));
-        IOUtils.deleteDirectory(Paths.get(path, "com"));
-        IOUtils.deleteDirectory(Paths.get(path, "joptsimple"));
+        FileUtils.deleteDirectory(Paths.get(path, "net"));
+        FileUtils.deleteDirectory(Paths.get(path, "com"));
+        FileUtils.deleteDirectory(Paths.get(path, "joptsimple"));
         Files.deleteIfExists(Paths.get(path, "META-INF", "MANIFEST.MF"));
         Files.deleteIfExists(Paths.get(path, "lekeystore.jks"));
         Files.deleteIfExists(Paths.get(path, "big_logo.png"));

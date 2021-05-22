@@ -17,10 +17,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class IOUtils
 {
@@ -143,42 +139,5 @@ public class IOUtils
                     ".minecraft"
             );
         return cachedMinecraftPath;
-    }
-
-    public static String consumeStringList(List<String> stringList)
-    {
-        final StringBuilder sb = new StringBuilder();
-        stringList.forEach(sb::append);
-        return sb.toString();
-    }
-
-    public static void deleteDirectory(final Path folder) throws IOException
-    {
-        if (Files.exists(folder) && Files.isDirectory(folder))
-        {
-            final List<Path> files = listRecursive(folder);
-            for (final Path f : files)
-                Files.delete(f);
-
-            Files.delete(folder);
-        }
-    }
-
-    public static List<Path> listRecursive(final Path directory) throws IOException
-    {
-        final List<Path> files = new ArrayList<>();
-        final List<Path> fs = list(directory).collect(Collectors.toList());
-
-        for (final Path f : fs)
-        {
-            if (Files.isDirectory(f)) files.addAll(listRecursive(f));
-            files.add(f);
-        }
-        return files;
-    }
-
-    public static Stream<Path> list(final Path dir) throws IOException
-    {
-        return Files.exists(dir) ? Files.list(dir) : Stream.empty();
     }
 }

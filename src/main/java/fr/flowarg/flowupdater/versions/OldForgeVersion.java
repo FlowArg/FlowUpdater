@@ -1,12 +1,12 @@
 package fr.flowarg.flowupdater.versions;
 
+import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.download.IProgressCallback;
 import fr.flowarg.flowupdater.download.json.CurseFileInfos;
 import fr.flowarg.flowupdater.download.json.CurseModPackInfos;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.download.json.OptifineInfo;
-import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
 
 import java.io.BufferedInputStream;
@@ -59,7 +59,7 @@ public class OldForgeVersion extends AbstractForgeVersion
             process.waitFor();
             
             this.logger.info("Successfully installed Forge !");
-            IOUtils.deleteDirectory(forgeLauncherEnvironment.getTempDir());
+            FileUtils.deleteDirectory(forgeLauncherEnvironment.getTempDir());
             return true;
         }
         catch (IOException | InterruptedException e)
@@ -74,10 +74,10 @@ public class OldForgeVersion extends AbstractForgeVersion
     protected void cleanInstaller(Path tempInstallerDir) throws Exception
     {
         final String path = tempInstallerDir.toString();
-        IOUtils.deleteDirectory(Paths.get(path, "net"));
-        IOUtils.deleteDirectory(Paths.get(path, "com"));
-        IOUtils.deleteDirectory(Paths.get(path, "joptsimple"));
-        IOUtils.deleteDirectory(Paths.get(path, "META-INF"));
+        FileUtils.deleteDirectory(Paths.get(path, "net"));
+        FileUtils.deleteDirectory(Paths.get(path, "com"));
+        FileUtils.deleteDirectory(Paths.get(path, "joptsimple"));
+        FileUtils.deleteDirectory(Paths.get(path, "META-INF"));
         Files.deleteIfExists(Paths.get(path, "big_logo.png"));
         Files.deleteIfExists(Paths.get(path, "url.png"));
     }

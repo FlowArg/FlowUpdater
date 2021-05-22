@@ -1,5 +1,6 @@
 package fr.flowarg.flowupdater.utils;
 
+import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowupdater.download.DownloadInfos;
 import fr.flowarg.flowupdater.download.json.ExternalFile;
 
@@ -7,8 +8,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-
-import static fr.flowarg.flowio.FileUtils.getSHA1;
 
 public class ExternalFileDeleter implements IFileDeleter
 {
@@ -32,7 +31,7 @@ public class ExternalFileDeleter implements IFileDeleter
                 {
                     if(extFile.isUpdate())
                     {
-                        if (!getSHA1(filePath.toFile()).equals(extFile.getSha1()))
+                        if (!FileUtils.getSHA1(filePath).equalsIgnoreCase(extFile.getSha1()))
                         {
                             Files.delete(filePath);
                             downloadInfos.getExtFiles().add(extFile);

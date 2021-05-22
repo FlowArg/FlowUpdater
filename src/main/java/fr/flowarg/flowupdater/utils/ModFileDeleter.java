@@ -1,6 +1,7 @@
 package fr.flowarg.flowupdater.utils;
 
 import fr.antoineok.flowupdater.optifineplugin.Optifine;
+import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowupdater.curseforgeplugin.CurseMod;
 import fr.flowarg.flowupdater.download.json.Mod;
 
@@ -10,8 +11,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static fr.flowarg.flowio.FileUtils.*;
 
 public class ModFileDeleter implements IFileDeleter
 {
@@ -44,7 +43,7 @@ public class ModFileDeleter implements IFileDeleter
             final List<Path> verifiedFiles = new ArrayList<>();
             Arrays.stream(this.modsToIgnore).forEach(fileName -> verifiedFiles.add(Paths.get(modsDir.toString(), fileName)));
 
-            for(Path fileInDir : IOUtils.list(modsDir).filter(path -> !Files.isDirectory(path)).collect(Collectors.toList()))
+            for(Path fileInDir : FileUtils.list(modsDir).filter(path -> !Files.isDirectory(path)).collect(Collectors.toList()))
             {
                 if(verifiedFiles.contains(fileInDir))
                     continue;
@@ -68,7 +67,7 @@ public class ModFileDeleter implements IFileDeleter
                                     badFiles.remove(fileInDir);
                                     verifiedFiles.add(fileInDir);
                                 }
-                                else if (getMD5ofFile(fileInDir.toFile()).equalsIgnoreCase(mod.getMd5()) && getFileSizeBytes(fileInDir) == mod.getLength())
+                                else if (FileUtils.getMD5(fileInDir).equalsIgnoreCase(mod.getMd5()) && FileUtils.getFileSizeBytes(fileInDir) == mod.getLength())
                                 {
                                     badFiles.remove(fileInDir);
                                     verifiedFiles.add(fileInDir);
@@ -89,7 +88,7 @@ public class ModFileDeleter implements IFileDeleter
                         {
                             if (optifine.getName().equalsIgnoreCase(fileInDir.getFileName().toString()))
                             {
-                                if (getFileSizeBytes(fileInDir) == optifine.getSize())
+                                if (FileUtils.getFileSizeBytes(fileInDir) == optifine.getSize())
                                 {
                                     badFiles.remove(fileInDir);
                                     verifiedFiles.add(fileInDir);
@@ -107,7 +106,7 @@ public class ModFileDeleter implements IFileDeleter
                     {
                         if (mod.getName().equalsIgnoreCase(fileInDir.getFileName().toString()))
                         {
-                            if (getSHA1(fileInDir.toFile()).equalsIgnoreCase(mod.getSha1()) && getFileSizeBytes(fileInDir) == mod.getSize())
+                            if (FileUtils.getSHA1(fileInDir).equalsIgnoreCase(mod.getSha1()) && FileUtils.getFileSizeBytes(fileInDir) == mod.getSize())
                             {
                                 badFiles.remove(fileInDir);
                                 verifiedFiles.add(fileInDir);

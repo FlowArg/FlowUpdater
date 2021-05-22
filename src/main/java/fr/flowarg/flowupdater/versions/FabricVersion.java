@@ -3,14 +3,15 @@ package fr.flowarg.flowupdater.versions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
+import fr.flowarg.flowstringer.StringUtils;
 import fr.flowarg.flowupdater.FlowUpdater;
 import fr.flowarg.flowupdater.download.*;
 import fr.flowarg.flowupdater.download.json.CurseFileInfos;
 import fr.flowarg.flowupdater.download.json.CurseModPackInfos;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.utils.ArtifactsDownloader;
-import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
 import fr.flowarg.flowupdater.utils.PluginManager;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
@@ -181,7 +182,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
         this.logger.info("Downloading fabric installer...");
 
         final Path tempDirPath = Paths.get(dirToInstall.toString(), ".flowupdater");
-        IOUtils.deleteDirectory(tempDirPath);
+        FileUtils.deleteDirectory(tempDirPath);
         final Path fabricPath = Paths.get(tempDirPath.toString(), "zeWorld");
         final Path installPath = Paths.get(tempDirPath.toString(), String.format("fabric-installer-%s.jar", installerVersion));
 
@@ -225,7 +226,6 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
         {
             try (BufferedInputStream stream = new BufferedInputStream(this.installerUrl.openStream()))
             {
-
                 final FabricLauncherEnvironment fabricLauncherEnvironment = this.prepareModLoaderLauncher(dirToInstall, stream);
                 this.logger.info("Launching fabric installer...");
                 fabricLauncherEnvironment.launchFabricInstaller();
@@ -233,7 +233,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
                 final Path jsonPath = Paths.get(fabricLauncherEnvironment.getFabric().toString(), "versions", String.format("fabric-loader-%s-%s", this.fabricVersion, this.vanilla.getName()));
                 final Path jsonFilePath = Paths.get(jsonPath.toString(), jsonPath.getFileName().toString() + ".json");
 
-                final JsonObject obj = JsonParser.parseString(IOUtils.consumeStringList(Files.readAllLines(jsonFilePath, StandardCharsets.UTF_8))).getAsJsonObject();
+                final JsonObject obj = JsonParser.parseString(StringUtils.toString(Files.readAllLines(jsonFilePath, StandardCharsets.UTF_8))).getAsJsonObject();
                 final JsonArray libs = obj.getAsJsonArray("libraries");
 
                 final Path libraries = Paths.get(dirToInstall.toString(), "libraries");
@@ -243,7 +243,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
                 });
 
                 this.logger.info("Successfully installed Fabric !");
-                IOUtils.deleteDirectory(fabricLauncherEnvironment.getTempDir());
+                FileUtils.deleteDirectory(fabricLauncherEnvironment.getTempDir());
             } catch (Exception e)
             {
                 this.logger.printStackTrace(e);
@@ -264,7 +264,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
             for (Path contained : Files.list(fabricDirPath).collect(Collectors.toList()))
             {
                 if (!contained.getFileName().toString().contains(this.fabricVersion))
-                    IOUtils.deleteDirectory(contained);
+                    FileUtils.deleteDirectory(contained);
             }
         }
     }
@@ -291,7 +291,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
         this.callback.step(Step.MODS);
         final boolean cursePluginLoaded = pluginManager.isCursePluginLoaded();
 
-        ModCommons.installAllMods(this.downloadInfos, this.logger, modsDir, this.callback, cursePluginLoaded);
+        this.installAllMods(modsDir, cursePluginLoaded);
         this.fileDeleter.delete(modsDir, this.mods, cursePluginLoaded, this.allCurseMods, false, null);
     }
 
@@ -303,6 +303,12 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
     public void appendDownloadInfos(DownloadInfos infos)
     {
         this.downloadInfos = infos;
+    }
+
+    @Override
+    public DownloadInfos getDownloadInfos()
+    {
+        return this.downloadInfos;
     }
 
     @Override
@@ -325,6 +331,12 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
 
     public List<Object> getAllCurseMods() {
         return this.allCurseMods;
+    }
+
+    @Override
+    public IProgressCallback getCallback()
+    {
+        return this.callback;
     }
 
     @Override

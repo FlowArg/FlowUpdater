@@ -79,7 +79,7 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
      * A useless function. Will be removed soon.
      * @param noGui true/false.
      * @return the builder.
-     * @deprecated Useless.
+     * @deprecated Useless, don't use that.
      */
     @Deprecated
     public ForgeVersionBuilder withNoGui(boolean noGui)
@@ -144,7 +144,7 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
 
     public enum ForgeVersionType
     {
-        /** 1.12.2-14.23.5.2851 to 1.16.3 */
+        /** 1.12.2-14.23.5.2851 to 1.16.5 */
         NEW,
         /** 1.7 to 1.12.2 */
         OLD
