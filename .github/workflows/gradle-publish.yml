@@ -28,8 +28,6 @@ jobs:
       env:
         OSSRH_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
         OSSRH_PASSWORD: ${{ secrets.SONATYPE_TOKEN }}
-        SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
-        SONATYPE_TOKEN: ${{ secrets.SONATYPE_TOKEN }}
         GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
  
