@@ -142,7 +142,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
         return Files.exists(Paths.get(installDir.toString(), "libraries", "net", "fabricmc", "fabric-loader", this.fabricVersion, "fabric-loader-" + this.fabricVersion + ".jar"));
     }
 
-    private static class FabricLauncherEnvironment extends ModLoaderLauncherEnvironment
+    private class FabricLauncherEnvironment extends ModLoaderLauncherEnvironment
     {
         private final Path fabric;
 
@@ -166,10 +166,10 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
 
-            while ((line = reader.readLine()) != null) System.out.printf("%s\n", line);
+            while ((line = reader.readLine()) != null) FabricVersion.this.logger.info(line);
 
             reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-            while ((line = reader.readLine()) != null) System.out.printf("%s\n", line);
+            while ((line = reader.readLine()) != null) FabricVersion.this.logger.info(line);
 
             process.waitFor();
 
