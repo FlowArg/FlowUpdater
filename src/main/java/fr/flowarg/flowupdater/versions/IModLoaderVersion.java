@@ -18,6 +18,7 @@ import java.util.List;
 public interface IModLoaderVersion
 {
     void appendDownloadInfos(DownloadInfos infos);
+    void appendCallback(IProgressCallback callback);
     boolean isModLoaderAlreadyInstalled(Path installDir);
     void install(Path dirToInstall) throws Exception;
     ModLoaderLauncherEnvironment prepareModLoaderLauncher(Path dirToInstall, InputStream stream) throws Exception;

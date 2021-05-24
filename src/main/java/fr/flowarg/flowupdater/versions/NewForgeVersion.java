@@ -2,7 +2,6 @@ package fr.flowarg.flowupdater.versions;
 
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
-import fr.flowarg.flowupdater.download.IProgressCallback;
 import fr.flowarg.flowupdater.download.json.CurseFileInfos;
 import fr.flowarg.flowupdater.download.json.CurseModPackInfos;
 import fr.flowarg.flowupdater.download.json.Mod;
@@ -25,9 +24,12 @@ public class NewForgeVersion extends AbstractForgeVersion
 {
     private final String[] compatibleVersions = {"1.17", "1.16", "1.15", "1.14", "1.13", "1.12.2-14.23.5.285"};
 
-    NewForgeVersion(String forgeVersion, VanillaVersion vanilla, ILogger logger, IProgressCallback callback, List<Mod> mods, List<CurseFileInfos> curseMods, ModFileDeleter fileDeleter, OptifineInfo optifine, CurseModPackInfos modPack)
+    NewForgeVersion(String forgeVersion, VanillaVersion vanilla,
+            ILogger logger, List<Mod> mods,
+            List<CurseFileInfos> curseMods, ModFileDeleter fileDeleter,
+            OptifineInfo optifine, CurseModPackInfos modPack)
     {
-        super(logger, mods, curseMods, forgeVersion, vanilla, callback, fileDeleter, optifine, modPack, false);
+        super(logger, mods, curseMods, forgeVersion, vanilla, fileDeleter, optifine, modPack, false);
     }
 
     @Override

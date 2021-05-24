@@ -203,6 +203,7 @@ public class FlowUpdater
         if(modLoader != null)
         {
             modLoader.appendDownloadInfos(this.downloadInfos);
+            modLoader.appendCallback(this.callback);
             if(!modLoader.isModLoaderAlreadyInstalled(dir))
                 modLoader.install(dir);
             else this.logger.info(name + " is already installed ! Skipping installation...");

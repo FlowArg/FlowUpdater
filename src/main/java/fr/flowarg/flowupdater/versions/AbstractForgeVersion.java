@@ -35,7 +35,6 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     protected final List<Mod> mods;
     protected final VanillaVersion vanilla;
     protected final String forgeVersion;
-    protected final IProgressCallback callback;
     protected final List<CurseFileInfos> curseMods;
     protected final ModFileDeleter fileDeleter;
     protected final OptifineInfo optifine;
@@ -44,6 +43,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     protected List<Object> allCurseMods;
     protected URL installerUrl;
     protected DownloadInfos downloadInfos;
+    protected IProgressCallback callback;
 
     /**
      * Use {@link ForgeVersionBuilder} to instantiate this class.
@@ -52,13 +52,16 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
      * @param curseMods {@link List} to install.
      * @param forgeVersion to install.
      * @param vanilla {@link VanillaVersion}.
-     * @param callback {@link IProgressCallback} used for update progression.
      * @param fileDeleter {@link ModFileDeleter} used to cleanup mods dir.
      * @param optifine Optifine version to install.
      * @param modPackInfos modpack informations.
      * @param old if the current version of forge is an old forge version.
      */
-    protected AbstractForgeVersion(ILogger logger, List<Mod> mods, List<CurseFileInfos> curseMods, String forgeVersion, VanillaVersion vanilla, IProgressCallback callback, ModFileDeleter fileDeleter, OptifineInfo optifine, CurseModPackInfos modPackInfos, boolean old)
+    protected AbstractForgeVersion(ILogger logger, List<Mod> mods,
+            List<CurseFileInfos> curseMods, String forgeVersion,
+            VanillaVersion vanilla, ModFileDeleter fileDeleter,
+            OptifineInfo optifine, CurseModPackInfos modPackInfos,
+            boolean old)
     {
         this.logger = logger;
         this.mods = mods;
@@ -71,7 +74,6 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         if (!forgeVersion.contains("-"))
             this.forgeVersion = this.vanilla.getName() + '-' + forgeVersion;
         else this.forgeVersion = forgeVersion.trim();
-        this.callback = callback;
         try
         {
             this.installerUrl = new URL(String.format("https://files.minecraftforge.net/maven/net/minecraftforge/forge/%s/forge-%s-installer.jar", this.forgeVersion, this.forgeVersion));
@@ -261,6 +263,24 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     }
 
     @Override
+    public void appendCallback(IProgressCallback callback)
+    {
+        this.callback = callback;
+    }
+
+    @Override
+    public DownloadInfos getDownloadInfos()
+    {
+        return this.downloadInfos;
+    }
+
+    @Override
+    public IProgressCallback getCallback()
+    {
+        return this.callback;
+    }
+
+    @Override
     public List<CurseFileInfos> getCurseMods()
     {
         return this.curseMods;
@@ -295,17 +315,5 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     public List<Object> getAllCurseMods()
     {
         return this.allCurseMods;
-    }
-
-    @Override
-    public IProgressCallback getCallback()
-    {
-        return this.callback;
-    }
-
-    @Override
-    public DownloadInfos getDownloadInfos()
-    {
-        return this.downloadInfos;
     }
 }

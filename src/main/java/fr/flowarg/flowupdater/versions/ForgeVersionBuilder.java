@@ -31,6 +31,7 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
     private final BuilderArgument<String> forgeVersionArgument = new BuilderArgument<String>("ForgeVersion").required();
     private final BuilderArgument<VanillaVersion> vanillaVersionArgument = new BuilderArgument<>(() -> VanillaVersion.NULL_VERSION, "VanillaVersion").required();
     private final BuilderArgument<ILogger> loggerArgument = new BuilderArgument<>("Logger", () -> FlowUpdater.DEFAULT_LOGGER).optional();
+    @Deprecated
     private final BuilderArgument<IProgressCallback> progressCallbackArgument = new BuilderArgument<>("ProgressCallback", () -> FlowUpdater.NULL_CALLBACK).optional();
     private final BuilderArgument<List<Mod>> modsArgument = new BuilderArgument<List<Mod>>("Mods", ArrayList::new).optional();
     private final BuilderArgument<List<CurseFileInfos>> curseModsArgument = new BuilderArgument<List<CurseFileInfos>>("CurseMods", ArrayList::new).optional();
@@ -57,6 +58,7 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
         return this;
     }
 
+    @Deprecated
     public ForgeVersionBuilder withProgressCallback(IProgressCallback progressCallback)
     {
         this.progressCallbackArgument.set(progressCallback);
@@ -109,8 +111,6 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
     @Override
     public AbstractForgeVersion build() throws BuilderException
     {
-        if(this.progressCallbackArgument.get() == FlowUpdater.NULL_CALLBACK)
-            this.loggerArgument.get().warn("You are using default callback for forge installation. If you're using a custom callback for vanilla files, it will not updated when forge and mods will be installed.");
         switch (this.type)
         {
             case NEW:
@@ -118,7 +118,6 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
                         this.forgeVersionArgument.get(),
                         this.vanillaVersionArgument.get(),
                         this.loggerArgument.get(),
-                        this.progressCallbackArgument.get(),
                         this.modsArgument.get(),
                         this.curseModsArgument.get(),
                         this.fileDeleterArgument.get(),
@@ -130,7 +129,6 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
                         this.forgeVersionArgument.get(),
                         this.vanillaVersionArgument.get(),
                         this.loggerArgument.get(),
-                        this.progressCallbackArgument.get(),
                         this.modsArgument.get(),
                         this.curseModsArgument.get(),
                         this.fileDeleterArgument.get(),
