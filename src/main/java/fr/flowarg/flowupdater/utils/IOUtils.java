@@ -86,7 +86,7 @@ public class IOUtils
             return readJson(catchForbidden(jsonURL));
         } catch (IOException e)
         {
-            e.printStackTrace();
+            FlowUpdater.DEFAULT_LOGGER.printStackTrace(e);
         }
         return JsonNull.INSTANCE;
     }
@@ -116,7 +116,7 @@ public class IOUtils
             rbc.close();
         } catch (IOException e)
         {
-            e.printStackTrace();
+            FlowUpdater.DEFAULT_LOGGER.printStackTrace(e);
         }
 
         return element.getAsJsonObject();

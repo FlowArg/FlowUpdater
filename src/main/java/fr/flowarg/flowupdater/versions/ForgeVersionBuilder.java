@@ -29,12 +29,15 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
     }
 
     private final BuilderArgument<String> forgeVersionArgument = new BuilderArgument<String>("ForgeVersion").required();
+    @Deprecated
     private final BuilderArgument<VanillaVersion> vanillaVersionArgument = new BuilderArgument<>(() -> VanillaVersion.NULL_VERSION, "VanillaVersion").required();
+    @Deprecated
     private final BuilderArgument<ILogger> loggerArgument = new BuilderArgument<>("Logger", () -> FlowUpdater.DEFAULT_LOGGER).optional();
     @Deprecated
     private final BuilderArgument<IProgressCallback> progressCallbackArgument = new BuilderArgument<>("ProgressCallback", () -> FlowUpdater.NULL_CALLBACK).optional();
     private final BuilderArgument<List<Mod>> modsArgument = new BuilderArgument<List<Mod>>("Mods", ArrayList::new).optional();
     private final BuilderArgument<List<CurseFileInfos>> curseModsArgument = new BuilderArgument<List<CurseFileInfos>>("CurseMods", ArrayList::new).optional();
+    @Deprecated
     private final BuilderArgument<Boolean> nogGuiArgument = new BuilderArgument<>("NoGui", () -> true).optional();
     private final BuilderArgument<ModFileDeleter> fileDeleterArgument = new BuilderArgument<>("ModFileDeleter", () -> new ModFileDeleter(false)).optional();
     private final BuilderArgument<OptifineInfo> optifineArgument = new BuilderArgument<OptifineInfo>("Optifine").optional();
@@ -46,12 +49,14 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
         return this;
     }
 
+    @Deprecated
     public ForgeVersionBuilder withVanillaVersion(VanillaVersion vanillaVersion)
     {
         this.vanillaVersionArgument.set(vanillaVersion);
         return this;
     }
 
+    @Deprecated
     public ForgeVersionBuilder withLogger(ILogger logger)
     {
         this.loggerArgument.set(logger);
@@ -116,8 +121,6 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
             case NEW:
                 return new NewForgeVersion(
                         this.forgeVersionArgument.get(),
-                        this.vanillaVersionArgument.get(),
-                        this.loggerArgument.get(),
                         this.modsArgument.get(),
                         this.curseModsArgument.get(),
                         this.fileDeleterArgument.get(),
@@ -127,8 +130,6 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
             case OLD:
                 return new OldForgeVersion(
                         this.forgeVersionArgument.get(),
-                        this.vanillaVersionArgument.get(),
-                        this.loggerArgument.get(),
                         this.modsArgument.get(),
                         this.curseModsArgument.get(),
                         this.fileDeleterArgument.get(),
@@ -142,7 +143,7 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
 
     public enum ForgeVersionType
     {
-        /** 1.12.2-14.23.5.2851 to 1.16.5 */
+        /** 1.12.2-14.23.5.2851 to 1.17 */
         NEW,
         /** 1.7 to 1.12.2 */
         OLD

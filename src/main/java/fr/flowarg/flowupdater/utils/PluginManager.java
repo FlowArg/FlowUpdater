@@ -122,25 +122,28 @@ public class PluginManager
 
     public void loadOptifinePlugin(Path dir, AbstractForgeVersion forgeVersion)
     {
-        try
+        if(forgeVersion.getOptifine() != null)
         {
-            Class.forName("fr.antoineok.flowupdater.optifineplugin.OptifinePlugin");
-            this.optifinePluginLoaded = true;
             try
             {
-                final OptifinePlugin optifinePlugin = OptifinePlugin.INSTANCE;
-                optifinePlugin.setLogger(this.logger);
-                optifinePlugin.setFolder(Paths.get(dir.getParent().toString(), ".op"));
-                final Optifine optifine = optifinePlugin.getOptifine(forgeVersion.getOptifine().getVersion(), forgeVersion.getOptifine().isPreview());
-                this.downloadInfos.setOptifine(optifine);
-            } catch (Exception e)
+                Class.forName("fr.antoineok.flowupdater.optifineplugin.OptifinePlugin");
+                this.optifinePluginLoaded = true;
+                try
+                {
+                    final OptifinePlugin optifinePlugin = OptifinePlugin.INSTANCE;
+                    optifinePlugin.setLogger(this.logger);
+                    optifinePlugin.setFolder(Paths.get(dir.getParent().toString(), ".op"));
+                    final Optifine optifine = optifinePlugin.getOptifine(forgeVersion.getOptifine().getVersion(), forgeVersion.getOptifine().isPreview());
+                    this.downloadInfos.setOptifine(optifine);
+                } catch (Exception e)
+                {
+                    this.logger.printStackTrace(e);
+                }
+            } catch (ClassNotFoundException e)
             {
-                this.logger.printStackTrace(e);
+                this.optifinePluginLoaded = false;
+                this.logger.err("Cannot install optifine: OptifinePlugin is not loaded. Please, enable the 'enableOptifineDownloaderPlugin' updater option !");
             }
-        } catch (ClassNotFoundException e)
-        {
-            this.optifinePluginLoaded = false;
-            this.logger.err("Cannot install optifine: OptifinePlugin is not loaded. Please, enable the 'enableOptifineDownloaderPlugin' updater option !");
         }
     }
 

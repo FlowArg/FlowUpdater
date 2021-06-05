@@ -202,8 +202,7 @@ public class FlowUpdater
     {
         if(modLoader != null)
         {
-            modLoader.appendDownloadInfos(this.downloadInfos);
-            modLoader.appendCallback(this.callback);
+            modLoader.attachFlowUpdater(this);
             if(!modLoader.isModLoaderAlreadyInstalled(dir))
                 modLoader.install(dir);
             else this.logger.info(name + " is already installed ! Skipping installation...");
@@ -388,6 +387,5 @@ public class FlowUpdater
     public List<Runnable> getPostExecutions() { return this.postExecutions; }
     public DownloadInfos getDownloadInfos() { return this.downloadInfos; }
     public UpdaterOptions getUpdaterOptions() { return this.updaterOptions; }
-    public PluginManager getPluginManager() { return this.pluginManager; }
     public FabricVersion getFabricVersion() { return fabricVersion; }
 }

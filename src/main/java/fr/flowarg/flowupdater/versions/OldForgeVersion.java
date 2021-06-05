@@ -1,7 +1,6 @@
 package fr.flowarg.flowupdater.versions;
 
 import fr.flowarg.flowio.FileUtils;
-import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.download.json.CurseFileInfos;
 import fr.flowarg.flowupdater.download.json.CurseModPackInfos;
 import fr.flowarg.flowupdater.download.json.Mod;
@@ -24,12 +23,11 @@ import java.util.List;
  */
 public class OldForgeVersion extends AbstractForgeVersion
 {
-    OldForgeVersion(String forgeVersion, VanillaVersion vanilla,
-            ILogger logger, List<Mod> mods,
+    OldForgeVersion(String forgeVersion, List<Mod> mods,
             List<CurseFileInfos> curseMods, ModFileDeleter fileDeleter,
             OptifineInfo optifine, CurseModPackInfos modPack)
     {
-        super(logger, mods, curseMods, forgeVersion, vanilla, fileDeleter, optifine, modPack, true);
+        super(mods, curseMods, forgeVersion, fileDeleter, optifine, modPack, true);
     }
     
     @Override

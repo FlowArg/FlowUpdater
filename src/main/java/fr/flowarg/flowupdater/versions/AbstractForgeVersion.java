@@ -31,56 +31,42 @@ import java.util.stream.Collectors;
  */
 public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLoaderVersion
 {
-    protected final ILogger logger;
     protected final List<Mod> mods;
-    protected final VanillaVersion vanilla;
-    protected final String forgeVersion;
     protected final List<CurseFileInfos> curseMods;
     protected final ModFileDeleter fileDeleter;
     protected final OptifineInfo optifine;
     protected final CurseModPackInfos modPackInfos;
     protected final boolean old;
+
     protected List<Object> allCurseMods;
     protected URL installerUrl;
     protected DownloadInfos downloadInfos;
+    protected ILogger logger;
     protected IProgressCallback callback;
+    protected VanillaVersion vanilla;
+    protected String forgeVersion;
 
     /**
      * Use {@link ForgeVersionBuilder} to instantiate this class.
-     * @param logger {@link ILogger} used for logging.
      * @param mods {@link List} to install.
      * @param curseMods {@link List} to install.
      * @param forgeVersion to install.
-     * @param vanilla {@link VanillaVersion}.
      * @param fileDeleter {@link ModFileDeleter} used to cleanup mods dir.
      * @param optifine Optifine version to install.
      * @param modPackInfos modpack informations.
      * @param old if the current version of forge is an old forge version.
      */
-    protected AbstractForgeVersion(ILogger logger, List<Mod> mods,
-            List<CurseFileInfos> curseMods, String forgeVersion,
-            VanillaVersion vanilla, ModFileDeleter fileDeleter,
-            OptifineInfo optifine, CurseModPackInfos modPackInfos,
-            boolean old)
+    protected AbstractForgeVersion(List<Mod> mods, List<CurseFileInfos> curseMods,
+            String forgeVersion, ModFileDeleter fileDeleter, OptifineInfo optifine,
+            CurseModPackInfos modPackInfos, boolean old)
     {
-        this.logger = logger;
         this.mods = mods;
-        this.fileDeleter = fileDeleter;
         this.curseMods = curseMods;
-        this.vanilla = vanilla;
+        this.forgeVersion = forgeVersion;
+        this.fileDeleter = fileDeleter;
         this.optifine = optifine;
         this.modPackInfos = modPackInfos;
         this.old = old;
-        if (!forgeVersion.contains("-"))
-            this.forgeVersion = this.vanilla.getName() + '-' + forgeVersion;
-        else this.forgeVersion = forgeVersion.trim();
-        try
-        {
-            this.installerUrl = new URL(String.format("https://files.minecraftforge.net/maven/net/minecraftforge/forge/%s/forge-%s-installer.jar", this.forgeVersion, this.forgeVersion));
-        } catch (Exception e)
-        {
-            this.logger.printStackTrace(e);
-        }
     }
 
     /**
@@ -257,15 +243,28 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     }
 
     @Override
-    public void appendDownloadInfos(DownloadInfos infos)
+    public void attachFlowUpdater(FlowUpdater flowUpdater)
     {
-        this.downloadInfos = infos;
-    }
+        this.callback = flowUpdater.getCallback();
+        this.logger = flowUpdater.getLogger();
+        this.downloadInfos = flowUpdater.getDownloadInfos();
+        this.vanilla = flowUpdater.getVersion();
+        if (!forgeVersion.contains("-"))
+            this.forgeVersion = this.vanilla.getName() + '-' + forgeVersion;
+        else this.forgeVersion = forgeVersion.trim();
+        try
+        {
+            this.installerUrl = new URL(String.format("https://files.minecraftforge.net/maven/net/minecraftforge/forge/%s/forge-%s-installer.jar", this.forgeVersion, this.forgeVersion));
+        } catch (Exception e)
+        {
+            this.logger.printStackTrace(e);
+        }
 
-    @Override
-    public void appendCallback(IProgressCallback callback)
-    {
-        this.callback = callback;
+        if(!this.curseMods.isEmpty() && !flowUpdater.getUpdaterOptions().isEnableCurseForgePlugin())
+            this.logger.warn("You must enable the enableCurseForgePlugin option to use curse forge features!");
+
+        if(this.optifine != null && !flowUpdater.getUpdaterOptions().isEnableOptifineDownloaderPlugin())
+            this.logger.warn("You must enable the enableOptifineDownloaderPlugin option to use optifine!");
     }
 
     @Override

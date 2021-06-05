@@ -189,16 +189,20 @@ public class VanillaReader
     private void getAssets() throws IOException
     {
         final Set<AssetDownloadable> toDownload = new HashSet<>(this.version.getAnotherAssets());
-        final URL url = new URL(this.version.getMinecraftAssetsIndex().get("url").getAsString());
-        final String json = IOUtils.getContent(url);
+        if(this.version.getCustomAssetIndex() == null)
+        {
+            final URL url = new URL(this.version.getMinecraftAssetsIndex().get("url").getAsString());
+            final String json = IOUtils.getContent(url);
+            final AssetIndex index = new GsonBuilder().disableHtmlEscaping().create().fromJson(json, AssetIndex.class);
 
-        final AssetIndex index = new GsonBuilder()
-                .disableHtmlEscaping()
-                .create()
-                .fromJson(json, AssetIndex.class);
-
-        for (final Map.Entry<String, AssetDownloadable> entry : index.getUniqueObjects().entrySet())
-            toDownload.add(new AssetDownloadable(entry.getValue().getHash(), entry.getValue().getSize()));
+            for (final Map.Entry<String, AssetDownloadable> entry : index.getUniqueObjects().entrySet())
+                toDownload.add(new AssetDownloadable(entry.getValue().getHash(), entry.getValue().getSize()));
+        }
+        else
+        {
+            for (final Map.Entry<String, AssetDownloadable> entry : this.version.getCustomAssetIndex().getUniqueObjects().entrySet())
+                toDownload.add(new AssetDownloadable(entry.getValue().getHash(), entry.getValue().getSize()));
+        }
         this.infos.getAssetDownloadables().addAll(toDownload);
     }
 

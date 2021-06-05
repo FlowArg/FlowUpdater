@@ -28,7 +28,6 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -44,9 +43,7 @@ import java.util.stream.Collectors;
  */
 public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
 {
-    private final ILogger logger;
     private final List<Mod> mods;
-    private final VanillaVersion vanilla;
     private final String fabricVersion;
     private final List<CurseFileInfos> curseMods;
     private final ModFileDeleter fileDeleter;
@@ -56,33 +53,26 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
     private final String[] compatibleVersions = {"1.17", "1.16", "1.15", "1.14", "1.13"};
 
     private URL installerUrl;
+    private ILogger logger;
+    private VanillaVersion vanilla;
     private DownloadInfos downloadInfos;
     private IProgressCallback callback;
 
     /**
      * Use {@link FabricVersionBuilder} to instantiate this class.
-     *  @param logger      {@link ILogger} used for logging.
      * @param mods        {@link List<Mod>} to install.
-     * @param curseMods   {@link ArrayList<CurseFileInfos>} to install.
+     * @param curseMods   {@link List<CurseFileInfos>} to install.
      * @param fabricVersion to install.
-     * @param vanilla     {@link VanillaVersion}.
      * @param fileDeleter {@link ModFileDeleter} used to cleanup mods dir.
      * @param modPackInfos {@link CurseModPackInfos} the modpack you want to install.
      */
-    private FabricVersion(ILogger logger, List<Mod> mods, List<CurseFileInfos> curseMods, String fabricVersion, VanillaVersion vanilla, ModFileDeleter fileDeleter, CurseModPackInfos modPackInfos) {
-        this.logger = logger;
+    private FabricVersion(List<Mod> mods, List<CurseFileInfos> curseMods, String fabricVersion, ModFileDeleter fileDeleter, CurseModPackInfos modPackInfos) {
         this.mods = mods;
         this.fileDeleter = fileDeleter;
         this.curseMods = curseMods;
-        this.vanilla = vanilla;
         this.fabricVersion = fabricVersion;
         this.modPackInfos = modPackInfos;
         this.installerVersion = this.getLatestInstallerVersion();
-        try {
-            this.installerUrl = new URL(String.format("https://maven.fabricmc.net/net/fabricmc/fabric-installer/%s/fabric-installer-%s.jar", installerVersion, installerVersion));
-        } catch (MalformedURLException e) {
-            this.logger.printStackTrace(e);
-        }
     }
 
     private static String getLatestFabricVersion() {
@@ -301,15 +291,20 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
     }
 
     @Override
-    public void appendDownloadInfos(DownloadInfos infos)
+    public void attachFlowUpdater(FlowUpdater flowUpdater)
     {
-        this.downloadInfos = infos;
-    }
+        this.callback = flowUpdater.getCallback();
+        this.logger = flowUpdater.getLogger();
+        this.downloadInfos = flowUpdater.getDownloadInfos();
+        this.vanilla = flowUpdater.getVersion();
+        try {
+            this.installerUrl = new URL(String.format("https://maven.fabricmc.net/net/fabricmc/fabric-installer/%s/fabric-installer-%s.jar", installerVersion, installerVersion));
+        } catch (Exception e) {
+            this.logger.printStackTrace(e);
+        }
 
-    @Override
-    public void appendCallback(IProgressCallback callback)
-    {
-        this.callback = callback;
+        if(!this.curseMods.isEmpty() && !flowUpdater.getUpdaterOptions().isEnableCurseForgePlugin())
+            this.logger.warn("You must enable the enableCurseForgePlugin option to use curse forge features!");
     }
 
     @Override
@@ -362,7 +357,9 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
     public static class FabricVersionBuilder implements IBuilder<FabricVersion> {
 
         private final BuilderArgument<String> fabricVersionArgument = new BuilderArgument<>("FabricVersion", FabricVersion::getLatestFabricVersion).optional();
+        @Deprecated
         private final BuilderArgument<VanillaVersion> vanillaVersionArgument = new BuilderArgument<>(() -> VanillaVersion.NULL_VERSION, "VanillaVersion").required();
+        @Deprecated
         private final BuilderArgument<ILogger> loggerArgument = new BuilderArgument<>("Logger", () -> FlowUpdater.DEFAULT_LOGGER).optional();
         @Deprecated
         private final BuilderArgument<IProgressCallback> progressCallbackArgument = new BuilderArgument<>("ProgressCallback", () -> FlowUpdater.NULL_CALLBACK).optional();
@@ -381,12 +378,14 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
             return this;
         }
 
+        @Deprecated
         public FabricVersionBuilder withVanillaVersion(VanillaVersion vanillaVersion)
         {
             this.vanillaVersionArgument.set(vanillaVersion);
             return this;
         }
 
+        @Deprecated
         public FabricVersionBuilder withLogger(ILogger logger)
         {
             this.loggerArgument.set(logger);
@@ -427,11 +426,9 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
         @Override
         public FabricVersion build() throws BuilderException {
             return new FabricVersion(
-                    this.loggerArgument.get(),
                     this.modsArgument.get(),
                     this.curseModsArgument.get(),
                     this.fabricVersionArgument.get(),
-                    this.vanillaVersionArgument.get(),
                     this.fileDeleterArgument.get(),
                     this.modPackArgument.get()
            );

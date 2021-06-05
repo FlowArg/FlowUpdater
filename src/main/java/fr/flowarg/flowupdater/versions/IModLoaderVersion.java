@@ -1,6 +1,7 @@
 package fr.flowarg.flowupdater.versions;
 
 import fr.flowarg.flowlogger.ILogger;
+import fr.flowarg.flowupdater.FlowUpdater;
 import fr.flowarg.flowupdater.curseforgeplugin.CurseMod;
 import fr.flowarg.flowupdater.download.DownloadInfos;
 import fr.flowarg.flowupdater.download.IProgressCallback;
@@ -17,8 +18,7 @@ import java.util.List;
 
 public interface IModLoaderVersion
 {
-    void appendDownloadInfos(DownloadInfos infos);
-    void appendCallback(IProgressCallback callback);
+    void attachFlowUpdater(FlowUpdater flowUpdater);
     boolean isModLoaderAlreadyInstalled(Path installDir);
     void install(Path dirToInstall) throws Exception;
     ModLoaderLauncherEnvironment prepareModLoaderLauncher(Path dirToInstall, InputStream stream) throws Exception;
