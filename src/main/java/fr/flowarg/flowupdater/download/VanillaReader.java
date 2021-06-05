@@ -179,6 +179,7 @@ public class VanillaReader
             if (name.contains("-3.2.1-") && name.contains("lwjgl")) return;
             if (name.contains("-2.9.2-") && name.contains("lwjgl")) return;
         }
+        else if(name.contains("-3.2.2-") && name.contains("lwjgl")) return;
 
         if(!this.isSilent)
             this.logger.debug("Reading " + name + " from " + url + "... SHA1 is : " + sha1);
