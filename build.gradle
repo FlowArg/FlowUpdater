@@ -37,7 +37,7 @@ allprojects {
     }
 
     dependencies {
-        api 'com.google.code.gson:gson:2.8.6'
+        api 'com.google.code.gson:gson:2.8.7'
         api 'fr.flowarg:flowmultitools:1.3.0'
     }
 
