@@ -51,7 +51,7 @@ archivesBaseName = "flowupdater"
 
 dependencies {
     compileOnly project(":CurseForgePlugin")
-    compileOnly project (":OptifinePlugin")
+    compileOnly project(":OptifinePlugin")
 
     // Only for internal tests
     testImplementation 'fr.flowarg:openlauncherlib:3.1.+'
@@ -72,7 +72,7 @@ publishing {
                 version = project.version
                 artifactId = 'flowupdater'
                 name = project.name
-                description = 'FlowUpdater is a library for automatically update minecraft versions !'
+                description = 'FlowUpdater is a library to automatically update minecraft versions !'
                 url = 'https://github.com/FlowArg/FlowUpdater'
 
                 scm {
