@@ -12,7 +12,7 @@ import fr.flowarg.flowupdater.download.ICurseFeaturesUser;
 import fr.flowarg.flowupdater.download.IProgressCallback;
 import fr.flowarg.flowupdater.download.Step;
 import fr.flowarg.flowupdater.download.json.CurseFileInfos;
-import fr.flowarg.flowupdater.download.json.CurseModPackInfos;
+import fr.flowarg.flowupdater.download.json.CurseModPackInfo;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.utils.ArtifactsDownloader;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
@@ -49,7 +49,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
     private final ModFileDeleter fileDeleter;
     private List<Object> allCurseMods;
     private final String installerVersion;
-    private final CurseModPackInfos modPackInfos;
+    private final CurseModPackInfo modPackInfos;
     private final String[] compatibleVersions = {"1.17", "1.16", "1.15", "1.14", "1.13"};
 
     private URL installerUrl;
@@ -64,9 +64,9 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
      * @param curseMods   {@link List<CurseFileInfos>} to install.
      * @param fabricVersion to install.
      * @param fileDeleter {@link ModFileDeleter} used to cleanup mods dir.
-     * @param modPackInfos {@link CurseModPackInfos} the modpack you want to install.
+     * @param modPackInfos {@link CurseModPackInfo} the modpack you want to install.
      */
-    private FabricVersion(List<Mod> mods, List<CurseFileInfos> curseMods, String fabricVersion, ModFileDeleter fileDeleter, CurseModPackInfos modPackInfos) {
+    private FabricVersion(List<Mod> mods, List<CurseFileInfos> curseMods, String fabricVersion, ModFileDeleter fileDeleter, CurseModPackInfo modPackInfos) {
         this.mods = mods;
         this.fileDeleter = fileDeleter;
         this.curseMods = curseMods;
@@ -121,10 +121,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
     }
 
     /**
-     * Check if fabric is already installed. Used by {@link FlowUpdater} on update task.
-     *
-     * @param installDir the minecraft installation dir.
-     * @return true if fabric is already installed or not.
+     * {@inheritDoc}
      */
     @Override
     public boolean isModLoaderAlreadyInstalled(Path installDir)
@@ -167,6 +164,9 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public FabricLauncherEnvironment prepareModLoaderLauncher(Path dirToInstall, InputStream stream) throws IOException
     {
@@ -203,9 +203,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
     }
 
     /**
-     * This function installs a Fabric version at the specified directory.
-     *
-     * @param dirToInstall Specified directory.
+     * {@inheritDoc}
      */
     @Override
     public void install(final Path dirToInstall) throws Exception
@@ -271,10 +269,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
     }
 
     /**
-     * This function installs mods at the specified directory.
-     * @param modsDir Specified mods directory.
-     * @param pluginManager PluginManager of FlowUpdater
-     * @throws IOException If the install fail.
+     * {@inheritDoc}
      */
     @Override
     public void installMods(Path modsDir, PluginManager pluginManager) throws Exception
@@ -290,6 +285,9 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
         return this.fileDeleter;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void attachFlowUpdater(FlowUpdater flowUpdater)
     {
@@ -307,24 +305,36 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
             this.logger.warn("You must enable the enableCurseForgePlugin option to use curse forge features!");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public DownloadInfos getDownloadInfos()
     {
         return this.downloadInfos;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public IProgressCallback getCallback()
     {
         return this.callback;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Mod> getMods()
     {
         return this.mods;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public ILogger getLogger() {
         return this.logger;
     }
@@ -341,32 +351,35 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
         return this.allCurseMods;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setAllCurseMods(List<Object> allCurseMods) {
         this.allCurseMods = allCurseMods;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<CurseFileInfos> getCurseMods() {
         return this.curseMods;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public CurseModPackInfos getModPackInfos() { return modPackInfos; }
+    public CurseModPackInfo getModPackInfo() { return modPackInfos; }
 
-    public static class FabricVersionBuilder implements IBuilder<FabricVersion> {
-
+    public static class FabricVersionBuilder implements IBuilder<FabricVersion>
+    {
         private final BuilderArgument<String> fabricVersionArgument = new BuilderArgument<>("FabricVersion", FabricVersion::getLatestFabricVersion).optional();
-        @Deprecated
-        private final BuilderArgument<VanillaVersion> vanillaVersionArgument = new BuilderArgument<>(() -> VanillaVersion.NULL_VERSION, "VanillaVersion").required();
-        @Deprecated
-        private final BuilderArgument<ILogger> loggerArgument = new BuilderArgument<>("Logger", () -> FlowUpdater.DEFAULT_LOGGER).optional();
-        @Deprecated
-        private final BuilderArgument<IProgressCallback> progressCallbackArgument = new BuilderArgument<>("ProgressCallback", () -> FlowUpdater.NULL_CALLBACK).optional();
         private final BuilderArgument<List<Mod>> modsArgument = new BuilderArgument<List<Mod>>("Mods", ArrayList::new).optional();
         private final BuilderArgument<List<CurseFileInfos>> curseModsArgument = new BuilderArgument<List<CurseFileInfos>>("CurseMods", ArrayList::new).optional();
         private final BuilderArgument<ModFileDeleter> fileDeleterArgument = new BuilderArgument<>("ModFileDeleter", () -> new ModFileDeleter(false)).optional();
-        private final BuilderArgument<CurseModPackInfos> modPackArgument = new BuilderArgument<CurseModPackInfos>("ModPack").optional();
+        private final BuilderArgument<CurseModPackInfo> modPackArgument = new BuilderArgument<CurseModPackInfo>("ModPack").optional();
 
         /**
          * @param fabricVersion the fabric version you want to install (don't use this function if you want to use the latest fabric version automatically).
@@ -381,21 +394,18 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
         @Deprecated
         public FabricVersionBuilder withVanillaVersion(VanillaVersion vanillaVersion)
         {
-            this.vanillaVersionArgument.set(vanillaVersion);
             return this;
         }
 
         @Deprecated
         public FabricVersionBuilder withLogger(ILogger logger)
         {
-            this.loggerArgument.set(logger);
             return this;
         }
 
         @Deprecated
         public FabricVersionBuilder withProgressCallback(IProgressCallback progressCallback)
         {
-            this.progressCallbackArgument.set(progressCallback);
             return this;
         }
 
@@ -411,7 +421,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
             return this;
         }
 
-        public FabricVersionBuilder withCurseModPack(CurseModPackInfos modpack)
+        public FabricVersionBuilder withCurseModPack(CurseModPackInfo modpack)
         {
             this.modPackArgument.set(modpack);
             return this;

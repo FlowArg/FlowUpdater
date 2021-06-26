@@ -4,7 +4,7 @@ import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.FlowUpdater;
 import fr.flowarg.flowupdater.download.IProgressCallback;
 import fr.flowarg.flowupdater.download.json.CurseFileInfos;
-import fr.flowarg.flowupdater.download.json.CurseModPackInfos;
+import fr.flowarg.flowupdater.download.json.CurseModPackInfo;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.download.json.OptifineInfo;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
@@ -29,19 +29,11 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
     }
 
     private final BuilderArgument<String> forgeVersionArgument = new BuilderArgument<String>("ForgeVersion").required();
-    @Deprecated
-    private final BuilderArgument<VanillaVersion> vanillaVersionArgument = new BuilderArgument<>(() -> VanillaVersion.NULL_VERSION, "VanillaVersion").required();
-    @Deprecated
-    private final BuilderArgument<ILogger> loggerArgument = new BuilderArgument<>("Logger", () -> FlowUpdater.DEFAULT_LOGGER).optional();
-    @Deprecated
-    private final BuilderArgument<IProgressCallback> progressCallbackArgument = new BuilderArgument<>("ProgressCallback", () -> FlowUpdater.NULL_CALLBACK).optional();
     private final BuilderArgument<List<Mod>> modsArgument = new BuilderArgument<List<Mod>>("Mods", ArrayList::new).optional();
     private final BuilderArgument<List<CurseFileInfos>> curseModsArgument = new BuilderArgument<List<CurseFileInfos>>("CurseMods", ArrayList::new).optional();
-    @Deprecated
-    private final BuilderArgument<Boolean> nogGuiArgument = new BuilderArgument<>("NoGui", () -> true).optional();
     private final BuilderArgument<ModFileDeleter> fileDeleterArgument = new BuilderArgument<>("ModFileDeleter", () -> new ModFileDeleter(false)).optional();
     private final BuilderArgument<OptifineInfo> optifineArgument = new BuilderArgument<OptifineInfo>("Optifine").optional();
-    private final BuilderArgument<CurseModPackInfos> modPackArgument = new BuilderArgument<CurseModPackInfos>("ModPack").optional();
+    private final BuilderArgument<CurseModPackInfo> modPackArgument = new BuilderArgument<CurseModPackInfo>("ModPack").optional();
 
     public ForgeVersionBuilder withForgeVersion(String forgeVersion)
     {
@@ -52,21 +44,18 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
     @Deprecated
     public ForgeVersionBuilder withVanillaVersion(VanillaVersion vanillaVersion)
     {
-        this.vanillaVersionArgument.set(vanillaVersion);
         return this;
     }
 
     @Deprecated
     public ForgeVersionBuilder withLogger(ILogger logger)
     {
-        this.loggerArgument.set(logger);
         return this;
     }
 
     @Deprecated
     public ForgeVersionBuilder withProgressCallback(IProgressCallback progressCallback)
     {
-        this.progressCallbackArgument.set(progressCallback);
         return this;
     }
 
@@ -91,7 +80,6 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
     @Deprecated
     public ForgeVersionBuilder withNoGui(boolean noGui)
     {
-        this.nogGuiArgument.set(noGui);
         return this;
     }
 
@@ -107,7 +95,7 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
         return this;
     }
 
-    public ForgeVersionBuilder withModPack(CurseModPackInfos modPackInfos)
+    public ForgeVersionBuilder withModPack(CurseModPackInfo modPackInfos)
     {
         this.modPackArgument.set(modPackInfos);
         return this;

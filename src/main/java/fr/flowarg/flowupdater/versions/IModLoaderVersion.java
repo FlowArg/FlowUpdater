@@ -18,11 +18,47 @@ import java.util.List;
 
 public interface IModLoaderVersion
 {
+    /**
+     * Attach {@link FlowUpdater} object to mod loaders, allow them to retrieve some information.
+     * @param flowUpdater flow updater object.
+     */
     void attachFlowUpdater(FlowUpdater flowUpdater);
+
+    /**
+     * Check if the current mod loader is already installed.
+     * @param installDir the dir to check.
+     * @return if the current mod loader is already installed.
+     */
     boolean isModLoaderAlreadyInstalled(Path installDir);
+
+    /**
+     * Install the current mod loader in a specified directory.
+     * @param dirToInstall folder where the mod loader is going to be installed.
+     * @throws Exception if an I/O error occurred.
+     */
     void install(Path dirToInstall) throws Exception;
+
+    /**
+     * Various setup before mod loader's installer launch.
+     * @param dirToInstall folder where the mod loader is going to be installed.
+     * @param stream Installer download stream.
+     * @return a new {@link ModLoaderLauncherEnvironment} object.
+     * @throws Exception is an I/O error occurred.
+     */
     ModLoaderLauncherEnvironment prepareModLoaderLauncher(Path dirToInstall, InputStream stream) throws Exception;
+
+    /**
+     * Install all mods in the mods directory.
+     * @param modsDir mods directory.
+     * @param pluginManager used to check loaded plugins.
+     * @throws Exception if an I/O error occurred.
+     */
     void installMods(Path modsDir, PluginManager pluginManager) throws Exception;
+
+    /**
+     * Get all processed mods / mods to process.
+     * @return all processed mods / mods to process.
+     */
     List<Mod> getMods();
 
     default void installAllMods(Path modsDir, boolean cursePluginLoaded)
@@ -62,8 +98,22 @@ public interface IModLoaderVersion
         }
     }
 
+    /**
+     * Get the {@link DownloadInfos} object.
+     * @return download info.
+     */
     DownloadInfos getDownloadInfos();
+
+    /**
+     * Get the {@link ILogger} object.
+     * @return the logger.
+     */
     ILogger getLogger();
+
+    /**
+     * Get the {@link IProgressCallback} object.
+     * @return the progress callback.
+     */
     IProgressCallback getCallback();
 
     class ModLoaderLauncherEnvironment

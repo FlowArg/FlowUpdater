@@ -1,11 +1,11 @@
 package fr.flowarg.flowupdater.download.json;
 
-public class CurseModPackInfos extends CurseFileInfos
+public class CurseModPackInfo extends CurseFileInfos
 {
     private final boolean installExtFiles;
     private final String[] excluded;
 
-    public CurseModPackInfos(int projectID, int fileID, boolean installExtFiles, String... excluded)
+    public CurseModPackInfo(int projectID, int fileID, boolean installExtFiles, String... excluded)
     {
         super(projectID, fileID);
         this.installExtFiles = installExtFiles;

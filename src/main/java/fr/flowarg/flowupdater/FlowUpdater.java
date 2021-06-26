@@ -13,10 +13,7 @@ import fr.flowarg.flowupdater.utils.UpdaterOptions;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
 import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
-import fr.flowarg.flowupdater.versions.AbstractForgeVersion;
-import fr.flowarg.flowupdater.versions.FabricVersion;
-import fr.flowarg.flowupdater.versions.IModLoaderVersion;
-import fr.flowarg.flowupdater.versions.VanillaVersion;
+import fr.flowarg.flowupdater.versions.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -157,32 +154,35 @@ public class FlowUpdater
 
             final Path modsDirPath = Paths.get(dir.toString(), "mods");
 
-            if(this.forgeVersion != null)
+            if(this.forgeVersion != null && this.version.getVersionType() == VersionType.FORGE)
+            {
                 this.checkMods(this.forgeVersion, modsDirPath);
-            if (this.fabricVersion != null)
-                this.checkMods(this.fabricVersion, modsDirPath);
-
-            if(this.fabricVersion != null)
-            {
-                if(this.updaterOptions.isEnableCurseForgePlugin())
-                    this.pluginManager.loadCurseForgePlugin(modsDirPath, this.fabricVersion);
-            }
-
-            if(this.forgeVersion != null)
-            {
                 if(this.updaterOptions.isEnableCurseForgePlugin())
                     this.pluginManager.loadCurseForgePlugin(modsDirPath, this.forgeVersion);
                 if(this.updaterOptions.isEnableOptifineDownloaderPlugin())
                     this.pluginManager.loadOptifinePlugin(modsDirPath, this.forgeVersion);
             }
 
+            if (this.fabricVersion != null && this.version.getVersionType() == VersionType.FABRIC)
+            {
+                this.checkMods(this.fabricVersion, modsDirPath);
+                if(this.updaterOptions.isEnableCurseForgePlugin())
+                    this.pluginManager.loadCurseForgePlugin(modsDirPath, this.fabricVersion);
+            }
+
             if (Files.notExists(dir))
                 Files.createDirectories(dir);
+
             final VanillaDownloader vanillaDownloader = new VanillaDownloader(dir, this);
             vanillaDownloader.download();
 
-            this.installModLoader(this.forgeVersion, dir, "Forge");
-            this.installModLoader(this.fabricVersion, dir, "Fabric");
+            if(this.version.getVersionType() != VersionType.MCP && this.version.getVersionType() != VersionType.VANILLA)
+            {
+                if(this.version.getVersionType() == VersionType.FORGE)
+                    this.installModLoader(this.forgeVersion, dir, "Forge");
+                if(this.version.getVersionType() == VersionType.FABRIC)
+                    this.installModLoader(this.fabricVersion, dir, "Fabric");
+            }
         }
         else this.downloadInfos.init();
     }

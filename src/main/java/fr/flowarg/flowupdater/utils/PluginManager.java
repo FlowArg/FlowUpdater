@@ -13,7 +13,7 @@ import fr.flowarg.flowupdater.download.ICurseFeaturesUser;
 import fr.flowarg.flowupdater.download.IProgressCallback;
 import fr.flowarg.flowupdater.download.Step;
 import fr.flowarg.flowupdater.download.json.CurseFileInfos;
-import fr.flowarg.flowupdater.download.json.CurseModPackInfos;
+import fr.flowarg.flowupdater.download.json.CurseModPackInfo;
 import fr.flowarg.flowupdater.versions.AbstractForgeVersion;
 
 import java.io.IOException;
@@ -81,7 +81,7 @@ public class PluginManager
                 this.logger.printStackTrace(e);
             }
         }
-        final CurseModPackInfos modPackInfos = curseFeaturesUser.getModPackInfos();
+        final CurseModPackInfo modPackInfos = curseFeaturesUser.getModPackInfo();
         if (modPackInfos != null)
         {
             this.progressCallback.step(Step.MOD_PACK);

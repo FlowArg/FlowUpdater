@@ -4,9 +4,12 @@ import fr.antoineok.flowupdater.optifineplugin.Optifine;
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.FlowUpdater;
-import fr.flowarg.flowupdater.download.*;
+import fr.flowarg.flowupdater.download.DownloadInfos;
+import fr.flowarg.flowupdater.download.ICurseFeaturesUser;
+import fr.flowarg.flowupdater.download.IProgressCallback;
+import fr.flowarg.flowupdater.download.Step;
 import fr.flowarg.flowupdater.download.json.CurseFileInfos;
-import fr.flowarg.flowupdater.download.json.CurseModPackInfos;
+import fr.flowarg.flowupdater.download.json.CurseModPackInfo;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.download.json.OptifineInfo;
 import fr.flowarg.flowupdater.utils.IOUtils;
@@ -35,7 +38,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     protected final List<CurseFileInfos> curseMods;
     protected final ModFileDeleter fileDeleter;
     protected final OptifineInfo optifine;
-    protected final CurseModPackInfos modPackInfos;
+    protected final CurseModPackInfo modPackInfos;
     protected final boolean old;
 
     protected List<Object> allCurseMods;
@@ -58,7 +61,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
      */
     protected AbstractForgeVersion(List<Mod> mods, List<CurseFileInfos> curseMods,
             String forgeVersion, ModFileDeleter fileDeleter, OptifineInfo optifine,
-            CurseModPackInfos modPackInfos, boolean old)
+            CurseModPackInfo modPackInfos, boolean old)
     {
         this.mods = mods;
         this.curseMods = curseMods;
@@ -70,9 +73,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     }
 
     /**
-     * Check if forge is already installed. Used by {@link FlowUpdater} on update task.
-     * @param installDir the minecraft installation dir.
-     * @return true if forge is already installed or not.
+     * {@inheritDoc}
      */
     @Override
     public boolean isModLoaderAlreadyInstalled(Path installDir)
@@ -81,8 +82,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     }
 
     /**
-     * This function installs a Forge version at the specified directory.
-     * @param dirToInstall Specified directory.
+     * {@inheritDoc}
      */
     @Override
     public void install(final Path dirToInstall) throws Exception
@@ -92,6 +92,9 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         this.checkForgeEnv(dirToInstall);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ModLoaderLauncherEnvironment prepareModLoaderLauncher(Path dirToInstall, InputStream stream) throws Exception
     {
@@ -151,6 +154,11 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         return new ModLoaderLauncherEnvironment(command, tempDir);
     }
 
+    /**
+     * Clean temp installer directory.
+     * @param tempInstallerDir directory to clear.
+     * @throws Exception if an I/O error occurred.
+     */
     protected abstract void cleanInstaller(Path tempInstallerDir) throws Exception;
 
     /**
@@ -177,12 +185,9 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
 
         return result;
     }
-    
+
     /**
-     * This function installs mods at the specified directory.
-     * @param modsDir Specified mods directory.
-     * @param pluginManager PluginManager of FlowUpdater
-     * @throws Exception If the install fail.
+     * {@inheritDoc}
      */
     @Override
     public void installMods(Path modsDir, PluginManager pluginManager) throws Exception
@@ -225,12 +230,18 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         FileUtils.deleteDirectory(tempInstallerDir);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Mod> getMods()
     {
         return this.mods;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setAllCurseMods(List<Object> allCurseMods)
     {
@@ -242,6 +253,9 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         return this.fileDeleter;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void attachFlowUpdater(FlowUpdater flowUpdater)
     {
@@ -267,18 +281,27 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
             this.logger.warn("You must enable the enableOptifineDownloaderPlugin option to use optifine!");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public DownloadInfos getDownloadInfos()
     {
         return this.downloadInfos;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public IProgressCallback getCallback()
     {
         return this.callback;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<CurseFileInfos> getCurseMods()
     {
@@ -290,12 +313,18 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         return this.optifine;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public CurseModPackInfos getModPackInfos()
+    public CurseModPackInfo getModPackInfo()
     {
         return this.modPackInfos;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public ILogger getLogger()
     {
         return this.logger;

@@ -2,7 +2,7 @@ package fr.flowarg.flowupdater.versions;
 
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowupdater.download.json.CurseFileInfos;
-import fr.flowarg.flowupdater.download.json.CurseModPackInfos;
+import fr.flowarg.flowupdater.download.json.CurseModPackInfo;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.download.json.OptifineInfo;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
@@ -25,11 +25,14 @@ public class OldForgeVersion extends AbstractForgeVersion
 {
     OldForgeVersion(String forgeVersion, List<Mod> mods,
             List<CurseFileInfos> curseMods, ModFileDeleter fileDeleter,
-            OptifineInfo optifine, CurseModPackInfos modPack)
+            OptifineInfo optifine, CurseModPackInfo modPack)
     {
         super(mods, curseMods, forgeVersion, fileDeleter, optifine, modPack, true);
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void install(Path dirToInstall) throws Exception
     {
@@ -70,6 +73,9 @@ public class OldForgeVersion extends AbstractForgeVersion
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void cleanInstaller(Path tempInstallerDir) throws Exception
     {

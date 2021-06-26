@@ -15,6 +15,7 @@ import fr.flowarg.flowupdater.versions.VanillaVersion;
  * 
  * Builder interface.
  */
+@FunctionalInterface
 public interface IBuilder<T> 
 {
     /**

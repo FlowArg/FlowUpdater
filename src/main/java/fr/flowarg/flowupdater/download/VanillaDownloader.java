@@ -13,10 +13,14 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Enumeration;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.jar.JarFile;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
 
 public class VanillaDownloader
 {
@@ -90,17 +94,29 @@ public class VanillaDownloader
 
     private void extractNatives() throws IOException
     {
-        boolean flag = true;
-        for (Path minecraftNative : Files.list(this.natives).collect(Collectors.toList()))
+        boolean flag = false;
+        final List<Path> existingNatives = Files.list(this.natives).collect(Collectors.toList());
+        if(!existingNatives.isEmpty())
         {
-            if (minecraftNative.getFileName().toString().endsWith(".so") ||
-                    minecraftNative.getFileName().toString().endsWith(".dylib") ||
-                    minecraftNative.getFileName().toString().endsWith(".dll"))
+            for (Path minecraftNative : Files.list(this.natives).filter(path -> path.getFileName().toString().endsWith(".jar")).collect(Collectors.toList()))
             {
-                flag = false;
-                break;
+                final JarFile jarFile = new JarFile(minecraftNative.toFile());
+                final Enumeration<? extends ZipEntry> entries = jarFile.entries();
+                while (entries.hasMoreElements())
+                {
+                    final ZipEntry entry = entries.nextElement();
+                    if(!entry.isDirectory() && !(entry.getName().endsWith(".git") || entry.getName().endsWith(".sha1") || entry.getName().contains("META-INF")))
+                    {
+                        final Path flPath = Paths.get(this.natives.toString(), entry.getName());
+                        System.out.println(flPath);
+                        if (!Files.exists(flPath) || entry.getCrc() != FileUtils.getCRC32(flPath))
+                            flag = true;
+                    }
+                }
+                jarFile.close();
             }
         }
+
         if (this.reExtractNatives || flag)
         {
             this.logger.info("Extracting natives...");

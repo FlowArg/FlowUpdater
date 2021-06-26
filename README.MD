@@ -9,48 +9,7 @@
 
 # FlowUpdater
 
-## Installation
-
-### Gradle
-
-In your block `repositories`, add this lines :
-```groovy
-repositories {
-    mavenCentral() // FlowUpdater has migrated to MavenCentral and abandoned jcenter. Old libraries are still avaiable in jcenter repo until it is down.
-    maven {
-        url "https://jitpack.io/"
-        name = "JitPack"
-    } 
-}
-```
-
-and in your `dependencies` block :
-```groovy
-dependencies {
-    implementation 'fr.flowarg:flowupdater:VERSION'
-}
-```
-
-### Maven
-```xml
-<repositories>
-    <repository>
-      <id>jitpack</id>
-      <url>https://jitpack.io</url>
-    </repository>
-</repositories>
-<dependencies>
-    <dependency>
-      <groupId>fr.flowarg</groupId>
-      <artifactId>flowupdater</artifactId>
-      <version>VERSION</version>
-    </dependency>
-</dependencies>
-```
-
-## Support, Help, Contribution
-Join the Discord server for support, help and contribution : https://discord.gg/yvv78kV
-
+Check the [Wiki](https://github.com/FlowArg/FlowUpdater/wiki) to know how to use **FlowUpdater** and more information. 
 ## Usage
 
 ### Vanilla
@@ -193,16 +152,3 @@ With FlowUpdater, you can execute some actions after update, like patch a file, 
 In your FlowUpdaterBuilder, precise a list of Runnable.
 
 And all it's done !
-
-## Informations
-
-This library has some dependencies :
-- [FlowMultiTools](https://github.com/FlowArg/FlowMultitools).
-- [PluginLoaderAPI](https://github.com/FlowArg/PluginLoaderAPI).
-- [Gson](https://github.com/Google/Gson).
-
-
-## Donating
-
-If you want to contribute to the project, please consider providing me with some support:
-https://paypal.me/Philouse
