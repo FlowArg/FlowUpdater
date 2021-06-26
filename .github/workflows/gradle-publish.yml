@@ -24,7 +24,7 @@ jobs:
         distribution: 'adopt'
 
     - name: Publish to GitHub Packages
-      run: gradle publish
+      run: gradle CurseForgePlugin:publish OptifinePlugin:publish :publish
       env:
         OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
         OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
