@@ -108,7 +108,6 @@ public class VanillaDownloader
                     if(!entry.isDirectory() && !(entry.getName().endsWith(".git") || entry.getName().endsWith(".sha1") || entry.getName().contains("META-INF")))
                     {
                         final Path flPath = Paths.get(this.natives.toString(), entry.getName());
-                        System.out.println(flPath);
                         if (!Files.exists(flPath) || entry.getCrc() != FileUtils.getCRC32(flPath))
                             flag = true;
                     }
