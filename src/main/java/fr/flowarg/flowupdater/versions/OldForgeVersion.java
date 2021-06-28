@@ -14,7 +14,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -49,6 +48,21 @@ public class OldForgeVersion extends AbstractForgeVersion
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean checkModLoaderEnv(Path dirToInstall) throws Exception
+    {
+        if(super.checkModLoaderEnv(dirToInstall))
+        {
+            FileUtils.deleteDirectory(dirToInstall.resolve("libraries").resolve("net").resolve("minecraft"));
+            FileUtils.deleteDirectory(dirToInstall.resolve("libraries").resolve("net").resolve("minecraftforge"));
+        }
+
+        return false;
+    }
+
     private boolean installForge(Path dirToInstall, boolean first) throws Exception
     {
         try (BufferedInputStream stream = new BufferedInputStream(this.installerUrl.openStream()))
@@ -79,12 +93,11 @@ public class OldForgeVersion extends AbstractForgeVersion
     @Override
     protected void cleanInstaller(Path tempInstallerDir) throws Exception
     {
-        final String path = tempInstallerDir.toString();
-        FileUtils.deleteDirectory(Paths.get(path, "net"));
-        FileUtils.deleteDirectory(Paths.get(path, "com"));
-        FileUtils.deleteDirectory(Paths.get(path, "joptsimple"));
-        FileUtils.deleteDirectory(Paths.get(path, "META-INF"));
-        Files.deleteIfExists(Paths.get(path, "big_logo.png"));
-        Files.deleteIfExists(Paths.get(path, "url.png"));
+        FileUtils.deleteDirectory(tempInstallerDir.resolve("net"));
+        FileUtils.deleteDirectory(tempInstallerDir.resolve("com"));
+        FileUtils.deleteDirectory(tempInstallerDir.resolve("joptsimple"));
+        FileUtils.deleteDirectory(tempInstallerDir.resolve("META-INF"));
+        Files.deleteIfExists(tempInstallerDir.resolve("big_logo.png"));
+        Files.deleteIfExists(tempInstallerDir.resolve("url.png"));
     }
 }

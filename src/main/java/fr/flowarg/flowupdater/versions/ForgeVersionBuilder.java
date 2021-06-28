@@ -1,7 +1,6 @@
 package fr.flowarg.flowupdater.versions;
 
 import fr.flowarg.flowlogger.ILogger;
-import fr.flowarg.flowupdater.FlowUpdater;
 import fr.flowarg.flowupdater.download.IProgressCallback;
 import fr.flowarg.flowupdater.download.json.CurseFileInfos;
 import fr.flowarg.flowupdater.download.json.CurseModPackInfo;

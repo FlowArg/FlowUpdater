@@ -85,7 +85,7 @@ public class VanillaReader
                         final JsonObject obj = element.getAsJsonObject("downloads").getAsJsonObject("artifact");
                         final String url = obj.get("url").getAsString();
                         final int size = obj.get("size").getAsInt();
-                        final String path = "/libraries/" + obj.get("path").getAsString();
+                        final String path = "libraries/" + obj.get("path").getAsString();
                         final String sha1 = obj.get("sha1").getAsString();
 
                         if(!this.isSilent)
@@ -105,7 +105,7 @@ public class VanillaReader
             final JsonObject assetIndex = this.version.getMinecraftAssetsIndex();
             final String url = assetIndex.get("url").getAsString();
             final int size = assetIndex.get("size").getAsInt();
-            final String name = "/assets/indexes/" + url.substring(url.lastIndexOf('/') + 1);
+            final String name = "assets/indexes/" + url.substring(url.lastIndexOf('/') + 1);
             final String sha1 = assetIndex.get("sha1").getAsString();
 
             if(!this.isSilent)
@@ -171,7 +171,7 @@ public class VanillaReader
         final String url = obj.get("url").getAsString();
         final int size = obj.get("size").getAsInt();
         final String path = obj.get("path").getAsString();
-        final String name = "/natives/" + path.substring(path.lastIndexOf('/') + 1);
+        final String name = "natives/" + path.substring(path.lastIndexOf('/') + 1);
         final String sha1 = obj.get("sha1").getAsString();
 
         if(!os.equals("mac"))

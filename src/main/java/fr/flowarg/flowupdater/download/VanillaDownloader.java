@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -30,7 +29,6 @@ public class VanillaDownloader
     private final DownloadInfos downloadInfos;
     private final boolean reExtractNatives;
     private final int threadsForAssets;
-
     private final Path natives;
     private final Path assets;
 
@@ -43,10 +41,10 @@ public class VanillaDownloader
         this.reExtractNatives = flowUpdater.getUpdaterOptions().isReExtractNatives();
         this.threadsForAssets = flowUpdater.getUpdaterOptions().getNmbrThreadsForAssets();
 
-        this.natives = Paths.get(this.dir.toString(), "natives");
-        this.assets = Paths.get(this.dir.toString(), "assets");
+        this.natives = this.dir.resolve("natives");
+        this.assets = this.dir.resolve("assets");
 
-        Files.createDirectories(Paths.get(this.dir.toString(), "libraries"));
+        Files.createDirectories(this.dir.resolve("libraries"));
         Files.createDirectories(this.assets);
         Files.createDirectories(this.natives);
 
@@ -79,7 +77,7 @@ public class VanillaDownloader
 
         for (Downloadable downloadable : this.downloadInfos.getLibraryDownloadables())
         {
-            final Path filePath = Paths.get(this.dir.toString(), downloadable.getName());
+            final Path filePath = this.dir.resolve(downloadable.getName());
 
             if(Files.notExists(filePath) || !FileUtils.getSHA1(filePath).equalsIgnoreCase(downloadable.getSha1()) || FileUtils.getFileSizeBytes(filePath) != downloadable.getSize())
             {
@@ -107,7 +105,7 @@ public class VanillaDownloader
                     final ZipEntry entry = entries.nextElement();
                     if(!entry.isDirectory() && !(entry.getName().endsWith(".git") || entry.getName().endsWith(".sha1") || entry.getName().contains("META-INF")))
                     {
-                        final Path flPath = Paths.get(this.natives.toString(), entry.getName());
+                        final Path flPath = this.natives.resolve(entry.getName());
                         if (!Files.exists(flPath) || entry.getCrc() != FileUtils.getCRC32(flPath))
                             flag = true;
                     }
@@ -126,7 +124,7 @@ public class VanillaDownloader
                     .forEach(file -> {
                         try
                         {
-                            ZipUtils.unzipJar(this.natives.toString(), file.toString(), "ignoreMetaInf");
+                            ZipUtils.unzipJar(this.natives, file, "ignoreMetaInf");
                         } catch (IOException e)
                         {
                             this.logger.printStackTrace(e);
@@ -159,11 +157,11 @@ public class VanillaDownloader
                     AssetDownloadable assetDownloadable;
                     while ((assetDownloadable = this.downloadInfos.getAssetDownloadables().poll()) != null)
                     {
-                        final Path downloadPath = Paths.get(this.assets.toString(), assetDownloadable.getFile());
+                        final Path downloadPath = this.assets.resolve(assetDownloadable.getFile());
 
                         if (Files.notExists(downloadPath) || FileUtils.getFileSizeBytes(downloadPath) != assetDownloadable.getSize())
                         {
-                            final Path localAssetPath = Paths.get(IOUtils.getMinecraftFolder().toString(), "assets", assetDownloadable.getFile());
+                            final Path localAssetPath = IOUtils.getMinecraftFolder().resolve("assets").resolve(assetDownloadable.getFile());
                             if(Files.exists(localAssetPath) && FileUtils.getFileSizeBytes(localAssetPath) == assetDownloadable.getSize()) IOUtils.copy(this.logger, localAssetPath, downloadPath);
                             else
                             {

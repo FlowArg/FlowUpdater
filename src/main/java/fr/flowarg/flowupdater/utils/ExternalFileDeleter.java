@@ -6,7 +6,6 @@ import fr.flowarg.flowupdater.download.json.ExternalFile;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 public class ExternalFileDeleter implements IFileDeleter
@@ -25,7 +24,7 @@ public class ExternalFileDeleter implements IFileDeleter
         {
             for(ExternalFile extFile : externalFiles)
             {
-                final Path filePath = Paths.get(dir.toString(), extFile.getPath());
+                final Path filePath = dir.resolve(extFile.getPath());
 
                 if (Files.exists(filePath))
                 {

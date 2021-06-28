@@ -5,10 +5,9 @@ import fr.flowarg.flowlogger.ILogger;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
- * @author antoineok https://github.com/antoineok
+ * @author antoineok https://github.com/antoineok Optimization by FlowArg https://github.com/FlowArg
  */
 public class ArtifactsDownloader
 {
@@ -22,11 +21,9 @@ public class ArtifactsDownloader
     {
         try
         {
-            final Path groupDirPath = Paths.get(dir.toString(), group.replace(".", dir.getFileSystem().getSeparator()));
-            final Path artifactDirPath = Paths.get(groupDirPath.toString(), name);
-            final Path versionDirPath = Paths.get(artifactDirPath.toString(), version);
-            final String fileName = String.format("%s-%s.jar", name, version);
-            IOUtils.download(logger, new URL(repositoryUrl + group.replace('.', '/') + '/' + name + '/' + version + '/' + String.format("%s-%s.jar", name, version)), Paths.get(versionDirPath.toString(), fileName));
+            IOUtils.download(logger,
+                             new URL(repositoryUrl + group.replace('.', '/') + '/' + name + '/' + version + '/' + String.format("%s-%s.jar", name, version)),
+                             dir.resolve(group.replace(".", dir.getFileSystem().getSeparator())).resolve(name).resolve(version).resolve(String.format("%s-%s.jar", name, version)));
         } catch (IOException e)
         {
             logger.printStackTrace(e);

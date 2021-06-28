@@ -8,7 +8,6 @@ import fr.flowarg.flowupdater.download.json.Mod;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -41,9 +40,9 @@ public class ModFileDeleter implements IFileDeleter
 
             final Set<Path> badFiles = new HashSet<>();
             final List<Path> verifiedFiles = new ArrayList<>();
-            Arrays.stream(this.modsToIgnore).forEach(fileName -> verifiedFiles.add(Paths.get(modsDir.toString(), fileName)));
+            Arrays.stream(this.modsToIgnore).forEach(fileName -> verifiedFiles.add(modsDir.resolve(fileName)));
 
-            for(Path fileInDir : FileUtils.list(modsDir).filter(path -> !Files.isDirectory(path)).collect(Collectors.toList()))
+            for(Path fileInDir : FileUtils.list(modsDir).stream().filter(path -> !Files.isDirectory(path)).collect(Collectors.toList()))
             {
                 if(verifiedFiles.contains(fileInDir))
                     continue;

@@ -25,7 +25,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * The base object of a forge version.
@@ -38,7 +37,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     protected final List<CurseFileInfos> curseMods;
     protected final ModFileDeleter fileDeleter;
     protected final OptifineInfo optifine;
-    protected final CurseModPackInfo modPackInfos;
+    protected final CurseModPackInfo modPackInfo;
     protected final boolean old;
 
     protected List<Object> allCurseMods;
@@ -56,19 +55,19 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
      * @param forgeVersion to install.
      * @param fileDeleter {@link ModFileDeleter} used to cleanup mods dir.
      * @param optifine Optifine version to install.
-     * @param modPackInfos modpack informations.
+     * @param modPackInfo modpack information.
      * @param old if the current version of forge is an old forge version.
      */
     protected AbstractForgeVersion(List<Mod> mods, List<CurseFileInfos> curseMods,
             String forgeVersion, ModFileDeleter fileDeleter, OptifineInfo optifine,
-            CurseModPackInfo modPackInfos, boolean old)
+            CurseModPackInfo modPackInfo, boolean old)
     {
         this.mods = mods;
         this.curseMods = curseMods;
         this.forgeVersion = forgeVersion;
         this.fileDeleter = fileDeleter;
         this.optifine = optifine;
-        this.modPackInfos = modPackInfos;
+        this.modPackInfo = modPackInfo;
         this.old = old;
     }
 
@@ -78,7 +77,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     @Override
     public boolean isModLoaderAlreadyInstalled(Path installDir)
     {
-        return Files.exists(Paths.get(installDir.toString(), "libraries", "net", "minecraftforge", "forge", this.forgeVersion, "forge-" + this.forgeVersion + ".jar"));
+        return Files.exists(installDir.resolve("libraries").resolve("net").resolve("minecraftforge").resolve("forge").resolve(this.forgeVersion).resolve("forge-" + this.forgeVersion + ".jar"));
     }
 
     /**
@@ -89,7 +88,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     {
         this.callback.step(Step.FORGE);
         this.logger.info("Installing forge, version: " + this.forgeVersion + "...");
-        this.checkForgeEnv(dirToInstall);
+        this.checkModLoaderEnv(dirToInstall);
     }
 
     /**
@@ -98,17 +97,17 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     @Override
     public ModLoaderLauncherEnvironment prepareModLoaderLauncher(Path dirToInstall, InputStream stream) throws Exception
     {
-        final Path tempDirPath = Paths.get(dirToInstall.toString(), ".flowupdater");
+        final Path tempDirPath = dirToInstall.resolve(".flowupdater");
         FileUtils.deleteDirectory(tempDirPath);
         Files.createDirectories(tempDirPath);
 
-        final Path installPath = Paths.get(tempDirPath.toString(), "forge-installer.jar");
-        final Path patchesPath = Paths.get(tempDirPath.toString(), "patches.jar");
+        final Path installPath = tempDirPath.resolve("forge-installer.jar");
+        final Path patchesPath = tempDirPath.resolve("patches.jar");
 
         this.downloadForgeInstaller(stream, installPath, patchesPath);
         this.patchForgeInstaller(installPath, patchesPath, tempDirPath);
 
-        return this.makeCommand(Paths.get(tempDirPath.toString(), "forge-installer-patched.jar"), dirToInstall, tempDirPath);
+        return this.makeCommand(tempDirPath.resolve("forge-installer-patched.jar"), dirToInstall, tempDirPath);
     }
 
     protected void downloadForgeInstaller(InputStream stream, Path install, Path patches) throws Exception
@@ -122,13 +121,13 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     protected void patchForgeInstaller(Path install, Path patches, Path tempDir)
     {
         try {
-            final Path tempInstallerDirPath = Paths.get(tempDir.toString(), "installer");
+            final Path tempInstallerDirPath = tempDir.resolve("installer");
             Files.createDirectories(tempInstallerDirPath);
 
             this.logger.info("Applying patches...");
-            ZipUtils.unzipJar(tempInstallerDirPath.toString(), install.toString());
+            ZipUtils.unzipJar(tempInstallerDirPath, install);
             this.cleanInstaller(tempInstallerDirPath);
-            ZipUtils.unzipJar(tempInstallerDirPath.toString(), patches.toString());
+            ZipUtils.unzipJar(tempInstallerDirPath, patches);
 
             this.logger.info("Repacking installer...");
             this.packPatchedInstaller(tempDir, tempInstallerDirPath);
@@ -146,9 +145,9 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         command.add("java");
         command.add("-Xmx256M");
         command.add("-jar");
-        command.add(patchedInstaller.toString());
+        command.add(patchedInstaller.toAbsolutePath().toString());
         command.add("--installClient");
-        command.add(dirToInstall.toString());
+        command.add(dirToInstall.toAbsolutePath().toString());
         this.logger.info("Launching forge installer...");
 
         return new ModLoaderLauncherEnvironment(command, tempDir);
@@ -162,18 +161,16 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     protected abstract void cleanInstaller(Path tempInstallerDir) throws Exception;
 
     /**
-     * Check if the minecraft installation already contains another forge installation not corresponding to this version.
-     * @param dirToInstall Forge installation directory.
-     * @return true if another version of forge is installed. false if not.
-     * @throws Exception if an error occurred.
+     * {@inheritDoc}
      */
-    protected boolean checkForgeEnv(Path dirToInstall) throws Exception
+    @Override
+    public boolean checkModLoaderEnv(Path dirToInstall) throws Exception
     {
         boolean result = false;
-        final Path forgeDirPath = Paths.get(dirToInstall.toString(), "libraries", "net", "minecraftforge", "forge");
+        final Path forgeDirPath = dirToInstall.resolve("libraries").resolve("net").resolve("minecraftforge").resolve("forge");
         if(Files.exists(forgeDirPath))
         {
-            for (Path contained : Files.list(forgeDirPath).collect(Collectors.toList()))
+            for (Path contained : FileUtils.list(forgeDirPath))
             {
                 if(!contained.getFileName().toString().contains(this.forgeVersion))
                 {
@@ -206,10 +203,10 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
                 ofObj = optifine;
                 try
                 {
-                    final Path optifineFilePath = Paths.get(modsDir.toString(), optifine.getName());
+                    final Path optifineFilePath = modsDir.resolve(optifine.getName());
 
                     if(Files.notExists(optifineFilePath))
-                        IOUtils.copy(this.logger, Paths.get(modsDir.getParent().toString(), ".op", optifine.getName()), optifineFilePath);
+                        IOUtils.copy(this.logger, modsDir.getParent().resolve(".op").resolve(optifine.getName()), optifineFilePath);
                 } catch (Exception e)
                 {
                     this.logger.printStackTrace(e);
@@ -224,8 +221,8 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     
     protected void packPatchedInstaller(final Path tempDir, final Path tempInstallerDir) throws Exception
     {
-        final Path outputPath = Paths.get(tempDir.toString(), "forge-installer-patched.zip");
-        ZipUtils.compressFiles(FileUtils.list(tempInstallerDir).toArray(Path[]::new), outputPath);
+        final Path outputPath = tempDir.resolve("forge-installer-patched.zip");
+        ZipUtils.compressFiles(FileUtils.list(tempInstallerDir).toArray(new Path[0]), outputPath);
         Files.move(outputPath, Paths.get(outputPath.toString().replace(".zip", ".jar")), StandardCopyOption.REPLACE_EXISTING);
         FileUtils.deleteDirectory(tempInstallerDir);
     }
@@ -319,7 +316,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     @Override
     public CurseModPackInfo getModPackInfo()
     {
-        return this.modPackInfos;
+        return this.modPackInfo;
     }
 
     /**

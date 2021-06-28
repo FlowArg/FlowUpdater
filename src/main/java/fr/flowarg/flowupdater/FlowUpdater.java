@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,12 +64,6 @@ public class FlowUpdater
     public static final IProgressCallback NULL_CALLBACK = new IProgressCallback()
     {
         @Override
-        public void update(long downloaded, long max) {}
-        
-        @Override
-        public void step(Step step) {}
-        
-        @Override
         public void init(ILogger logger)
         {
             logger.warn("You are using default callback ! It's not recommended. IT'S NOT AN ERROR !!!");
@@ -98,7 +91,7 @@ public class FlowUpdater
     {
         this.logger = logger;
         this.version = version;
-        this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.4.1"));
+        this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.4.2"));
         this.externalFiles = externalFiles;
         this.postExecutions = postExecutions;
         this.forgeVersion = forgeVersion;
@@ -113,7 +106,7 @@ public class FlowUpdater
     }
 
     /**
-     * This method update the Minecraft Installation in the given directory. If the {@link #version} is {@link VanillaVersion#NULL_VERSION}, the updater will
+     * This method updates the Minecraft Installation in the given directory. If the {@link #version} is {@link VanillaVersion#NULL_VERSION}, the updater will
      * run only external files and post executions.
      * @param dir Directory where is the Minecraft installation.
      * @throws IOException if an I/O problem occurred.
@@ -126,7 +119,7 @@ public class FlowUpdater
     }
 
     /**
-     * This method update the Minecraft Installation in the given directory. If the {@link #version} is {@link VanillaVersion#NULL_VERSION}, the updater will
+     * This method updates the Minecraft Installation in the given directory. If the {@link #version} is {@link VanillaVersion#NULL_VERSION}, the updater will
      * run only external files and post executions.
      * @param dir Directory where is the Minecraft installation.
      * @throws IOException if an I/O problem occurred.
@@ -152,7 +145,7 @@ public class FlowUpdater
             this.logger.info(String.format("Reading data about %s Minecraft version...", version.getName()));
             new VanillaReader(this).read();
 
-            final Path modsDirPath = Paths.get(dir.toString(), "mods");
+            final Path modsDirPath = dir.resolve("mods");
 
             if(this.forgeVersion != null && this.version.getVersionType() == VersionType.FORGE)
             {
@@ -191,7 +184,7 @@ public class FlowUpdater
     {
         for(Mod mod : modLoader.getMods())
         {
-            final Path filePath = Paths.get(modsDir.toString(), mod.getName());
+            final Path filePath = modsDir.resolve(mod.getName());
 
             if(Files.notExists(filePath) || !FileUtils.getSHA1(filePath).equalsIgnoreCase(mod.getSha1()) || FileUtils.getFileSizeBytes(filePath) != mod.getSize())
                 this.downloadInfos.getMods().add(mod);
@@ -206,7 +199,7 @@ public class FlowUpdater
             if(!modLoader.isModLoaderAlreadyInstalled(dir))
                 modLoader.install(dir);
             else this.logger.info(name + " is already installed ! Skipping installation...");
-            modLoader.installMods(Paths.get(dir.toString(), "mods"), this.pluginManager);
+            modLoader.installMods(dir.resolve("mods"), this.pluginManager);
         }
     }
 
@@ -219,7 +212,7 @@ public class FlowUpdater
             this.downloadInfos.getExtFiles().forEach(extFile -> {
                 try
                 {
-                    final Path filePath = Paths.get(dir.toString(), extFile.getPath());
+                    final Path filePath = dir.resolve(extFile.getPath());
                     IOUtils.download(this.logger, new URL(extFile.getDownloadURL()), filePath);
                     this.callback.onFileDownloaded(filePath);
                 }

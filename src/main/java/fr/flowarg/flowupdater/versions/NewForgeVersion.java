@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.lang.ProcessBuilder.Redirect;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -63,17 +62,14 @@ public class NewForgeVersion extends AbstractForgeVersion
      * {@inheritDoc}
      */
     @Override
-    protected boolean checkForgeEnv(Path dirToInstall) throws Exception
+    public boolean checkModLoaderEnv(Path dirToInstall) throws Exception
     {
-        if(this.isCompatible() && !this.forgeVersion.contains("1.12.2") && super.checkForgeEnv(dirToInstall))
+        if(this.isCompatible() && super.checkModLoaderEnv(dirToInstall))
         {
-            final Path minecraftDirPath = Paths.get(dirToInstall.toString(), "libraries", "net", "minecraft");
-            final Path minecraftForgeDirPath = Paths.get(dirToInstall.toString(), "libraries", "net", "minecraftforge");
-            final Path mappingsDirPath = Paths.get(dirToInstall.toString(), "libraries", "de", "oceanlabs");
-
-            FileUtils.deleteDirectory(minecraftDirPath);
-            FileUtils.deleteDirectory(minecraftForgeDirPath);
-            FileUtils.deleteDirectory(mappingsDirPath);
+            FileUtils.deleteDirectory(dirToInstall.resolve("libraries").resolve("net").resolve("minecraft"));
+            FileUtils.deleteDirectory(dirToInstall.resolve("libraries").resolve("net").resolve("minecraftforge"));
+            FileUtils.deleteDirectory(dirToInstall.resolve("libraries").resolve("de").resolve("oceanlabs"));
+            FileUtils.deleteDirectory(dirToInstall.resolve("libraries").resolve("cpw"));
         }
 
         return false;
@@ -95,14 +91,13 @@ public class NewForgeVersion extends AbstractForgeVersion
     @Override
     protected void cleanInstaller(Path tempInstallerDir) throws Exception
     {
-        final String path = tempInstallerDir.toString();
-        FileUtils.deleteDirectory(Paths.get(path, "net"));
-        FileUtils.deleteDirectory(Paths.get(path, "com"));
-        FileUtils.deleteDirectory(Paths.get(path, "joptsimple"));
-        Files.deleteIfExists(Paths.get(path, "META-INF", "MANIFEST.MF"));
-        Files.deleteIfExists(Paths.get(path, "lekeystore.jks"));
-        Files.deleteIfExists(Paths.get(path, "big_logo.png"));
-        Files.deleteIfExists(Paths.get(path, "META-INF", "FORGE.DSA"));
-        Files.deleteIfExists(Paths.get(path, "META-INF", "FORGE.SF"));
+        FileUtils.deleteDirectory(tempInstallerDir.resolve("net"));
+        FileUtils.deleteDirectory(tempInstallerDir.resolve("com"));
+        FileUtils.deleteDirectory(tempInstallerDir.resolve("joptsimple"));
+        Files.deleteIfExists(tempInstallerDir.resolve("META-INF").resolve("MANIFEST.MF"));
+        Files.deleteIfExists(tempInstallerDir.resolve("lekeystore.jks"));
+        Files.deleteIfExists(tempInstallerDir.resolve("big_logo.png"));
+        Files.deleteIfExists(tempInstallerDir.resolve("META-INF").resolve("FORGE.DSA"));
+        Files.deleteIfExists(tempInstallerDir.resolve("META-INF").resolve("FORGE.SF"));
     }
 }

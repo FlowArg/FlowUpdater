@@ -13,7 +13,6 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 public interface IModLoaderVersion
@@ -66,7 +65,7 @@ public interface IModLoaderVersion
         this.getDownloadInfos().getMods().forEach(mod -> {
             try
             {
-                final Path modFilePath = Paths.get(modsDir.toString(), mod.getName());
+                final Path modFilePath = modsDir.resolve(mod.getName());
                 IOUtils.download(this.getLogger(), new URL(mod.getDownloadURL()), modFilePath);
                 this.getCallback().onFileDownloaded(modFilePath);
             }
@@ -84,7 +83,7 @@ public interface IModLoaderVersion
                 final CurseMod curseMod = (CurseMod)obj;
                 try
                 {
-                    final Path modFilePath = Paths.get(modsDir.toString(), curseMod.getName());
+                    final Path modFilePath = modsDir.resolve(curseMod.getName());
                     IOUtils.download(this.getLogger(), new URL(curseMod.getDownloadURL()), modFilePath);
                     this.getCallback().onFileDownloaded(modFilePath);
                 }
@@ -97,6 +96,14 @@ public interface IModLoaderVersion
             });
         }
     }
+
+    /**
+     * Check if the minecraft installation already contains another mod loader installation not corresponding to this version.
+     * @param dirToInstall Mod loader installation directory.
+     * @return true if another version of mod loader is installed. false if not.
+     * @throws Exception if an error occurred.
+     */
+    boolean checkModLoaderEnv(Path dirToInstall) throws Exception;
 
     /**
      * Get the {@link DownloadInfos} object.

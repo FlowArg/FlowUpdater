@@ -19,7 +19,6 @@ import fr.flowarg.flowupdater.versions.AbstractForgeVersion;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +47,7 @@ public class PluginManager
                 Class.forName("fr.flowarg.flowupdater.curseforgeplugin.CurseForgePlugin");
                 this.cursePluginLoaded = true;
                 CurseForgePlugin.INSTANCE.setLogger(this.logger);
-                CurseForgePlugin.INSTANCE.setFolder(Paths.get(dir.getParent().toString(), ".cfp"));
+                CurseForgePlugin.INSTANCE.setFolder(dir.getParent().resolve(".cfp"));
             } catch (ClassNotFoundException e)
             {
                 this.cursePluginLoaded = false;
@@ -67,7 +66,7 @@ public class PluginManager
                 final CurseMod mod = curseForgePlugin.getCurseMod(infos.getProjectID(), infos.getFileID());
                 allCurseMods.add(mod);
 
-                final Path filePath = Paths.get(dir.toString(), mod.getName());
+                final Path filePath = dir.resolve(mod.getName());
                 if(Files.notExists(filePath) || !FileUtils.getMD5(filePath).equals(mod.getMd5()) || FileUtils.getFileSizeBytes(filePath) != mod.getLength())
                 {
                     if (!mod.getMd5().contains("-"))
@@ -81,20 +80,20 @@ public class PluginManager
                 this.logger.printStackTrace(e);
             }
         }
-        final CurseModPackInfo modPackInfos = curseFeaturesUser.getModPackInfo();
-        if (modPackInfos != null)
+        final CurseModPackInfo modPackInfo = curseFeaturesUser.getModPackInfo();
+        if (modPackInfo != null)
         {
             this.progressCallback.step(Step.MOD_PACK);
             final CurseForgePlugin plugin = CurseForgePlugin.INSTANCE;
-            final CurseModPack modPack = plugin.getCurseModPack(modPackInfos.getProjectID(), modPackInfos.getFileID(), modPackInfos.isInstallExtFiles());
+            final CurseModPack modPack = plugin.getCurseModPack(modPackInfo.getProjectID(), modPackInfo.getFileID(), modPackInfo.isInstallExtFiles());
             this.logger.info("Loading mod pack: " + modPack.getName() + " (" + modPack.getVersion() + ") by " + modPack.getAuthor() + '.');
             modPack.getMods().forEach(mod -> {
                 allCurseMods.add(mod);
                 try
                 {
-                    final Path filePath = Paths.get(dir.toString(), mod.getName());
+                    final Path filePath = dir.resolve(mod.getName());
                     boolean flag = false;
-                    for (String exclude : modPackInfos.getExcluded())
+                    for (String exclude : modPackInfo.getExcluded())
                     {
                         if (mod.getName().equalsIgnoreCase(exclude))
                         {
@@ -132,7 +131,7 @@ public class PluginManager
                 {
                     final OptifinePlugin optifinePlugin = OptifinePlugin.INSTANCE;
                     optifinePlugin.setLogger(this.logger);
-                    optifinePlugin.setFolder(Paths.get(dir.getParent().toString(), ".op"));
+                    optifinePlugin.setFolder(dir.getParent().resolve(".op"));
                     final Optifine optifine = optifinePlugin.getOptifine(forgeVersion.getOptifine().getVersion(), forgeVersion.getOptifine().isPreview());
                     this.downloadInfos.setOptifine(optifine);
                 } catch (Exception e)
