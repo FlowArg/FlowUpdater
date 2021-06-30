@@ -23,7 +23,7 @@ jobs:
         java-version: '8'
         distribution: 'adopt'
 
-    - name: Publish CurseForgePlugin to MavenCentral
+    - name: Publish FlowUpdater to MavenCentral
       run: gradle publish
       env:
         OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
