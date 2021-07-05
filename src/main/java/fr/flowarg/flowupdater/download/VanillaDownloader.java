@@ -19,6 +19,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 
 public class VanillaDownloader
@@ -65,16 +66,6 @@ public class VanillaDownloader
         this.logger.info("Checking library files...");
         this.callback.step(Step.DL_LIBS);
 
-        Files.list(this.natives).filter(Files::isDirectory).forEach(path -> {
-            try
-            {
-                FileUtils.deleteDirectory(path);
-            } catch (IOException e)
-            {
-                this.logger.printStackTrace(e);
-            }
-        });
-
         for (Downloadable downloadable : this.downloadInfos.getLibraryDownloadables())
         {
             final Path filePath = this.dir.resolve(downloadable.getName());
@@ -93,24 +84,31 @@ public class VanillaDownloader
     private void extractNatives() throws IOException
     {
         boolean flag = false;
-        final List<Path> existingNatives = Files.list(this.natives).collect(Collectors.toList());
-        if(!existingNatives.isEmpty())
+        if(!this.reExtractNatives)
         {
-            for (Path minecraftNative : Files.list(this.natives).filter(path -> path.getFileName().toString().endsWith(".jar")).collect(Collectors.toList()))
+            final List<Path> existingNatives = Files.list(this.natives).collect(Collectors.toList());
+            if (!existingNatives.isEmpty())
             {
-                final JarFile jarFile = new JarFile(minecraftNative.toFile());
-                final Enumeration<? extends ZipEntry> entries = jarFile.entries();
-                while (entries.hasMoreElements())
+                for (Path minecraftNative : Files.list(this.natives).filter(path -> path.getFileName().toString().endsWith(".jar")).collect(Collectors.toList()))
                 {
-                    final ZipEntry entry = entries.nextElement();
-                    if(!entry.isDirectory() && !(entry.getName().endsWith(".git") || entry.getName().endsWith(".sha1") || entry.getName().contains("META-INF")))
+                    final JarFile jarFile = new JarFile(minecraftNative.toFile());
+                    final Enumeration<? extends ZipEntry> entries = jarFile.entries();
+                    while (entries.hasMoreElements())
                     {
-                        final Path flPath = this.natives.resolve(entry.getName());
-                        if (!Files.exists(flPath) || entry.getCrc() != FileUtils.getCRC32(flPath))
-                            flag = true;
+                        final ZipEntry entry = entries.nextElement();
+                        if (!entry.isDirectory() && !(entry.getName().endsWith(".git") || entry.getName().endsWith(".sha1") || entry.getName().contains("META-INF")))
+                        {
+                            final Path flPath = this.natives.resolve(entry.getName());
+                            if (!Files.exists(flPath) || entry.getCrc() != FileUtils.getCRC32(flPath))
+                            {
+                                flag = true;
+                                break;
+                            }
+                        }
                     }
+                    jarFile.close();
+                    if (flag) break;
                 }
-                jarFile.close();
             }
         }
 
@@ -119,8 +117,8 @@ public class VanillaDownloader
             this.logger.info("Extracting natives...");
             this.callback.step(Step.EXTRACT_NATIVES);
 
-            Files.list(this.natives)
-                    .filter(file -> !Files.isDirectory(file) && file.getFileName().toString().endsWith(".jar"))
+            final Stream<Path> natives = FileUtils.list(this.natives).stream();
+            natives.filter(file -> !Files.isDirectory(file) && file.getFileName().toString().endsWith(".jar"))
                     .forEach(file -> {
                         try
                         {
@@ -130,19 +128,21 @@ public class VanillaDownloader
                             this.logger.printStackTrace(e);
                         }
                     });
+            natives.close();
         }
 
-        Files.list(this.natives)
-                .filter(file -> file.getFileName().toString().endsWith(".git") || file.getFileName().toString().endsWith(".sha1"))
-                .forEach(path -> {
-                    try
-                    {
-                        Files.delete(path);
-                    } catch (IOException e)
-                    {
-                        this.logger.printStackTrace(e);
-                    }
-                });
+        final Stream<Path> natives = FileUtils.list(this.natives).stream();
+        natives.forEach(path -> {
+            try {
+                if (path.getFileName().toString().endsWith(".git") || path.getFileName().toString().endsWith(".sha1")) Files.delete(path);
+                else if(Files.isDirectory(path)) FileUtils.deleteDirectory(path);
+            } catch (IOException e)
+            {
+                this.logger.printStackTrace(e);
+            }
+        });
+
+        natives.close();
     }
 
     private void downloadAssets()

@@ -24,7 +24,7 @@ public class VanillaReader
     private final ILogger logger;
     private final boolean isSilent;
     private final IProgressCallback callback;
-    private final DownloadInfos infos;
+    private final DownloadInfos info;
     private final boolean downloadServer;
 
     public VanillaReader(FlowUpdater flowUpdater)
@@ -33,7 +33,7 @@ public class VanillaReader
         this.logger = flowUpdater.getLogger();
         this.isSilent = flowUpdater.getUpdaterOptions().isSilentRead();
         this.callback = flowUpdater.getCallback();
-        this.infos = flowUpdater.getDownloadInfos();
+        this.info = flowUpdater.getDownloadInfos();
         this.downloadServer = flowUpdater.getUpdaterOptions().isDownloadServer();
     }
 
@@ -90,12 +90,12 @@ public class VanillaReader
 
                         if(!this.isSilent)
                             this.logger.debug("Reading " + path + " from " + url + "... SHA1 is : " + sha1);
-                        this.infos.getLibraryDownloadables().add(new Downloadable(url, size, sha1, path));
+                        this.info.getLibraryDownloadables().add(new Downloadable(url, size, sha1, path));
                     }
                 }
             }
         });
-        this.infos.getLibraryDownloadables().addAll(this.version.getAnotherLibraries());
+        this.info.getLibraryDownloadables().addAll(this.version.getAnotherLibraries());
     }
 
     private void getAssetsIndex()
@@ -110,7 +110,7 @@ public class VanillaReader
 
             if(!this.isSilent)
                 this.logger.debug("Reading assets index from " + url + "... SHA1 is : " + sha1);
-            this.infos.getLibraryDownloadables().add(new Downloadable(url, size, sha1, name));
+            this.info.getLibraryDownloadables().add(new Downloadable(url, size, sha1, name));
         }
     }
 
@@ -124,7 +124,7 @@ public class VanillaReader
 
         if(!this.isSilent)
             this.logger.debug("Reading client jar from " + clientURL + "... SHA1 is : " + this.version.getMinecraftClient().get("sha1").getAsString());
-        this.infos.getLibraryDownloadables().add(new Downloadable(clientURL, clientSize, clientSha1, clientName));
+        this.info.getLibraryDownloadables().add(new Downloadable(clientURL, clientSize, clientSha1, clientName));
 
         if(this.downloadServer)
         {
@@ -137,7 +137,7 @@ public class VanillaReader
             if(!this.isSilent)
                 this.logger.debug("Reading server jar from " + serverURL + "... SHA1 is : " + this.version.getMinecraftServer().get("sha1").getAsString());
 
-            this.infos.getLibraryDownloadables().add(new Downloadable(serverURL, serverSize, serverSha1, serverName));
+            this.info.getLibraryDownloadables().add(new Downloadable(serverURL, serverSize, serverSha1, serverName));
         }
     }
 
@@ -183,7 +183,7 @@ public class VanillaReader
 
         if(!this.isSilent)
             this.logger.debug("Reading " + name + " from " + url + "... SHA1 is : " + sha1);
-        this.infos.getLibraryDownloadables().add(new Downloadable(url, size, sha1, name));
+        this.info.getLibraryDownloadables().add(new Downloadable(url, size, sha1, name));
     }
 
     private void getAssets() throws IOException
@@ -203,7 +203,7 @@ public class VanillaReader
             for (final Map.Entry<String, AssetDownloadable> entry : this.version.getCustomAssetIndex().getUniqueObjects().entrySet())
                 toDownload.add(new AssetDownloadable(entry.getValue().getHash(), entry.getValue().getSize()));
         }
-        this.infos.getAssetDownloadables().addAll(toDownload);
+        this.info.getAssetDownloadables().addAll(toDownload);
     }
 
     private boolean checkRules(JsonObject obj)

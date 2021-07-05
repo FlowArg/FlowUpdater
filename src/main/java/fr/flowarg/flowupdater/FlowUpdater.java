@@ -166,8 +166,7 @@ public class FlowUpdater
             if (Files.notExists(dir))
                 Files.createDirectories(dir);
 
-            final VanillaDownloader vanillaDownloader = new VanillaDownloader(dir, this);
-            vanillaDownloader.download();
+            new VanillaDownloader(dir, this).download();
 
             if(this.version.getVersionType() != VersionType.MCP && this.version.getVersionType() != VersionType.VANILLA)
             {

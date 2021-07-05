@@ -1,5 +1,6 @@
 package fr.flowarg.flowupdater.utils;
 
+import fr.flowarg.flowupdater.download.VanillaDownloader;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
 import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
@@ -27,23 +28,28 @@ public class UpdaterOptions
 
     /**
      * Re-extract natives at each updates ?
+     * Today, this option isn't useful because {@link VanillaDownloader} checks automatically if all natives are correctly extracted.
      */
     private final boolean reExtractNatives;
 
     /**
      * Enable CurseForgePlugin (CPF) ?
-     * WARNING: IF THIS FIELD IS SET TO TRUE, IT WILL DOWNLOAD AND LOAD A PLUGIN ; DISABLE THIS OPTION IF YOU DON'T USE CURSE_FORGE !!
      */
     private final boolean enableCurseForgePlugin;
 
     /**
      * Enable OptifineDownloaderPlugin (ODP) ?
-     * WARNING: IF THIS FIELD IS SET TO TRUE, IT WILL DOWNLOAD AND LOAD A PLUGIN ; DISABLE THIS OPTION IF YOU DON'T USE OPTIFINE !!
      */
     private final boolean enableOptifineDownloaderPlugin;
 
+    /**
+     * Number of threads used to download assets.
+     */
     private final int nmbrThreadsForAssets;
 
+    /**
+     * The external file deleter is used to check if some external files need to be downloaded.
+     */
     private final IFileDeleter externalFileDeleter;
 
     private UpdaterOptions(boolean silentRead, boolean reExtractNatives, boolean enableCurseForgePlugin, boolean enableOptifineDownloaderPlugin, boolean downloadServer, int nmbrThreadsForAssets, IFileDeleter externalFileDeleter)
