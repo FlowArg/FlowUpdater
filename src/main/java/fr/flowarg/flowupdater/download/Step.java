@@ -8,12 +8,6 @@ import fr.flowarg.flowupdater.FlowUpdater;
  */
 public enum Step
 {
-    /**
-     * Prerequisites (like plugins loading)
-     * @deprecated Not used anymore.
-     */
-    @Deprecated
-    PREREQUISITES,
     /** ModPack preparation */
     MOD_PACK,
     /** JSON reading */

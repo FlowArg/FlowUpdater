@@ -14,8 +14,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
@@ -96,15 +96,14 @@ public class VanillaDownloader
                     while (entries.hasMoreElements())
                     {
                         final ZipEntry entry = entries.nextElement();
-                        if (!entry.isDirectory() && !(entry.getName().endsWith(".git") || entry.getName().endsWith(".sha1") || entry.getName().contains("META-INF")))
-                        {
-                            final Path flPath = this.natives.resolve(entry.getName());
-                            if (!Files.exists(flPath) || entry.getCrc() != FileUtils.getCRC32(flPath))
-                            {
-                                flag = true;
-                                break;
-                            }
-                        }
+                        if (entry.isDirectory() || entry.getName().endsWith(".git") || entry.getName().endsWith(".sha1") || entry.getName().contains("META-INF")) continue;
+
+                        final Path flPath = this.natives.resolve(entry.getName());
+
+                        if(Files.exists(flPath) && entry.getCrc() == FileUtils.getCRC32(flPath)) continue;
+
+                        flag = true;
+                        break;
                     }
                     jarFile.close();
                     if (flag) break;
@@ -145,12 +144,15 @@ public class VanillaDownloader
         natives.close();
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private void downloadAssets()
     {
         this.logger.info("Checking assets...");
         this.callback.step(Step.DL_ASSETS);
-        final ThreadPoolExecutor threadPool = (ThreadPoolExecutor)Executors.newFixedThreadPool(this.threadsForAssets);
-        for (int i = 0; i < threadPool.getMaximumPoolSize(); i++)
+
+        final ExecutorService threadPool = Executors.newFixedThreadPool(this.threadsForAssets);
+
+        for (int i = 0; i < this.threadsForAssets; i++)
         {
             threadPool.submit(() -> {
                 try {

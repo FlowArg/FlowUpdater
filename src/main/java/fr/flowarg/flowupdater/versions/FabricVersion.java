@@ -47,8 +47,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
     private final ModFileDeleter fileDeleter;
     private List<Object> allCurseMods;
     private final String installerVersion;
-    private final CurseModPackInfo modPackInfos;
-    private final String[] compatibleVersions = {"1.17", "1.16", "1.15", "1.14", "1.13"};
+    private final CurseModPackInfo modPackInfo;
 
     private URL installerUrl;
     private ILogger logger;
@@ -62,14 +61,14 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
      * @param curseMods   {@link List<CurseFileInfos>} to install.
      * @param fabricVersion to install.
      * @param fileDeleter {@link ModFileDeleter} used to cleanup mods dir.
-     * @param modPackInfos {@link CurseModPackInfo} the modpack you want to install.
+     * @param modPackInfo {@link CurseModPackInfo} the modpack you want to install.
      */
-    private FabricVersion(List<Mod> mods, List<CurseFileInfos> curseMods, String fabricVersion, ModFileDeleter fileDeleter, CurseModPackInfo modPackInfos) {
+    private FabricVersion(List<Mod> mods, List<CurseFileInfos> curseMods, String fabricVersion, ModFileDeleter fileDeleter, CurseModPackInfo modPackInfo) {
         this.mods = mods;
         this.fileDeleter = fileDeleter;
         this.curseMods = curseMods;
         this.fabricVersion = fabricVersion;
-        this.modPackInfos = modPackInfos;
+        this.modPackInfo = modPackInfo;
         this.installerVersion = this.getLatestInstallerVersion();
     }
 
@@ -106,14 +105,15 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
     {
         doc.getDocumentElement().normalize();
 
-        Element root = doc.getDocumentElement();
-        NodeList nList = root.getElementsByTagName("versioning");
+        final Element root = doc.getDocumentElement();
+        final NodeList nList = root.getElementsByTagName("versioning");
         String version = "";
-        for (int temp = 0; temp < nList.getLength(); temp++) {
-            Node node = nList.item(temp);
-            if (node.getNodeType() == Node.ELEMENT_NODE) {
-                version = ((Element) node).getElementsByTagName("release").item(0).getTextContent();
-            }
+
+        for (int temp = 0; temp < nList.getLength(); temp++)
+        {
+            final Node node = nList.item(temp);
+            if (node.getNodeType() != Node.ELEMENT_NODE) continue;
+            version = ((Element) node).getElementsByTagName("release").item(0).getTextContent();
         }
         return version;
     }
@@ -209,32 +209,30 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
         this.callback.step(Step.FABRIC);
         this.logger.info("Installing fabric, version: " + this.fabricVersion + "...");
         this.checkModLoaderEnv(dirToInstall);
-        if (this.isCompatible())
+
+        try (BufferedInputStream stream = new BufferedInputStream(this.installerUrl.openStream()))
         {
-            try (BufferedInputStream stream = new BufferedInputStream(this.installerUrl.openStream()))
-            {
-                final FabricLauncherEnvironment fabricLauncherEnvironment = this.prepareModLoaderLauncher(dirToInstall, stream);
-                this.logger.info("Launching fabric installer...");
-                fabricLauncherEnvironment.launchFabricInstaller();
+            final FabricLauncherEnvironment fabricLauncherEnvironment = this.prepareModLoaderLauncher(dirToInstall, stream);
+            this.logger.info("Launching fabric installer...");
+            fabricLauncherEnvironment.launchFabricInstaller();
 
-                final Path jsonPath = fabricLauncherEnvironment.getFabric().resolve("versions").resolve(String.format("fabric-loader-%s-%s", this.fabricVersion, this.vanilla.getName()));
-                final Path jsonFilePath = jsonPath.resolve(jsonPath.getFileName().toString() + ".json");
+            final Path jsonPath = fabricLauncherEnvironment.getFabric().resolve("versions").resolve(String.format("fabric-loader-%s-%s", this.fabricVersion, this.vanilla.getName()));
+            final Path jsonFilePath = jsonPath.resolve(jsonPath.getFileName().toString() + ".json");
 
-                final JsonObject obj = JsonParser.parseString(StringUtils.toString(Files.readAllLines(jsonFilePath, StandardCharsets.UTF_8))).getAsJsonObject();
-                final JsonArray libs = obj.getAsJsonArray("libraries");
+            final JsonObject obj = JsonParser.parseString(StringUtils.toString(Files.readAllLines(jsonFilePath, StandardCharsets.UTF_8))).getAsJsonObject();
+            final JsonArray libs = obj.getAsJsonArray("libraries");
 
-                final Path libraries = dirToInstall.resolve("libraries");
-                libs.forEach(el -> {
-                    final JsonObject artifact = el.getAsJsonObject();
-                    ArtifactsDownloader.downloadArtifacts(libraries, artifact.get("url").getAsString(), artifact.get("name").getAsString(), this.logger);
-                });
+            final Path libraries = dirToInstall.resolve("libraries");
+            libs.forEach(el -> {
+                final JsonObject artifact = el.getAsJsonObject();
+                ArtifactsDownloader.downloadArtifacts(libraries, artifact.get("url").getAsString(), artifact.get("name").getAsString(), this.logger);
+            });
 
-                this.logger.info("Successfully installed Fabric !");
-                FileUtils.deleteDirectory(fabricLauncherEnvironment.getTempDir());
-            } catch (Exception e)
-            {
-                this.logger.printStackTrace(e);
-            }
+            this.logger.info("Successfully installed Fabric !");
+            FileUtils.deleteDirectory(fabricLauncherEnvironment.getTempDir());
+        } catch (Exception e)
+        {
+            this.logger.printStackTrace(e);
         }
     }
 
@@ -258,16 +256,6 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
             }
         }
         return result;
-    }
-
-    public boolean isCompatible()
-    {
-        for(String str : this.compatibleVersions)
-        {
-            if(this.vanilla.getName().startsWith(str))
-                return true;
-        }
-        return false;
     }
 
     /**
@@ -373,7 +361,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
      * {@inheritDoc}
      */
     @Override
-    public CurseModPackInfo getModPackInfo() { return modPackInfos; }
+    public CurseModPackInfo getModPackInfo() { return modPackInfo; }
 
     public static class FabricVersionBuilder implements IBuilder<FabricVersion>
     {
@@ -390,24 +378,6 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
         public FabricVersionBuilder withFabricVersion(String fabricVersion)
         {
             this.fabricVersionArgument.set(fabricVersion);
-            return this;
-        }
-
-        @Deprecated
-        public FabricVersionBuilder withVanillaVersion(VanillaVersion vanillaVersion)
-        {
-            return this;
-        }
-
-        @Deprecated
-        public FabricVersionBuilder withLogger(ILogger logger)
-        {
-            return this;
-        }
-
-        @Deprecated
-        public FabricVersionBuilder withProgressCallback(IProgressCallback progressCallback)
-        {
             return this;
         }
 
@@ -432,6 +402,30 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
         public FabricVersionBuilder withFileDeleter(ModFileDeleter fileDeleter)
         {
             this.fileDeleterArgument.set(fileDeleter);
+            return this;
+        }
+
+        public FabricVersionBuilder withModPack(CurseModPackInfo modPackInfo)
+        {
+            this.modPackArgument.set(modPackInfo);
+            return this;
+        }
+
+        @Deprecated
+        public FabricVersionBuilder withVanillaVersion(VanillaVersion vanillaVersion)
+        {
+            return this;
+        }
+
+        @Deprecated
+        public FabricVersionBuilder withLogger(ILogger logger)
+        {
+            return this;
+        }
+
+        @Deprecated
+        public FabricVersionBuilder withProgressCallback(IProgressCallback progressCallback)
+        {
             return this;
         }
 

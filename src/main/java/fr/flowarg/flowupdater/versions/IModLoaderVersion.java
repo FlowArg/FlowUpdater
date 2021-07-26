@@ -77,24 +77,23 @@ public interface IModLoaderVersion
             this.getCallback().update(this.getDownloadInfos().getDownloadedBytes(), this.getDownloadInfos().getTotalToDownloadBytes());
         });
 
-        if(cursePluginLoaded)
-        {
-            this.getDownloadInfos().getCurseMods().forEach(obj -> {
-                final CurseMod curseMod = (CurseMod)obj;
-                try
-                {
-                    final Path modFilePath = modsDir.resolve(curseMod.getName());
-                    IOUtils.download(this.getLogger(), new URL(curseMod.getDownloadURL()), modFilePath);
-                    this.getCallback().onFileDownloaded(modFilePath);
-                }
-                catch (MalformedURLException e)
-                {
-                    this.getLogger().printStackTrace(e);
-                }
-                this.getDownloadInfos().incrementDownloaded(curseMod.getLength());
-                this.getCallback().update(this.getDownloadInfos().getDownloadedBytes(), this.getDownloadInfos().getTotalToDownloadBytes());
-            });
-        }
+        if(!cursePluginLoaded) return;
+
+        this.getDownloadInfos().getCurseMods().forEach(obj -> {
+            final CurseMod curseMod = (CurseMod)obj;
+            try
+            {
+                final Path modFilePath = modsDir.resolve(curseMod.getName());
+                IOUtils.download(this.getLogger(), new URL(curseMod.getDownloadURL()), modFilePath);
+                this.getCallback().onFileDownloaded(modFilePath);
+            }
+            catch (MalformedURLException e)
+            {
+                this.getLogger().printStackTrace(e);
+            }
+            this.getDownloadInfos().incrementDownloaded(curseMod.getLength());
+            this.getCallback().update(this.getDownloadInfos().getDownloadedBytes(), this.getDownloadInfos().getTotalToDownloadBytes());
+        });
     }
 
     /**

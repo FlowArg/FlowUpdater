@@ -115,6 +115,7 @@ public class UpdaterOptions
             return this;
         }
 
+        @Deprecated
         public UpdaterOptionsBuilder withReExtractNatives(boolean reExtractNatives)
         {
             this.reExtractNativesArgument.set(reExtractNatives);

@@ -20,25 +20,21 @@ public class ExternalFileDeleter implements IFileDeleter
         final DownloadInfos downloadInfos = (DownloadInfos)parameters[1];
         final Path dir = (Path)parameters[2];
 
-        if(!externalFiles.isEmpty())
-        {
-            for(ExternalFile extFile : externalFiles)
-            {
-                final Path filePath = dir.resolve(extFile.getPath());
+        if(externalFiles.isEmpty()) return;
 
-                if (Files.exists(filePath))
-                {
-                    if(extFile.isUpdate())
-                    {
-                        if (!FileUtils.getSHA1(filePath).equalsIgnoreCase(extFile.getSha1()))
-                        {
-                            Files.delete(filePath);
-                            downloadInfos.getExtFiles().add(extFile);
-                        }
-                    }
-                }
-                else downloadInfos.getExtFiles().add(extFile);
+        for(ExternalFile extFile : externalFiles)
+        {
+            final Path filePath = dir.resolve(extFile.getPath());
+
+            if (Files.exists(filePath))
+            {
+                if(!extFile.isUpdate()) continue;
+
+                if (FileUtils.getSHA1(filePath).equalsIgnoreCase(extFile.getSha1())) continue;
+
+                Files.delete(filePath);
             }
+            downloadInfos.getExtFiles().add(extFile);
         }
     }
 }

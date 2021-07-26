@@ -29,18 +29,7 @@ public interface IProgressCallback
 
     /**
      * This method is called before {@link #update(long, long)} when a file is downloaded.
-     * @param file the file downloaded.
-     * @deprecated Prefer using {@link #onFileDownloaded(Path)}
-     */
-    @Deprecated
-    default void onFileDownloaded(File file) {}
-
-    /**
-     * This method is called before {@link #update(long, long)} when a file is downloaded.
      * @param path the file downloaded.
      */
-    default void onFileDownloaded(Path path)
-    {
-        this.onFileDownloaded(path.toFile());
-    }
+    default void onFileDownloaded(Path path) {}
 }

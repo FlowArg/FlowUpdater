@@ -70,48 +70,43 @@ public class VanillaReader
 
     private void getLibraries()
     {
-        this.version.getMinecraftLibrariesJson().forEach(jsonElement ->
-        {
+        this.version.getMinecraftLibrariesJson().forEach(jsonElement -> {
             final boolean canDownload;
             final JsonObject element = jsonElement.getAsJsonObject();
-            if (element != null)
-            {
-                canDownload = this.checkRules(element);
 
-                if (canDownload)
-                {
-                    if (element.getAsJsonObject("downloads").getAsJsonObject("artifact") != null)
-                    {
-                        final JsonObject obj = element.getAsJsonObject("downloads").getAsJsonObject("artifact");
-                        final String url = obj.get("url").getAsString();
-                        final int size = obj.get("size").getAsInt();
-                        final String path = "libraries/" + obj.get("path").getAsString();
-                        final String sha1 = obj.get("sha1").getAsString();
+            if (element == null) return;
 
-                        if(!this.isSilent)
-                            this.logger.debug("Reading " + path + " from " + url + "... SHA1 is : " + sha1);
-                        this.info.getLibraryDownloadables().add(new Downloadable(url, size, sha1, path));
-                    }
-                }
-            }
+            canDownload = this.checkRules(element);
+
+            if (!canDownload) return;
+            if (element.getAsJsonObject("downloads").getAsJsonObject("artifact") == null) return;
+
+            final JsonObject obj = element.getAsJsonObject("downloads").getAsJsonObject("artifact");
+            final String url = obj.get("url").getAsString();
+            final int size = obj.get("size").getAsInt();
+            final String path = "libraries/" + obj.get("path").getAsString();
+            final String sha1 = obj.get("sha1").getAsString();
+
+            if(!this.isSilent)
+                this.logger.debug("Reading " + path + " from " + url + "... SHA1 is : " + sha1);
+            this.info.getLibraryDownloadables().add(new Downloadable(url, size, sha1, path));
         });
         this.info.getLibraryDownloadables().addAll(this.version.getAnotherLibraries());
     }
 
     private void getAssetsIndex()
     {
-        if(this.version.getCustomAssetIndex() == null)
-        {
-            final JsonObject assetIndex = this.version.getMinecraftAssetsIndex();
-            final String url = assetIndex.get("url").getAsString();
-            final int size = assetIndex.get("size").getAsInt();
-            final String name = "assets/indexes/" + url.substring(url.lastIndexOf('/') + 1);
-            final String sha1 = assetIndex.get("sha1").getAsString();
+        if(this.version.getCustomAssetIndex() != null) return;
 
-            if(!this.isSilent)
-                this.logger.debug("Reading assets index from " + url + "... SHA1 is : " + sha1);
-            this.info.getLibraryDownloadables().add(new Downloadable(url, size, sha1, name));
-        }
+        final JsonObject assetIndex = this.version.getMinecraftAssetsIndex();
+        final String url = assetIndex.get("url").getAsString();
+        final int size = assetIndex.get("size").getAsInt();
+        final String name = "assets/indexes/" + url.substring(url.lastIndexOf('/') + 1);
+        final String sha1 = assetIndex.get("sha1").getAsString();
+
+        if(!this.isSilent)
+            this.logger.debug("Reading assets index from " + url + "... SHA1 is : " + sha1);
+        this.info.getLibraryDownloadables().add(new Downloadable(url, size, sha1, name));
     }
 
     private void getClientServerJars()
@@ -126,43 +121,41 @@ public class VanillaReader
             this.logger.debug("Reading client jar from " + clientURL + "... SHA1 is : " + this.version.getMinecraftClient().get("sha1").getAsString());
         this.info.getLibraryDownloadables().add(new Downloadable(clientURL, clientSize, clientSha1, clientName));
 
-        if(this.downloadServer)
-        {
-            final JsonObject server = this.version.getMinecraftServer();
-            final String serverURL = server.get("url").getAsString();
-            final int serverSize = server.get("size").getAsInt();
-            final String serverName = serverURL.substring(serverURL.lastIndexOf('/') + 1);
-            final String serverSha1 = server.get("sha1").getAsString();
+        if(!this.downloadServer) return;
 
-            if(!this.isSilent)
-                this.logger.debug("Reading server jar from " + serverURL + "... SHA1 is : " + this.version.getMinecraftServer().get("sha1").getAsString());
+        final JsonObject server = this.version.getMinecraftServer();
+        final String serverURL = server.get("url").getAsString();
+        final int serverSize = server.get("size").getAsInt();
+        final String serverName = serverURL.substring(serverURL.lastIndexOf('/') + 1);
+        final String serverSha1 = server.get("sha1").getAsString();
 
-            this.info.getLibraryDownloadables().add(new Downloadable(serverURL, serverSize, serverSha1, serverName));
-        }
+        if(!this.isSilent)
+            this.logger.debug("Reading server jar from " + serverURL + "... SHA1 is : " + this.version.getMinecraftServer().get("sha1").getAsString());
+
+        this.info.getLibraryDownloadables().add(new Downloadable(serverURL, serverSize, serverSha1, serverName));
     }
 
     private void getNatives()
     {
-        this.version.getMinecraftLibrariesJson().forEach(jsonElement ->
-        {
+        this.version.getMinecraftLibrariesJson().forEach(jsonElement -> {
             final JsonObject obj = jsonElement.getAsJsonObject().getAsJsonObject("downloads").getAsJsonObject("classifiers");
-            if (obj != null)
-            {
-                final JsonObject macObj = obj.getAsJsonObject("natives-macos");
-                final JsonObject osxObj = obj.getAsJsonObject("natives-osx");
-                JsonObject windowsObj = obj.getAsJsonObject(String.format("natives-windows-%s", Platform.getArch()));
-                if (windowsObj == null) windowsObj = obj.getAsJsonObject("natives-windows");
-                final JsonObject linuxObj = obj.getAsJsonObject("natives-linux");
 
-                if (macObj != null && Platform.isOnMac())
-                    this.getNativeForOS("mac", macObj);
-                else if (osxObj != null && Platform.isOnMac())
-                    this.getNativeForOS("mac", osxObj);
-                else if (windowsObj != null && Platform.isOnWindows())
-                    this.getNativeForOS("win", windowsObj);
-                else if (linuxObj != null && Platform.isOnLinux())
-                    this.getNativeForOS("linux", linuxObj);
-            }
+            if (obj == null) return;
+
+            final JsonObject macObj = obj.getAsJsonObject("natives-macos");
+            final JsonObject osxObj = obj.getAsJsonObject("natives-osx");
+            JsonObject windowsObj = obj.getAsJsonObject(String.format("natives-windows-%s", Platform.getArch()));
+            if (windowsObj == null) windowsObj = obj.getAsJsonObject("natives-windows");
+            final JsonObject linuxObj = obj.getAsJsonObject("natives-linux");
+
+            if (macObj != null && Platform.isOnMac())
+                this.getNativeForOS("mac", macObj);
+            else if (osxObj != null && Platform.isOnMac())
+                this.getNativeForOS("mac", osxObj);
+            else if (windowsObj != null && Platform.isOnWindows())
+                this.getNativeForOS("win", windowsObj);
+            else if (linuxObj != null && Platform.isOnLinux())
+                this.getNativeForOS("linux", linuxObj);
         });
     }
     
@@ -208,28 +201,25 @@ public class VanillaReader
 
     private boolean checkRules(JsonObject obj)
     {
+        if (obj.get("rules") == null) return true;
+
         final AtomicBoolean canDownload = new AtomicBoolean(true);
 
-        if (obj.get("rules") != null)
-        {
-            obj.get("rules").getAsJsonArray().forEach(jsonElement ->
+        obj.get("rules").getAsJsonArray().forEach(jsonElement -> {
+            if (jsonElement.getAsJsonObject().get("action").getAsString().equals("allow"))
             {
-                if (jsonElement.getAsJsonObject().get("action").getAsString().equals("allow"))
-                {
-                    if (jsonElement.getAsJsonObject().getAsJsonObject("os") != null)
-                    {
-                        final String os = jsonElement.getAsJsonObject().getAsJsonObject("os").get("name").getAsString();
-                        canDownload.set(this.check(os));
-                    }
-                }
-                else if (jsonElement.getAsJsonObject().get("action").getAsString().equals("disallow"))
-                {
-                    final String os = jsonElement.getAsJsonObject().getAsJsonObject("os").get("name").getAsString();
-                    if(this.check(os))
-                        canDownload.set(false);
-                }
-            });
-        }
+                if (jsonElement.getAsJsonObject().getAsJsonObject("os") == null) return;
+
+                final String os = jsonElement.getAsJsonObject().getAsJsonObject("os").get("name").getAsString();
+                canDownload.set(this.check(os));
+            }
+            else if (jsonElement.getAsJsonObject().get("action").getAsString().equals("disallow"))
+            {
+                final String os = jsonElement.getAsJsonObject().getAsJsonObject("os").get("name").getAsString();
+                if(this.check(os))
+                    canDownload.set(false);
+            }
+        });
 
         return canDownload.get();
     }

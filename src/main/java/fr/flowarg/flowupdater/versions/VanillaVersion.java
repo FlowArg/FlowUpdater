@@ -124,15 +124,13 @@ public class VanillaVersion
             else version.set(this.getName());
             launcherMeta.getAsJsonArray("versions").forEach(jsonElement ->
             {
-                if (jsonElement.getAsJsonObject().get("id").getAsString().equals(version.get()))
+                if (!jsonElement.getAsJsonObject().get("id").getAsString().equals(version.get())) return;
+                try
                 {
-                    try
-                    {
-                        result.set(new URL(jsonElement.getAsJsonObject().get("url").getAsString()).openStream());
-                    } catch (IOException e)
-                    {
-                        e.printStackTrace();
-                    }
+                    result.set(new URL(jsonElement.getAsJsonObject().get("url").getAsString()).openStream());
+                } catch (IOException e)
+                {
+                    e.printStackTrace();
                 }
             });
         } catch (IOException e)

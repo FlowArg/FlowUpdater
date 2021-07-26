@@ -166,18 +166,17 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     @Override
     public boolean checkModLoaderEnv(Path dirToInstall) throws Exception
     {
-        boolean result = false;
         final Path forgeDirPath = dirToInstall.resolve("libraries").resolve("net").resolve("minecraftforge").resolve("forge");
-        if(Files.exists(forgeDirPath))
+
+        if(!Files.exists(forgeDirPath)) return false;
+
+        boolean result = false;
+        for (Path contained : FileUtils.list(forgeDirPath))
         {
-            for (Path contained : FileUtils.list(forgeDirPath))
-            {
-                if(!contained.getFileName().toString().contains(this.forgeVersion))
-                {
-                    FileUtils.deleteDirectory(contained);
-                    result = true;
-                }
-            }
+            if(contained.getFileName().toString().contains(this.forgeVersion)) continue;
+
+            FileUtils.deleteDirectory(contained);
+            result = true;
         }
 
         return result;

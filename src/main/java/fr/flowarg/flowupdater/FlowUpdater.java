@@ -91,7 +91,7 @@ public class FlowUpdater
     {
         this.logger = logger;
         this.version = version;
-        this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.4.2"));
+        this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.4.4"));
         this.externalFiles = externalFiles;
         this.postExecutions = postExecutions;
         this.forgeVersion = forgeVersion;
@@ -140,43 +140,42 @@ public class FlowUpdater
 
     private void updateMinecraft(Path dir) throws Exception
     {
-        if(this.version != VanillaVersion.NULL_VERSION)
+        if(this.version == VanillaVersion.NULL_VERSION)
         {
-            this.logger.info(String.format("Reading data about %s Minecraft version...", version.getName()));
-            new VanillaReader(this).read();
-
-            final Path modsDirPath = dir.resolve("mods");
-
-            if(this.forgeVersion != null && this.version.getVersionType() == VersionType.FORGE)
-            {
-                this.checkMods(this.forgeVersion, modsDirPath);
-                if(this.updaterOptions.isEnableCurseForgePlugin())
-                    this.pluginManager.loadCurseForgePlugin(modsDirPath, this.forgeVersion);
-                if(this.updaterOptions.isEnableOptifineDownloaderPlugin())
-                    this.pluginManager.loadOptifinePlugin(modsDirPath, this.forgeVersion);
-            }
-
-            if (this.fabricVersion != null && this.version.getVersionType() == VersionType.FABRIC)
-            {
-                this.checkMods(this.fabricVersion, modsDirPath);
-                if(this.updaterOptions.isEnableCurseForgePlugin())
-                    this.pluginManager.loadCurseForgePlugin(modsDirPath, this.fabricVersion);
-            }
-
-            if (Files.notExists(dir))
-                Files.createDirectories(dir);
-
-            new VanillaDownloader(dir, this).download();
-
-            if(this.version.getVersionType() != VersionType.MCP && this.version.getVersionType() != VersionType.VANILLA)
-            {
-                if(this.version.getVersionType() == VersionType.FORGE)
-                    this.installModLoader(this.forgeVersion, dir, "Forge");
-                if(this.version.getVersionType() == VersionType.FABRIC)
-                    this.installModLoader(this.fabricVersion, dir, "Fabric");
-            }
+            this.downloadInfos.init();
+            return;
         }
-        else this.downloadInfos.init();
+
+        this.logger.info(String.format("Reading data about %s Minecraft version...", version.getName()));
+        new VanillaReader(this).read();
+
+        final Path modsDirPath = dir.resolve("mods");
+
+        if(this.forgeVersion != null && this.version.getVersionType() == VersionType.FORGE)
+        {
+            this.checkMods(this.forgeVersion, modsDirPath);
+            if(this.updaterOptions.isEnableCurseForgePlugin())
+                this.pluginManager.loadCurseForgePlugin(modsDirPath, this.forgeVersion);
+            if(this.updaterOptions.isEnableOptifineDownloaderPlugin())
+                this.pluginManager.loadOptifinePlugin(modsDirPath, this.forgeVersion);
+        }
+
+        if (this.fabricVersion != null && this.version.getVersionType() == VersionType.FABRIC)
+        {
+            this.checkMods(this.fabricVersion, modsDirPath);
+            if(this.updaterOptions.isEnableCurseForgePlugin())
+                this.pluginManager.loadCurseForgePlugin(modsDirPath, this.fabricVersion);
+        }
+
+        if (Files.notExists(dir))
+            Files.createDirectories(dir);
+
+        new VanillaDownloader(dir, this).download();
+
+        if(this.version.getVersionType() == VersionType.MCP || this.version.getVersionType() == VersionType.VANILLA) return;
+
+        if(this.version.getVersionType() == VersionType.FORGE) this.installModLoader(this.forgeVersion, dir, "Forge");
+        if(this.version.getVersionType() == VersionType.FABRIC) this.installModLoader(this.fabricVersion, dir, "Fabric");
     }
 
     private void checkMods(IModLoaderVersion modLoader, Path modsDir) throws Exception
@@ -262,8 +261,21 @@ public class FlowUpdater
          * Append a {@link VanillaVersion} object in the final FlowUpdater instance.
          * @param version the {@link VanillaVersion} to append and install.
          * @return the builder.
+         * @deprecated Use {@link #withVanillaVersion(VanillaVersion)} instead.
          */
+        @Deprecated
         public FlowUpdaterBuilder withVersion(VanillaVersion version)
+        {
+            this.versionArgument.set(version);
+            return this;
+        }
+
+        /**
+         * Append a {@link VanillaVersion} object in the final FlowUpdater instance.
+         * @param version the {@link VanillaVersion} to append and install.
+         * @return the builder.
+         */
+        public FlowUpdaterBuilder withVanillaVersion(VanillaVersion version)
         {
             this.versionArgument.set(version);
             return this;

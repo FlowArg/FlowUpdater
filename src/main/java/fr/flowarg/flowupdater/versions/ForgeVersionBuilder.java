@@ -28,15 +28,51 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
     }
 
     private final BuilderArgument<String> forgeVersionArgument = new BuilderArgument<String>("ForgeVersion").required();
+    private final BuilderArgument<OptifineInfo> optifineArgument = new BuilderArgument<OptifineInfo>("Optifine").optional();
     private final BuilderArgument<List<Mod>> modsArgument = new BuilderArgument<List<Mod>>("Mods", ArrayList::new).optional();
     private final BuilderArgument<List<CurseFileInfos>> curseModsArgument = new BuilderArgument<List<CurseFileInfos>>("CurseMods", ArrayList::new).optional();
     private final BuilderArgument<ModFileDeleter> fileDeleterArgument = new BuilderArgument<>("ModFileDeleter", () -> new ModFileDeleter(false)).optional();
-    private final BuilderArgument<OptifineInfo> optifineArgument = new BuilderArgument<OptifineInfo>("Optifine").optional();
     private final BuilderArgument<CurseModPackInfo> modPackArgument = new BuilderArgument<CurseModPackInfo>("ModPack").optional();
 
     public ForgeVersionBuilder withForgeVersion(String forgeVersion)
     {
         this.forgeVersionArgument.set(forgeVersion);
+        return this;
+    }
+
+    public ForgeVersionBuilder withMods(List<Mod> mods)
+    {
+        this.modsArgument.set(mods);
+        return this;
+    }
+
+    public ForgeVersionBuilder withCurseMods(List<CurseFileInfos> curseMods)
+    {
+        this.curseModsArgument.set(curseMods);
+        return this;
+    }
+
+    public ForgeVersionBuilder withCurseModPack(CurseModPackInfo modpack)
+    {
+        this.modPackArgument.set(modpack);
+        return this;
+    }
+
+    public ForgeVersionBuilder withFileDeleter(ModFileDeleter fileDeleter)
+    {
+        this.fileDeleterArgument.set(fileDeleter);
+        return this;
+    }
+
+    public ForgeVersionBuilder withModPack(CurseModPackInfo modPackInfo)
+    {
+        this.modPackArgument.set(modPackInfo);
+        return this;
+    }
+
+    public ForgeVersionBuilder withOptifine(OptifineInfo optifine)
+    {
+        this.optifineArgument.set(optifine);
         return this;
     }
 
@@ -55,48 +91,6 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
     @Deprecated
     public ForgeVersionBuilder withProgressCallback(IProgressCallback progressCallback)
     {
-        return this;
-    }
-
-    public ForgeVersionBuilder withMods(List<Mod> mods)
-    {
-        this.modsArgument.set(mods);
-        return this;
-    }
-
-    public ForgeVersionBuilder withCurseMods(List<CurseFileInfos> curseMods)
-    {
-        this.curseModsArgument.set(curseMods);
-        return this;
-    }
-
-    /**
-     * A useless function. Will be removed soon.
-     * @param noGui true/false.
-     * @return the builder.
-     * @deprecated Useless, don't use that.
-     */
-    @Deprecated
-    public ForgeVersionBuilder withNoGui(boolean noGui)
-    {
-        return this;
-    }
-
-    public ForgeVersionBuilder withFileDeleter(ModFileDeleter fileDeleter)
-    {
-        this.fileDeleterArgument.set(fileDeleter);
-        return this;
-    }
-
-    public ForgeVersionBuilder withOptifine(OptifineInfo optifine)
-    {
-        this.optifineArgument.set(optifine);
-        return this;
-    }
-
-    public ForgeVersionBuilder withModPack(CurseModPackInfo modPackInfos)
-    {
-        this.modPackArgument.set(modPackInfos);
         return this;
     }
 

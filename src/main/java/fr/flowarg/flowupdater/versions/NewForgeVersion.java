@@ -36,25 +36,24 @@ public class NewForgeVersion extends AbstractForgeVersion
     public void install(final Path dirToInstall) throws Exception
     {
         super.install(dirToInstall);
-        if (this.isCompatible())
+        if (!this.isCompatible()) return;
+
+        try (BufferedInputStream stream = new BufferedInputStream(this.installerUrl.openStream()))
         {
-            try (BufferedInputStream stream = new BufferedInputStream(this.installerUrl.openStream()))
-            {
-                final ModLoaderLauncherEnvironment forgeLauncherEnvironment = this.prepareModLoaderLauncher(dirToInstall, stream);
-                forgeLauncherEnvironment.getCommand().add("--nogui");
-                final ProcessBuilder processBuilder = new ProcessBuilder(forgeLauncherEnvironment.getCommand());
-                
-                processBuilder.redirectOutput(Redirect.INHERIT);
-                final Process process = processBuilder.start();
-                process.waitFor();
-                
-                this.logger.info("Successfully installed Forge !");
-                FileUtils.deleteDirectory(forgeLauncherEnvironment.getTempDir());
-            }
-            catch (IOException | InterruptedException e)
-            {
-                this.logger.printStackTrace(e);
-            }
+            final ModLoaderLauncherEnvironment forgeLauncherEnvironment = this.prepareModLoaderLauncher(dirToInstall, stream);
+            forgeLauncherEnvironment.getCommand().add("--nogui");
+            final ProcessBuilder processBuilder = new ProcessBuilder(forgeLauncherEnvironment.getCommand());
+
+            processBuilder.redirectOutput(Redirect.INHERIT);
+            final Process process = processBuilder.start();
+            process.waitFor();
+
+            this.logger.info("Successfully installed Forge !");
+            FileUtils.deleteDirectory(forgeLauncherEnvironment.getTempDir());
+        }
+        catch (IOException | InterruptedException e)
+        {
+            this.logger.printStackTrace(e);
         }
     }
 

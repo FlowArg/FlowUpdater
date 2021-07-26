@@ -40,109 +40,110 @@ public class PluginManager
 
     public void loadCurseForgePlugin(Path dir, ICurseFeaturesUser curseFeaturesUser)
     {
-        if (!this.cursePluginLoaded)
+        if (this.cursePluginLoaded) return;
+
+        try
         {
-            try
-            {
-                Class.forName("fr.flowarg.flowupdater.curseforgeplugin.CurseForgePlugin");
-                this.cursePluginLoaded = true;
-                CurseForgePlugin.INSTANCE.setLogger(this.logger);
-                CurseForgePlugin.INSTANCE.setFolder(dir.getParent().resolve(".cfp"));
-            } catch (ClassNotFoundException e)
-            {
-                this.cursePluginLoaded = false;
-                this.logger.err("Cannot install mods from CurseForge: CurseAPI is not loaded. Please, enable the 'enableCurseForgePlugin' updater option !");
-                return;
-            }
+            Class.forName("fr.flowarg.flowupdater.curseforgeplugin.CurseForgePlugin");
+            this.cursePluginLoaded = true;
+            CurseForgePlugin.INSTANCE.setLogger(this.logger);
+            CurseForgePlugin.INSTANCE.setFolder(dir.getParent().resolve(".cfp"));
+        }
+        catch (ClassNotFoundException e)
+        {
+            this.cursePluginLoaded = false;
+            this.logger.err("Cannot install mods from CurseForge: CurseAPI is not loaded. Please, enable the 'enableCurseForgePlugin' updater option !");
+            return;
         }
 
         final List<Object> allCurseMods = new ArrayList<>(curseFeaturesUser.getCurseMods().size());
 
-        for (CurseFileInfos infos : curseFeaturesUser.getCurseMods())
+        for (CurseFileInfos info : curseFeaturesUser.getCurseMods())
         {
             try
             {
                 final CurseForgePlugin curseForgePlugin = CurseForgePlugin.INSTANCE;
-                final CurseMod mod = curseForgePlugin.getCurseMod(infos.getProjectID(), infos.getFileID());
+                final CurseMod mod = curseForgePlugin.getCurseMod(info.getProjectID(), info.getFileID());
                 allCurseMods.add(mod);
 
                 final Path filePath = dir.resolve(mod.getName());
-                if(Files.notExists(filePath) || !FileUtils.getMD5(filePath).equals(mod.getMd5()) || FileUtils.getFileSizeBytes(filePath) != mod.getLength())
-                {
-                    if (!mod.getMd5().contains("-"))
-                    {
-                        Files.deleteIfExists(filePath);
-                        this.downloadInfos.getCurseMods().add(mod);
-                    }
-                }
+
+                if(Files.exists(filePath) && FileUtils.getMD5(filePath).equals(mod.getMd5()) && FileUtils.getFileSizeBytes(filePath) == mod.getLength()) continue;
+
+                if (mod.getMd5().contains("-")) continue;
+
+                Files.deleteIfExists(filePath);
+                this.downloadInfos.getCurseMods().add(mod);
             } catch (Exception e)
             {
                 this.logger.printStackTrace(e);
             }
         }
+
         final CurseModPackInfo modPackInfo = curseFeaturesUser.getModPackInfo();
-        if (modPackInfo != null)
+
+        if (modPackInfo == null)
         {
-            this.progressCallback.step(Step.MOD_PACK);
-            final CurseForgePlugin plugin = CurseForgePlugin.INSTANCE;
-            final CurseModPack modPack = plugin.getCurseModPack(modPackInfo.getProjectID(), modPackInfo.getFileID(), modPackInfo.isInstallExtFiles());
-            this.logger.info("Loading mod pack: " + modPack.getName() + " (" + modPack.getVersion() + ") by " + modPack.getAuthor() + '.');
-            modPack.getMods().forEach(mod -> {
-                allCurseMods.add(mod);
-                try
-                {
-                    final Path filePath = dir.resolve(mod.getName());
-                    boolean flag = false;
-                    for (String exclude : modPackInfo.getExcluded())
-                    {
-                        if (mod.getName().equalsIgnoreCase(exclude))
-                        {
-                            flag = !mod.isRequired();
-                            break;
-                        }
-                    }
-                    if(!flag && (Files.notExists(filePath) || !FileUtils.getMD5(filePath).equalsIgnoreCase(mod.getMd5()) || FileUtils.getFileSizeBytes(filePath) != mod.getLength()))
-                    {
-                        if (!mod.getMd5().contains("-"))
-                        {
-                            Files.deleteIfExists(filePath);
-                            this.downloadInfos.getCurseMods().add(mod);
-                        }
-                    }
-                } catch (IOException e)
-                {
-                    this.logger.printStackTrace(e);
-                }
-            });
+            curseFeaturesUser.setAllCurseMods(allCurseMods);
+            return;
         }
+
+        this.progressCallback.step(Step.MOD_PACK);
+        final CurseForgePlugin plugin = CurseForgePlugin.INSTANCE;
+        final CurseModPack modPack = plugin.getCurseModPack(modPackInfo.getProjectID(), modPackInfo.getFileID(), modPackInfo.isInstallExtFiles());
+        this.logger.info("Loading mod pack: " + modPack.getName() + " (" + modPack.getVersion() + ") by " + modPack.getAuthor() + '.');
+        modPack.getMods().forEach(mod -> {
+            allCurseMods.add(mod);
+            try
+            {
+                final Path filePath = dir.resolve(mod.getName());
+                boolean flag = false;
+                for (String exclude : modPackInfo.getExcluded())
+                {
+                    if (!mod.getName().equalsIgnoreCase(exclude)) continue;
+
+                    flag = !mod.isRequired();
+                    break;
+                }
+                if(!flag && (Files.notExists(filePath) || !FileUtils.getMD5(filePath).equalsIgnoreCase(mod.getMd5()) || FileUtils.getFileSizeBytes(filePath) != mod.getLength()))
+                {
+                    if (mod.getMd5().contains("-")) return;
+
+                    Files.deleteIfExists(filePath);
+                    this.downloadInfos.getCurseMods().add(mod);
+                }
+            } catch (IOException e)
+            {
+                this.logger.printStackTrace(e);
+            }
+        });
 
         curseFeaturesUser.setAllCurseMods(allCurseMods);
     }
 
     public void loadOptifinePlugin(Path dir, AbstractForgeVersion forgeVersion)
     {
-        if(forgeVersion.getOptifine() != null)
+        if(forgeVersion.getOptifine() == null) return;
+
+        try
         {
+            Class.forName("fr.antoineok.flowupdater.optifineplugin.OptifinePlugin");
+            this.optifinePluginLoaded = true;
             try
             {
-                Class.forName("fr.antoineok.flowupdater.optifineplugin.OptifinePlugin");
-                this.optifinePluginLoaded = true;
-                try
-                {
-                    final OptifinePlugin optifinePlugin = OptifinePlugin.INSTANCE;
-                    optifinePlugin.setLogger(this.logger);
-                    optifinePlugin.setFolder(dir.getParent().resolve(".op"));
-                    final Optifine optifine = optifinePlugin.getOptifine(forgeVersion.getOptifine().getVersion(), forgeVersion.getOptifine().isPreview());
-                    this.downloadInfos.setOptifine(optifine);
-                } catch (Exception e)
-                {
-                    this.logger.printStackTrace(e);
-                }
-            } catch (ClassNotFoundException e)
+                final OptifinePlugin optifinePlugin = OptifinePlugin.INSTANCE;
+                optifinePlugin.setLogger(this.logger);
+                optifinePlugin.setFolder(dir.getParent().resolve(".op"));
+                final Optifine optifine = optifinePlugin.getOptifine(forgeVersion.getOptifine().getVersion(), forgeVersion.getOptifine().isPreview());
+                this.downloadInfos.setOptifine(optifine);
+            } catch (Exception e)
             {
-                this.optifinePluginLoaded = false;
-                this.logger.err("Cannot install optifine: OptifinePlugin is not loaded. Please, enable the 'enableOptifineDownloaderPlugin' updater option !");
+                this.logger.printStackTrace(e);
             }
+        } catch (ClassNotFoundException e)
+        {
+            this.optifinePluginLoaded = false;
+            this.logger.err("Cannot install optifine: OptifinePlugin is not loaded. Please, enable the 'enableOptifineDownloaderPlugin' updater option !");
         }
     }
 

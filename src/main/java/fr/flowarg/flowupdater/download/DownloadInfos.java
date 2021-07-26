@@ -32,17 +32,16 @@ public class DownloadInfos
 
     public void init()
     {
-        if(!this.isInit())
-        {
-            this.libraryDownloadables.forEach(downloadable -> this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + downloadable.getSize()));
-            this.assetDownloadables.forEach(downloadable -> this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + downloadable.getSize()));
-            this.extFiles.forEach(externalFile -> this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + externalFile.getSize()));
-            this.mods.forEach(mod -> this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + mod.getSize()));
-            this.curseMods.forEach(obj -> this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + (long)(((CurseMod)obj).getLength())));
-            if (this.optifine != null)
-                this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + (long)(((Optifine)this.optifine).getSize()));
-            this.init = true;
-        }
+        if(this.isInit()) return;
+
+        this.libraryDownloadables.forEach(downloadable -> this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + downloadable.getSize()));
+        this.assetDownloadables.forEach(downloadable -> this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + downloadable.getSize()));
+        this.extFiles.forEach(externalFile -> this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + externalFile.getSize()));
+        this.mods.forEach(mod -> this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + mod.getSize()));
+        this.curseMods.forEach(obj -> this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + (long)(((CurseMod)obj).getLength())));
+        if (this.optifine != null)
+            this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + (long)(((Optifine)this.optifine).getSize()));
+        this.init = true;
     }
 
     public void incrementDownloaded(long bytes)
