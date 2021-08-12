@@ -2,6 +2,7 @@ package fr.flowarg.flowupdater.download;
 
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
+import fr.flowarg.flowstringer.StringUtils;
 import fr.flowarg.flowupdater.FlowUpdater;
 import fr.flowarg.flowupdater.download.json.AssetDownloadable;
 import fr.flowarg.flowupdater.download.json.Downloadable;
@@ -32,6 +33,7 @@ public class VanillaDownloader
     private final int threadsForAssets;
     private final Path natives;
     private final Path assets;
+    private final String vanillaJsonURL;
 
     public VanillaDownloader(Path dir, FlowUpdater flowUpdater) throws IOException
     {
@@ -44,6 +46,7 @@ public class VanillaDownloader
 
         this.natives = this.dir.resolve("natives");
         this.assets = this.dir.resolve("assets");
+        this.vanillaJsonURL = flowUpdater.getVersion().getJsonURL();
 
         Files.createDirectories(this.dir.resolve("libraries"));
         Files.createDirectories(this.assets);
@@ -66,7 +69,12 @@ public class VanillaDownloader
         this.logger.info("Checking library files...");
         this.callback.step(Step.DL_LIBS);
 
-        for (Downloadable downloadable : this.downloadInfos.getLibraryDownloadables())
+        final Path vanillaJsonTarget = this.dir.resolve(this.vanillaJsonURL.substring(this.vanillaJsonURL.lastIndexOf('/') + 1));
+
+        if(Files.notExists(vanillaJsonTarget) || !FileUtils.getSHA1(vanillaJsonTarget).equals(StringUtils.empty(StringUtils.empty(this.vanillaJsonURL, "https://launchermeta.mojang.com/v1/packages/"), this.vanillaJsonURL.substring(this.vanillaJsonURL.lastIndexOf('/')))))
+            IOUtils.download(this.logger, new URL(this.vanillaJsonURL), vanillaJsonTarget);
+
+        for (Downloadable downloadable : this.downloadInfos.getDownloadableFiles())
         {
             final Path filePath = this.dir.resolve(downloadable.getName());
 
@@ -150,14 +158,14 @@ public class VanillaDownloader
         this.logger.info("Checking assets...");
         this.callback.step(Step.DL_ASSETS);
 
-        final ExecutorService threadPool = Executors.newFixedThreadPool(this.threadsForAssets);
+        final ExecutorService executorService = Executors.newFixedThreadPool(this.threadsForAssets);
 
         for (int i = 0; i < this.threadsForAssets; i++)
         {
-            threadPool.submit(() -> {
+            executorService.submit(() -> {
                 try {
                     AssetDownloadable assetDownloadable;
-                    while ((assetDownloadable = this.downloadInfos.getAssetDownloadables().poll()) != null)
+                    while ((assetDownloadable = this.downloadInfos.getDownloadableAssets().poll()) != null)
                     {
                         final Path downloadPath = this.assets.resolve(assetDownloadable.getFile());
 
@@ -183,8 +191,8 @@ public class VanillaDownloader
         }
         try
         {
-            threadPool.shutdown();
-            threadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
+            executorService.shutdown();
+            executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
         } catch (InterruptedException e)
         {
             this.logger.printStackTrace(e);

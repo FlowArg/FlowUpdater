@@ -66,7 +66,7 @@ public class FlowUpdater
         @Override
         public void init(ILogger logger)
         {
-            logger.warn("You are using default callback ! It's not recommended. IT'S NOT AN ERROR !!!");
+            logger.info("Default callback will be used.");
         }
     };
 

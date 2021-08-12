@@ -41,7 +41,6 @@ public class NewForgeVersion extends AbstractForgeVersion
         try (BufferedInputStream stream = new BufferedInputStream(this.installerUrl.openStream()))
         {
             final ModLoaderLauncherEnvironment forgeLauncherEnvironment = this.prepareModLoaderLauncher(dirToInstall, stream);
-            forgeLauncherEnvironment.getCommand().add("--nogui");
             final ProcessBuilder processBuilder = new ProcessBuilder(forgeLauncherEnvironment.getCommand());
 
             processBuilder.redirectOutput(Redirect.INHERIT);

@@ -135,7 +135,7 @@ public class PluginManager
                 optifinePlugin.setLogger(this.logger);
                 optifinePlugin.setFolder(dir.getParent().resolve(".op"));
                 final Optifine optifine = optifinePlugin.getOptifine(forgeVersion.getOptifine().getVersion(), forgeVersion.getOptifine().isPreview());
-                this.downloadInfos.setOptifine(optifine);
+                this.downloadInfos.setOptiFine(optifine);
             } catch (Exception e)
             {
                 this.logger.printStackTrace(e);

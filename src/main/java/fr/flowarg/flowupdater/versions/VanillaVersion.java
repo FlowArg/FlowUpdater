@@ -17,6 +17,7 @@ import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -35,8 +36,10 @@ public class VanillaVersion
     private final AssetIndex customAssetIndex;
     private final List<AssetDownloadable> anotherAssets;
     private final List<Downloadable> anotherLibraries;
+    private final boolean custom;
     
     private JsonElement json = null;
+    private String jsonURL = null;
     
     private VanillaVersion(String name, MCP mcp,
             boolean snapshot, VersionType versionType,
@@ -50,6 +53,7 @@ public class VanillaVersion
         this.customAssetIndex = customAssetIndex;
         this.anotherAssets = anotherAssets;
         this.anotherLibraries = anotherLibraries;
+        this.custom = customVersionJson != null;
         if(!this.name.equals("no"))
             this.json = (customVersionJson == null ? IOUtils.readJson(this.getJsonVersion()) : customVersionJson);
     }
@@ -61,7 +65,7 @@ public class VanillaVersion
     
     public JsonObject getMinecraftClient() 
     {
-        if(versionType == VersionType.MCP)
+        if(this.versionType == VersionType.MCP && !this.custom)
         {
             final JsonObject result = new JsonObject();
             final String sha1 = this.mcp.getClientSha1();
@@ -127,7 +131,8 @@ public class VanillaVersion
                 if (!jsonElement.getAsJsonObject().get("id").getAsString().equals(version.get())) return;
                 try
                 {
-                    result.set(new URL(jsonElement.getAsJsonObject().get("url").getAsString()).openStream());
+                    this.jsonURL = jsonElement.getAsJsonObject().get("url").getAsString();
+                    result.set(new URL(this.jsonURL).openStream());
                 } catch (IOException e)
                 {
                     e.printStackTrace();
@@ -174,6 +179,11 @@ public class VanillaVersion
     public List<Downloadable> getAnotherLibraries()
     {
         return this.anotherLibraries;
+    }
+
+    public String getJsonURL()
+    {
+        return this.jsonURL;
     }
 
     /**

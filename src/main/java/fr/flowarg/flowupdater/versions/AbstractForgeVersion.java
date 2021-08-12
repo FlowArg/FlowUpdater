@@ -77,7 +77,11 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     @Override
     public boolean isModLoaderAlreadyInstalled(Path installDir)
     {
-        return Files.exists(installDir.resolve("libraries").resolve("net").resolve("minecraftforge").resolve("forge").resolve(this.forgeVersion).resolve("forge-" + this.forgeVersion + ".jar"));
+        final Path forgeDir = installDir.resolve("libraries").resolve("net").resolve("minecraftforge").resolve("forge").resolve(this.forgeVersion);
+
+        if(Files.notExists(forgeDir)) return false;
+
+        return Files.exists(forgeDir.resolve("forge-" + this.forgeVersion + ".jar")) || Files.exists(forgeDir.resolve("forge-" + this.forgeVersion + "-universal.jar"));
     }
 
     /**
@@ -196,9 +200,9 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         Object ofObj = null;
         if(optifinePluginLoaded)
         {
-            if(this.downloadInfos.getOptifine() != null)
+            if(this.downloadInfos.getOptiFine() != null)
             {
-                final Optifine optifine = (Optifine)this.downloadInfos.getOptifine();
+                final Optifine optifine = (Optifine)this.downloadInfos.getOptiFine();
                 ofObj = optifine;
                 try
                 {

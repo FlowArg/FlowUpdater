@@ -20,12 +20,12 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class DownloadInfos
 {
-    private final List<Downloadable> libraryDownloadables = new ArrayList<>();
-    private final Queue<AssetDownloadable> assetDownloadables = new ConcurrentLinkedDeque<>();
+    private final List<Downloadable> downloadableFiles = new ArrayList<>();
+    private final Queue<AssetDownloadable> downloadableAssets = new ConcurrentLinkedDeque<>();
     private final List<ExternalFile> extFiles = new ArrayList<>();
     private final List<Mod> mods = new ArrayList<>();
     private final List<Object> curseMods = new ArrayList<>();
-    private Object optifine = null;
+    private Object optiFine = null;
     private final AtomicLong totalToDownloadBytes = new AtomicLong(0);
     private final AtomicLong downloadedBytes = new AtomicLong(0);
     private boolean init = false;
@@ -34,13 +34,13 @@ public class DownloadInfos
     {
         if(this.isInit()) return;
 
-        this.libraryDownloadables.forEach(downloadable -> this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + downloadable.getSize()));
-        this.assetDownloadables.forEach(downloadable -> this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + downloadable.getSize()));
+        this.downloadableFiles.forEach(downloadable -> this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + downloadable.getSize()));
+        this.downloadableAssets.forEach(downloadable -> this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + downloadable.getSize()));
         this.extFiles.forEach(externalFile -> this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + externalFile.getSize()));
         this.mods.forEach(mod -> this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + mod.getSize()));
         this.curseMods.forEach(obj -> this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + (long)(((CurseMod)obj).getLength())));
-        if (this.optifine != null)
-            this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + (long)(((Optifine)this.optifine).getSize()));
+        if (this.optiFine != null)
+            this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + (long)(((Optifine)this.optiFine).getSize()));
         this.init = true;
     }
 
@@ -59,14 +59,14 @@ public class DownloadInfos
         return this.downloadedBytes.get();
     }
 
-    public Queue<AssetDownloadable> getAssetDownloadables()
+    public Queue<AssetDownloadable> getDownloadableAssets()
     {
-        return this.assetDownloadables;
+        return this.downloadableAssets;
     }
 
-    public List<Downloadable> getLibraryDownloadables()
+    public List<Downloadable> getDownloadableFiles()
     {
-        return this.libraryDownloadables;
+        return this.downloadableFiles;
     }
 
     public List<ExternalFile> getExtFiles()
@@ -84,14 +84,14 @@ public class DownloadInfos
         return this.curseMods;
     }
 
-    public Object getOptifine()
+    public Object getOptiFine()
     {
-        return this.optifine;
+        return this.optiFine;
     }
 
-    public void setOptifine(Object optifine)
+    public void setOptiFine(Object optiFine)
     {
-        this.optifine = optifine;
+        this.optiFine = optiFine;
     }
 
     public boolean isInit()
@@ -101,12 +101,12 @@ public class DownloadInfos
 
     public void clear()
     {
-        this.libraryDownloadables.clear();
+        this.downloadableFiles.clear();
         this.extFiles.clear();
-        this.assetDownloadables.clear();
+        this.downloadableAssets.clear();
         this.mods.clear();
         this.curseMods.clear();
-        this.optifine = null;
+        this.optiFine = null;
         this.totalToDownloadBytes.set(0);
         this.downloadedBytes.set(0);
         this.init = false;
