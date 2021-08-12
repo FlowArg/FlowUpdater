@@ -38,6 +38,7 @@ public class UpdaterOptions
     /**
      * Disable some debug logs on Minecraft json's parsing.
      * Default: true
+     * @return silentRead value.
      */
     public boolean isSilentRead()
     {
@@ -47,6 +48,7 @@ public class UpdaterOptions
     /**
      * If this option is set to true, {@link fr.flowarg.flowupdater.FlowUpdater} will download the Minecraft Server.
      * Default: false
+     * @return downloadServer value.
      */
     public boolean isDownloadServer()
     {
@@ -57,6 +59,7 @@ public class UpdaterOptions
      * Re-extract natives at each updates?
      * Today, this option isn't useful because {@link VanillaDownloader} checks automatically if all natives are correctly extracted.
      * Default: false
+     * @return reExtractNatives value.
      */
     public boolean isReExtractNatives()
     {
@@ -66,6 +69,7 @@ public class UpdaterOptions
     /**
      * Enable CurseForgePlugin (CFP)?
      * Default: false
+     * @return enableCurseForgePlugin value.
      */
     public boolean isEnableCurseForgePlugin()
     {
@@ -75,6 +79,7 @@ public class UpdaterOptions
     /**
      * Enable OptifineDownloaderPlugin (ODP)?
      * Default: false
+     * @return enableOptifineDownloaderPlugin value.
      */
     public boolean isEnableOptifineDownloaderPlugin()
     {
@@ -84,6 +89,7 @@ public class UpdaterOptions
     /**
      * Number of threads used to download assets.
      * Default: 2 or 3 (random)
+     * @return nmbrThreadsForAssets value.
      */
     public int getNmbrThreadsForAssets()
     {
@@ -93,6 +99,7 @@ public class UpdaterOptions
     /**
      * The external file deleter is used to check if some external files need to be downloaded.
      * Default: {@link fr.flowarg.flowupdater.utils.ExternalFileDeleter}
+     * @return externalFileDeleter value.
      */
     public IFileDeleter getExternalFileDeleter()
     {
