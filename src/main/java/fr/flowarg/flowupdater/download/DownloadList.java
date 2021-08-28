@@ -1,6 +1,6 @@
 package fr.flowarg.flowupdater.download;
 
-import fr.antoineok.flowupdater.optifineplugin.Optifine;
+import fr.antoineok.flowupdater.optifineplugin.OptiFine;
 import fr.flowarg.flowupdater.curseforgeplugin.CurseMod;
 import fr.flowarg.flowupdater.download.json.AssetDownloadable;
 import fr.flowarg.flowupdater.download.json.Downloadable;
@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicLong;
  *
  * @author FlowArg
  */
-public class DownloadInfos
+public class DownloadList
 {
     private final List<Downloadable> downloadableFiles = new ArrayList<>();
     private final Queue<AssetDownloadable> downloadableAssets = new ConcurrentLinkedDeque<>();
@@ -40,7 +40,7 @@ public class DownloadInfos
         this.mods.forEach(mod -> this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + mod.getSize()));
         this.curseMods.forEach(obj -> this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + (long)(((CurseMod)obj).getLength())));
         if (this.optiFine != null)
-            this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + (long)(((Optifine)this.optiFine).getSize()));
+            this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + (long)(((OptiFine)this.optiFine).getSize()));
         this.init = true;
     }
 

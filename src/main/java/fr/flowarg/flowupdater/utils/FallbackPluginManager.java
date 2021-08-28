@@ -17,7 +17,7 @@ public class FallbackPluginManager extends PluginManager
     public void loadCurseForgePlugin(Path dir, ICurseFeaturesUser curseFeaturesUser) {}
 
     @Override
-    public void loadOptifinePlugin(Path dir, AbstractForgeVersion forgeVersion) {}
+    public void loadOptiFinePlugin(Path dir, AbstractForgeVersion forgeVersion) {}
 
     @Override
     public void shutdown() {}
@@ -29,7 +29,7 @@ public class FallbackPluginManager extends PluginManager
     }
 
     @Override
-    public boolean isOptifinePluginLoaded()
+    public boolean isOptiFinePluginLoaded()
     {
         return false;
     }

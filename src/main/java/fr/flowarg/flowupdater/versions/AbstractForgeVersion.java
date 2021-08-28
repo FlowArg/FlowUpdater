@@ -1,17 +1,17 @@
 package fr.flowarg.flowupdater.versions;
 
-import fr.antoineok.flowupdater.optifineplugin.Optifine;
+import fr.antoineok.flowupdater.optifineplugin.OptiFine;
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.FlowUpdater;
-import fr.flowarg.flowupdater.download.DownloadInfos;
+import fr.flowarg.flowupdater.download.DownloadList;
 import fr.flowarg.flowupdater.download.ICurseFeaturesUser;
 import fr.flowarg.flowupdater.download.IProgressCallback;
 import fr.flowarg.flowupdater.download.Step;
-import fr.flowarg.flowupdater.download.json.CurseFileInfos;
+import fr.flowarg.flowupdater.download.json.CurseFileInfo;
 import fr.flowarg.flowupdater.download.json.CurseModPackInfo;
 import fr.flowarg.flowupdater.download.json.Mod;
-import fr.flowarg.flowupdater.download.json.OptifineInfo;
+import fr.flowarg.flowupdater.download.json.OptiFineInfo;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
 import fr.flowarg.flowupdater.utils.PluginManager;
@@ -34,15 +34,15 @@ import java.util.List;
 public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLoaderVersion
 {
     protected final List<Mod> mods;
-    protected final List<CurseFileInfos> curseMods;
+    protected final List<CurseFileInfo> curseMods;
     protected final ModFileDeleter fileDeleter;
-    protected final OptifineInfo optifine;
+    protected final OptiFineInfo optiFineInfo;
     protected final CurseModPackInfo modPackInfo;
     protected final boolean old;
 
     protected List<Object> allCurseMods;
     protected URL installerUrl;
-    protected DownloadInfos downloadInfos;
+    protected DownloadList downloadList;
     protected ILogger logger;
     protected IProgressCallback callback;
     protected VanillaVersion vanilla;
@@ -53,20 +53,20 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
      * @param mods {@link List} to install.
      * @param curseMods {@link List} to install.
      * @param forgeVersion to install.
-     * @param fileDeleter {@link ModFileDeleter} used to cleanup mods dir.
-     * @param optifine Optifine version to install.
-     * @param modPackInfo modpack information.
+     * @param fileDeleter {@link ModFileDeleter} used to clean up mods' dir.
+     * @param optiFineInfo OptiFine version to install.
+     * @param modPackInfo mod pack information.
      * @param old if the current version of forge is an old forge version.
      */
-    protected AbstractForgeVersion(List<Mod> mods, List<CurseFileInfos> curseMods,
-            String forgeVersion, ModFileDeleter fileDeleter, OptifineInfo optifine,
+    protected AbstractForgeVersion(List<Mod> mods, List<CurseFileInfo> curseMods,
+            String forgeVersion, ModFileDeleter fileDeleter, OptiFineInfo optiFineInfo,
             CurseModPackInfo modPackInfo, boolean old)
     {
         this.mods = mods;
         this.curseMods = curseMods;
         this.forgeVersion = forgeVersion;
         this.fileDeleter = fileDeleter;
-        this.optifine = optifine;
+        this.optiFineInfo = optiFineInfo;
         this.modPackInfo = modPackInfo;
         this.old = old;
     }
@@ -194,32 +194,32 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     {
         this.callback.step(Step.MODS);
         final boolean cursePluginLoaded = pluginManager.isCursePluginLoaded();
-        final boolean optifinePluginLoaded = pluginManager.isOptifinePluginLoaded();
+        final boolean optiFinePluginLoaded = pluginManager.isOptiFinePluginLoaded();
         this.installAllMods(modsDir, cursePluginLoaded);
 
         Object ofObj = null;
-        if(optifinePluginLoaded)
+        if(optiFinePluginLoaded)
         {
-            if(this.downloadInfos.getOptiFine() != null)
+            if(this.downloadList.getOptiFine() != null)
             {
-                final Optifine optifine = (Optifine)this.downloadInfos.getOptiFine();
+                final OptiFine optifine = (OptiFine)this.downloadList.getOptiFine();
                 ofObj = optifine;
                 try
                 {
-                    final Path optifineFilePath = modsDir.resolve(optifine.getName());
+                    final Path optiFineFilePath = modsDir.resolve(optifine.getName());
 
-                    if(Files.notExists(optifineFilePath))
-                        IOUtils.copy(this.logger, modsDir.getParent().resolve(".op").resolve(optifine.getName()), optifineFilePath);
+                    if(Files.notExists(optiFineFilePath))
+                        IOUtils.copy(this.logger, modsDir.getParent().resolve(".op").resolve(optifine.getName()), optiFineFilePath);
                 } catch (Exception e)
                 {
                     this.logger.printStackTrace(e);
                 }
-                this.downloadInfos.incrementDownloaded(optifine.getSize());
-                this.callback.update(this.downloadInfos.getDownloadedBytes(), this.downloadInfos.getTotalToDownloadBytes());
+                this.downloadList.incrementDownloaded(optifine.getSize());
+                this.callback.update(this.downloadList.getDownloadedBytes(), this.downloadList.getTotalToDownloadBytes());
             }
         }
 
-        this.fileDeleter.delete(modsDir, this.mods, cursePluginLoaded, this.allCurseMods, optifinePluginLoaded, ofObj);
+        this.fileDeleter.delete(modsDir, this.mods, cursePluginLoaded, this.allCurseMods, optiFinePluginLoaded, ofObj);
     }
     
     protected void packPatchedInstaller(final Path tempDir, final Path tempInstallerDir) throws Exception
@@ -261,7 +261,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     {
         this.callback = flowUpdater.getCallback();
         this.logger = flowUpdater.getLogger();
-        this.downloadInfos = flowUpdater.getDownloadInfos();
+        this.downloadList = flowUpdater.getDownloadList();
         this.vanilla = flowUpdater.getVersion();
         if (!forgeVersion.contains("-"))
             this.forgeVersion = this.vanilla.getName() + '-' + forgeVersion;
@@ -277,17 +277,17 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         if(!this.curseMods.isEmpty() && !flowUpdater.getUpdaterOptions().isEnableCurseForgePlugin())
             this.logger.warn("You must enable the enableCurseForgePlugin option to use curse forge features!");
 
-        if(this.optifine != null && !flowUpdater.getUpdaterOptions().isEnableOptifineDownloaderPlugin())
-            this.logger.warn("You must enable the enableOptifineDownloaderPlugin option to use optifine!");
+        if(this.optiFineInfo != null && !flowUpdater.getUpdaterOptions().isEnableOptiFineDownloaderPlugin())
+            this.logger.warn("You must enable the enableOptiFineDownloaderPlugin option to use OptiFine!");
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public DownloadInfos getDownloadInfos()
+    public DownloadList getDownloadList()
     {
-        return this.downloadInfos;
+        return this.downloadList;
     }
 
     /**
@@ -303,14 +303,14 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
      * {@inheritDoc}
      */
     @Override
-    public List<CurseFileInfos> getCurseMods()
+    public List<CurseFileInfo> getCurseMods()
     {
         return this.curseMods;
     }
 
-    public OptifineInfo getOptifine()
+    public OptiFineInfo getOptiFineInfo()
     {
-        return this.optifine;
+        return this.optiFineInfo;
     }
 
     /**

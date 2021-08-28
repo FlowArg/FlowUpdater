@@ -37,7 +37,7 @@ allprojects {
     }
 
     dependencies {
-        api 'com.google.code.gson:gson:2.8.7'
+        api 'com.google.code.gson:gson:2.8.8'
         api 'fr.flowarg:flowmultitools:1.3.3'
     }
 
@@ -46,7 +46,7 @@ allprojects {
     }
 }
 
-version '1.4.4'
+version '1.5.0'
 archivesBaseName = "flowupdater"
 
 dependencies {
@@ -54,7 +54,7 @@ dependencies {
     compileOnly project(":OptifinePlugin")
 
     // Only for internal tests
-    testImplementation 'fr.flowarg:openlauncherlib:3.2.0'
+    testImplementation 'fr.flowarg:openlauncherlib:3.2.2'
     testRuntimeOnly project(':CurseForgePlugin')
     testRuntimeOnly project(':OptifinePlugin')
     testImplementation 'org.json:json:20210307'

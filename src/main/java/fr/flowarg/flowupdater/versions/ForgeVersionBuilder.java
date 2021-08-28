@@ -1,11 +1,9 @@
 package fr.flowarg.flowupdater.versions;
 
-import fr.flowarg.flowlogger.ILogger;
-import fr.flowarg.flowupdater.download.IProgressCallback;
-import fr.flowarg.flowupdater.download.json.CurseFileInfos;
+import fr.flowarg.flowupdater.download.json.CurseFileInfo;
 import fr.flowarg.flowupdater.download.json.CurseModPackInfo;
 import fr.flowarg.flowupdater.download.json.Mod;
-import fr.flowarg.flowupdater.download.json.OptifineInfo;
+import fr.flowarg.flowupdater.download.json.OptiFineInfo;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
@@ -28,9 +26,9 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
     }
 
     private final BuilderArgument<String> forgeVersionArgument = new BuilderArgument<String>("ForgeVersion").required();
-    private final BuilderArgument<OptifineInfo> optifineArgument = new BuilderArgument<OptifineInfo>("Optifine").optional();
+    private final BuilderArgument<OptiFineInfo> optiFineArgument = new BuilderArgument<OptiFineInfo>("OptiFine").optional();
     private final BuilderArgument<List<Mod>> modsArgument = new BuilderArgument<List<Mod>>("Mods", ArrayList::new).optional();
-    private final BuilderArgument<List<CurseFileInfos>> curseModsArgument = new BuilderArgument<List<CurseFileInfos>>("CurseMods", ArrayList::new).optional();
+    private final BuilderArgument<List<CurseFileInfo>> curseModsArgument = new BuilderArgument<List<CurseFileInfo>>("CurseMods", ArrayList::new).optional();
     private final BuilderArgument<ModFileDeleter> fileDeleterArgument = new BuilderArgument<>("ModFileDeleter", () -> new ModFileDeleter(false)).optional();
     private final BuilderArgument<CurseModPackInfo> modPackArgument = new BuilderArgument<CurseModPackInfo>("ModPack").optional();
 
@@ -46,15 +44,20 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
         return this;
     }
 
-    public ForgeVersionBuilder withCurseMods(List<CurseFileInfos> curseMods)
+    public ForgeVersionBuilder withCurseMods(List<CurseFileInfo> curseMods)
     {
         this.curseModsArgument.set(curseMods);
         return this;
     }
 
-    public ForgeVersionBuilder withCurseModPack(CurseModPackInfo modpack)
+    /**
+     * Assign to the future forge version a mod pack.
+     * @param modPackInfo the mod pack information to assign.
+     * @return the current builder.
+     */
+    public ForgeVersionBuilder withCurseModPack(CurseModPackInfo modPackInfo)
     {
-        this.modPackArgument.set(modpack);
+        this.modPackArgument.set(modPackInfo);
         return this;
     }
 
@@ -64,33 +67,23 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
         return this;
     }
 
+    /**
+     * Assign to the future forge version a mod pack.
+     * @param modPackInfo the mod pack information to assign.
+     * @return the current builder.
+     * @deprecated use {@link #withCurseModPack(CurseModPackInfo)} instead.
+     */
+    @Deprecated
     public ForgeVersionBuilder withModPack(CurseModPackInfo modPackInfo)
     {
         this.modPackArgument.set(modPackInfo);
         return this;
     }
 
-    public ForgeVersionBuilder withOptifine(OptifineInfo optifine)
-    {
-        this.optifineArgument.set(optifine);
-        return this;
-    }
 
-    @Deprecated
-    public ForgeVersionBuilder withVanillaVersion(VanillaVersion vanillaVersion)
+    public ForgeVersionBuilder withOptiFine(OptiFineInfo optiFine)
     {
-        return this;
-    }
-
-    @Deprecated
-    public ForgeVersionBuilder withLogger(ILogger logger)
-    {
-        return this;
-    }
-
-    @Deprecated
-    public ForgeVersionBuilder withProgressCallback(IProgressCallback progressCallback)
-    {
+        this.optiFineArgument.set(optiFine);
         return this;
     }
 
@@ -105,7 +98,7 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
                         this.modsArgument.get(),
                         this.curseModsArgument.get(),
                         this.fileDeleterArgument.get(),
-                        this.optifineArgument.get(),
+                        this.optiFineArgument.get(),
                         this.modPackArgument.get()
                 );
             case OLD:
@@ -114,7 +107,7 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
                         this.modsArgument.get(),
                         this.curseModsArgument.get(),
                         this.fileDeleterArgument.get(),
-                        this.optifineArgument.get(),
+                        this.optiFineArgument.get(),
                         this.modPackArgument.get()
                 );
             default:
@@ -124,7 +117,7 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
 
     public enum ForgeVersionType
     {
-        /** 1.12.2-14.23.5.2851 to 1.17 */
+        /** 1.12.2-14.23.5.2851 to 1.17.1 */
         NEW,
         /** 1.7 to 1.12.2 */
         OLD

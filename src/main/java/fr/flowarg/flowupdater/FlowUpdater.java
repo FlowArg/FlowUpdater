@@ -25,7 +25,7 @@ import java.util.List;
 
 /**
  * Represent the base class of the updater.<br>
- * You can define some parameters about your version (Forge, Vanilla, MCP (Soon fabric) etc...).
+ * You can define some parameters about your version (Forge, Vanilla, MCP, Fabric...).
  * @author FlowArg
  */
 public class FlowUpdater
@@ -46,7 +46,7 @@ public class FlowUpdater
     private final IProgressCallback callback;
 
     /** Information about download status */
-    private final DownloadInfos downloadInfos;
+    private final DownloadList downloadList;
 
     /** Represent some settings for FlowUpdater */
     private final UpdaterOptions updaterOptions;
@@ -78,7 +78,7 @@ public class FlowUpdater
      * @param version {@link VanillaVersion} to update.
      * @param logger {@link ILogger} used for log information.
      * @param updaterOptions {@link UpdaterOptions} for this updater
-     * @param callback {@link IProgressCallback} used for update progression. If it's null, it will automatically assigned as {@link FlowUpdater#NULL_CALLBACK}.
+     * @param callback {@link IProgressCallback} used for update progression. If it's null, it will automatically be assigned to {@link FlowUpdater#NULL_CALLBACK}.
      * @param externalFiles {@link List<ExternalFile>} are downloaded before postExecutions.
      * @param postExecutions {@link List<Runnable>} are called after update.
      * @param forgeVersion {@link AbstractForgeVersion} to install, can be null.
@@ -91,16 +91,16 @@ public class FlowUpdater
     {
         this.logger = logger;
         this.version = version;
-        this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.4.4"));
+        this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.5.0"));
         this.externalFiles = externalFiles;
         this.postExecutions = postExecutions;
         this.forgeVersion = forgeVersion;
         this.fabricVersion = fabricVersion;
         this.updaterOptions = updaterOptions;
         this.callback = callback;
-        this.downloadInfos = new DownloadInfos();
+        this.downloadList = new DownloadList();
         this.callback.init(this.logger);
-        if(this.updaterOptions.isEnableCurseForgePlugin() || this.updaterOptions.isEnableOptifineDownloaderPlugin())
+        if(this.updaterOptions.isEnableCurseForgePlugin() || this.updaterOptions.isEnableOptiFineDownloaderPlugin())
             this.pluginManager = new PluginManager(this);
         else this.pluginManager = new FallbackPluginManager(this);
     }
@@ -135,14 +135,14 @@ public class FlowUpdater
 
     private void checkExtFiles(Path dir) throws Exception
     {
-        this.updaterOptions.getExternalFileDeleter().delete(this.externalFiles, this.downloadInfos, dir);
+        this.updaterOptions.getExternalFileDeleter().delete(this.externalFiles, this.downloadList, dir);
     }
 
     private void updateMinecraft(Path dir) throws Exception
     {
         if(this.version == VanillaVersion.NULL_VERSION)
         {
-            this.downloadInfos.init();
+            this.downloadList.init();
             return;
         }
 
@@ -156,8 +156,8 @@ public class FlowUpdater
             this.checkMods(this.forgeVersion, modsDirPath);
             if(this.updaterOptions.isEnableCurseForgePlugin())
                 this.pluginManager.loadCurseForgePlugin(modsDirPath, this.forgeVersion);
-            if(this.updaterOptions.isEnableOptifineDownloaderPlugin())
-                this.pluginManager.loadOptifinePlugin(modsDirPath, this.forgeVersion);
+            if(this.updaterOptions.isEnableOptiFineDownloaderPlugin())
+                this.pluginManager.loadOptiFinePlugin(modsDirPath, this.forgeVersion);
         }
 
         if (this.fabricVersion != null && this.version.getVersionType() == VersionType.FABRIC)
@@ -185,7 +185,7 @@ public class FlowUpdater
             final Path filePath = modsDir.resolve(mod.getName());
 
             if(Files.notExists(filePath) || !FileUtils.getSHA1(filePath).equalsIgnoreCase(mod.getSha1()) || FileUtils.getFileSizeBytes(filePath) != mod.getSize())
-                this.downloadInfos.getMods().add(mod);
+                this.downloadList.getMods().add(mod);
         }
     }
 
@@ -203,11 +203,11 @@ public class FlowUpdater
 
     private void updateExtFiles(Path dir)
     {
-        if(!this.downloadInfos.getExtFiles().isEmpty())
+        if(!this.downloadList.getExtFiles().isEmpty())
         {
             this.callback.step(Step.EXTERNAL_FILES);
             this.logger.info("Downloading external file(s)...");
-            this.downloadInfos.getExtFiles().forEach(extFile -> {
+            this.downloadList.getExtFiles().forEach(extFile -> {
                 try
                 {
                     final Path filePath = dir.resolve(extFile.getPath());
@@ -218,8 +218,8 @@ public class FlowUpdater
                 {
                     this.logger.printStackTrace(e);
                 }
-                this.downloadInfos.incrementDownloaded(extFile.getSize());
-                this.callback.update(this.downloadInfos.getDownloadedBytes(), this.downloadInfos.getTotalToDownloadBytes());
+                this.downloadList.incrementDownloaded(extFile.getSize());
+                this.callback.update(this.downloadList.getDownloadedBytes(), this.downloadList.getTotalToDownloadBytes());
             });
         }
     }
@@ -237,8 +237,8 @@ public class FlowUpdater
     private void endUpdate()
     {
         this.callback.step(Step.END);
-        this.callback.update(this.downloadInfos.getTotalToDownloadBytes(), this.downloadInfos.getTotalToDownloadBytes());
-        this.downloadInfos.clear();
+        this.callback.update(this.downloadList.getTotalToDownloadBytes(), this.downloadList.getTotalToDownloadBytes());
+        this.downloadList.clear();
         this.pluginManager.shutdown();
     }
 
@@ -248,7 +248,7 @@ public class FlowUpdater
      */
     public static class FlowUpdaterBuilder implements IBuilder<FlowUpdater>
     {
-        private final BuilderArgument<VanillaVersion> versionArgument = new BuilderArgument<>("VanillaVersion", () -> VanillaVersion.NULL_VERSION, () -> VanillaVersion.NULL_VERSION).optional();
+        private final BuilderArgument<VanillaVersion> versionArgument = new BuilderArgument<>("VanillaVersion", () -> VanillaVersion.NULL_VERSION).optional();
         private final BuilderArgument<ILogger> loggerArgument = new BuilderArgument<>("Logger", () -> DEFAULT_LOGGER).optional();
         private final BuilderArgument<UpdaterOptions> updaterOptionsArgument = new BuilderArgument<>("UpdaterOptions", () -> UpdaterOptions.DEFAULT).optional();
         private final BuilderArgument<IProgressCallback> progressCallbackArgument = new BuilderArgument<>("Callback", () -> NULL_CALLBACK).optional();
@@ -337,7 +337,7 @@ public class FlowUpdater
         }
 
         /**
-         * Necessary if you want install a Forge version.
+         * Necessary if you want to install a Forge version.
          * Append a {@link AbstractForgeVersion} object in the final FlowUpdater instance.
          * @param forgeVersion the {@link AbstractForgeVersion} to append and install.
          * @return the builder.
@@ -349,7 +349,7 @@ public class FlowUpdater
         }
 
         /**
-         * Necessary if you want install a Fabric version.
+         * Necessary if you want to install a Fabric version.
          * Append a {@link FabricVersion} object in the final FlowUpdater instance.
          * @param fabricVersion the {@link FabricVersion} to append and install.
          * @return the builder.
@@ -389,7 +389,7 @@ public class FlowUpdater
     public IProgressCallback getCallback() { return this.callback; }
     public List<ExternalFile> getExternalFiles() { return this.externalFiles; }
     public List<Runnable> getPostExecutions() { return this.postExecutions; }
-    public DownloadInfos getDownloadInfos() { return this.downloadInfos; }
+    public DownloadList getDownloadList() { return this.downloadList; }
     public UpdaterOptions getUpdaterOptions() { return this.updaterOptions; }
     public FabricVersion getFabricVersion() { return fabricVersion; }
 }

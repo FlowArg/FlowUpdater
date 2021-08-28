@@ -1,10 +1,10 @@
 package fr.flowarg.flowupdater.versions;
 
 import fr.flowarg.flowio.FileUtils;
-import fr.flowarg.flowupdater.download.json.CurseFileInfos;
+import fr.flowarg.flowupdater.download.json.CurseFileInfo;
 import fr.flowarg.flowupdater.download.json.CurseModPackInfo;
 import fr.flowarg.flowupdater.download.json.Mod;
-import fr.flowarg.flowupdater.download.json.OptifineInfo;
+import fr.flowarg.flowupdater.download.json.OptiFineInfo;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
 
 import java.io.BufferedInputStream;
@@ -23,10 +23,10 @@ public class NewForgeVersion extends AbstractForgeVersion
     private final String[] compatibleVersions = {"1.17", "1.16", "1.15", "1.14", "1.13", "1.12.2-14.23.5.285"};
 
     NewForgeVersion(String forgeVersion, List<Mod> mods,
-            List<CurseFileInfos> curseMods, ModFileDeleter fileDeleter,
-            OptifineInfo optifine, CurseModPackInfo modPack)
+            List<CurseFileInfo> curseMods, ModFileDeleter fileDeleter,
+            OptiFineInfo optiFine, CurseModPackInfo modPack)
     {
-        super(mods, curseMods, forgeVersion, fileDeleter, optifine, modPack, false);
+        super(mods, curseMods, forgeVersion, fileDeleter, optiFine, modPack, false);
     }
 
     /**

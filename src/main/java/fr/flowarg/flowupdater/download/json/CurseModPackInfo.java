@@ -1,6 +1,6 @@
 package fr.flowarg.flowupdater.download.json;
 
-public class CurseModPackInfo extends CurseFileInfos
+public class CurseModPackInfo extends CurseFileInfo
 {
     private final boolean installExtFiles;
     private final String[] excluded;

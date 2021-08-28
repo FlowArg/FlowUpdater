@@ -28,7 +28,7 @@ public class VanillaDownloader
     private final Path dir;
     private final ILogger logger;
     private final IProgressCallback callback;
-    private final DownloadInfos downloadInfos;
+    private final DownloadList downloadList;
     private final boolean reExtractNatives;
     private final int threadsForAssets;
     private final Path natives;
@@ -40,7 +40,7 @@ public class VanillaDownloader
         this.dir = dir;
         this.logger = flowUpdater.getLogger();
         this.callback = flowUpdater.getCallback();
-        this.downloadInfos = flowUpdater.getDownloadInfos();
+        this.downloadList = flowUpdater.getDownloadList();
         this.reExtractNatives = flowUpdater.getUpdaterOptions().isReExtractNatives();
         this.threadsForAssets = flowUpdater.getUpdaterOptions().getNmbrThreadsForAssets();
 
@@ -52,7 +52,7 @@ public class VanillaDownloader
         Files.createDirectories(this.assets);
         Files.createDirectories(this.natives);
 
-        this.downloadInfos.init();
+        this.downloadList.init();
     }
 
     public void download() throws Exception
@@ -74,7 +74,7 @@ public class VanillaDownloader
         if(Files.notExists(vanillaJsonTarget) || !FileUtils.getSHA1(vanillaJsonTarget).equals(StringUtils.empty(StringUtils.empty(this.vanillaJsonURL, "https://launchermeta.mojang.com/v1/packages/"), this.vanillaJsonURL.substring(this.vanillaJsonURL.lastIndexOf('/')))))
             IOUtils.download(this.logger, new URL(this.vanillaJsonURL), vanillaJsonTarget);
 
-        for (Downloadable downloadable : this.downloadInfos.getDownloadableFiles())
+        for (Downloadable downloadable : this.downloadList.getDownloadableFiles())
         {
             final Path filePath = this.dir.resolve(downloadable.getName());
 
@@ -84,8 +84,8 @@ public class VanillaDownloader
                 this.callback.onFileDownloaded(filePath);
             }
 
-            this.downloadInfos.incrementDownloaded(downloadable.getSize());
-            this.callback.update(this.downloadInfos.getDownloadedBytes(), this.downloadInfos.getTotalToDownloadBytes());
+            this.downloadList.incrementDownloaded(downloadable.getSize());
+            this.callback.update(this.downloadList.getDownloadedBytes(), this.downloadList.getTotalToDownloadBytes());
         }
     }
 
@@ -165,7 +165,7 @@ public class VanillaDownloader
             executorService.submit(() -> {
                 try {
                     AssetDownloadable assetDownloadable;
-                    while ((assetDownloadable = this.downloadInfos.getDownloadableAssets().poll()) != null)
+                    while ((assetDownloadable = this.downloadList.getDownloadableAssets().poll()) != null)
                     {
                         final Path downloadPath = this.assets.resolve(assetDownloadable.getFile());
 
@@ -175,13 +175,13 @@ public class VanillaDownloader
                             if(Files.exists(localAssetPath) && FileUtils.getFileSizeBytes(localAssetPath) == assetDownloadable.getSize()) IOUtils.copy(this.logger, localAssetPath, downloadPath);
                             else
                             {
-                                IOUtils.download(this.logger, assetDownloadable.getUrl(), downloadPath);
+                                IOUtils.download(this.logger, new URL(assetDownloadable.getUrl()), downloadPath);
                                 this.callback.onFileDownloaded(downloadPath);
                             }
                         }
 
-                        this.downloadInfos.incrementDownloaded(assetDownloadable.getSize());
-                        this.callback.update(this.downloadInfos.getDownloadedBytes(), this.downloadInfos.getTotalToDownloadBytes());
+                        this.downloadList.incrementDownloaded(assetDownloadable.getSize());
+                        this.callback.update(this.downloadList.getDownloadedBytes(), this.downloadList.getTotalToDownloadBytes());
                     }
                 } catch (Exception e)
                 {

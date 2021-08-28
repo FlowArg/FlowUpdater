@@ -7,11 +7,11 @@ import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowstringer.StringUtils;
 import fr.flowarg.flowupdater.FlowUpdater;
-import fr.flowarg.flowupdater.download.DownloadInfos;
+import fr.flowarg.flowupdater.download.DownloadList;
 import fr.flowarg.flowupdater.download.ICurseFeaturesUser;
 import fr.flowarg.flowupdater.download.IProgressCallback;
 import fr.flowarg.flowupdater.download.Step;
-import fr.flowarg.flowupdater.download.json.CurseFileInfos;
+import fr.flowarg.flowupdater.download.json.CurseFileInfo;
 import fr.flowarg.flowupdater.download.json.CurseModPackInfo;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.utils.ArtifactsDownloader;
@@ -43,7 +43,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
 {
     private final List<Mod> mods;
     private final String fabricVersion;
-    private final List<CurseFileInfos> curseMods;
+    private final List<CurseFileInfo> curseMods;
     private final ModFileDeleter fileDeleter;
     private List<Object> allCurseMods;
     private final String installerVersion;
@@ -52,18 +52,18 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
     private URL installerUrl;
     private ILogger logger;
     private VanillaVersion vanilla;
-    private DownloadInfos downloadInfos;
+    private DownloadList downloadList;
     private IProgressCallback callback;
 
     /**
      * Use {@link FabricVersionBuilder} to instantiate this class.
      * @param mods        {@link List<Mod>} to install.
-     * @param curseMods   {@link List<CurseFileInfos>} to install.
+     * @param curseMods   {@link List<CurseFileInfo>} to install.
      * @param fabricVersion to install.
-     * @param fileDeleter {@link ModFileDeleter} used to cleanup mods dir.
-     * @param modPackInfo {@link CurseModPackInfo} the modpack you want to install.
+     * @param fileDeleter {@link ModFileDeleter} used to clean up mods' dir.
+     * @param modPackInfo {@link CurseModPackInfo} the mod pack you want to install.
      */
-    private FabricVersion(List<Mod> mods, List<CurseFileInfos> curseMods, String fabricVersion, ModFileDeleter fileDeleter, CurseModPackInfo modPackInfo) {
+    private FabricVersion(List<Mod> mods, List<CurseFileInfo> curseMods, String fabricVersion, ModFileDeleter fileDeleter, CurseModPackInfo modPackInfo) {
         this.mods = mods;
         this.fileDeleter = fileDeleter;
         this.curseMods = curseMods;
@@ -283,7 +283,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
     {
         this.callback = flowUpdater.getCallback();
         this.logger = flowUpdater.getLogger();
-        this.downloadInfos = flowUpdater.getDownloadInfos();
+        this.downloadList = flowUpdater.getDownloadList();
         this.vanilla = flowUpdater.getVersion();
         try {
             this.installerUrl = new URL(String.format("https://maven.fabricmc.net/net/fabricmc/fabric-installer/%s/fabric-installer-%s.jar", installerVersion, installerVersion));
@@ -299,9 +299,9 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
      * {@inheritDoc}
      */
     @Override
-    public DownloadInfos getDownloadInfos()
+    public DownloadList getDownloadList()
     {
-        return this.downloadInfos;
+        return this.downloadList;
     }
 
     /**
@@ -353,7 +353,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
      * {@inheritDoc}
      */
     @Override
-    public List<CurseFileInfos> getCurseMods() {
+    public List<CurseFileInfo> getCurseMods() {
         return this.curseMods;
     }
 
@@ -367,7 +367,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
     {
         private final BuilderArgument<String> fabricVersionArgument = new BuilderArgument<>("FabricVersion", FabricVersion::getLatestFabricVersion).optional();
         private final BuilderArgument<List<Mod>> modsArgument = new BuilderArgument<List<Mod>>("Mods", ArrayList::new).optional();
-        private final BuilderArgument<List<CurseFileInfos>> curseModsArgument = new BuilderArgument<List<CurseFileInfos>>("CurseMods", ArrayList::new).optional();
+        private final BuilderArgument<List<CurseFileInfo>> curseModsArgument = new BuilderArgument<List<CurseFileInfo>>("CurseMods", ArrayList::new).optional();
         private final BuilderArgument<ModFileDeleter> fileDeleterArgument = new BuilderArgument<>("ModFileDeleter", () -> new ModFileDeleter(false)).optional();
         private final BuilderArgument<CurseModPackInfo> modPackArgument = new BuilderArgument<CurseModPackInfo>("ModPack").optional();
 
@@ -387,15 +387,20 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
             return this;
         }
 
-        public FabricVersionBuilder withCurseMods(List<CurseFileInfos> curseMods)
+        public FabricVersionBuilder withCurseMods(List<CurseFileInfo> curseMods)
         {
             this.curseModsArgument.set(curseMods);
             return this;
         }
 
-        public FabricVersionBuilder withCurseModPack(CurseModPackInfo modpack)
+        /**
+         * Assign to the future forge version a mod pack.
+         * @param modPackInfo the mod pack information to assign.
+         * @return the current builder.
+         */
+        public FabricVersionBuilder withCurseModPack(CurseModPackInfo modPackInfo)
         {
-            this.modPackArgument.set(modpack);
+            this.modPackArgument.set(modPackInfo);
             return this;
         }
 
@@ -405,27 +410,16 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
             return this;
         }
 
+        /**
+         * Assign to the future forge version a mod pack.
+         * @param modPackInfo the mod pack information to assign.
+         * @return the current builder.
+         * @deprecated use {@link #withCurseModPack(CurseModPackInfo)} instead.
+         */
+        @Deprecated
         public FabricVersionBuilder withModPack(CurseModPackInfo modPackInfo)
         {
             this.modPackArgument.set(modPackInfo);
-            return this;
-        }
-
-        @Deprecated
-        public FabricVersionBuilder withVanillaVersion(VanillaVersion vanillaVersion)
-        {
-            return this;
-        }
-
-        @Deprecated
-        public FabricVersionBuilder withLogger(ILogger logger)
-        {
-            return this;
-        }
-
-        @Deprecated
-        public FabricVersionBuilder withProgressCallback(IProgressCallback progressCallback)
-        {
             return this;
         }
 

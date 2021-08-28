@@ -15,9 +15,9 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 
-public class OptifinePlugin
+public class OptiFinePlugin
 {
-    public static final OptifinePlugin INSTANCE = new OptifinePlugin();
+    public static final OptiFinePlugin INSTANCE = new OptiFinePlugin();
 
     private final OkHttpClient client = new OkHttpClient();
 
@@ -26,15 +26,15 @@ public class OptifinePlugin
 
     /**
      * Get an OptiFine object from the official website.
-     * @param optifineVersion the version of Optifine
-     * @param preview if the optifine version is a preview.
+     * @param optiFineVersion the version of OptiFine
+     * @param preview if the OptiFine version is a preview.
      * @return the object that defines the plugin
      * @throws IOException if the version is invalid or not found
      */
-    public Optifine getOptifine(String optifineVersion, boolean preview) throws IOException
+    public OptiFine getOptiFine(String optiFineVersion, boolean preview) throws IOException
     {
-        final String name = preview ? (optifineVersion.contains("preview_") && optifineVersion.contains("OptiFine_") ? optifineVersion + ".jar" : "preview_OptiFine_" + optifineVersion + ".jar") : "OptiFine_" + optifineVersion + ".jar";
-        final String newUrl = this.getNewURL(name, preview, optifineVersion);
+        final String name = preview ? (optiFineVersion.contains("preview_") && optiFineVersion.contains("OptiFine_") ? optiFineVersion + ".jar" : "preview_OptiFine_" + optiFineVersion + ".jar") : "OptiFine_" + optiFineVersion + ".jar";
+        final String newUrl = this.getNewURL(name, preview, optiFineVersion);
         final Request request = new Request.Builder()
                 .url(newUrl)
                 .build();
@@ -48,16 +48,16 @@ public class OptifinePlugin
         response.body().close();
 
         if(length <= 40)
-            throw new IOException("Given version of Optifine not found.");
+            throw new IOException("Given version of OptiFine not found.");
 
-        return new Optifine(name, length);
+        return new OptiFine(name, length);
     }
 
-    private String getNewURL(String name, boolean preview, String optifineVersion)
+    private String getNewURL(String name, boolean preview, String optiFineVersion)
     {
         final HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse("https://optifine.net/downloadx")).newBuilder();
         urlBuilder.addQueryParameter("f", name);
-        urlBuilder.addQueryParameter("x", preview ? this.getJsonPreview(optifineVersion) : this.getJson(optifineVersion));
+        urlBuilder.addQueryParameter("x", preview ? this.getJsonPreview(optiFineVersion) : this.getJson(optiFineVersion));
 
         return urlBuilder.build().toString();
     }
@@ -87,12 +87,12 @@ public class OptifinePlugin
     }
 
     /**
-     * @param optifineVersion the version of Optifine
+     * @param optiFineVersion the version of OptiFine
      * @return the download key
      */
-    private String getJson(String optifineVersion) {
+    private String getJson(String optiFineVersion) {
         final Request request = new Request.Builder()
-                .url("https://optifine.net/adloadx?f=OptiFine_" + optifineVersion)
+                .url("https://optifine.net/adloadx?f=OptiFine_" + optiFineVersion)
                 .build();
         try
         {
@@ -109,7 +109,7 @@ public class OptifinePlugin
                 }
             }
 
-            return keyLine.replace("' onclick='onDownload()'>OptiFine " + optifineVersion.replace("_", " ") +"</a>", "").replace("<a href='downloadx?f=OptiFine_" + optifineVersion + "&x=", "").replace(" ", "");
+            return keyLine.replace("' onclick='onDownload()'>OptiFine " + optiFineVersion.replace("_", " ") +"</a>", "").replace("<a href='downloadx?f=OptiFine_" + optiFineVersion + "&x=", "").replace(" ", "");
         }
         catch (IOException e)
         {
@@ -119,9 +119,9 @@ public class OptifinePlugin
         return "";
     }
 
-    private String getJsonPreview(String optifineVersion) {
+    private String getJsonPreview(String optiFineVersion) {
         final Request request = new Request.Builder()
-                .url("https://optifine.net/adloadx?f=" + optifineVersion)
+                .url("https://optifine.net/adloadx?f=" + optiFineVersion)
                 .build();
         try
         {
@@ -138,7 +138,7 @@ public class OptifinePlugin
                 }
             }
 
-            return keyLine.replace("' onclick='onDownload()'>" + optifineVersion.replace("_", " ") +"</a>", "").replace("<a href='downloadx?f=" + optifineVersion + "&x=", "").replace(" ", "");
+            return keyLine.replace("' onclick='onDownload()'>" + optiFineVersion.replace("_", " ") +"</a>", "").replace("<a href='downloadx?f=" + optiFineVersion + "&x=", "").replace(" ", "");
         }
         catch (IOException e)
         {

@@ -20,23 +20,23 @@ public class UpdaterOptions
     private final boolean downloadServer;
     private final boolean reExtractNatives;
     private final boolean enableCurseForgePlugin;
-    private final boolean enableOptifineDownloaderPlugin;
+    private final boolean enableOptiFineDownloaderPlugin;
     private final int nmbrThreadsForAssets;
     private final IFileDeleter externalFileDeleter;
 
-    private UpdaterOptions(boolean silentRead, boolean reExtractNatives, boolean enableCurseForgePlugin, boolean enableOptifineDownloaderPlugin, boolean downloadServer, int nmbrThreadsForAssets, IFileDeleter externalFileDeleter)
+    private UpdaterOptions(boolean silentRead, boolean reExtractNatives, boolean enableCurseForgePlugin, boolean enableOptiFineDownloaderPlugin, boolean downloadServer, int nmbrThreadsForAssets, IFileDeleter externalFileDeleter)
     {
         this.silentRead = silentRead;
         this.reExtractNatives = reExtractNatives;
         this.enableCurseForgePlugin = enableCurseForgePlugin;
-        this.enableOptifineDownloaderPlugin = enableOptifineDownloaderPlugin;
+        this.enableOptiFineDownloaderPlugin = enableOptiFineDownloaderPlugin;
         this.downloadServer = downloadServer;
         this.nmbrThreadsForAssets = nmbrThreadsForAssets;
         this.externalFileDeleter = externalFileDeleter;
     }
 
     /**
-     * Disable some debug logs on Minecraft json's parsing.
+     * Disable some debug logs on Minecraft JSON's parsing.
      * Default: true
      * @return silentRead value.
      */
@@ -56,7 +56,7 @@ public class UpdaterOptions
     }
 
     /**
-     * Re-extract natives at each updates?
+     * Re-extract natives at each update?
      * Today, this option isn't useful because {@link VanillaDownloader} checks automatically if all natives are correctly extracted.
      * Default: false
      * @return reExtractNatives value.
@@ -77,13 +77,13 @@ public class UpdaterOptions
     }
 
     /**
-     * Enable OptifineDownloaderPlugin (ODP)?
+     * Enable OptiFineDownloaderPlugin (ODP)?
      * Default: false
-     * @return enableOptifineDownloaderPlugin value.
+     * @return enableOptiFineDownloaderPlugin value.
      */
-    public boolean isEnableOptifineDownloaderPlugin()
+    public boolean isEnableOptiFineDownloaderPlugin()
     {
-        return this.enableOptifineDownloaderPlugin;
+        return this.enableOptiFineDownloaderPlugin;
     }
 
     /**
@@ -111,7 +111,7 @@ public class UpdaterOptions
         private final BuilderArgument<Boolean> silentReadArgument = new BuilderArgument<>("SilentRead", () -> true).optional();
         private final BuilderArgument<Boolean> reExtractNativesArgument = new BuilderArgument<>("ReExtractingNatives", () -> false).optional();
         private final BuilderArgument<Boolean> enableCurseForgePluginArgument = new BuilderArgument<>("EnableCurseForgePlugin", () -> false).optional();
-        private final BuilderArgument<Boolean> enableOptifineDownloaderPluginArgument = new BuilderArgument<>("EnableOptifineDownloaderPlugin", () -> false).optional();
+        private final BuilderArgument<Boolean> enableOptiFineDownloaderPluginArgument = new BuilderArgument<>("EnableOptiFineDownloaderPlugin", () -> false).optional();
         private final BuilderArgument<Boolean> downloadServerArgument = new BuilderArgument<>("DownloadServer", () -> false).optional();
         private final BuilderArgument<Integer> nmbrThreadsForAssetsArgument = new BuilderArgument<>("Number of Threads for assets", () -> new Random().nextInt(2) + 2).optional();
         private final BuilderArgument<IFileDeleter> externalFileDeleterArgument = new BuilderArgument<IFileDeleter>("External FileDeleter", ExternalFileDeleter::new).optional();
@@ -135,9 +135,9 @@ public class UpdaterOptions
             return this;
         }
 
-        public UpdaterOptionsBuilder withEnableOptifineDownloaderPlugin(boolean installOptifineAsMod)
+        public UpdaterOptionsBuilder withEnableOptiFineDownloaderPlugin(boolean installOptiFineAsMod)
         {
-            this.enableOptifineDownloaderPluginArgument.set(installOptifineAsMod);
+            this.enableOptiFineDownloaderPluginArgument.set(installOptiFineAsMod);
             return this;
         }
 
@@ -166,7 +166,7 @@ public class UpdaterOptions
                     this.silentReadArgument.get(),
                     this.reExtractNativesArgument.get(),
                     this.enableCurseForgePluginArgument.get(),
-                    this.enableOptifineDownloaderPluginArgument.get(),
+                    this.enableOptiFineDownloaderPluginArgument.get(),
                     this.downloadServerArgument.get(),
                     this.nmbrThreadsForAssetsArgument.get(),
                     this.externalFileDeleterArgument.get()

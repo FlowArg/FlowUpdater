@@ -1,16 +1,11 @@
 package fr.flowarg.flowupdater.utils.builderapi;
 
-import fr.flowarg.flowupdater.FlowUpdater;
-import fr.flowarg.flowupdater.versions.AbstractForgeVersion;
-import fr.flowarg.flowupdater.versions.VanillaVersion;
-
 /**
- * Builder API
- *
- * @version 1.5
+ * Builder API ;
+ * Used for {@link fr.flowarg.flowupdater.FlowUpdater}, {@link fr.flowarg.flowupdater.versions.VanillaVersion}, {@link fr.flowarg.flowupdater.versions.AbstractForgeVersion}, {@link fr.flowarg.flowupdater.versions.FabricVersion}
+ * @version 1.6
  * @author flow
  *
- * Used for {@link FlowUpdater} and {@link VanillaVersion} and {@link AbstractForgeVersion}
  * @param <T> Object returned.
  * 
  * Builder interface.

@@ -1,11 +1,11 @@
 package fr.flowarg.flowupdater.download.json;
 
-public class OptifineInfo
+public class OptiFineInfo
 {
     private final String version;
     private final boolean preview;
 
-    public OptifineInfo(String version, boolean preview)
+    public OptiFineInfo(String version, boolean preview)
     {
         this.version = version;
         this.preview = preview;

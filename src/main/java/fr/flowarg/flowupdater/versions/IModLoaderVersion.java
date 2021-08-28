@@ -3,7 +3,7 @@ package fr.flowarg.flowupdater.versions;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.FlowUpdater;
 import fr.flowarg.flowupdater.curseforgeplugin.CurseMod;
-import fr.flowarg.flowupdater.download.DownloadInfos;
+import fr.flowarg.flowupdater.download.DownloadList;
 import fr.flowarg.flowupdater.download.IProgressCallback;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.utils.IOUtils;
@@ -47,7 +47,7 @@ public interface IModLoaderVersion
     ModLoaderLauncherEnvironment prepareModLoaderLauncher(Path dirToInstall, InputStream stream) throws Exception;
 
     /**
-     * Install all mods in the mods directory.
+     * Install all mods in the mods' directory.
      * @param modsDir mods directory.
      * @param pluginManager used to check loaded plugins.
      * @throws Exception if an I/O error occurred.
@@ -62,7 +62,7 @@ public interface IModLoaderVersion
 
     default void installAllMods(Path modsDir, boolean cursePluginLoaded)
     {
-        this.getDownloadInfos().getMods().forEach(mod -> {
+        this.getDownloadList().getMods().forEach(mod -> {
             try
             {
                 final Path modFilePath = modsDir.resolve(mod.getName());
@@ -73,13 +73,13 @@ public interface IModLoaderVersion
             {
                 this.getLogger().printStackTrace(e);
             }
-            this.getDownloadInfos().incrementDownloaded(mod.getSize());
-            this.getCallback().update(this.getDownloadInfos().getDownloadedBytes(), this.getDownloadInfos().getTotalToDownloadBytes());
+            this.getDownloadList().incrementDownloaded(mod.getSize());
+            this.getCallback().update(this.getDownloadList().getDownloadedBytes(), this.getDownloadList().getTotalToDownloadBytes());
         });
 
         if(!cursePluginLoaded) return;
 
-        this.getDownloadInfos().getCurseMods().forEach(obj -> {
+        this.getDownloadList().getCurseMods().forEach(obj -> {
             final CurseMod curseMod = (CurseMod)obj;
             try
             {
@@ -91,8 +91,8 @@ public interface IModLoaderVersion
             {
                 this.getLogger().printStackTrace(e);
             }
-            this.getDownloadInfos().incrementDownloaded(curseMod.getLength());
-            this.getCallback().update(this.getDownloadInfos().getDownloadedBytes(), this.getDownloadInfos().getTotalToDownloadBytes());
+            this.getDownloadList().incrementDownloaded(curseMod.getLength());
+            this.getCallback().update(this.getDownloadList().getDownloadedBytes(), this.getDownloadList().getTotalToDownloadBytes());
         });
     }
 
@@ -105,10 +105,10 @@ public interface IModLoaderVersion
     boolean checkModLoaderEnv(Path dirToInstall) throws Exception;
 
     /**
-     * Get the {@link DownloadInfos} object.
+     * Get the {@link DownloadList} object.
      * @return download info.
      */
-    DownloadInfos getDownloadInfos();
+    DownloadList getDownloadList();
 
     /**
      * Get the {@link ILogger} object.

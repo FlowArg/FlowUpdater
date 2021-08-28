@@ -1,6 +1,6 @@
 package fr.flowarg.flowupdater.utils;
 
-import fr.antoineok.flowupdater.optifineplugin.Optifine;
+import fr.antoineok.flowupdater.optifineplugin.OptiFine;
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowupdater.curseforgeplugin.CurseMod;
 import fr.flowarg.flowupdater.download.json.Mod;
@@ -34,8 +34,8 @@ public class ModFileDeleter implements IFileDeleter
         final List<Mod> mods = parameters[1] != null ? (List<Mod>)parameters[1] : new ArrayList<>();
         final boolean cursePluginLoaded = (boolean)parameters[2];
         final List<Object> allCurseMods = parameters[3] != null ? (List<Object>)parameters[3] : new ArrayList<>();
-        final boolean optifinePluginLoaded = (boolean)parameters[4];
-        final Object optifineParam = parameters[5];
+        final boolean optiFinePluginLoaded = (boolean)parameters[4];
+        final Object optiFineParam = parameters[5];
 
         final Set<Path> badFiles = new HashSet<>();
         final List<Path> verifiedFiles = new ArrayList<>();
@@ -46,7 +46,7 @@ public class ModFileDeleter implements IFileDeleter
             if(verifiedFiles.contains(fileInDir))
                 continue;
 
-            if(mods.isEmpty() && allCurseMods.isEmpty() && optifineParam == null)
+            if(mods.isEmpty() && allCurseMods.isEmpty() && optiFineParam == null)
             {
                 if (!verifiedFiles.contains(fileInDir))
                     badFiles.add(fileInDir);
@@ -58,9 +58,9 @@ public class ModFileDeleter implements IFileDeleter
                     this.processCurseForgeMods(allCurseMods, fileInDir, badFiles, verifiedFiles);
                 }
 
-                if (optifinePluginLoaded)
+                if (optiFinePluginLoaded)
                 {
-                    final Optifine optifine = (Optifine)optifineParam;
+                    final OptiFine optifine = (OptiFine)optiFineParam;
                     if (optifine != null)
                     {
                         if (optifine.getName().equalsIgnoreCase(fileInDir.getFileName().toString()))

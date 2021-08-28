@@ -1,6 +1,6 @@
 package fr.flowarg.flowupdater.download.json;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -15,9 +15,6 @@ public class AssetIndex
 
     public Map<String, AssetDownloadable> getUniqueObjects()
     {
-        final Map<String, AssetDownloadable> result = new HashMap<>();
-        for (Map.Entry<String, AssetDownloadable> entry : this.getObjects().entrySet())
-            result.put(entry.getKey(), entry.getValue());
-        return result;
+        return Collections.unmodifiableMap(this.getObjects());
     }
 }

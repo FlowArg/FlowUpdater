@@ -3,7 +3,6 @@ package fr.flowarg.flowupdater.download;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.FlowUpdater;
 
-import java.io.File;
 import java.nio.file.Path;
 
 public interface IProgressCallback

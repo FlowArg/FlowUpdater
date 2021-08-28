@@ -24,7 +24,7 @@ public class VanillaReader
     private final ILogger logger;
     private final boolean shouldLog;
     private final IProgressCallback callback;
-    private final DownloadInfos info;
+    private final DownloadList info;
     private final boolean downloadServer;
 
     public VanillaReader(FlowUpdater flowUpdater)
@@ -33,7 +33,7 @@ public class VanillaReader
         this.logger = flowUpdater.getLogger();
         this.shouldLog = !flowUpdater.getUpdaterOptions().isSilentRead();
         this.callback = flowUpdater.getCallback();
-        this.info = flowUpdater.getDownloadInfos();
+        this.info = flowUpdater.getDownloadList();
         this.downloadServer = flowUpdater.getUpdaterOptions().isDownloadServer();
     }
 
@@ -182,20 +182,14 @@ public class VanillaReader
     private void getAssets() throws IOException
     {
         final Set<AssetDownloadable> toDownload = new HashSet<>(this.version.getAnotherAssets());
-        if(this.version.getCustomAssetIndex() == null)
-        {
-            final URL url = new URL(this.version.getMinecraftAssetsIndex().get("url").getAsString());
-            final String json = IOUtils.getContent(url);
-            final AssetIndex index = new GsonBuilder().disableHtmlEscaping().create().fromJson(json, AssetIndex.class);
+        final AssetIndex assetIndex;
 
-            for (final Map.Entry<String, AssetDownloadable> entry : index.getUniqueObjects().entrySet())
-                toDownload.add(new AssetDownloadable(entry.getValue().getHash(), entry.getValue().getSize()));
-        }
-        else
-        {
-            for (final Map.Entry<String, AssetDownloadable> entry : this.version.getCustomAssetIndex().getUniqueObjects().entrySet())
-                toDownload.add(new AssetDownloadable(entry.getValue().getHash(), entry.getValue().getSize()));
-        }
+        if(this.version.getCustomAssetIndex() == null) assetIndex = new GsonBuilder().disableHtmlEscaping().create().fromJson(IOUtils.getContent(new URL(this.version.getMinecraftAssetsIndex().get("url").getAsString())), AssetIndex.class);
+        else assetIndex = this.version.getCustomAssetIndex();
+
+        for (final Map.Entry<String, AssetDownloadable> entry : assetIndex.getUniqueObjects().entrySet())
+            toDownload.add(new AssetDownloadable(entry.getValue().getHash(), entry.getValue().getSize()));
+
         this.info.getDownloadableAssets().addAll(toDownload);
     }
 

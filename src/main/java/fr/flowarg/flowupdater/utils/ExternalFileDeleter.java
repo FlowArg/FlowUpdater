@@ -1,7 +1,7 @@
 package fr.flowarg.flowupdater.utils;
 
 import fr.flowarg.flowio.FileUtils;
-import fr.flowarg.flowupdater.download.DownloadInfos;
+import fr.flowarg.flowupdater.download.DownloadList;
 import fr.flowarg.flowupdater.download.json.ExternalFile;
 
 import java.nio.file.Files;
@@ -17,7 +17,7 @@ public class ExternalFileDeleter implements IFileDeleter
         if(parameters.length != 3)
             return;
         final List<ExternalFile> externalFiles = (List<ExternalFile>)parameters[0];
-        final DownloadInfos downloadInfos = (DownloadInfos)parameters[1];
+        final DownloadList downloadList = (DownloadList)parameters[1];
         final Path dir = (Path)parameters[2];
 
         if(externalFiles.isEmpty()) return;
@@ -34,7 +34,7 @@ public class ExternalFileDeleter implements IFileDeleter
 
                 Files.delete(filePath);
             }
-            downloadInfos.getExtFiles().add(extFile);
+            downloadList.getExtFiles().add(extFile);
         }
     }
 }
