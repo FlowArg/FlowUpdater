@@ -15,7 +15,6 @@ import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
 import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
 import fr.flowarg.flowupdater.versions.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -103,19 +102,6 @@ public class FlowUpdater
         if(this.updaterOptions.isEnableCurseForgePlugin() || this.updaterOptions.isEnableOptiFineDownloaderPlugin())
             this.pluginManager = new PluginManager(this);
         else this.pluginManager = new FallbackPluginManager(this);
-    }
-
-    /**
-     * This method updates the Minecraft Installation in the given directory. If the {@link #version} is {@link VanillaVersion#NULL_VERSION}, the updater will
-     * run only external files and post executions.
-     * @param dir Directory where is the Minecraft installation.
-     * @throws IOException if an I/O problem occurred.
-     * @deprecated Prefer using {@link #update(Path)}. Will be deleted soon!
-     */
-    @Deprecated
-    public void update(File dir) throws Exception
-    {
-        this.update(dir.toPath());
     }
 
     /**
