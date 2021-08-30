@@ -70,7 +70,7 @@ public class FlowUpdater
     };
 
     /** Default logger, null for path argument = no file logger */
-    public static final ILogger DEFAULT_LOGGER = new Logger("[FlowUpdater]", (Path)null);
+    public static final ILogger DEFAULT_LOGGER = new Logger("[FlowUpdater]", null);
 
     /**
      * Basic constructor for {@link FlowUpdater}, use {@link FlowUpdaterBuilder} to instantiate a new {@link FlowUpdater}.
