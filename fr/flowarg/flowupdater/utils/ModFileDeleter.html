@@ -152,7 +152,12 @@ implements <a href="../../../../fr/flowarg/flowupdater/utils/IFileDeleter.html" 
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/utils/ModFileDeleter.html#delete-java.lang.Object...-">delete</a></span>(java.lang.Object...&nbsp;parameters)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/utils/ModFileDeleter.html#delete-java.nio.file.Path-java.util.List-boolean-java.util.List-boolean-java.lang.Object-">delete</a></span>(java.nio.file.Path&nbsp;modsDir,
+      java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/Mod.html" title="class in fr.flowarg.flowupdater.download.json">Mod</a>&gt;&nbsp;mods,
+      boolean&nbsp;cursePluginLoaded,
+      java.util.List&lt;java.lang.Object&gt;&nbsp;allCurseMods,
+      boolean&nbsp;optiFinePluginLoaded,
+      java.lang.Object&nbsp;optiFineParam)</code>
 <div class="block">Delete all bad files in the provided directory.</div>
 </td>
 </tr>
@@ -204,21 +209,28 @@ implements <a href="../../../../fr/flowarg/flowupdater/utils/IFileDeleter.html" 
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="delete-java.lang.Object...-">
+<a name="delete-java.nio.file.Path-java.util.List-boolean-java.util.List-boolean-java.lang.Object-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>delete</h4>
-<pre>public&nbsp;void&nbsp;delete(java.lang.Object...&nbsp;parameters)
+<pre>public&nbsp;void&nbsp;delete(java.nio.file.Path&nbsp;modsDir,
+                   java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/Mod.html" title="class in fr.flowarg.flowupdater.download.json">Mod</a>&gt;&nbsp;mods,
+                   boolean&nbsp;cursePluginLoaded,
+                   java.util.List&lt;java.lang.Object&gt;&nbsp;allCurseMods,
+                   boolean&nbsp;optiFinePluginLoaded,
+                   java.lang.Object&nbsp;optiFineParam)
             throws java.lang.Exception</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../fr/flowarg/flowupdater/utils/IFileDeleter.html#delete-java.lang.Object...-">IFileDeleter</a></code></span></div>
 <div class="block">Delete all bad files in the provided directory.</div>
 <dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../fr/flowarg/flowupdater/utils/IFileDeleter.html#delete-java.lang.Object...-">delete</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../fr/flowarg/flowupdater/utils/IFileDeleter.html" title="interface in fr.flowarg.flowupdater.utils">IFileDeleter</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>parameters</code> - all parameters required by the FileDeleter implementation</dd>
+<dd><code>modsDir</code> - the mod's folder.</dd>
+<dd><code>mods</code> - the mods list.</dd>
+<dd><code>cursePluginLoaded</code> - is the CurseForge plugin loaded ?</dd>
+<dd><code>allCurseMods</code> - the curse's mods list.</dd>
+<dd><code>optiFinePluginLoaded</code> - is the OptiFine plugin loaded ?</dd>
+<dd><code>optiFineParam</code> - the OptiFine object.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.lang.Exception</code> - thrown if an error occurred</dd>
 </dl>

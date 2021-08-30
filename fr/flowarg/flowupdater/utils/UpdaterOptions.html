@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -167,7 +167,7 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/utils/IFileDeleter.html" title="interface in fr.flowarg.flowupdater.utils">IFileDeleter</a></code></td>
+<td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/utils/ExternalFileDeleter.html" title="class in fr.flowarg.flowupdater.utils">ExternalFileDeleter</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.html#getExternalFileDeleter--">getExternalFileDeleter</a></span>()</code>
 <div class="block">The external file deleter is used to check if some external files need to be downloaded.</div>
 </td>
@@ -199,13 +199,6 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i5" class="rowColor">
-<td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.html#isReExtractNatives--">isReExtractNatives</a></span>()</code>
-<div class="block">Re-extract natives at each update?
- Today, this option isn't useful because <a href="../../../../fr/flowarg/flowupdater/download/VanillaDownloader.html" title="class in fr.flowarg.flowupdater.download"><code>VanillaDownloader</code></a> checks automatically if all natives are correctly extracted.</div>
-</td>
-</tr>
-<tr id="i6" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.html#isSilentRead--">isSilentRead</a></span>()</code>
 <div class="block">Disable some debug logs on Minecraft JSON's parsing.</div>
@@ -280,22 +273,6 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a name="isReExtractNatives--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>isReExtractNatives</h4>
-<pre>public&nbsp;boolean&nbsp;isReExtractNatives()</pre>
-<div class="block">Re-extract natives at each update?
- Today, this option isn't useful because <a href="../../../../fr/flowarg/flowupdater/download/VanillaDownloader.html" title="class in fr.flowarg.flowupdater.download"><code>VanillaDownloader</code></a> checks automatically if all natives are correctly extracted.
- Default: false</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>reExtractNatives value.</dd>
-</dl>
-</li>
-</ul>
 <a name="isEnableCurseForgePlugin--">
 <!--   -->
 </a>
@@ -347,7 +324,7 @@ extends java.lang.Object</pre>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>getExternalFileDeleter</h4>
-<pre>public&nbsp;<a href="../../../../fr/flowarg/flowupdater/utils/IFileDeleter.html" title="interface in fr.flowarg.flowupdater.utils">IFileDeleter</a>&nbsp;getExternalFileDeleter()</pre>
+<pre>public&nbsp;<a href="../../../../fr/flowarg/flowupdater/utils/ExternalFileDeleter.html" title="class in fr.flowarg.flowupdater.utils">ExternalFileDeleter</a>&nbsp;getExternalFileDeleter()</pre>
 <div class="block">The external file deleter is used to check if some external files need to be downloaded.
  Default: <a href="../../../../fr/flowarg/flowupdater/utils/ExternalFileDeleter.html" title="class in fr.flowarg.flowupdater.utils"><code>ExternalFileDeleter</code></a></div>
 <dl>

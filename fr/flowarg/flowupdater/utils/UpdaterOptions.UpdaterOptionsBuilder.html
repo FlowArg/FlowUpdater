@@ -17,8 +17,8 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":42,"i7":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -148,7 +148,7 @@ implements <a href="../../../../fr/flowarg/flowupdater/utils/builderapi/IBuilder
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colLast" scope="col">Method and Description</th>
@@ -173,19 +173,13 @@ implements <a href="../../../../fr/flowarg/flowupdater/utils/builderapi/IBuilder
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html" title="class in fr.flowarg.flowupdater.utils">UpdaterOptions.UpdaterOptionsBuilder</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html#withExternalFileDeleter-fr.flowarg.flowupdater.utils.IFileDeleter-">withExternalFileDeleter</a></span>(<a href="../../../../fr/flowarg/flowupdater/utils/IFileDeleter.html" title="interface in fr.flowarg.flowupdater.utils">IFileDeleter</a>&nbsp;externalFileDeleter)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html#withExternalFileDeleter-fr.flowarg.flowupdater.utils.ExternalFileDeleter-">withExternalFileDeleter</a></span>(<a href="../../../../fr/flowarg/flowupdater/utils/ExternalFileDeleter.html" title="class in fr.flowarg.flowupdater.utils">ExternalFileDeleter</a>&nbsp;externalFileDeleter)</code>&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html" title="class in fr.flowarg.flowupdater.utils">UpdaterOptions.UpdaterOptionsBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html#withNmbrThreadsForAssets-int-">withNmbrThreadsForAssets</a></span>(int&nbsp;nmbrThreadsForAssets)</code>&nbsp;</td>
 </tr>
 <tr id="i6" class="altColor">
-<td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html" title="class in fr.flowarg.flowupdater.utils">UpdaterOptions.UpdaterOptionsBuilder</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html#withReExtractNatives-boolean-">withReExtractNatives</a></span>(boolean&nbsp;reExtractNatives)</code>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
-</td>
-</tr>
-<tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html" title="class in fr.flowarg.flowupdater.utils">UpdaterOptions.UpdaterOptionsBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html#withSilentRead-boolean-">withSilentRead</a></span>(boolean&nbsp;silentRead)</code>&nbsp;</td>
 </tr>
@@ -237,17 +231,6 @@ implements <a href="../../../../fr/flowarg/flowupdater/utils/builderapi/IBuilder
 <pre>public&nbsp;<a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html" title="class in fr.flowarg.flowupdater.utils">UpdaterOptions.UpdaterOptionsBuilder</a>&nbsp;withSilentRead(boolean&nbsp;silentRead)</pre>
 </li>
 </ul>
-<a name="withReExtractNatives-boolean-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>withReExtractNatives</h4>
-<pre>@Deprecated
-public&nbsp;<a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html" title="class in fr.flowarg.flowupdater.utils">UpdaterOptions.UpdaterOptionsBuilder</a>&nbsp;withReExtractNatives(boolean&nbsp;reExtractNatives)</pre>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
-</li>
-</ul>
 <a name="withEnableCurseForgePlugin-boolean-">
 <!--   -->
 </a>
@@ -284,13 +267,13 @@ public&nbsp;<a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.Upd
 <pre>public&nbsp;<a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html" title="class in fr.flowarg.flowupdater.utils">UpdaterOptions.UpdaterOptionsBuilder</a>&nbsp;withNmbrThreadsForAssets(int&nbsp;nmbrThreadsForAssets)</pre>
 </li>
 </ul>
-<a name="withExternalFileDeleter-fr.flowarg.flowupdater.utils.IFileDeleter-">
+<a name="withExternalFileDeleter-fr.flowarg.flowupdater.utils.ExternalFileDeleter-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>withExternalFileDeleter</h4>
-<pre>public&nbsp;<a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html" title="class in fr.flowarg.flowupdater.utils">UpdaterOptions.UpdaterOptionsBuilder</a>&nbsp;withExternalFileDeleter(<a href="../../../../fr/flowarg/flowupdater/utils/IFileDeleter.html" title="interface in fr.flowarg.flowupdater.utils">IFileDeleter</a>&nbsp;externalFileDeleter)</pre>
+<pre>public&nbsp;<a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html" title="class in fr.flowarg.flowupdater.utils">UpdaterOptions.UpdaterOptionsBuilder</a>&nbsp;withExternalFileDeleter(<a href="../../../../fr/flowarg/flowupdater/utils/ExternalFileDeleter.html" title="class in fr.flowarg.flowupdater.utils">ExternalFileDeleter</a>&nbsp;externalFileDeleter)</pre>
 </li>
 </ul>
 <a name="build--">

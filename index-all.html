@@ -222,14 +222,14 @@
 <dd>
 <div class="block">Default logger, null for path argument = no file logger</div>
 </dd>
-<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/utils/ExternalFileDeleter.html#delete-java.lang.Object...-">delete(Object...)</a></span> - Method in class fr.flowarg.flowupdater.utils.<a href="fr/flowarg/flowupdater/utils/ExternalFileDeleter.html" title="class in fr.flowarg.flowupdater.utils">ExternalFileDeleter</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/utils/IFileDeleter.html#delete-java.lang.Object...-">delete(Object...)</a></span> - Method in interface fr.flowarg.flowupdater.utils.<a href="fr/flowarg/flowupdater/utils/IFileDeleter.html" title="interface in fr.flowarg.flowupdater.utils">IFileDeleter</a></dt>
+<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/utils/ExternalFileDeleter.html#delete-java.util.List-fr.flowarg.flowupdater.download.DownloadList-java.nio.file.Path-">delete(List&lt;ExternalFile&gt;, DownloadList, Path)</a></span> - Method in class fr.flowarg.flowupdater.utils.<a href="fr/flowarg/flowupdater/utils/ExternalFileDeleter.html" title="class in fr.flowarg.flowupdater.utils">ExternalFileDeleter</a></dt>
 <dd>
 <div class="block">Delete all bad files in the provided directory.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/utils/ModFileDeleter.html#delete-java.lang.Object...-">delete(Object...)</a></span> - Method in class fr.flowarg.flowupdater.utils.<a href="fr/flowarg/flowupdater/utils/ModFileDeleter.html" title="class in fr.flowarg.flowupdater.utils">ModFileDeleter</a></dt>
-<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/utils/ModFileDeleter.html#delete-java.nio.file.Path-java.util.List-boolean-java.util.List-boolean-java.lang.Object-">delete(Path, List&lt;Mod&gt;, boolean, List&lt;Object&gt;, boolean, Object)</a></span> - Method in class fr.flowarg.flowupdater.utils.<a href="fr/flowarg/flowupdater/utils/ModFileDeleter.html" title="class in fr.flowarg.flowupdater.utils">ModFileDeleter</a></dt>
+<dd>
+<div class="block">Delete all bad files in the provided directory.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/download/VanillaDownloader.html#download--">download()</a></span> - Method in class fr.flowarg.flowupdater.download.<a href="fr/flowarg/flowupdater/download/VanillaDownloader.html" title="class in fr.flowarg.flowupdater.download">VanillaDownloader</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/utils/IOUtils.html#download-fr.flowarg.flowlogger.ILogger-java.net.URL-java.nio.file.Path-">download(ILogger, URL, Path)</a></span> - Static method in class fr.flowarg.flowupdater.utils.<a href="fr/flowarg/flowupdater/utils/IOUtils.html" title="class in fr.flowarg.flowupdater.utils">IOUtils</a></dt>
@@ -688,11 +688,6 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/download/json/OptiFineInfo.html#isPreview--">isPreview()</a></span> - Method in class fr.flowarg.flowupdater.download.json.<a href="fr/flowarg/flowupdater/download/json/OptiFineInfo.html" title="class in fr.flowarg.flowupdater.download.json">OptiFineInfo</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/utils/UpdaterOptions.html#isReExtractNatives--">isReExtractNatives()</a></span> - Method in class fr.flowarg.flowupdater.utils.<a href="fr/flowarg/flowupdater/utils/UpdaterOptions.html" title="class in fr.flowarg.flowupdater.utils">UpdaterOptions</a></dt>
-<dd>
-<div class="block">Re-extract natives at each update?
- Today, this option isn't useful because <a href="fr/flowarg/flowupdater/download/VanillaDownloader.html" title="class in fr.flowarg.flowupdater.download"><code>VanillaDownloader</code></a> checks automatically if all natives are correctly extracted.</div>
-</dd>
 <dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/utils/UpdaterOptions.html#isSilentRead--">isSilentRead()</a></span> - Method in class fr.flowarg.flowupdater.utils.<a href="fr/flowarg/flowupdater/utils/UpdaterOptions.html" title="class in fr.flowarg.flowupdater.utils">UpdaterOptions</a></dt>
 <dd>
 <div class="block">Disable some debug logs on Minecraft JSON's parsing.</div>
@@ -986,7 +981,7 @@ the order they are declared.</div>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html#withEnableOptiFineDownloaderPlugin-boolean-">withEnableOptiFineDownloaderPlugin(boolean)</a></span> - Method in class fr.flowarg.flowupdater.utils.<a href="fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html" title="class in fr.flowarg.flowupdater.utils">UpdaterOptions.UpdaterOptionsBuilder</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html#withExternalFileDeleter-fr.flowarg.flowupdater.utils.IFileDeleter-">withExternalFileDeleter(IFileDeleter)</a></span> - Method in class fr.flowarg.flowupdater.utils.<a href="fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html" title="class in fr.flowarg.flowupdater.utils">UpdaterOptions.UpdaterOptionsBuilder</a></dt>
+<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html#withExternalFileDeleter-fr.flowarg.flowupdater.utils.ExternalFileDeleter-">withExternalFileDeleter(ExternalFileDeleter)</a></span> - Method in class fr.flowarg.flowupdater.utils.<a href="fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html" title="class in fr.flowarg.flowupdater.utils">UpdaterOptions.UpdaterOptionsBuilder</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/FlowUpdater.FlowUpdaterBuilder.html#withExternalFiles-java.util.List-">withExternalFiles(List&lt;ExternalFile&gt;)</a></span> - Method in class fr.flowarg.flowupdater.<a href="fr/flowarg/flowupdater/FlowUpdater.FlowUpdaterBuilder.html" title="class in fr.flowarg.flowupdater">FlowUpdater.FlowUpdaterBuilder</a></dt>
 <dd>
@@ -1043,10 +1038,6 @@ the order they are declared.</div>
 <dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/FlowUpdater.FlowUpdaterBuilder.html#withProgressCallback-fr.flowarg.flowupdater.download.IProgressCallback-">withProgressCallback(IProgressCallback)</a></span> - Method in class fr.flowarg.flowupdater.<a href="fr/flowarg/flowupdater/FlowUpdater.FlowUpdaterBuilder.html" title="class in fr.flowarg.flowupdater">FlowUpdater.FlowUpdaterBuilder</a></dt>
 <dd>
 <div class="block">Append a <a href="fr/flowarg/flowupdater/download/IProgressCallback.html" title="interface in fr.flowarg.flowupdater.download"><code>IProgressCallback</code></a> object in the final FlowUpdater instance.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html#withReExtractNatives-boolean-">withReExtractNatives(boolean)</a></span> - Method in class fr.flowarg.flowupdater.utils.<a href="fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html" title="class in fr.flowarg.flowupdater.utils">UpdaterOptions.UpdaterOptionsBuilder</a></dt>
-<dd>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 </dd>
 <dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html#withSilentRead-boolean-">withSilentRead(boolean)</a></span> - Method in class fr.flowarg.flowupdater.utils.<a href="fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html" title="class in fr.flowarg.flowupdater.utils">UpdaterOptions.UpdaterOptionsBuilder</a></dt>
 <dd>&nbsp;</dd>
