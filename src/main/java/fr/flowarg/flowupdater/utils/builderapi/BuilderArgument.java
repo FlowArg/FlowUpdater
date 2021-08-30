@@ -56,7 +56,7 @@ public class BuilderArgument<T>
     {
         this.required.forEach(arg -> {
             if(arg == this)
-                throw new BuilderException(String.format("This (%s) is required by the same argument !", this.objectName));
+                throw new BuilderException(String.format("This (%s) is required by the same argument!", this.objectName));
 
             if((arg.get() == null || arg.get() == arg.badObject()) && this.object != null)
                 throw new BuilderException(String.format("%s cannot be null/a bad object if you're using %s argument!", arg.getObjectName(), this.objectName));
