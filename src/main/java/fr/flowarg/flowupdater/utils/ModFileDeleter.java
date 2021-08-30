@@ -22,20 +22,19 @@ public class ModFileDeleter implements IFileDeleter
         this.modsToIgnore = modsToIgnore;
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public void delete(Object... parameters) throws Exception
+    /**
+     * Delete all bad files in the provided directory.
+     * @param modsDir the mod's folder.
+     * @param mods the mods list.
+     * @param cursePluginLoaded is the CurseForge plugin loaded ?
+     * @param allCurseMods the curse's mods list.
+     * @param optiFinePluginLoaded is the OptiFine plugin loaded ?
+     * @param optiFineParam the OptiFine object.
+     * @throws Exception thrown if an error occurred
+     */
+    public void delete(Path modsDir, List<Mod> mods, boolean cursePluginLoaded, List<Object> allCurseMods, boolean optiFinePluginLoaded, Object optiFineParam) throws Exception
     {
-        if (parameters.length != 6) return;
-
         if(!this.isUseFileDeleter()) return;
-
-        final Path modsDir = (Path)parameters[0];
-        final List<Mod> mods = parameters[1] != null ? (List<Mod>)parameters[1] : new ArrayList<>();
-        final boolean cursePluginLoaded = (boolean)parameters[2];
-        final List<Object> allCurseMods = parameters[3] != null ? (List<Object>)parameters[3] : new ArrayList<>();
-        final boolean optiFinePluginLoaded = (boolean)parameters[4];
-        final Object optiFineParam = parameters[5];
 
         final Set<Path> badFiles = new HashSet<>();
         final List<Path> verifiedFiles = new ArrayList<>();

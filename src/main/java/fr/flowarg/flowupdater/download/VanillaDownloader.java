@@ -29,7 +29,6 @@ public class VanillaDownloader
     private final ILogger logger;
     private final IProgressCallback callback;
     private final DownloadList downloadList;
-    private final boolean reExtractNatives;
     private final int threadsForAssets;
     private final Path natives;
     private final Path assets;
@@ -41,7 +40,6 @@ public class VanillaDownloader
         this.logger = flowUpdater.getLogger();
         this.callback = flowUpdater.getCallback();
         this.downloadList = flowUpdater.getDownloadList();
-        this.reExtractNatives = flowUpdater.getUpdaterOptions().isReExtractNatives();
         this.threadsForAssets = flowUpdater.getUpdaterOptions().getNmbrThreadsForAssets();
 
         this.natives = this.dir.resolve("natives");
@@ -92,34 +90,31 @@ public class VanillaDownloader
     private void extractNatives() throws IOException
     {
         boolean flag = false;
-        if(!this.reExtractNatives)
+        final List<Path> existingNatives = Files.list(this.natives).collect(Collectors.toList());
+        if (!existingNatives.isEmpty())
         {
-            final List<Path> existingNatives = Files.list(this.natives).collect(Collectors.toList());
-            if (!existingNatives.isEmpty())
+            for (Path minecraftNative : Files.list(this.natives).filter(path -> path.getFileName().toString().endsWith(".jar")).collect(Collectors.toList()))
             {
-                for (Path minecraftNative : Files.list(this.natives).filter(path -> path.getFileName().toString().endsWith(".jar")).collect(Collectors.toList()))
+                final JarFile jarFile = new JarFile(minecraftNative.toFile());
+                final Enumeration<? extends ZipEntry> entries = jarFile.entries();
+                while (entries.hasMoreElements())
                 {
-                    final JarFile jarFile = new JarFile(minecraftNative.toFile());
-                    final Enumeration<? extends ZipEntry> entries = jarFile.entries();
-                    while (entries.hasMoreElements())
-                    {
-                        final ZipEntry entry = entries.nextElement();
-                        if (entry.isDirectory() || entry.getName().endsWith(".git") || entry.getName().endsWith(".sha1") || entry.getName().contains("META-INF")) continue;
+                    final ZipEntry entry = entries.nextElement();
+                    if (entry.isDirectory() || entry.getName().endsWith(".git") || entry.getName().endsWith(".sha1") || entry.getName().contains("META-INF")) continue;
 
-                        final Path flPath = this.natives.resolve(entry.getName());
+                    final Path flPath = this.natives.resolve(entry.getName());
 
-                        if(Files.exists(flPath) && entry.getCrc() == FileUtils.getCRC32(flPath)) continue;
+                    if(Files.exists(flPath) && entry.getCrc() == FileUtils.getCRC32(flPath)) continue;
 
-                        flag = true;
-                        break;
-                    }
-                    jarFile.close();
-                    if (flag) break;
+                    flag = true;
+                    break;
                 }
+                jarFile.close();
+                if (flag) break;
             }
         }
 
-        if (this.reExtractNatives || flag)
+        if (flag)
         {
             this.logger.info("Extracting natives...");
             this.callback.step(Step.EXTRACT_NATIVES);

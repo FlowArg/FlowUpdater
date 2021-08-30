@@ -1,6 +1,5 @@
 package fr.flowarg.flowupdater.utils;
 
-import fr.flowarg.flowupdater.download.VanillaDownloader;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
 import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
@@ -14,20 +13,18 @@ import java.util.Random;
  */
 public class UpdaterOptions
 {
-    public static final UpdaterOptions DEFAULT = new UpdaterOptions(true, false, false, false, false, new Random().nextInt(2) + 2, new ExternalFileDeleter());
+    public static final UpdaterOptions DEFAULT = new UpdaterOptions(true, false, false, false, new Random().nextInt(2) + 2, new ExternalFileDeleter());
 
     private final boolean silentRead;
     private final boolean downloadServer;
-    private final boolean reExtractNatives;
     private final boolean enableCurseForgePlugin;
     private final boolean enableOptiFineDownloaderPlugin;
     private final int nmbrThreadsForAssets;
-    private final IFileDeleter externalFileDeleter;
+    private final ExternalFileDeleter externalFileDeleter;
 
-    private UpdaterOptions(boolean silentRead, boolean reExtractNatives, boolean enableCurseForgePlugin, boolean enableOptiFineDownloaderPlugin, boolean downloadServer, int nmbrThreadsForAssets, IFileDeleter externalFileDeleter)
+    private UpdaterOptions(boolean silentRead, boolean enableCurseForgePlugin, boolean enableOptiFineDownloaderPlugin, boolean downloadServer, int nmbrThreadsForAssets, ExternalFileDeleter externalFileDeleter)
     {
         this.silentRead = silentRead;
-        this.reExtractNatives = reExtractNatives;
         this.enableCurseForgePlugin = enableCurseForgePlugin;
         this.enableOptiFineDownloaderPlugin = enableOptiFineDownloaderPlugin;
         this.downloadServer = downloadServer;
@@ -53,17 +50,6 @@ public class UpdaterOptions
     public boolean isDownloadServer()
     {
         return this.downloadServer;
-    }
-
-    /**
-     * Re-extract natives at each update?
-     * Today, this option isn't useful because {@link VanillaDownloader} checks automatically if all natives are correctly extracted.
-     * Default: false
-     * @return reExtractNatives value.
-     */
-    public boolean isReExtractNatives()
-    {
-        return this.reExtractNatives;
     }
 
     /**
@@ -101,7 +87,7 @@ public class UpdaterOptions
      * Default: {@link fr.flowarg.flowupdater.utils.ExternalFileDeleter}
      * @return externalFileDeleter value.
      */
-    public IFileDeleter getExternalFileDeleter()
+    public ExternalFileDeleter getExternalFileDeleter()
     {
         return this.externalFileDeleter;
     }
@@ -109,26 +95,17 @@ public class UpdaterOptions
     public static class UpdaterOptionsBuilder implements IBuilder<UpdaterOptions>
     {
         private final BuilderArgument<Boolean> silentReadArgument = new BuilderArgument<>("SilentRead", () -> true).optional();
-        private final BuilderArgument<Boolean> reExtractNativesArgument = new BuilderArgument<>("ReExtractingNatives", () -> false).optional();
         private final BuilderArgument<Boolean> enableCurseForgePluginArgument = new BuilderArgument<>("EnableCurseForgePlugin", () -> false).optional();
         private final BuilderArgument<Boolean> enableOptiFineDownloaderPluginArgument = new BuilderArgument<>("EnableOptiFineDownloaderPlugin", () -> false).optional();
         private final BuilderArgument<Boolean> downloadServerArgument = new BuilderArgument<>("DownloadServer", () -> false).optional();
         private final BuilderArgument<Integer> nmbrThreadsForAssetsArgument = new BuilderArgument<>("Number of Threads for assets", () -> new Random().nextInt(2) + 2).optional();
-        private final BuilderArgument<IFileDeleter> externalFileDeleterArgument = new BuilderArgument<IFileDeleter>("External FileDeleter", ExternalFileDeleter::new).optional();
+        private final BuilderArgument<ExternalFileDeleter> externalFileDeleterArgument = new BuilderArgument<>("External FileDeleter", ExternalFileDeleter::new).optional();
 
         public UpdaterOptionsBuilder withSilentRead(boolean silentRead)
         {
             this.silentReadArgument.set(silentRead);
             return this;
         }
-
-        @Deprecated
-        public UpdaterOptionsBuilder withReExtractNatives(boolean reExtractNatives)
-        {
-            this.reExtractNativesArgument.set(reExtractNatives);
-            return this;
-        }
-
         public UpdaterOptionsBuilder withEnableCurseForgePlugin(boolean enableModsFromCurseForge)
         {
             this.enableCurseForgePluginArgument.set(enableModsFromCurseForge);
@@ -153,7 +130,7 @@ public class UpdaterOptions
             return this;
         }
 
-        public UpdaterOptionsBuilder withExternalFileDeleter(IFileDeleter externalFileDeleter)
+        public UpdaterOptionsBuilder withExternalFileDeleter(ExternalFileDeleter externalFileDeleter)
         {
             this.externalFileDeleterArgument.set(externalFileDeleter);
             return this;
@@ -164,7 +141,6 @@ public class UpdaterOptions
         {
             return new UpdaterOptions(
                     this.silentReadArgument.get(),
-                    this.reExtractNativesArgument.get(),
                     this.enableCurseForgePluginArgument.get(),
                     this.enableOptiFineDownloaderPluginArgument.get(),
                     this.downloadServerArgument.get(),

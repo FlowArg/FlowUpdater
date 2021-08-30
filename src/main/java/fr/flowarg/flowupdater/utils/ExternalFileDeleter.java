@@ -10,16 +10,15 @@ import java.util.List;
 
 public class ExternalFileDeleter implements IFileDeleter
 {
-    @SuppressWarnings("unchecked")
-    @Override
-    public void delete(Object... parameters) throws Exception
+    /**
+     * Delete all bad files in the provided directory.
+     * @param externalFiles the list of external files.
+     * @param downloadList the download list.
+     * @param dir the base dir.
+     * @throws Exception thrown if an error occurred
+     */
+    public void delete(List<ExternalFile> externalFiles, DownloadList downloadList, Path dir) throws Exception
     {
-        if(parameters.length != 3)
-            return;
-        final List<ExternalFile> externalFiles = (List<ExternalFile>)parameters[0];
-        final DownloadList downloadList = (DownloadList)parameters[1];
-        final Path dir = (Path)parameters[2];
-
         if(externalFiles.isEmpty()) return;
 
         for(ExternalFile extFile : externalFiles)
