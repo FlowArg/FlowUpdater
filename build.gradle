@@ -59,6 +59,7 @@ dependencies {
     testRuntimeOnly project(':CurseForgePlugin')
     testRuntimeOnly project(':OptifinePlugin')
     testImplementation 'org.json:json:20210307'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.2'
 }
 
 
@@ -117,4 +118,8 @@ signing {
     def signingPassword = System.getenv("GPG_PASSPHRASE")
     useInMemoryPgpKeys(signingKey, signingPassword)
     sign publishing.publications.mavenJava
+}
+
+test {
+    useJUnitPlatform()
 }

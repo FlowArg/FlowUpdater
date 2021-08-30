@@ -2,7 +2,7 @@
 build
 /updater/
 /run/
-/src/test/
+/src/test/java/fr/flowarg/flowupdatertest
 .idea
 out
 forge-installer.jar.log
