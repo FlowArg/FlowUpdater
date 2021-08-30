@@ -59,15 +59,16 @@ public class BuilderArgument<T>
                 throw new BuilderException(String.format("This (%s) is required by the same argument!", this.objectName));
 
             if((arg.get() == null || arg.get() == arg.badObject()) && this.object != null)
-                throw new BuilderException(String.format("%s cannot be null/a bad object if you're using %s argument!", arg.getObjectName(), this.objectName));
+                throw new BuilderException(arg.getObjectName() + " cannot be null/a bad object if you're using " + this.objectName + " argument!");
         });
+
+        if(this.object == this.badObject)
+            throw new BuilderException("Argument" + this.objectName + " is a bad object!");
 
         if(this.isRequired)
         {
             if(this.object == null)
-                throw new BuilderException(String.format("Argument %s is null!", this.objectName));
-            else if(this.object == this.badObject)
-                throw new BuilderException(String.format("Argument %s is a bad object!", this.objectName));
+                throw new BuilderException("Argument" + this.objectName + " is null!");
             else return this.object;
         }
         else return this.object;
