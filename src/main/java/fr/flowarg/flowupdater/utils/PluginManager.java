@@ -52,7 +52,7 @@ public class PluginManager
         catch (ClassNotFoundException e)
         {
             this.cursePluginLoaded = false;
-            this.logger.err("Cannot install mods from CurseForge: CurseAPI is not loaded. Please, enable the 'enableCurseForgePlugin' updater option !");
+            this.logger.err("Cannot install mods from CurseForge: CurseAPI is not loaded. Please add the flowupdater-curseforgeplugin dependency!");
             return;
         }
 
@@ -143,7 +143,7 @@ public class PluginManager
         } catch (ClassNotFoundException e)
         {
             this.optiFinePluginLoaded = false;
-            this.logger.err("Cannot install OptiFine: OptiFinePlugin is not loaded. Please, enable the 'enableOptiFineDownloaderPlugin' updater option !");
+            this.logger.err("Cannot install OptiFine: OptiFinePlugin is not loaded. Please add the flowupdater-optifineplugin dependency!");
         }
     }
 

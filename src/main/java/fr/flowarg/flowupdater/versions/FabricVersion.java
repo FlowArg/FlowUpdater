@@ -14,7 +14,7 @@ import fr.flowarg.flowupdater.download.Step;
 import fr.flowarg.flowupdater.download.json.CurseFileInfo;
 import fr.flowarg.flowupdater.download.json.CurseModPackInfo;
 import fr.flowarg.flowupdater.download.json.Mod;
-import fr.flowarg.flowupdater.utils.ArtifactsDownloader;
+import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
 import fr.flowarg.flowupdater.utils.PluginManager;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
@@ -225,7 +225,8 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
             final Path libraries = dirToInstall.resolve("libraries");
             libs.forEach(el -> {
                 final JsonObject artifact = el.getAsJsonObject();
-                ArtifactsDownloader.downloadArtifacts(libraries, artifact.get("url").getAsString(), artifact.get("name").getAsString(), this.logger);
+                final String[] parts = artifact.get("name").getAsString().split(":");
+                this.downloadArtifacts(libraries, artifact.get("url").getAsString(), parts[0], parts[1], parts[2], logger);
             });
 
             this.logger.info("Successfully installed Fabric !");
@@ -233,6 +234,19 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
         } catch (Exception e)
         {
             this.logger.printStackTrace(e);
+        }
+    }
+
+    private void downloadArtifacts(Path dir, String repositoryUrl, String group, String name, String version, ILogger logger)
+    {
+        try
+        {
+            IOUtils.download(logger,
+                             new URL(repositoryUrl + group.replace('.', '/') + '/' + name + '/' + version + '/' + String.format("%s-%s.jar", name, version)),
+                             dir.resolve(group.replace(".", dir.getFileSystem().getSeparator())).resolve(name).resolve(version).resolve(String.format("%s-%s.jar", name, version)));
+        } catch (Exception e)
+        {
+            logger.printStackTrace(e);
         }
     }
 

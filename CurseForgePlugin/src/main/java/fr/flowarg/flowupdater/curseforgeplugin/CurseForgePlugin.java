@@ -11,9 +11,14 @@ import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowstringer.StringUtils;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -32,26 +37,29 @@ public class CurseForgePlugin
     private ILogger logger;
     private Path folder;
 
+    @NotNull
     public URL getURLOfFile(int projectID, int fileID)
     {
         try
         {
-            return CurseAPI.fileDownloadURL(projectID, fileID).map(HttpUrl::url).orElse(null);
+            return CurseAPI.fileDownloadURL(projectID, fileID).map(HttpUrl::url).orElseThrow(CurseForgePluginException::new);
         } catch (CurseException e)
         {
-            this.getLogger().printStackTrace(e);
+            throw new CurseForgePluginException(e);
         }
-        return null;
     }
 
-    public CurseMod getCurseMod(ProjectMod mod)
+    @NotNull
+    public CurseMod getCurseMod(@NotNull ProjectMod mod)
     {
         return this.getCurseMod(mod.getProjectID(), mod.getFileID());
     }
 
+    @NotNull
     public CurseMod getCurseMod(int projectID, int fileID)
     {
         final URL url = this.getURLOfFile(projectID, fileID);
+
         HttpsURLConnection connection = null;
 
         try
@@ -65,13 +73,11 @@ public class CurseForgePlugin
             return new CurseMod(url.getFile().substring(url.getFile().lastIndexOf('/') + 1), url.toExternalForm(), md5, length);
         } catch (Exception e)
         {
-            this.getLogger().printStackTrace(e);
+            throw new CurseForgePluginException(e);
         } finally
         {
             if (connection != null) connection.disconnect();
         }
-
-        return CurseMod.BAD;
     }
 
     public CurseModPack getCurseModPack(int projectID, int fileID, boolean installExtFiles)
@@ -83,12 +89,11 @@ public class CurseForgePlugin
         }
         catch (Exception e)
         {
-            this.getLogger().printStackTrace(e);
+            throw new CurseForgePluginException(e);
         }
-        return CurseModPack.BAD;
     }
 
-    private Path checkForUpdates(int projectID, int fileID) throws Exception
+    private @NotNull Path checkForUpdates(int projectID, int fileID) throws Exception
     {
         final URL link = this.getURLOfFile(projectID, fileID);
         final String linkStr = link.toExternalForm();
@@ -103,7 +108,7 @@ public class CurseForgePlugin
         return outPath;
     }
 
-    private String getMD5(URL link)
+    private @NotNull String getMD5(URL link)
     {
         HttpsURLConnection connection = null;
         try
@@ -117,17 +122,16 @@ public class CurseForgePlugin
         }
         catch (Exception e)
         {
-            this.getLogger().printStackTrace(e);
+            throw new CurseForgePluginException(e);
         }
         finally
         {
             if(connection != null)
                 connection.disconnect();
         }
-        return "";
     }
 
-    private void extractModPack(Path out, boolean installExtFiles) throws Exception
+    private void extractModPack(@NotNull Path out, boolean installExtFiles) throws Exception
     {
         this.getLogger().info("Extracting mod pack...");
         final ZipFile zipFile = new ZipFile(out.toFile(), ZipFile.OPEN_READ, StandardCharsets.UTF_8);
@@ -167,19 +171,19 @@ public class CurseForgePlugin
         private final BufferedOutputStream fo;
         private final InputStream is;
 
-        public NioZipObject(Path path, InputStream is) throws IOException
+        public NioZipObject(Path path, InputStream is) throws Exception
         {
             this.pathStream = Files.newOutputStream(path);
             this.fo = new BufferedOutputStream(this.pathStream);
             this.is = is;
         }
 
-        public void transfer() throws IOException
+        public void transfer() throws Exception
         {
             while (this.is.available() > 0) this.fo.write(this.is.read());
         }
 
-        public void close() throws IOException
+        public void close() throws Exception
         {
             this.fo.close();
             this.pathStream.close();
@@ -187,7 +191,8 @@ public class CurseForgePlugin
         }
     }
 
-    private CurseModPack parseMods(boolean installExtFiles) throws Exception
+    @Contract("_ -> new")
+    private @NotNull CurseModPack parseMods(boolean installExtFiles) throws Exception
     {
         this.getLogger().info("Fetching mods...");
 
@@ -258,12 +263,12 @@ public class CurseForgePlugin
                 try
                 {
                     Objects.requireNonNull(client.cache()).close();
-                } catch (IOException ignored) {}
+                } catch (Exception ignored) {}
             }
         }
     }
 
-    public InputStream catchForbidden(URL url) throws IOException
+    public InputStream catchForbidden(@NotNull URL url) throws Exception
     {
         final HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.addRequestProperty("User-Agent", "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.124 Safari/537.36");
@@ -284,7 +289,8 @@ public class CurseForgePlugin
             this.required = required;
         }
 
-        private static ProjectMod fromJsonObject(JsonObject object)
+        @Contract("_ -> new")
+        private static @NotNull ProjectMod fromJsonObject(@NotNull JsonObject object)
         {
             return new ProjectMod(object.get("projectID").getAsInt(), object.get("fileID").getAsInt(), object.get("required").getAsBoolean());
         }
@@ -327,30 +333,30 @@ public class CurseForgePlugin
         }
     }
 
-    public ILogger getLogger()
+    public @NotNull ILogger getLogger()
     {
         return this.logger;
     }
 
-    public void setLogger(ILogger logger)
+    public void setLogger(@NotNull ILogger logger)
     {
         this.logger = logger;
     }
 
-    public Path getFolder()
+    public @NotNull Path getFolder()
     {
         return this.folder;
     }
 
-    public void setFolder(Path folder)
+    public void setFolder(@NotNull Path folder)
     {
-        this.folder = folder;
         try
         {
+            this.folder = folder;
             Files.createDirectories(this.folder);
-        } catch (IOException e)
+        } catch (Exception e)
         {
-            this.logger.printStackTrace(e);
+            throw new CurseForgePluginException(e);
         }
     }
 }
