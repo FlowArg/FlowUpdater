@@ -7,6 +7,7 @@ import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowstringer.StringUtils;
 import fr.flowarg.flowupdater.download.json.CurseFileInfo;
+import fr.flowarg.flowupdater.integrations.Integration;
 import fr.flowarg.flowupdater.utils.FlowUpdaterException;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import org.jetbrains.annotations.NotNull;
@@ -29,16 +30,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-public class CurseForgeIntegration
+public class CurseForgeIntegration extends Integration
 {
-    private final ILogger logger;
-    private final Path folder;
-
     public CurseForgeIntegration(ILogger logger, Path folder) throws Exception
     {
-        this.logger = logger;
-        this.folder = folder;
-        Files.createDirectories(this.folder);
+        super(logger, folder);
     }
 
     @NotNull
@@ -170,7 +166,7 @@ public class CurseForgeIntegration
         zipFile.close();
     }
 
-    private void transferAndClose(Path flPath, ZipFile zipFile, ZipEntry entry) throws Exception
+    private void transferAndClose(@NotNull Path flPath, ZipFile zipFile, ZipEntry entry) throws Exception
     {
         if(Files.notExists(flPath.getParent()))
             Files.createDirectories(flPath.getParent());

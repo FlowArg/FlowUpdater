@@ -2,14 +2,16 @@ package fr.flowarg.flowupdater.download.json;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import fr.flowarg.flowupdater.utils.FlowUpdaterException;
 import fr.flowarg.flowupdater.utils.IOUtils;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+/**
+ * This class represent an external file object.
+ */
 public class ExternalFile
 {
     private final String path;
@@ -91,34 +93,62 @@ public class ExternalFile
         return result;
     }
 
+    /**
+     * Provide a List of external file from a JSON file.
+     * @param jsonUrl the JSON file URL.
+     * @return an external file list.
+     */
     public static List<ExternalFile> getExternalFilesFromJson(String jsonUrl)
     {
         try
         {
             return getExternalFilesFromJson(new URL(jsonUrl));
-        } catch (MalformedURLException e)
+        } catch (Exception e)
         {
-            e.printStackTrace();
-            return Collections.emptyList();
+            throw new FlowUpdaterException(e);
         }
     }
-    
+
+    /**
+     * Get the path of the external file.
+     * @return the path of the external file.
+     */
     public String getPath()
     {
         return this.path;
     }
+
+    /**
+     * Get the url of the external file.
+     * @return the url of the external file.
+     */
     public String getDownloadURL()
     {
         return this.downloadURL;
     }
+
+    /**
+     * Get the sha1 of the external file.
+     * @return the sha1 of the external file.
+     */
     public String getSha1()
     {
         return this.sha1;
     }
+
+    /**
+     * Get the size of the external file.
+     * @return the size of the external file.
+     */
     public long getSize()
     {
         return this.size;
     }
+
+    /**
+     * Should {@link fr.flowarg.flowupdater.utils.ExternalFileDeleter} check the file?
+     * @return if the external file deleter should check and delete the file.
+     */
     public boolean isUpdate()
     {
         return this.update;

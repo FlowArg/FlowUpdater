@@ -1,5 +1,8 @@
 package fr.flowarg.flowupdater.download.json;
 
+/**
+ * This class represent a classic downloadable file such as a library, the client/server or natives.
+ */
 public class Downloadable
 {
     private final String url;
@@ -7,6 +10,13 @@ public class Downloadable
     private final String sha1;
     private final String name;
 
+    /**
+     * Construct a new Downloadable object.
+     * @param url the url where to download the file.
+     * @param size the size of the file.
+     * @param sha1 the sha1 of the file.
+     * @param name the name (path) of the file.
+     */
     public Downloadable(String url, long size, String sha1, String name)
     {
         this.url = url;
@@ -15,18 +25,37 @@ public class Downloadable
         this.name = name;
     }
 
+    /**
+     * Get the url of the file.
+     * @return the url of the file.
+     */
     public String getUrl()
     {
         return this.url;
     }
+
+    /**
+     * Get the size of the file.
+     * @return the size of the file.
+     */
     public long getSize()
     {
         return this.size;
     }
+
+    /**
+     * Get the sha1 of the file.
+     * @return the sha1 of the file.
+     */
     public String getSha1()
     {
         return this.sha1;
     }
+
+    /**
+     * Get the relative path of the file.
+     * @return the relative path of the file.
+     */
     public String getName()
     {
         return this.name;

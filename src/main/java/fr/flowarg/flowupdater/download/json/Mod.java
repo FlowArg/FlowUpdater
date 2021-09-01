@@ -2,14 +2,16 @@ package fr.flowarg.flowupdater.download.json;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import fr.flowarg.flowupdater.utils.FlowUpdaterException;
 import fr.flowarg.flowupdater.utils.IOUtils;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+/**
+ * This class represent a Mod object.
+ */
 public class Mod
 {
     private final String name;
@@ -70,32 +72,56 @@ public class Mod
         });
         return result;
     }
-    
+
+    /**
+     * Provide a List of Mods from a JSON file.
+     * Template of a JSON file :
+     * @param jsonUrl the JSON file URL.
+     * @return a Mod list.
+     */
     public static List<Mod> getModsFromJson(String jsonUrl)
     {
         try
         {
             return getModsFromJson(new URL(jsonUrl));
         }
-        catch (MalformedURLException e)
+        catch (Exception e)
         {
-            e.printStackTrace();
-            return Collections.emptyList();
+            throw new FlowUpdaterException(e);
         }
     }
-    
+
+    /**
+     * Get the mod name.
+     * @return the mod name.
+     */
     public String getName()
     {
         return this.name;
     }
+
+    /**
+     * Get the sha1 of the mod.
+     * @return the sha1 of the mod.
+     */
     public String getSha1()
     {
         return this.sha1;
     }
+
+    /**
+     * Get the mod size.
+     * @return the mod size.
+     */
     public long getSize()
     {
         return this.size;
     }
+
+    /**
+     * Get the mod url.
+     * @return the mod url.
+     */
     public String getDownloadURL()
     {
         return this.downloadURL;

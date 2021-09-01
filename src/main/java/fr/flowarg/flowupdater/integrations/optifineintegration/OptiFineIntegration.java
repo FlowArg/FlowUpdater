@@ -2,8 +2,10 @@ package fr.flowarg.flowupdater.integrations.optifineintegration;
 
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
+import fr.flowarg.flowupdater.integrations.Integration;
 import fr.flowarg.flowupdater.utils.FlowUpdaterException;
 import fr.flowarg.flowupdater.utils.IOUtils;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -14,16 +16,11 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 
-public class OptiFineIntegration
+public class OptiFineIntegration extends Integration
 {
-    private final ILogger logger;
-    private final Path folder;
-
     public OptiFineIntegration(ILogger logger, Path folder) throws Exception
     {
-        this.logger = logger;
-        this.folder = folder;
-        Files.createDirectories(this.folder);
+        super(logger, folder);
     }
 
     /**
@@ -101,7 +98,8 @@ public class OptiFineIntegration
         }
     }
 
-    private GetResponse getResponse(URL url)
+    @Contract("_ -> new")
+    private @NotNull GetResponse getResponse(URL url)
     {
         HttpsURLConnection connection;
         try

@@ -1,5 +1,8 @@
 package fr.flowarg.flowupdater.download.json;
 
+/**
+ * This class represent an asset.
+ */
 public class AssetDownloadable
 {
     private final String hash;
@@ -7,6 +10,11 @@ public class AssetDownloadable
     private final String url;
     private final String file;
 
+    /**
+     * Construct a new asset object.
+     * @param hash the sha1 of the asset.
+     * @param size the size of the asset.
+     */
     public AssetDownloadable(String hash, long size)
     {
         this.hash = hash;
@@ -16,8 +24,39 @@ public class AssetDownloadable
         this.file = "objects" + assetsPath;
     }
 
-    public String getHash() { return this.hash; }
-    public long getSize() { return this.size; }
-    public String getUrl() { return this.url; }
-    public String getFile() { return this.file; }
+    /**
+     * Get the hash of the asset.
+     * @return the sha1 of the asset.
+     */
+    public String getHash()
+    {
+        return this.hash;
+    }
+
+    /**
+     * Get the length of the asset.
+     * @return the size of the asset.
+     */
+    public long getSize()
+    {
+        return this.size;
+    }
+
+    /**
+     * Get the remote url of the asset.
+     * @return the url of the asset.
+     */
+    public String getUrl()
+    {
+        return this.url;
+    }
+
+    /**
+     * Get the file path of the asset.
+     * @return the relative local path of this asset.
+     */
+    public String getFile()
+    {
+        return this.file;
+    }
 }
