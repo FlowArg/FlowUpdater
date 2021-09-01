@@ -2,7 +2,7 @@ package fr.flowarg.flowupdater.download;
 
 import fr.flowarg.flowupdater.download.json.CurseFileInfo;
 import fr.flowarg.flowupdater.download.json.CurseModPackInfo;
-import fr.flowarg.flowupdater.integrations.curseforgeplugin.CurseMod;
+import fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseMod;
 
 import java.util.List;
 

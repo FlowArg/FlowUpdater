@@ -1,4 +1,4 @@
-package fr.flowarg.flowupdater.integrations.optifineplugin;
+package fr.flowarg.flowupdater.integrations.optifineintegration;
 
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;

@@ -1,7 +1,7 @@
 package fr.flowarg.flowupdater.versions;
 
-import fr.flowarg.flowupdater.integrations.curseforgeplugin.CurseMod;
-import fr.flowarg.flowupdater.integrations.optifineplugin.OptiFine;
+import fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseMod;
+import fr.flowarg.flowupdater.integrations.optifineintegration.OptiFine;
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.FlowUpdater;

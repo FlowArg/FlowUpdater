@@ -1,4 +1,4 @@
-package fr.flowarg.flowupdater.integrations.optifineplugin;
+package fr.flowarg.flowupdater.integrations.optifineintegration;
 
 public class OptiFine
 {

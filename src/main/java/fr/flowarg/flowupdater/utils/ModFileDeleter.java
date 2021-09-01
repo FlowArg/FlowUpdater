@@ -2,8 +2,8 @@ package fr.flowarg.flowupdater.utils;
 
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowupdater.download.json.Mod;
-import fr.flowarg.flowupdater.integrations.curseforgeplugin.CurseMod;
-import fr.flowarg.flowupdater.integrations.optifineplugin.OptiFine;
+import fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseMod;
+import fr.flowarg.flowupdater.integrations.optifineintegration.OptiFine;
 
 import java.io.IOException;
 import java.nio.file.Files;

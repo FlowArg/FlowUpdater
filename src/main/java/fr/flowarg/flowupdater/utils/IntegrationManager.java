@@ -9,11 +9,11 @@ import fr.flowarg.flowupdater.download.IProgressCallback;
 import fr.flowarg.flowupdater.download.Step;
 import fr.flowarg.flowupdater.download.json.CurseFileInfo;
 import fr.flowarg.flowupdater.download.json.CurseModPackInfo;
-import fr.flowarg.flowupdater.integrations.curseforgeplugin.CurseForgeIntegration;
-import fr.flowarg.flowupdater.integrations.curseforgeplugin.CurseMod;
-import fr.flowarg.flowupdater.integrations.curseforgeplugin.CurseModPack;
-import fr.flowarg.flowupdater.integrations.optifineplugin.OptiFine;
-import fr.flowarg.flowupdater.integrations.optifineplugin.OptiFineIntegration;
+import fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseForgeIntegration;
+import fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseMod;
+import fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseModPack;
+import fr.flowarg.flowupdater.integrations.optifineintegration.OptiFine;
+import fr.flowarg.flowupdater.integrations.optifineintegration.OptiFineIntegration;
 import fr.flowarg.flowupdater.versions.AbstractForgeVersion;
 
 import java.nio.file.Files;

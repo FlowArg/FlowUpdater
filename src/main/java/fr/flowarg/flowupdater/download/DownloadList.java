@@ -1,7 +1,7 @@
 package fr.flowarg.flowupdater.download;
 
-import fr.flowarg.flowupdater.integrations.optifineplugin.OptiFine;
-import fr.flowarg.flowupdater.integrations.curseforgeplugin.CurseMod;
+import fr.flowarg.flowupdater.integrations.optifineintegration.OptiFine;
+import fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseMod;
 import fr.flowarg.flowupdater.download.json.AssetDownloadable;
 import fr.flowarg.flowupdater.download.json.Downloadable;
 import fr.flowarg.flowupdater.download.json.ExternalFile;

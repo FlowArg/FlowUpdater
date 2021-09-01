@@ -1,4 +1,4 @@
-package fr.flowarg.flowupdater.integrations.curseforgeplugin;
+package fr.flowarg.flowupdater.integrations.curseforgeintegration;
 
 import java.util.List;
 
