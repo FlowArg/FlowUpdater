@@ -1,25 +1,20 @@
 package fr.flowarg.flowupdater.curseforgeplugin;
 
-import java.util.Collections;
 import java.util.List;
 
 public class CurseModPack
 {
-    public static final CurseModPack BAD = new CurseModPack("", "", "", Collections.emptyList(), false);
-
     private final String name;
     private final String version;
     private final String author;
     private final List<CurseModPackMod> mods;
-    private final boolean installExtFiles;
 
-    public CurseModPack(String name, String version, String author, List<CurseModPackMod> mods, boolean installExtFiles)
+    public CurseModPack(String name, String version, String author, List<CurseModPackMod> mods)
     {
         this.name = name;
         this.version = version;
         this.author = author;
         this.mods = mods;
-        this.installExtFiles = installExtFiles;
     }
 
     public String getName()
@@ -40,11 +35,6 @@ public class CurseModPack
     public List<CurseModPackMod> getMods()
     {
         return this.mods;
-    }
-
-    public boolean isInstallExtFiles()
-    {
-        return this.installExtFiles;
     }
 
     public static class CurseModPackMod extends CurseMod

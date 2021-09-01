@@ -85,7 +85,7 @@ public class CurseForgePlugin
         try
         {
             this.extractModPack(this.checkForUpdates(projectID, fileID), installExtFiles);
-            return this.parseMods(installExtFiles);
+            return this.parseMods();
         }
         catch (Exception e)
         {
@@ -191,8 +191,8 @@ public class CurseForgePlugin
         }
     }
 
-    @Contract("_ -> new")
-    private @NotNull CurseModPack parseMods(boolean installExtFiles) throws Exception
+
+    private @NotNull CurseModPack parseMods() throws Exception
     {
         this.getLogger().info("Fetching mods...");
 
@@ -248,7 +248,7 @@ public class CurseForgePlugin
         final String modPackVersion = manifestObj.get("version").getAsString();
         final String modPackAuthor = manifestObj.get("author").getAsString();
 
-        return new CurseModPack(modPackName, modPackVersion, modPackAuthor, mods, installExtFiles);
+        return new CurseModPack(modPackName, modPackVersion, modPackAuthor, mods);
     }
 
     public void shutdownOKHTTP()
