@@ -109,6 +109,7 @@ var activeTableTab = "activeTableTab";
 <br>
 <pre>public class <span class="typeNameLabel">VanillaDownloader</span>
 extends java.lang.Object</pre>
+<div class="block">This class handles the downloading of vanilla files (client, assets, natives...).</div>
 </li>
 </ul>
 </div>
@@ -128,7 +129,9 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/download/VanillaDownloader.html#VanillaDownloader-java.nio.file.Path-fr.flowarg.flowupdater.FlowUpdater-">VanillaDownloader</a></span>(java.nio.file.Path&nbsp;dir,
-                 <a href="../../../../fr/flowarg/flowupdater/FlowUpdater.html" title="class in fr.flowarg.flowupdater">FlowUpdater</a>&nbsp;flowUpdater)</code>&nbsp;</td>
+                 <a href="../../../../fr/flowarg/flowupdater/FlowUpdater.html" title="class in fr.flowarg.flowupdater">FlowUpdater</a>&nbsp;flowUpdater)</code>
+<div class="block">Construct a new VanillaDownloader object.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -147,7 +150,9 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/download/VanillaDownloader.html#download--">download</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/download/VanillaDownloader.html#download--">download</a></span>()</code>
+<div class="block">This method downloads calls other methods to download and verify all files.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -180,9 +185,13 @@ extends java.lang.Object</pre>
 <pre>public&nbsp;VanillaDownloader(java.nio.file.Path&nbsp;dir,
                          <a href="../../../../fr/flowarg/flowupdater/FlowUpdater.html" title="class in fr.flowarg.flowupdater">FlowUpdater</a>&nbsp;flowUpdater)
                   throws java.io.IOException</pre>
+<div class="block">Construct a new VanillaDownloader object.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>dir</code> - the installation directory.</dd>
+<dd><code>flowUpdater</code> - the flow updater object.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code></dd>
+<dd><code>java.io.IOException</code> - if an I/O error occurred.</dd>
 </dl>
 </li>
 </ul>
@@ -202,9 +211,10 @@ extends java.lang.Object</pre>
 <h4>download</h4>
 <pre>public&nbsp;void&nbsp;download()
               throws java.lang.Exception</pre>
+<div class="block">This method downloads calls other methods to download and verify all files.</div>
 <dl>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.lang.Exception</code></dd>
+<dd><code>java.lang.Exception</code> - if an I/O error occurred.</dd>
 </dl>
 </li>
 </ul>
