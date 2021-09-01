@@ -4,9 +4,6 @@ import fr.flowarg.flowupdater.FlowUpdater;
 import fr.flowarg.flowupdater.versions.AbstractForgeVersion;
 import fr.flowarg.flowupdater.versions.VanillaVersion;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.function.Supplier;
 
 /**
@@ -26,8 +23,7 @@ public class BuilderArgument<T>
     private T badObject = null;
     private T object = null;
     private boolean isRequired;
-    private final List<BuilderArgument<?>> required = new ArrayList<>();
-    
+
     public BuilderArgument(String objectName, Supplier<T> initialValue)
     {
         this.objectName = objectName;
@@ -54,14 +50,6 @@ public class BuilderArgument<T>
     
     public T get() throws BuilderException
     {
-        this.required.forEach(arg -> {
-            if(arg == this)
-                throw new BuilderException(String.format("This (%s) is required by the same argument!", this.objectName));
-
-            if((arg.get() == null || arg.get() == arg.badObject()) && this.object != null)
-                throw new BuilderException(arg.getObjectName() + " cannot be null/a bad object if you're using " + this.objectName + " argument!");
-        });
-
         if(this.object == this.badObject)
             throw new BuilderException("Argument" + this.objectName + " is a bad object!");
 
@@ -81,12 +69,8 @@ public class BuilderArgument<T>
     
     public BuilderArgument<T> require(BuilderArgument<?>... required)
     {
-        final List<BuilderArgument<?>> toAdd = Arrays.asList(required);
-        toAdd.forEach(builderArgument -> {
-            if(this.required.contains(builderArgument))
-                throw new BuilderException(String.format("%s argument already added as a requirement of %s!", builderArgument.getObjectName(), this.objectName));
-        });
-        this.required.addAll(toAdd);
+        for (BuilderArgument<?> arg : required)
+            arg.isRequired = true;
         return this;
     }
     
@@ -115,6 +99,6 @@ public class BuilderArgument<T>
     @Override
     public String toString()
     {
-        return "BuilderArgument{" + "objectName='" + this.objectName + '\'' + ", isRequired=" + this.isRequired + ", required=" + this.required + '}';
+        return "BuilderArgument{" + "objectName='" + this.objectName + '\'' + ", isRequired=" + this.isRequired + '}';
     }
 }
