@@ -14,9 +14,10 @@ import fr.flowarg.flowupdater.download.Step;
 import fr.flowarg.flowupdater.download.json.CurseFileInfo;
 import fr.flowarg.flowupdater.download.json.CurseModPackInfo;
 import fr.flowarg.flowupdater.download.json.Mod;
+import fr.flowarg.flowupdater.integrations.curseforgeplugin.CurseMod;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
-import fr.flowarg.flowupdater.utils.PluginManager;
+import fr.flowarg.flowupdater.utils.IntegrationManager;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
 import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
@@ -45,7 +46,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
     private final String fabricVersion;
     private final List<CurseFileInfo> curseMods;
     private final ModFileDeleter fileDeleter;
-    private List<Object> allCurseMods;
+    private List<CurseMod> allCurseMods;
     private final String installerVersion;
     private final CurseModPackInfo modPackInfo;
 
@@ -276,13 +277,12 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
      * {@inheritDoc}
      */
     @Override
-    public void installMods(Path modsDir, PluginManager pluginManager) throws Exception
+    public void installMods(Path modsDir, IntegrationManager integrationManager) throws Exception
     {
         this.callback.step(Step.MODS);
-        final boolean cursePluginLoaded = pluginManager.isCursePluginLoaded();
 
-        this.installAllMods(modsDir, cursePluginLoaded);
-        this.fileDeleter.delete(modsDir, this.mods, cursePluginLoaded, this.allCurseMods, false, null);
+        this.installAllMods(modsDir);
+        this.fileDeleter.delete(modsDir, this.mods, this.allCurseMods, null);
     }
 
     public ModFileDeleter getFileDeleter() {
@@ -304,9 +304,6 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
         } catch (Exception e) {
             this.logger.printStackTrace(e);
         }
-
-        if(!this.curseMods.isEmpty() && !flowUpdater.getUpdaterOptions().isEnableCurseForgePlugin())
-            this.logger.warn("You must enable the enableCurseForgePlugin option to use curse forge features!");
     }
 
     /**
@@ -351,15 +348,16 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
         return this.installerUrl;
     }
 
-    public List<Object> getAllCurseMods() {
+    public List<CurseMod> getAllCurseMods() {
         return this.allCurseMods;
     }
 
     /**
      * {@inheritDoc}
+     * @param allCurseMods
      */
     @Override
-    public void setAllCurseMods(List<Object> allCurseMods) {
+    public void setAllCurseMods(List<CurseMod> allCurseMods) {
         this.allCurseMods = allCurseMods;
     }
 

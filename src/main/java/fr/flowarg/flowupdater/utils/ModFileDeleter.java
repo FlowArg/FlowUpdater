@@ -1,9 +1,9 @@
 package fr.flowarg.flowupdater.utils;
 
-import fr.antoineok.flowupdater.optifineplugin.OptiFine;
 import fr.flowarg.flowio.FileUtils;
-import fr.flowarg.flowupdater.curseforgeplugin.CurseMod;
 import fr.flowarg.flowupdater.download.json.Mod;
+import fr.flowarg.flowupdater.integrations.curseforgeplugin.CurseMod;
+import fr.flowarg.flowupdater.integrations.optifineplugin.OptiFine;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -26,13 +26,11 @@ public class ModFileDeleter implements IFileDeleter
      * Delete all bad files in the provided directory.
      * @param modsDir the mod's folder.
      * @param mods the mods list.
-     * @param cursePluginLoaded is the CurseForge plugin loaded ?
      * @param allCurseMods the curse's mods list.
-     * @param optiFinePluginLoaded is the OptiFine plugin loaded ?
-     * @param optiFineParam the OptiFine object.
+     * @param optiFine the OptiFine object.
      * @throws Exception thrown if an error occurred
      */
-    public void delete(Path modsDir, List<Mod> mods, boolean cursePluginLoaded, List<Object> allCurseMods, boolean optiFinePluginLoaded, Object optiFineParam) throws Exception
+    public void delete(Path modsDir, List<Mod> mods, List<CurseMod> allCurseMods, OptiFine optiFine) throws Exception
     {
         if(!this.isUseFileDeleter()) return;
 
@@ -45,37 +43,29 @@ public class ModFileDeleter implements IFileDeleter
             if(verifiedFiles.contains(fileInDir))
                 continue;
 
-            if(mods.isEmpty() && allCurseMods.isEmpty() && optiFineParam == null)
+            if(mods.isEmpty() && allCurseMods.isEmpty() && optiFine == null)
             {
                 if (!verifiedFiles.contains(fileInDir))
                     badFiles.add(fileInDir);
             }
             else
             {
-                if (cursePluginLoaded)
-                {
-                    this.processCurseForgeMods(allCurseMods, fileInDir, badFiles, verifiedFiles);
-                }
+                this.processCurseForgeMods(allCurseMods, fileInDir, badFiles, verifiedFiles);
 
-                if (optiFinePluginLoaded)
+                if (optiFine != null)
                 {
-                    final OptiFine optifine = (OptiFine)optiFineParam;
-                    if (optifine != null)
+                    if (optiFine.getName().equalsIgnoreCase(fileInDir.getFileName().toString()))
                     {
-                        if (optifine.getName().equalsIgnoreCase(fileInDir.getFileName().toString()))
+                        if (FileUtils.getFileSizeBytes(fileInDir) == optiFine.getSize())
                         {
-                            if (FileUtils.getFileSizeBytes(fileInDir) == optifine.getSize())
-                            {
-                                badFiles.remove(fileInDir);
-                                verifiedFiles.add(fileInDir);
-                            }
-                            else badFiles.add(fileInDir);
+                            badFiles.remove(fileInDir);
+                            verifiedFiles.add(fileInDir);
                         }
-                        else
-                        {
-                            if (!verifiedFiles.contains(fileInDir))
-                                badFiles.add(fileInDir);
-                        }
+                        else badFiles.add(fileInDir);
+                    }
+                    else
+                    {
+                        if (!verifiedFiles.contains(fileInDir)) badFiles.add(fileInDir);
                     }
                 }
 
@@ -111,11 +101,10 @@ public class ModFileDeleter implements IFileDeleter
         badFiles.clear();
     }
 
-    private void processCurseForgeMods(List<Object> allCurseMods, Path fileInDir, Set<Path> badFiles, List<Path> verifiedFiles) throws Exception
+    private void processCurseForgeMods(List<CurseMod> allCurseMods, Path fileInDir, Set<Path> badFiles, List<Path> verifiedFiles) throws Exception
     {
-        for (Object obj : allCurseMods)
+        for (CurseMod mod : allCurseMods)
         {
-            final CurseMod mod = (CurseMod)obj;
             if (mod.getName().equalsIgnoreCase(fileInDir.getFileName().toString()))
             {
                 if (mod.getMd5().contains("-"))

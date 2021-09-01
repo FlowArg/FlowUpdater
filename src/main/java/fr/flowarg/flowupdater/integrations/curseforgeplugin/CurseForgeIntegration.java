@@ -1,17 +1,14 @@
-package fr.flowarg.flowupdater.curseforgeplugin;
+package fr.flowarg.flowupdater.integrations.curseforgeplugin;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.therandomlabs.curseapi.CurseAPI;
-import com.therandomlabs.curseapi.CurseException;
-import com.therandomlabs.curseapi.util.OkHttpUtils;
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowstringer.StringUtils;
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import org.jetbrains.annotations.Contract;
+import fr.flowarg.flowupdater.download.json.CurseFileInfo;
+import fr.flowarg.flowupdater.utils.FlowUpdaterException;
+import fr.flowarg.flowupdater.utils.IOUtils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -19,33 +16,40 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-public class CurseForgePlugin
+public class CurseForgeIntegration
 {
-    public static final CurseForgePlugin INSTANCE = new CurseForgePlugin();
+    private final ILogger logger;
+    private final Path folder;
 
-    private ILogger logger;
-    private Path folder;
+    public CurseForgeIntegration(ILogger logger, Path folder) throws Exception
+    {
+        this.logger = logger;
+        this.folder = folder;
+        Files.createDirectories(this.folder);
+    }
 
     @NotNull
     public URL getURLOfFile(int projectID, int fileID)
     {
         try
         {
-            return CurseAPI.fileDownloadURL(projectID, fileID).map(HttpUrl::url).orElseThrow(CurseForgePluginException::new);
-        } catch (CurseException e)
+            return new URL(IOUtils.getContent(new URL(String.format("https://addons-ecs.forgesvc.net/api/v2/addon/%d/file/%d/download-url", projectID, fileID))));
+        } catch (Exception e)
         {
-            throw new CurseForgePluginException(e);
+            throw new FlowUpdaterException(e);
         }
     }
 
@@ -73,7 +77,7 @@ public class CurseForgePlugin
             return new CurseMod(url.getFile().substring(url.getFile().lastIndexOf('/') + 1), url.toExternalForm(), md5, length);
         } catch (Exception e)
         {
-            throw new CurseForgePluginException(e);
+            throw new FlowUpdaterException(e);
         } finally
         {
             if (connection != null) connection.disconnect();
@@ -89,7 +93,8 @@ public class CurseForgePlugin
         }
         catch (Exception e)
         {
-            throw new CurseForgePluginException(e);
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -97,14 +102,12 @@ public class CurseForgePlugin
     {
         final URL link = this.getURLOfFile(projectID, fileID);
         final String linkStr = link.toExternalForm();
-        final Path outPath = Paths.get(this.getFolder().toString(), linkStr.substring(linkStr.lastIndexOf('/') + 1));
+        final Path outPath = this.folder.resolve(linkStr.substring(linkStr.lastIndexOf('/') + 1));
+        final String md5 = this.getMD5(link);
 
-        if(Files.notExists(outPath) || !FileUtils.getMD5(outPath).equalsIgnoreCase(this.getMD5(link)))
-        {
-            this.getLogger().info(String.format("Downloading %s from %s...", outPath.getFileName().toString(), linkStr));
-            Files.createDirectories(outPath.getParent());
-            Files.copy(this.catchForbidden(link), outPath, StandardCopyOption.REPLACE_EXISTING);
-        }
+        if(Files.notExists(outPath) || (!md5.contains("-") && !FileUtils.getMD5(outPath).equalsIgnoreCase(md5)))
+            IOUtils.download(this.logger, link, outPath);
+
         return outPath;
     }
 
@@ -122,7 +125,7 @@ public class CurseForgePlugin
         }
         catch (Exception e)
         {
-            throw new CurseForgePluginException(e);
+            throw new FlowUpdaterException(e);
         }
         finally
         {
@@ -133,17 +136,27 @@ public class CurseForgePlugin
 
     private void extractModPack(@NotNull Path out, boolean installExtFiles) throws Exception
     {
-        this.getLogger().info("Extracting mod pack...");
+        this.logger.info("Extracting mod pack...");
         final ZipFile zipFile = new ZipFile(out.toFile(), ZipFile.OPEN_READ, StandardCharsets.UTF_8);
-        final Path dirPath = this.getFolder().getParent();
+        final Path dirPath = this.folder.getParent();
         final Enumeration<? extends ZipEntry> entries = zipFile.entries();
         while (entries.hasMoreElements())
         {
             final ZipEntry entry = entries.nextElement();
-            final Path flPath = Paths.get(dirPath.toString(), StringUtils.empty(entry.getName(), "overrides/"));
-            if(entry.getName().equalsIgnoreCase("manifest.json") && Files.exists(flPath) && entry.getCrc() == FileUtils.getCRC32(flPath))
-                break;
-            if(installExtFiles && !entry.getName().equals("modlist.html"))
+            final Path flPath = dirPath.resolve(StringUtils.empty(entry.getName(), "overrides/"));
+            final String entryName = entry.getName();
+
+            if(entryName.equalsIgnoreCase("manifest.json"))
+            {
+                if(Files.notExists(flPath) || entry.getCrc() != FileUtils.getCRC32(flPath))
+                    this.transferAndClose(flPath, zipFile, entry);
+                continue;
+            }
+
+            if(entryName.equals("modlist.html"))
+                continue;
+
+            if(installExtFiles)
             {
                 if(Files.notExists(flPath))
                 {
@@ -153,13 +166,14 @@ public class CurseForgePlugin
                     this.transferAndClose(flPath, zipFile, entry);
                 }
             }
-            else if(entry.getName().equals("manifest.json")) this.transferAndClose(flPath, zipFile, entry);
         }
         zipFile.close();
     }
 
     private void transferAndClose(Path flPath, ZipFile zipFile, ZipEntry entry) throws Exception
     {
+        if(Files.notExists(flPath.getParent()))
+            Files.createDirectories(flPath.getParent());
         try(OutputStream pathStream = Files.newOutputStream(flPath);
             BufferedOutputStream fo = new BufferedOutputStream(pathStream);
             InputStream is = zipFile.getInputStream(entry)
@@ -171,9 +185,9 @@ public class CurseForgePlugin
 
     private @NotNull CurseModPack parseMods() throws Exception
     {
-        this.getLogger().info("Fetching mods...");
+        this.logger.info("Fetching mods...");
 
-        final Path dirPath = Paths.get(this.getFolder().getParent().toString());
+        final Path dirPath = Paths.get(this.folder.getParent().toString());
         final BufferedReader manifestReader = Files.newBufferedReader(Paths.get(dirPath.toString(), "manifest.json"));
         final JsonObject manifestObj = JsonParser.parseReader(manifestReader).getAsJsonObject();
         final List<ProjectMod> manifestFiles = new ArrayList<>();
@@ -186,7 +200,7 @@ public class CurseForgePlugin
 
         final BufferedReader cacheReader = Files.newBufferedReader(cachePath);
         final JsonArray cacheArray = JsonParser.parseReader(cacheReader).getAsJsonArray();
-        final List<CurseModPack.CurseModPackMod> mods = new ArrayList<>();
+        final Queue<CurseModPack.CurseModPackMod> mods = new ConcurrentLinkedQueue<>();
 
         cacheArray.forEach(jsonElement -> {
             final JsonObject object = jsonElement.getAsJsonObject();
@@ -195,12 +209,13 @@ public class CurseForgePlugin
             final String md5 = object.get("md5").getAsString();
             final int length = object.get("length").getAsInt();
             final ProjectMod projectMod = ProjectMod.fromJsonObject(object);
-            final boolean required = projectMod.isRequired();
-            mods.add(new CurseModPack.CurseModPackMod(name, downloadURL, md5, length, required));
+            mods.add(new CurseModPack.CurseModPackMod(name, downloadURL, md5, length, projectMod.isRequired()));
             manifestFiles.remove(projectMod);
         });
 
-        manifestFiles.forEach(projectMod -> {
+        final ExecutorService executorService = Executors.newCachedThreadPool();
+
+        manifestFiles.forEach(projectMod -> executorService.submit(() -> {
             final boolean required = projectMod.isRequired();
             final CurseModPack.CurseModPackMod mod = new CurseModPack.CurseModPackMod(this.getCurseMod(projectMod), required);
             final JsonObject inCache = new JsonObject();
@@ -215,7 +230,16 @@ public class CurseForgePlugin
 
             cacheArray.add(inCache);
             mods.add(mod);
-        });
+        }));
+
+        try
+        {
+            executorService.shutdown();
+            executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
+        } catch (InterruptedException e)
+        {
+            throw new FlowUpdaterException(e);
+        }
 
         manifestReader.close();
         cacheReader.close();
@@ -225,115 +249,27 @@ public class CurseForgePlugin
         final String modPackVersion = manifestObj.get("version").getAsString();
         final String modPackAuthor = manifestObj.get("author").getAsString();
 
-        return new CurseModPack(modPackName, modPackVersion, modPackAuthor, mods);
+        return new CurseModPack(modPackName, modPackVersion, modPackAuthor, new ArrayList<>(mods));
     }
 
-    public void shutdownOKHTTP()
+    private static class ProjectMod extends CurseFileInfo
     {
-        final OkHttpClient client = OkHttpUtils.getClient();
-        if(client != null)
-        {
-            client.dispatcher().executorService().shutdown();
-            client.connectionPool().evictAll();
-            if(client.cache() != null)
-            {
-                try
-                {
-                    Objects.requireNonNull(client.cache()).close();
-                } catch (Exception ignored) {}
-            }
-        }
-    }
-
-    public InputStream catchForbidden(@NotNull URL url) throws Exception
-    {
-        final HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-        connection.addRequestProperty("User-Agent", "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.124 Safari/537.36");
-        connection.setInstanceFollowRedirects(true);
-        return connection.getInputStream();
-    }
-
-    private static class ProjectMod
-    {
-        private final int projectID;
-        private final int fileID;
         private final boolean required;
 
         public ProjectMod(int projectID, int fileID, boolean required)
         {
-            this.projectID = projectID;
-            this.fileID = fileID;
+            super(projectID, fileID);
             this.required = required;
         }
 
-        @Contract("_ -> new")
         private static @NotNull ProjectMod fromJsonObject(@NotNull JsonObject object)
         {
             return new ProjectMod(object.get("projectID").getAsInt(), object.get("fileID").getAsInt(), object.get("required").getAsBoolean());
         }
 
-        public int getProjectID()
-        {
-            return this.projectID;
-        }
-
-        public int getFileID()
-        {
-            return this.fileID;
-        }
-
         public boolean isRequired()
         {
             return this.required;
-        }
-
-        @Override
-        public boolean equals(Object o)
-        {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            final ProjectMod that = (ProjectMod)o;
-
-            if (this.projectID != that.projectID) return false;
-            if (this.fileID != that.fileID) return false;
-            return this.required == that.required;
-        }
-
-        @Override
-        public int hashCode()
-        {
-            int result = this.projectID;
-            result = 31 * result + this.fileID;
-            result = 31 * result + (this.required ? 1 : 0);
-            return result;
-        }
-    }
-
-    public @NotNull ILogger getLogger()
-    {
-        return this.logger;
-    }
-
-    public void setLogger(@NotNull ILogger logger)
-    {
-        this.logger = logger;
-    }
-
-    public @NotNull Path getFolder()
-    {
-        return this.folder;
-    }
-
-    public void setFolder(@NotNull Path folder)
-    {
-        try
-        {
-            this.folder = folder;
-            Files.createDirectories(this.folder);
-        } catch (Exception e)
-        {
-            throw new CurseForgePluginException(e);
         }
     }
 }

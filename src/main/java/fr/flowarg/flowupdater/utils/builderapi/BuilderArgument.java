@@ -50,7 +50,7 @@ public class BuilderArgument<T>
     
     public T get() throws BuilderException
     {
-        if(this.object == this.badObject)
+        if(this.object == this.badObject && this.badObject != null)
             throw new BuilderException("Argument" + this.objectName + " is a bad object!");
 
         if(this.isRequired)

@@ -4,7 +4,6 @@ import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowstringer.StringUtils;
 import fr.flowarg.flowupdater.FlowUpdater;
-import fr.flowarg.flowupdater.download.json.AssetDownloadable;
 import fr.flowarg.flowupdater.download.json.Downloadable;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowzipper.ZipUtils;
@@ -29,7 +28,6 @@ public class VanillaDownloader
     private final ILogger logger;
     private final IProgressCallback callback;
     private final DownloadList downloadList;
-    private final int threadsForAssets;
     private final Path natives;
     private final Path assets;
     private final String vanillaJsonURL;
@@ -40,7 +38,6 @@ public class VanillaDownloader
         this.logger = flowUpdater.getLogger();
         this.callback = flowUpdater.getCallback();
         this.downloadList = flowUpdater.getDownloadList();
-        this.threadsForAssets = flowUpdater.getUpdaterOptions().getNmbrThreadsForAssets();
 
         this.natives = this.dir.resolve("natives");
         this.assets = this.dir.resolve("assets");
@@ -153,37 +150,34 @@ public class VanillaDownloader
         this.logger.info("Checking assets...");
         this.callback.step(Step.DL_ASSETS);
 
-        final ExecutorService executorService = Executors.newFixedThreadPool(this.threadsForAssets);
+        final ExecutorService executorService = Executors.newCachedThreadPool();
 
-        for (int i = 0; i < this.threadsForAssets; i++)
-        {
-            executorService.submit(() -> {
-                try {
-                    AssetDownloadable assetDownloadable;
-                    while ((assetDownloadable = this.downloadList.getDownloadableAssets().poll()) != null)
-                    {
-                        final Path downloadPath = this.assets.resolve(assetDownloadable.getFile());
+        this.downloadList.getDownloadableAssets().forEach(assetDownloadable -> executorService.submit(() -> {
+            try
+            {
+                final Path downloadPath = this.assets.resolve(assetDownloadable.getFile());
 
-                        if (Files.notExists(downloadPath) || FileUtils.getFileSizeBytes(downloadPath) != assetDownloadable.getSize())
-                        {
-                            final Path localAssetPath = IOUtils.getMinecraftFolder().resolve("assets").resolve(assetDownloadable.getFile());
-                            if(Files.exists(localAssetPath) && FileUtils.getFileSizeBytes(localAssetPath) == assetDownloadable.getSize()) IOUtils.copy(this.logger, localAssetPath, downloadPath);
-                            else
-                            {
-                                IOUtils.download(this.logger, new URL(assetDownloadable.getUrl()), downloadPath);
-                                this.callback.onFileDownloaded(downloadPath);
-                            }
-                        }
-
-                        this.downloadList.incrementDownloaded(assetDownloadable.getSize());
-                        this.callback.update(this.downloadList.getDownloadedBytes(), this.downloadList.getTotalToDownloadBytes());
-                    }
-                } catch (Exception e)
+                if (Files.notExists(downloadPath) || FileUtils.getFileSizeBytes(downloadPath) != assetDownloadable.getSize())
                 {
-                    this.logger.printStackTrace(e);
+                    final Path localAssetPath = IOUtils.getMinecraftFolder().resolve("assets").resolve(assetDownloadable.getFile());
+                    if (Files.exists(localAssetPath) && FileUtils.getFileSizeBytes(localAssetPath) == assetDownloadable.getSize())
+                        IOUtils.copy(this.logger, localAssetPath, downloadPath);
+                    else
+                    {
+                        IOUtils.download(this.logger, new URL(assetDownloadable.getUrl()), downloadPath);
+                        this.callback.onFileDownloaded(downloadPath);
+                    }
                 }
-            });
-        }
+
+                this.downloadList.incrementDownloaded(assetDownloadable.getSize());
+                this.callback.update(this.downloadList.getDownloadedBytes(), this.downloadList.getTotalToDownloadBytes());
+            }
+            catch (Exception e)
+            {
+                this.logger.printStackTrace(e);
+            }
+        }));
+
         try
         {
             executorService.shutdown();

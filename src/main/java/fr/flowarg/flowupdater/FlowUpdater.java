@@ -6,9 +6,8 @@ import fr.flowarg.flowlogger.Logger;
 import fr.flowarg.flowupdater.download.*;
 import fr.flowarg.flowupdater.download.json.ExternalFile;
 import fr.flowarg.flowupdater.download.json.Mod;
-import fr.flowarg.flowupdater.utils.FallbackPluginManager;
 import fr.flowarg.flowupdater.utils.IOUtils;
-import fr.flowarg.flowupdater.utils.PluginManager;
+import fr.flowarg.flowupdater.utils.IntegrationManager;
 import fr.flowarg.flowupdater.utils.UpdaterOptions;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
@@ -56,8 +55,8 @@ public class FlowUpdater
     /** Represent a list of Runnable. Post Executions are called after update. */
     private final List<Runnable> postExecutions;
 
-    /** The plugin manager object */
-    private final PluginManager pluginManager;
+    /** The integration manager object */
+    private final IntegrationManager integrationManager;
 
     /** Default callback */
     public static final IProgressCallback NULL_CALLBACK = new IProgressCallback()
@@ -90,7 +89,6 @@ public class FlowUpdater
     {
         this.logger = logger;
         this.version = version;
-        this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.5.0"));
         this.externalFiles = externalFiles;
         this.postExecutions = postExecutions;
         this.forgeVersion = forgeVersion;
@@ -98,10 +96,9 @@ public class FlowUpdater
         this.updaterOptions = updaterOptions;
         this.callback = callback;
         this.downloadList = new DownloadList();
+        this.integrationManager = new IntegrationManager(this);
+        this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.5.0"));
         this.callback.init(this.logger);
-        if(this.updaterOptions.isEnableCurseForgePlugin() || this.updaterOptions.isEnableOptiFineDownloaderPlugin())
-            this.pluginManager = new PluginManager(this);
-        else this.pluginManager = new FallbackPluginManager(this);
     }
 
     /**
@@ -140,17 +137,14 @@ public class FlowUpdater
         if(this.forgeVersion != null && this.version.getVersionType() == VersionType.FORGE)
         {
             this.checkMods(this.forgeVersion, modsDirPath);
-            if(this.updaterOptions.isEnableCurseForgePlugin())
-                this.pluginManager.loadCurseForgePlugin(modsDirPath, this.forgeVersion);
-            if(this.updaterOptions.isEnableOptiFineDownloaderPlugin())
-                this.pluginManager.loadOptiFinePlugin(modsDirPath, this.forgeVersion);
+            this.integrationManager.loadCurseForgeIntegration(modsDirPath, this.forgeVersion);
+            this.integrationManager.loadOptiFineIntegration(modsDirPath, this.forgeVersion);
         }
 
         if (this.fabricVersion != null && this.version.getVersionType() == VersionType.FABRIC)
         {
             this.checkMods(this.fabricVersion, modsDirPath);
-            if(this.updaterOptions.isEnableCurseForgePlugin())
-                this.pluginManager.loadCurseForgePlugin(modsDirPath, this.fabricVersion);
+            this.integrationManager.loadCurseForgeIntegration(modsDirPath, this.fabricVersion);
         }
 
         if (Files.notExists(dir))
@@ -183,7 +177,7 @@ public class FlowUpdater
             if(!modLoader.isModLoaderAlreadyInstalled(dir))
                 modLoader.install(dir);
             else this.logger.info(name + " is already installed ! Skipping installation...");
-            modLoader.installMods(dir.resolve("mods"), this.pluginManager);
+            modLoader.installMods(dir.resolve("mods"), this.integrationManager);
         }
     }
 
@@ -212,12 +206,11 @@ public class FlowUpdater
 
     private void runPostExecutions()
     {
-        if(!this.postExecutions.isEmpty())
-        {
-            this.callback.step(Step.POST_EXECUTIONS);
-            this.logger.info("Running post executions...");
-            this.postExecutions.forEach(Runnable::run);
-        }
+        if(this.postExecutions.isEmpty()) return;
+
+        this.callback.step(Step.POST_EXECUTIONS);
+        this.logger.info("Running post executions...");
+        this.postExecutions.forEach(Runnable::run);
     }
 
     private void endUpdate()
@@ -225,7 +218,6 @@ public class FlowUpdater
         this.callback.step(Step.END);
         this.callback.update(this.downloadList.getTotalToDownloadBytes(), this.downloadList.getTotalToDownloadBytes());
         this.downloadList.clear();
-        this.pluginManager.shutdown();
     }
 
     /**

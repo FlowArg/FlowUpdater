@@ -1,6 +1,7 @@
 package fr.flowarg.flowupdater.download.json;
 
 import com.google.gson.JsonObject;
+import fr.flowarg.flowupdater.utils.FlowUpdaterException;
 import fr.flowarg.flowupdater.utils.IOUtils;
 
 import java.net.MalformedURLException;
@@ -67,8 +68,7 @@ public class MCP
             return getMCPFromJson(new URL(jsonUrl));
         } catch (MalformedURLException e)
         {
-            e.printStackTrace();
-            return new MCP("", "", "", "", -1, -1);
+            throw new FlowUpdaterException(e);
         }
     }
     

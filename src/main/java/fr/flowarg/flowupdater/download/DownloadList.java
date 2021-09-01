@@ -1,7 +1,7 @@
 package fr.flowarg.flowupdater.download;
 
-import fr.antoineok.flowupdater.optifineplugin.OptiFine;
-import fr.flowarg.flowupdater.curseforgeplugin.CurseMod;
+import fr.flowarg.flowupdater.integrations.optifineplugin.OptiFine;
+import fr.flowarg.flowupdater.integrations.curseforgeplugin.CurseMod;
 import fr.flowarg.flowupdater.download.json.AssetDownloadable;
 import fr.flowarg.flowupdater.download.json.Downloadable;
 import fr.flowarg.flowupdater.download.json.ExternalFile;
@@ -24,8 +24,8 @@ public class DownloadList
     private final Queue<AssetDownloadable> downloadableAssets = new ConcurrentLinkedDeque<>();
     private final List<ExternalFile> extFiles = new ArrayList<>();
     private final List<Mod> mods = new ArrayList<>();
-    private final List<Object> curseMods = new ArrayList<>();
-    private Object optiFine = null;
+    private final List<CurseMod> curseMods = new ArrayList<>();
+    private OptiFine optiFine = null;
     private final AtomicLong totalToDownloadBytes = new AtomicLong(0);
     private final AtomicLong downloadedBytes = new AtomicLong(0);
     private boolean init = false;
@@ -38,9 +38,9 @@ public class DownloadList
         this.downloadableAssets.forEach(downloadable -> this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + downloadable.getSize()));
         this.extFiles.forEach(externalFile -> this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + externalFile.getSize()));
         this.mods.forEach(mod -> this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + mod.getSize()));
-        this.curseMods.forEach(obj -> this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + (long)(((CurseMod)obj).getLength())));
+        this.curseMods.forEach(obj -> this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + (long)(obj.getLength())));
         if (this.optiFine != null)
-            this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + (long)(((OptiFine)this.optiFine).getSize()));
+            this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + (long)(this.optiFine.getSize()));
         this.init = true;
     }
 
@@ -79,17 +79,17 @@ public class DownloadList
         return this.mods;
     }
 
-    public List<Object> getCurseMods()
+    public List<CurseMod> getCurseMods()
     {
         return this.curseMods;
     }
 
-    public Object getOptiFine()
+    public OptiFine getOptiFine()
     {
         return this.optiFine;
     }
 
-    public void setOptiFine(Object optiFine)
+    public void setOptiFine(OptiFine optiFine)
     {
         this.optiFine = optiFine;
     }

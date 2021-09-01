@@ -9,6 +9,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class CurseFileInfo
 {
@@ -52,8 +53,24 @@ public class CurseFileInfo
     {
         return this.projectID;
     }
+
     public int getFileID()
     {
         return this.fileID;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || this.getClass() != o.getClass()) return false;
+        final CurseFileInfo that = (CurseFileInfo)o;
+        return this.projectID == that.projectID && this.fileID == that.fileID;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(this.projectID, this.fileID);
     }
 }

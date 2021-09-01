@@ -1,4 +1,4 @@
-package fr.flowarg.flowupdater.curseforgeplugin;
+package fr.flowarg.flowupdater.integrations.curseforgeplugin;
 
 public class CurseMod
 {

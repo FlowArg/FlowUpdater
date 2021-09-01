@@ -2,12 +2,11 @@ package fr.flowarg.flowupdater.versions;
 
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.FlowUpdater;
-import fr.flowarg.flowupdater.curseforgeplugin.CurseMod;
 import fr.flowarg.flowupdater.download.DownloadList;
 import fr.flowarg.flowupdater.download.IProgressCallback;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.utils.IOUtils;
-import fr.flowarg.flowupdater.utils.PluginManager;
+import fr.flowarg.flowupdater.utils.IntegrationManager;
 
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -49,10 +48,10 @@ public interface IModLoaderVersion
     /**
      * Install all mods in the mods' directory.
      * @param modsDir mods directory.
-     * @param pluginManager used to check loaded plugins.
+     * @param integrationManager used to check loaded plugins.
      * @throws Exception if an I/O error occurred.
      */
-    void installMods(Path modsDir, PluginManager pluginManager) throws Exception;
+    void installMods(Path modsDir, IntegrationManager integrationManager) throws Exception;
 
     /**
      * Get all processed mods / mods to process.
@@ -60,7 +59,7 @@ public interface IModLoaderVersion
      */
     List<Mod> getMods();
 
-    default void installAllMods(Path modsDir, boolean cursePluginLoaded)
+    default void installAllMods(Path modsDir)
     {
         this.getDownloadList().getMods().forEach(mod -> {
             try
@@ -77,10 +76,7 @@ public interface IModLoaderVersion
             this.getCallback().update(this.getDownloadList().getDownloadedBytes(), this.getDownloadList().getTotalToDownloadBytes());
         });
 
-        if(!cursePluginLoaded) return;
-
-        this.getDownloadList().getCurseMods().forEach(obj -> {
-            final CurseMod curseMod = (CurseMod)obj;
+        this.getDownloadList().getCurseMods().forEach(curseMod -> {
             try
             {
                 final Path modFilePath = modsDir.resolve(curseMod.getName());

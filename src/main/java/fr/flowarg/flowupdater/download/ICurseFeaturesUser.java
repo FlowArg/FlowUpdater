@@ -2,6 +2,7 @@ package fr.flowarg.flowupdater.download;
 
 import fr.flowarg.flowupdater.download.json.CurseFileInfo;
 import fr.flowarg.flowupdater.download.json.CurseModPackInfo;
+import fr.flowarg.flowupdater.integrations.curseforgeplugin.CurseMod;
 
 import java.util.List;
 
@@ -23,5 +24,5 @@ public interface ICurseFeaturesUser
      * Define all curse mods to update.
      * @param curseMods curse mods to define.
      */
-    void setAllCurseMods(List<Object> curseMods);
+    void setAllCurseMods(List<CurseMod> curseMods);
 }

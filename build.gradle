@@ -51,13 +51,8 @@ version '1.5.0'
 archivesBaseName = "flowupdater"
 
 dependencies {
-    compileOnly project(":CurseForgePlugin")
-    compileOnly project(":OptifinePlugin")
-
     // Only for internal tests
     testImplementation 'fr.flowarg:openlauncherlib:3.2.2'
-    testRuntimeOnly project(':CurseForgePlugin')
-    testRuntimeOnly project(':OptifinePlugin')
     testImplementation 'org.json:json:20210307'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.7.2'
 }

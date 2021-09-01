@@ -1,11 +1,12 @@
-package fr.antoineok.flowupdater.optifineplugin;
+package fr.flowarg.flowupdater.integrations.optifineplugin;
 
 public class OptiFine
 {
     private final String name;
     private final int size;
 
-    public OptiFine(String name, int size) {
+    public OptiFine(String name, int size)
+    {
         this.name = name;
         this.size = size;
     }
