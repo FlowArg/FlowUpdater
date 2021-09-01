@@ -150,47 +150,24 @@ public class CurseForgePlugin
                     if (flPath.getFileName().toString().endsWith(flPath.getFileSystem().getSeparator())) Files.createDirectories(flPath);
                     if (entry.isDirectory()) continue;
 
-                    final NioZipObject nioZipObject = new NioZipObject(flPath, zipFile.getInputStream(entry));
-                    nioZipObject.transfer();
-                    nioZipObject.close();
+                    this.transferAndClose(flPath, zipFile, entry);
                 }
             }
-            else if(entry.getName().equals("manifest.json"))
-            {
-                final NioZipObject nioZipObject = new NioZipObject(flPath, zipFile.getInputStream(entry));
-                nioZipObject.transfer();
-                nioZipObject.close();
-            }
+            else if(entry.getName().equals("manifest.json")) this.transferAndClose(flPath, zipFile, entry);
         }
         zipFile.close();
     }
 
-    private static class NioZipObject
+    private void transferAndClose(Path flPath, ZipFile zipFile, ZipEntry entry) throws Exception
     {
-        private final OutputStream pathStream;
-        private final BufferedOutputStream fo;
-        private final InputStream is;
-
-        public NioZipObject(Path path, InputStream is) throws Exception
+        try(OutputStream pathStream = Files.newOutputStream(flPath);
+            BufferedOutputStream fo = new BufferedOutputStream(pathStream);
+            InputStream is = zipFile.getInputStream(entry)
+        )
         {
-            this.pathStream = Files.newOutputStream(path);
-            this.fo = new BufferedOutputStream(this.pathStream);
-            this.is = is;
-        }
-
-        public void transfer() throws Exception
-        {
-            while (this.is.available() > 0) this.fo.write(this.is.read());
-        }
-
-        public void close() throws Exception
-        {
-            this.fo.close();
-            this.pathStream.close();
-            this.is.close();
+            while (is.available() > 0) fo.write(is.read());
         }
     }
-
 
     private @NotNull CurseModPack parseMods() throws Exception
     {
