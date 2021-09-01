@@ -2,8 +2,6 @@ package fr.flowarg.flowupdater.curseforgeplugin;
 
 public class CurseMod
 {
-    public static final CurseMod BAD = new CurseMod("", "", "", -1);
-
     private final String name;
     private final String downloadURL;
     private final String md5;
