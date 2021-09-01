@@ -114,6 +114,7 @@ var activeTableTab = "activeTableTab";
 <br>
 <pre>public class <span class="typeNameLabel">CurseModPackInfo</span>
 extends <a href="../../../../../fr/flowarg/flowupdater/download/json/CurseFileInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseFileInfo</a></pre>
+<div class="block">This class represent a mod pack file in the CurseForge API.</div>
 </li>
 </ul>
 </div>
@@ -135,7 +136,9 @@ extends <a href="../../../../../fr/flowarg/flowupdater/download/json/CurseFileIn
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/download/json/CurseModPackInfo.html#CurseModPackInfo-int-int-boolean-java.lang.String...-">CurseModPackInfo</a></span>(int&nbsp;projectID,
                 int&nbsp;fileID,
                 boolean&nbsp;installExtFiles,
-                java.lang.String...&nbsp;excluded)</code>&nbsp;</td>
+                java.lang.String...&nbsp;excluded)</code>
+<div class="block">Construct a new CurseModPackInfo object.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -154,11 +157,15 @@ extends <a href="../../../../../fr/flowarg/flowupdater/download/json/CurseFileIn
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>java.lang.String[]</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/download/json/CurseModPackInfo.html#getExcluded--">getExcluded</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/download/json/CurseModPackInfo.html#getExcluded--">getExcluded</a></span>()</code>
+<div class="block">Get the excluded mods.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/download/json/CurseModPackInfo.html#isInstallExtFiles--">isInstallExtFiles</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/download/json/CurseModPackInfo.html#isInstallExtFiles--">isInstallExtFiles</a></span>()</code>
+<div class="block">Get the <a href="../../../../../fr/flowarg/flowupdater/download/json/CurseModPackInfo.html#installExtFiles"><code>installExtFiles</code></a> option.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -199,6 +206,14 @@ extends <a href="../../../../../fr/flowarg/flowupdater/download/json/CurseFileIn
                         int&nbsp;fileID,
                         boolean&nbsp;installExtFiles,
                         java.lang.String...&nbsp;excluded)</pre>
+<div class="block">Construct a new CurseModPackInfo object.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>projectID</code> - the ID of the project.</dd>
+<dd><code>fileID</code> - the ID of the file.</dd>
+<dd><code>installExtFiles</code> - should install external files like config and resource packs.</dd>
+<dd><code>excluded</code> - mods to exclude.</dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -216,6 +231,11 @@ extends <a href="../../../../../fr/flowarg/flowupdater/download/json/CurseFileIn
 <li class="blockList">
 <h4>isInstallExtFiles</h4>
 <pre>public&nbsp;boolean&nbsp;isInstallExtFiles()</pre>
+<div class="block">Get the <a href="../../../../../fr/flowarg/flowupdater/download/json/CurseModPackInfo.html#installExtFiles"><code>installExtFiles</code></a> option.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the <a href="../../../../../fr/flowarg/flowupdater/download/json/CurseModPackInfo.html#installExtFiles"><code>installExtFiles</code></a> option.</dd>
+</dl>
 </li>
 </ul>
 <a name="getExcluded--">
@@ -225,6 +245,11 @@ extends <a href="../../../../../fr/flowarg/flowupdater/download/json/CurseFileIn
 <li class="blockList">
 <h4>getExcluded</h4>
 <pre>public&nbsp;java.lang.String[]&nbsp;getExcluded()</pre>
+<div class="block">Get the excluded mods.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the excluded mods.</dd>
+</dl>
 </li>
 </ul>
 </li>

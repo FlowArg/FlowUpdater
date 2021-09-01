@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10};
+var methods = {"i0":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -109,6 +109,7 @@ var activeTableTab = "activeTableTab";
 <br>
 <pre>public class <span class="typeNameLabel">AssetIndex</span>
 extends java.lang.Object</pre>
+<div class="block">This class represent an asset index of a Minecraft version.</div>
 </li>
 </ul>
 </div>
@@ -146,11 +147,9 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>java.util.Map&lt;java.lang.String,<a href="../../../../../fr/flowarg/flowupdater/download/json/AssetDownloadable.html" title="class in fr.flowarg.flowupdater.download.json">AssetDownloadable</a>&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/download/json/AssetIndex.html#getObjects--">getObjects</a></span>()</code>&nbsp;</td>
-</tr>
-<tr id="i1" class="rowColor">
-<td class="colFirst"><code>java.util.Map&lt;java.lang.String,<a href="../../../../../fr/flowarg/flowupdater/download/json/AssetDownloadable.html" title="class in fr.flowarg.flowupdater.download.json">AssetDownloadable</a>&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/download/json/AssetIndex.html#getUniqueObjects--">getUniqueObjects</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/download/json/AssetIndex.html#getUniqueObjects--">getUniqueObjects</a></span>()</code>
+<div class="block">Get an immutable collection of asset objects.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -191,15 +190,6 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="getObjects--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getObjects</h4>
-<pre>public&nbsp;java.util.Map&lt;java.lang.String,<a href="../../../../../fr/flowarg/flowupdater/download/json/AssetDownloadable.html" title="class in fr.flowarg.flowupdater.download.json">AssetDownloadable</a>&gt;&nbsp;getObjects()</pre>
-</li>
-</ul>
 <a name="getUniqueObjects--">
 <!--   -->
 </a>
@@ -207,6 +197,11 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getUniqueObjects</h4>
 <pre>public&nbsp;java.util.Map&lt;java.lang.String,<a href="../../../../../fr/flowarg/flowupdater/download/json/AssetDownloadable.html" title="class in fr.flowarg.flowupdater.download.json">AssetDownloadable</a>&gt;&nbsp;getUniqueObjects()</pre>
+<div class="block">Get an immutable collection of asset objects.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>asset objects.</dd>
+</dl>
 </li>
 </ul>
 </li>

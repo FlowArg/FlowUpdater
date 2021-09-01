@@ -109,6 +109,7 @@ var activeTableTab = "activeTableTab";
 <br>
 <pre>public class <span class="typeNameLabel">MCP</span>
 extends java.lang.Object</pre>
+<div class="block">This class represent an MCP object.</div>
 </li>
 </ul>
 </div>
@@ -127,13 +128,13 @@ extends java.lang.Object</pre>
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/download/json/MCP.html#MCP-java.lang.String-java.lang.String-java.lang.String-java.lang.String-long-long-">MCP</a></span>(java.lang.String&nbsp;clientURL,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/download/json/MCP.html#MCP-java.lang.String-java.lang.String-long-java.lang.String-java.lang.String-long-">MCP</a></span>(java.lang.String&nbsp;clientURL,
    java.lang.String&nbsp;clientSha1,
+   long&nbsp;clientSize,
    java.lang.String&nbsp;serverURL,
    java.lang.String&nbsp;serverSha1,
-   long&nbsp;clientSize,
    long&nbsp;serverSize)</code>
-<div class="block">Construct a new MCP.</div>
+<div class="block">Construct a new MCP object.</div>
 </td>
 </tr>
 </table>
@@ -153,37 +154,51 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/download/json/MCP.html#getClientSha1--">getClientSha1</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/download/json/MCP.html#getClientSha1--">getClientSha1</a></span>()</code>
+<div class="block">Return the client sha1.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>long</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/download/json/MCP.html#getClientSize--">getClientSize</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/download/json/MCP.html#getClientSize--">getClientSize</a></span>()</code>
+<div class="block">Return the client size.</div>
+</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/download/json/MCP.html#getClientURL--">getClientURL</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/download/json/MCP.html#getClientURL--">getClientURL</a></span>()</code>
+<div class="block">Return the client url.</div>
+</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>static <a href="../../../../../fr/flowarg/flowupdater/download/json/MCP.html" title="class in fr.flowarg.flowupdater.download.json">MCP</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/download/json/MCP.html#getMCPFromJson-java.lang.String-">getMCPFromJson</a></span>(java.lang.String&nbsp;jsonUrl)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/download/json/MCP.html#getMCPFromJson-java.lang.String-">getMCPFromJson</a></span>(java.lang.String&nbsp;jsonUrl)</code>
+<div class="block">Provide an MCP instance from a JSON file.</div>
+</td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>static <a href="../../../../../fr/flowarg/flowupdater/download/json/MCP.html" title="class in fr.flowarg.flowupdater.download.json">MCP</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/download/json/MCP.html#getMCPFromJson-java.net.URL-">getMCPFromJson</a></span>(java.net.URL&nbsp;jsonUrl)</code>
-<div class="block">Provide a MCP instance from a JSON file.</div>
+<div class="block">Provide an MCP instance from a JSON file.</div>
 </td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/download/json/MCP.html#getServerSha1--">getServerSha1</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/download/json/MCP.html#getServerSha1--">getServerSha1</a></span>()</code>
+<div class="block">Return the server sha1.</div>
+</td>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>long</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/download/json/MCP.html#getServerSize--">getServerSize</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/download/json/MCP.html#getServerSize--">getServerSize</a></span>()</code>
+<div class="block">Return the server size.</div>
+</td>
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/download/json/MCP.html#getServerURL--">getServerURL</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/download/json/MCP.html#getServerURL--">getServerURL</a></span>()</code>
+<div class="block">Return the server url.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -207,7 +222,7 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="MCP-java.lang.String-java.lang.String-java.lang.String-java.lang.String-long-long-">
+<a name="MCP-java.lang.String-java.lang.String-long-java.lang.String-java.lang.String-long-">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -215,19 +230,19 @@ extends java.lang.Object</pre>
 <h4>MCP</h4>
 <pre>public&nbsp;MCP(java.lang.String&nbsp;clientURL,
            java.lang.String&nbsp;clientSha1,
+           long&nbsp;clientSize,
            java.lang.String&nbsp;serverURL,
            java.lang.String&nbsp;serverSha1,
-           long&nbsp;clientSize,
            long&nbsp;serverSize)</pre>
-<div class="block">Construct a new MCP.</div>
+<div class="block">Construct a new MCP object.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>clientURL</code> - URL of client.jar</dd>
 <dd><code>clientSha1</code> - SHA1 of client.jar</dd>
-<dd><code>serverURL</code> - URL of server.jar</dd>
-<dd><code>serverSha1</code> - SHA1 of server.jar</dd>
 <dd><code>clientSize</code> - Size (bytes) of client.jar</dd>
-<dd><code>serverSize</code> - Size (bytes) of server.jar</dd>
+<dd><code>serverURL</code> - URL of server.jar. Can be ""</dd>
+<dd><code>serverSha1</code> - SHA1 of server.jar. Can be ""</dd>
+<dd><code>serverSize</code> - Size (bytes) of server.jar. Can be -1</dd>
 </dl>
 </li>
 </ul>
@@ -246,7 +261,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getMCPFromJson</h4>
 <pre>public static&nbsp;<a href="../../../../../fr/flowarg/flowupdater/download/json/MCP.html" title="class in fr.flowarg.flowupdater.download.json">MCP</a>&nbsp;getMCPFromJson(java.net.URL&nbsp;jsonUrl)</pre>
-<div class="block">Provide a MCP instance from a JSON file.
+<div class="block">Provide an MCP instance from a JSON file.
  Template of a JSON file :
  {
      "clientURL": "https://url.com/launcher/client.jar",
@@ -271,6 +286,13 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getMCPFromJson</h4>
 <pre>public static&nbsp;<a href="../../../../../fr/flowarg/flowupdater/download/json/MCP.html" title="class in fr.flowarg.flowupdater.download.json">MCP</a>&nbsp;getMCPFromJson(java.lang.String&nbsp;jsonUrl)</pre>
+<div class="block">Provide an MCP instance from a JSON file.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>jsonUrl</code> - the JSON file URL.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the MCP instance.</dd>
+</dl>
 </li>
 </ul>
 <a name="getClientURL--">
@@ -280,6 +302,11 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getClientURL</h4>
 <pre>public&nbsp;java.lang.String&nbsp;getClientURL()</pre>
+<div class="block">Return the client url.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the client url.</dd>
+</dl>
 </li>
 </ul>
 <a name="getClientSha1--">
@@ -289,24 +316,11 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getClientSha1</h4>
 <pre>public&nbsp;java.lang.String&nbsp;getClientSha1()</pre>
-</li>
-</ul>
-<a name="getServerURL--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getServerURL</h4>
-<pre>public&nbsp;java.lang.String&nbsp;getServerURL()</pre>
-</li>
-</ul>
-<a name="getServerSha1--">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getServerSha1</h4>
-<pre>public&nbsp;java.lang.String&nbsp;getServerSha1()</pre>
+<div class="block">Return the client sha1.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the client sha1.</dd>
+</dl>
 </li>
 </ul>
 <a name="getClientSize--">
@@ -316,6 +330,39 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getClientSize</h4>
 <pre>public&nbsp;long&nbsp;getClientSize()</pre>
+<div class="block">Return the client size.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the client size.</dd>
+</dl>
+</li>
+</ul>
+<a name="getServerURL--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getServerURL</h4>
+<pre>public&nbsp;java.lang.String&nbsp;getServerURL()</pre>
+<div class="block">Return the server url.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the server url.</dd>
+</dl>
+</li>
+</ul>
+<a name="getServerSha1--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getServerSha1</h4>
+<pre>public&nbsp;java.lang.String&nbsp;getServerSha1()</pre>
+<div class="block">Return the server sha1.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the server sha1.</dd>
+</dl>
 </li>
 </ul>
 <a name="getServerSize--">
@@ -325,6 +372,11 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getServerSize</h4>
 <pre>public&nbsp;long&nbsp;getServerSize()</pre>
+<div class="block">Return the server size.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the server size.</dd>
+</dl>
 </li>
 </ul>
 </li>
