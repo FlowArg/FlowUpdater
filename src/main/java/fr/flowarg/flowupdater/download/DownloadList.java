@@ -30,9 +30,12 @@ public class DownloadList
     private final AtomicLong downloadedBytes = new AtomicLong(0);
     private boolean init = false;
 
+    /**
+     * This method initialize fields.
+     */
     public void init()
     {
-        if(this.isInit()) return;
+        if(this.init) return;
 
         this.downloadableFiles.forEach(downloadable -> this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + downloadable.getSize()));
         this.downloadableAssets.forEach(downloadable -> this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + downloadable.getSize()));
@@ -44,61 +47,99 @@ public class DownloadList
         this.init = true;
     }
 
+    /**
+     * This method increments the number of bytes downloaded by the number of bytes passed as parameter.
+     * @param bytes number of bytes to add to downloaded bytes.
+     */
     public void incrementDownloaded(long bytes)
     {
         this.downloadedBytes.set(this.downloadedBytes.get() + bytes);
     }
 
+    /**
+     * Get the total of bytes to download.
+     * @return bytes to download.
+     */
     public long getTotalToDownloadBytes()
     {
         return this.totalToDownloadBytes.get();
     }
 
+    /**
+     * Get the downloaded bytes.
+     * @return the downloaded bytes.
+     */
     public long getDownloadedBytes()
     {
         return this.downloadedBytes.get();
     }
 
+    /**
+     * Get the queue that contains all assets to download.
+     * @return the queue that contains all assets to download.
+     */
     public Queue<AssetDownloadable> getDownloadableAssets()
     {
         return this.downloadableAssets;
     }
 
+    /**
+     * Get the list that contains all downloadable files.
+     * @return the list that contains all downloadable files.
+     */
     public List<Downloadable> getDownloadableFiles()
     {
         return this.downloadableFiles;
     }
 
+    /**
+     * Get the list that contains all external files.
+     * @return the list that contains all external files.
+     */
     public List<ExternalFile> getExtFiles()
     {
         return this.extFiles;
     }
 
+    /**
+     * Get the list that contains all mods.
+     * @return the list that contains all mods.
+     */
     public List<Mod> getMods()
     {
         return this.mods;
     }
 
+    /**
+     * Get the list that contains all curse mods.
+     * @return the list that contains all curse mods.
+     */
     public List<CurseMod> getCurseMods()
     {
         return this.curseMods;
     }
 
+    /**
+     * Get the OptiFine object.
+     * @return the OptiFine object.
+     */
     public OptiFine getOptiFine()
     {
         return this.optiFine;
     }
 
+    /**
+     * Define the OptiFine object.
+     * @param optiFine the OptiFine object to define.
+     */
     public void setOptiFine(OptiFine optiFine)
     {
         this.optiFine = optiFine;
     }
 
-    public boolean isInit()
-    {
-        return this.init;
-    }
-
+    /**
+     * Clear and reset that download list object.
+     */
     public void clear()
     {
         this.downloadableFiles.clear();

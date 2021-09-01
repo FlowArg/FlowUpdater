@@ -196,16 +196,15 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         this.callback.step(Step.MODS);
         this.installAllMods(modsDir);
 
-        OptiFine ofObj = null;
+        final OptiFine ofObj = this.downloadList.getOptiFine();
 
-        if(this.downloadList.getOptiFine() != null)
+        if(ofObj != null)
         {
-            ofObj = this.downloadList.getOptiFine();
             try
             {
                 final Path optiFineFilePath = modsDir.resolve(ofObj.getName());
 
-                if (Files.notExists(optiFineFilePath)) IOUtils.copy(this.logger, modsDir.getParent().resolve(".op").resolve(ofObj.getName()), optiFineFilePath);
+                if (Files.notExists(optiFineFilePath) || Files.size(optiFineFilePath) != ofObj.getSize()) IOUtils.copy(this.logger, modsDir.getParent().resolve(".op").resolve(ofObj.getName()), optiFineFilePath);
             } catch (Exception e)
             {
                 this.logger.printStackTrace(e);
@@ -213,7 +212,6 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
             this.downloadList.incrementDownloaded(ofObj.getSize());
             this.callback.update(this.downloadList.getDownloadedBytes(), this.downloadList.getTotalToDownloadBytes());
         }
-
 
         this.fileDeleter.delete(modsDir, this.mods, this.allCurseMods, ofObj);
     }

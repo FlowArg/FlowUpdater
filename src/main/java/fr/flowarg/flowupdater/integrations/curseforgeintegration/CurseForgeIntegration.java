@@ -179,6 +179,7 @@ public class CurseForgeIntegration extends Integration
         }
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private @NotNull CurseModPack parseMods() throws Exception
     {
         this.logger.info("Fetching mods...");

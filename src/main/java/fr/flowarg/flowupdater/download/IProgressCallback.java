@@ -5,6 +5,9 @@ import fr.flowarg.flowupdater.FlowUpdater;
 
 import java.nio.file.Path;
 
+/**
+ * This interface provides useful methods to implement to access to download and update status.
+ */
 public interface IProgressCallback
 {
     /**

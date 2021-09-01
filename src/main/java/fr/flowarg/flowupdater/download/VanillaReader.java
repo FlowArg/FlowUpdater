@@ -18,6 +18,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * This method handles all parsing stuff about vanilla files.
+ */
 public class VanillaReader
 {
     private final VanillaVersion version;
@@ -27,6 +30,10 @@ public class VanillaReader
     private final DownloadList info;
     private final boolean downloadServer;
 
+    /**
+     * Construct a new VanillaReader.
+     * @param flowUpdater the flow updater object.
+     */
     public VanillaReader(FlowUpdater flowUpdater)
     {
         this.version = flowUpdater.getVersion();
@@ -37,38 +44,41 @@ public class VanillaReader
         this.downloadServer = flowUpdater.getUpdaterOptions().isDownloadServer();
     }
 
+    /**
+     * This method calls others methods to parse each part of the given Minecraft Version.
+     * @throws IOException if an I/O error occurred.
+     */
     public void read() throws IOException
     {
         this.callback.step(Step.READ);
         if(this.shouldLog)
             this.logger.debug("Reading libraries information...");
         long start = System.currentTimeMillis();
-        this.getLibraries();
+        this.parseLibraries();
 
         if(this.shouldLog)
             this.logger.debug("Reading assets information...");
-        this.getAssetsIndex();
+        this.parseAssetIndex();
 
         if(this.shouldLog)
             this.logger.debug("Reading jars for client/server game...");
-        this.getClientServerJars();
+        this.parseClientServerJars();
 
         if(this.shouldLog)
             this.logger.debug("Reading natives...");
-        this.getNatives();
+        this.parseNatives();
 
         if(this.shouldLog)
             this.logger.debug("Reading assets...");
-        this.getAssets();
+        this.parseAssets();
 
-        if(this.shouldLog)
-        {
-            final long end = System.currentTimeMillis();
-            this.logger.debug("Parsing of the json file took " + (end - start) + " milliseconds...");
-        }
+        if(!this.shouldLog) return;
+
+        final long end = System.currentTimeMillis();
+        this.logger.debug("Parsing of the json file took " + (end - start) + " milliseconds...");
     }
 
-    private void getLibraries()
+    private void parseLibraries()
     {
         this.version.getMinecraftLibrariesJson().forEach(jsonElement -> {
             final boolean canDownload;
@@ -94,7 +104,7 @@ public class VanillaReader
         this.info.getDownloadableFiles().addAll(this.version.getAnotherLibraries());
     }
 
-    private void getAssetsIndex()
+    private void parseAssetIndex()
     {
         if(this.version.getCustomAssetIndex() != null) return;
 
@@ -109,7 +119,7 @@ public class VanillaReader
         this.info.getDownloadableFiles().add(new Downloadable(url, size, sha1, name));
     }
 
-    private void getClientServerJars()
+    private void parseClientServerJars()
     {
         final JsonObject client = this.version.getMinecraftClient();
         final String clientURL = client.getAsJsonPrimitive("url").getAsString();
@@ -135,7 +145,7 @@ public class VanillaReader
         this.info.getDownloadableFiles().add(new Downloadable(serverURL, serverSize, serverSha1, serverName));
     }
 
-    private void getNatives()
+    private void parseNatives()
     {
         this.version.getMinecraftLibrariesJson().forEach(jsonElement -> {
             final JsonObject obj = jsonElement.getAsJsonObject().getAsJsonObject("downloads").getAsJsonObject("classifiers");
@@ -179,7 +189,7 @@ public class VanillaReader
         this.info.getDownloadableFiles().add(new Downloadable(url, size, sha1, name));
     }
 
-    private void getAssets() throws IOException
+    private void parseAssets() throws IOException
     {
         final Set<AssetDownloadable> toDownload = new HashSet<>(this.version.getAnotherAssets());
         final AssetIndex assetIndex;

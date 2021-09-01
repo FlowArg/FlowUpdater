@@ -6,6 +6,9 @@ import fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseMod;
 
 import java.util.List;
 
+/**
+ * This class represent an object that using CurseForge features.
+ */
 public interface ICurseFeaturesUser
 {
     /**

@@ -22,6 +22,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 
+/**
+ * This class handles the downloading of vanilla files (client, assets, natives...).
+ */
 public class VanillaDownloader
 {
     private final Path dir;
@@ -32,6 +35,12 @@ public class VanillaDownloader
     private final Path assets;
     private final String vanillaJsonURL;
 
+    /**
+     * Construct a new VanillaDownloader object.
+     * @param dir the installation directory.
+     * @param flowUpdater the flow updater object.
+     * @throws IOException if an I/O error occurred.
+     */
     public VanillaDownloader(Path dir, FlowUpdater flowUpdater) throws IOException
     {
         this.dir = dir;
@@ -50,16 +59,20 @@ public class VanillaDownloader
         this.downloadList.init();
     }
 
+    /**
+     * This method downloads calls other methods to download and verify all files.
+     * @throws Exception if an I/O error occurred.
+     */
     public void download() throws Exception
     {
-        this.checkAllLibraries();
+        this.downloadLibraries();
         this.downloadAssets();
         this.extractNatives();
 
         this.logger.info("All vanilla files are successfully downloaded !");
     }
 
-    private void checkAllLibraries() throws Exception
+    private void downloadLibraries() throws Exception
     {
         this.logger.info("Checking library files...");
         this.callback.step(Step.DL_LIBS);
