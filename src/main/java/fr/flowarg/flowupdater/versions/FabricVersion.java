@@ -227,7 +227,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
             libs.forEach(el -> {
                 final JsonObject artifact = el.getAsJsonObject();
                 final String[] parts = artifact.get("name").getAsString().split(":");
-                this.downloadArtifacts(libraries, artifact.get("url").getAsString(), parts[0], parts[1], parts[2], logger);
+                this.downloadArtifacts(libraries, artifact.get("url").getAsString(), parts[0], parts[1], parts[2]);
             });
 
             this.logger.info("Successfully installed Fabric !");
@@ -238,16 +238,16 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
         }
     }
 
-    private void downloadArtifacts(Path dir, String repositoryUrl, String group, String name, String version, ILogger logger)
+    private void downloadArtifacts(Path dir, String repositoryUrl, String group, String name, String version)
     {
         try
         {
-            IOUtils.download(logger,
+            IOUtils.download(this.logger,
                              new URL(repositoryUrl + group.replace('.', '/') + '/' + name + '/' + version + '/' + String.format("%s-%s.jar", name, version)),
                              dir.resolve(group.replace(".", dir.getFileSystem().getSeparator())).resolve(name).resolve(version).resolve(String.format("%s-%s.jar", name, version)));
         } catch (Exception e)
         {
-            logger.printStackTrace(e);
+            this.logger.printStackTrace(e);
         }
     }
 

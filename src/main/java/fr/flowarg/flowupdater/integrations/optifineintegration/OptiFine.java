@@ -5,7 +5,7 @@ public class OptiFine
     private final String name;
     private final int size;
 
-    public OptiFine(String name, int size)
+    OptiFine(String name, int size)
     {
         this.name = name;
         this.size = size;

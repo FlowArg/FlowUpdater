@@ -12,6 +12,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 
 public class OptiFineIntegration
 {
@@ -37,8 +38,8 @@ public class OptiFineIntegration
         {
             final String name = preview ? (optiFineVersion.contains("preview_") && optiFineVersion.contains("OptiFine_") ? optiFineVersion + ".jar" : "preview_OptiFine_" + optiFineVersion + ".jar") : "OptiFine_" + optiFineVersion + ".jar";
             final String newUrl = this.getNewURL(name, preview, optiFineVersion);
-            final GetResponse getResponse = this.getResponse(new URL(newUrl), "Content-Length");
-            final int length = Integer.parseInt(getResponse.header);
+            final GetResponse getResponse = this.getResponse(new URL(newUrl));
+            final int length = getResponse.contentLength;
 
             this.checkForUpdates(name, getResponse.byteStream, length, newUrl);
             getResponse.byteStream.close();
@@ -79,17 +80,7 @@ public class OptiFineIntegration
         try
         {
             final String[] respLine = IOUtils.getContent(new URL("https://optifine.net/adloadx?f=OptiFine_" + optiFineVersion)).split("\n");
-            String keyLine = "";
-            for(String line : respLine)
-            {
-                if(line.contains("downloadx?f=OptiFine"))
-                {
-                    keyLine = line;
-                    break;
-                }
-            }
-
-            return keyLine.replace("' onclick='onDownload()'>OptiFine " + optiFineVersion.replace("_", " ") +"</a>", "").replace("<a href='downloadx?f=OptiFine_" + optiFineVersion + "&x=", "").replace(" ", "");
+            return Arrays.stream(respLine).filter(s -> s.contains("downloadx?f=OptiFine")).findFirst().get().replace("' onclick='onDownload()'>OptiFine " + optiFineVersion.replace("_", " ") +"</a>", "").replace("<a href='downloadx?f=OptiFine_" + optiFineVersion + "&x=", "").replace(" ", "");
         }
         catch (Exception e)
         {
@@ -102,17 +93,7 @@ public class OptiFineIntegration
         try
         {
             final String[] respLine = IOUtils.getContent(new URL("https://optifine.net/adloadx?f=" + optiFineVersion)).split("\n");
-            String keyLine = "";
-            for(String line : respLine)
-            {
-                if(line.contains("downloadx?f=preview"))
-                {
-                    keyLine = line;
-                    break;
-                }
-            }
-
-            return keyLine.replace("' onclick='onDownload()'>" + optiFineVersion.replace("_", " ") +"</a>", "").replace("<a href='downloadx?f=" + optiFineVersion + "&x=", "").replace(" ", "");
+            return Arrays.stream(respLine).filter(s -> s.contains("downloadx?f=preview")).findFirst().get().replace("' onclick='onDownload()'>" + optiFineVersion.replace("_", " ") +"</a>", "").replace("<a href='downloadx?f=" + optiFineVersion + "&x=", "").replace(" ", "");
         }
         catch (Exception e)
         {
@@ -120,7 +101,7 @@ public class OptiFineIntegration
         }
     }
 
-    private GetResponse getResponse(URL url, String header)
+    private GetResponse getResponse(URL url)
     {
         HttpsURLConnection connection;
         try
@@ -130,7 +111,7 @@ public class OptiFineIntegration
             connection.setUseCaches(false);
             connection.addRequestProperty("User-Agent", "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.124 Safari/537.36");
             connection.setInstanceFollowRedirects(true);
-            return new GetResponse(connection.getHeaderField(header), connection.getInputStream());
+            return new GetResponse(Integer.parseInt(connection.getHeaderField("Content-Length")), connection.getInputStream());
         } catch (Exception e)
         {
             throw new FlowUpdaterException(e);
@@ -139,12 +120,12 @@ public class OptiFineIntegration
 
     private static class GetResponse
     {
-        public final String header;
+        public final int contentLength;
         public final InputStream byteStream;
 
-        public GetResponse(String header, InputStream byteStream)
+        public GetResponse(int contentLength, InputStream byteStream)
         {
-            this.header = header;
+            this.contentLength = contentLength;
             this.byteStream = byteStream;
         }
     }
