@@ -185,13 +185,12 @@ var activeTableTab = "activeTableTab";
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code>default void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/IModLoaderVersion.html#installAllMods-java.nio.file.Path-boolean-">installAllMods</a></span>(java.nio.file.Path&nbsp;modsDir,
-              boolean&nbsp;cursePluginLoaded)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/IModLoaderVersion.html#installAllMods-java.nio.file.Path-">installAllMods</a></span>(java.nio.file.Path&nbsp;modsDir)</code>&nbsp;</td>
 </tr>
 <tr id="i8" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/IModLoaderVersion.html#installMods-java.nio.file.Path-fr.flowarg.flowupdater.utils.PluginManager-">installMods</a></span>(java.nio.file.Path&nbsp;modsDir,
-           <a href="../../../../fr/flowarg/flowupdater/utils/PluginManager.html" title="class in fr.flowarg.flowupdater.utils">PluginManager</a>&nbsp;pluginManager)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/IModLoaderVersion.html#installMods-java.nio.file.Path-fr.flowarg.flowupdater.utils.IntegrationManager-">installMods</a></span>(java.nio.file.Path&nbsp;modsDir,
+           <a href="../../../../fr/flowarg/flowupdater/utils/IntegrationManager.html" title="class in fr.flowarg.flowupdater.utils">IntegrationManager</a>&nbsp;integrationManager)</code>
 <div class="block">Install all mods in the mods' directory.</div>
 </td>
 </tr>
@@ -291,20 +290,20 @@ var activeTableTab = "activeTableTab";
 </dl>
 </li>
 </ul>
-<a name="installMods-java.nio.file.Path-fr.flowarg.flowupdater.utils.PluginManager-">
+<a name="installMods-java.nio.file.Path-fr.flowarg.flowupdater.utils.IntegrationManager-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>installMods</h4>
 <pre>void&nbsp;installMods(java.nio.file.Path&nbsp;modsDir,
-                 <a href="../../../../fr/flowarg/flowupdater/utils/PluginManager.html" title="class in fr.flowarg.flowupdater.utils">PluginManager</a>&nbsp;pluginManager)
+                 <a href="../../../../fr/flowarg/flowupdater/utils/IntegrationManager.html" title="class in fr.flowarg.flowupdater.utils">IntegrationManager</a>&nbsp;integrationManager)
           throws java.lang.Exception</pre>
 <div class="block">Install all mods in the mods' directory.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>modsDir</code> - mods directory.</dd>
-<dd><code>pluginManager</code> - used to check loaded plugins.</dd>
+<dd><code>integrationManager</code> - used to check loaded plugins.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.lang.Exception</code> - if an I/O error occurred.</dd>
 </dl>
@@ -324,14 +323,13 @@ var activeTableTab = "activeTableTab";
 </dl>
 </li>
 </ul>
-<a name="installAllMods-java.nio.file.Path-boolean-">
+<a name="installAllMods-java.nio.file.Path-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>installAllMods</h4>
-<pre>default&nbsp;void&nbsp;installAllMods(java.nio.file.Path&nbsp;modsDir,
-                            boolean&nbsp;cursePluginLoaded)</pre>
+<pre>default&nbsp;void&nbsp;installAllMods(java.nio.file.Path&nbsp;modsDir)</pre>
 </li>
 </ul>
 <a name="checkModLoaderEnv-java.nio.file.Path-">

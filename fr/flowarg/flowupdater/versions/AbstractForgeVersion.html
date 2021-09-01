@@ -154,7 +154,7 @@ implements <a href="../../../../fr/flowarg/flowupdater/download/ICurseFeaturesUs
 <th class="colLast" scope="col">Field and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>protected java.util.List&lt;java.lang.Object&gt;</code></td>
+<td class="colFirst"><code>protected java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/integrations/curseforgeplugin/CurseMod.html" title="class in fr.flowarg.flowupdater.integrations.curseforgeplugin">CurseMod</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#allCurseMods">allCurseMods</a></span></code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
@@ -272,7 +272,7 @@ implements <a href="../../../../fr/flowarg/flowupdater/download/ICurseFeaturesUs
                       java.nio.file.Path&nbsp;patches)</code>&nbsp;</td>
 </tr>
 <tr id="i4" class="altColor">
-<td class="colFirst"><code>java.util.List&lt;java.lang.Object&gt;</code></td>
+<td class="colFirst"><code>java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/integrations/curseforgeplugin/CurseMod.html" title="class in fr.flowarg.flowupdater.integrations.curseforgeplugin">CurseMod</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#getAllCurseMods--">getAllCurseMods</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
@@ -335,8 +335,8 @@ implements <a href="../../../../fr/flowarg/flowupdater/download/ICurseFeaturesUs
 </tr>
 <tr id="i16" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#installMods-java.nio.file.Path-fr.flowarg.flowupdater.utils.PluginManager-">installMods</a></span>(java.nio.file.Path&nbsp;modsDir,
-           <a href="../../../../fr/flowarg/flowupdater/utils/PluginManager.html" title="class in fr.flowarg.flowupdater.utils">PluginManager</a>&nbsp;pluginManager)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#installMods-java.nio.file.Path-fr.flowarg.flowupdater.utils.IntegrationManager-">installMods</a></span>(java.nio.file.Path&nbsp;modsDir,
+           <a href="../../../../fr/flowarg/flowupdater/utils/IntegrationManager.html" title="class in fr.flowarg.flowupdater.utils">IntegrationManager</a>&nbsp;integrationManager)</code>
 <div class="block">Install all mods in the mods' directory.</div>
 </td>
 </tr>
@@ -372,7 +372,7 @@ implements <a href="../../../../fr/flowarg/flowupdater/download/ICurseFeaturesUs
 </tr>
 <tr id="i22" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#setAllCurseMods-java.util.List-">setAllCurseMods</a></span>(java.util.List&lt;java.lang.Object&gt;&nbsp;allCurseMods)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#setAllCurseMods-java.util.List-">setAllCurseMods</a></span>(java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/integrations/curseforgeplugin/CurseMod.html" title="class in fr.flowarg.flowupdater.integrations.curseforgeplugin">CurseMod</a>&gt;&nbsp;allCurseMods)</code>
 <div class="block">Define all curse mods to update.</div>
 </td>
 </tr>
@@ -389,7 +389,7 @@ implements <a href="../../../../fr/flowarg/flowupdater/download/ICurseFeaturesUs
 <!--   -->
 </a>
 <h3>Methods inherited from interface&nbsp;fr.flowarg.flowupdater.versions.<a href="../../../../fr/flowarg/flowupdater/versions/IModLoaderVersion.html" title="interface in fr.flowarg.flowupdater.versions">IModLoaderVersion</a></h3>
-<code><a href="../../../../fr/flowarg/flowupdater/versions/IModLoaderVersion.html#installAllMods-java.nio.file.Path-boolean-">installAllMods</a></code></li>
+<code><a href="../../../../fr/flowarg/flowupdater/versions/IModLoaderVersion.html#installAllMods-java.nio.file.Path-">installAllMods</a></code></li>
 </ul>
 </li>
 </ul>
@@ -465,7 +465,7 @@ implements <a href="../../../../fr/flowarg/flowupdater/download/ICurseFeaturesUs
 <ul class="blockList">
 <li class="blockList">
 <h4>allCurseMods</h4>
-<pre>protected&nbsp;java.util.List&lt;java.lang.Object&gt; allCurseMods</pre>
+<pre>protected&nbsp;java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/integrations/curseforgeplugin/CurseMod.html" title="class in fr.flowarg.flowupdater.integrations.curseforgeplugin">CurseMod</a>&gt; allCurseMods</pre>
 </li>
 </ul>
 <a name="installerUrl">
@@ -700,22 +700,22 @@ implements <a href="../../../../fr/flowarg/flowupdater/download/ICurseFeaturesUs
 </dl>
 </li>
 </ul>
-<a name="installMods-java.nio.file.Path-fr.flowarg.flowupdater.utils.PluginManager-">
+<a name="installMods-java.nio.file.Path-fr.flowarg.flowupdater.utils.IntegrationManager-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>installMods</h4>
 <pre>public&nbsp;void&nbsp;installMods(java.nio.file.Path&nbsp;modsDir,
-                        <a href="../../../../fr/flowarg/flowupdater/utils/PluginManager.html" title="class in fr.flowarg.flowupdater.utils">PluginManager</a>&nbsp;pluginManager)
+                        <a href="../../../../fr/flowarg/flowupdater/utils/IntegrationManager.html" title="class in fr.flowarg.flowupdater.utils">IntegrationManager</a>&nbsp;integrationManager)
                  throws java.lang.Exception</pre>
 <div class="block">Install all mods in the mods' directory.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../fr/flowarg/flowupdater/versions/IModLoaderVersion.html#installMods-java.nio.file.Path-fr.flowarg.flowupdater.utils.PluginManager-">installMods</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../fr/flowarg/flowupdater/versions/IModLoaderVersion.html" title="interface in fr.flowarg.flowupdater.versions">IModLoaderVersion</a></code></dd>
+<dd><code><a href="../../../../fr/flowarg/flowupdater/versions/IModLoaderVersion.html#installMods-java.nio.file.Path-fr.flowarg.flowupdater.utils.IntegrationManager-">installMods</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../fr/flowarg/flowupdater/versions/IModLoaderVersion.html" title="interface in fr.flowarg.flowupdater.versions">IModLoaderVersion</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>modsDir</code> - mods directory.</dd>
-<dd><code>pluginManager</code> - used to check loaded plugins.</dd>
+<dd><code>integrationManager</code> - used to check loaded plugins.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.lang.Exception</code> - if an I/O error occurred.</dd>
 </dl>
@@ -758,13 +758,13 @@ implements <a href="../../../../fr/flowarg/flowupdater/download/ICurseFeaturesUs
 <ul class="blockList">
 <li class="blockList">
 <h4>setAllCurseMods</h4>
-<pre>public&nbsp;void&nbsp;setAllCurseMods(java.util.List&lt;java.lang.Object&gt;&nbsp;allCurseMods)</pre>
+<pre>public&nbsp;void&nbsp;setAllCurseMods(java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/integrations/curseforgeplugin/CurseMod.html" title="class in fr.flowarg.flowupdater.integrations.curseforgeplugin">CurseMod</a>&gt;&nbsp;allCurseMods)</pre>
 <div class="block">Define all curse mods to update.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../../../../fr/flowarg/flowupdater/download/ICurseFeaturesUser.html#setAllCurseMods-java.util.List-">setAllCurseMods</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../fr/flowarg/flowupdater/download/ICurseFeaturesUser.html" title="interface in fr.flowarg.flowupdater.download">ICurseFeaturesUser</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>allCurseMods</code> - curse mods to define.</dd>
+<dd><code>allCurseMods</code> - </dd>
 </dl>
 </li>
 </ul>
@@ -906,7 +906,7 @@ implements <a href="../../../../fr/flowarg/flowupdater/download/ICurseFeaturesUs
 <ul class="blockListLast">
 <li class="blockList">
 <h4>getAllCurseMods</h4>
-<pre>public&nbsp;java.util.List&lt;java.lang.Object&gt;&nbsp;getAllCurseMods()</pre>
+<pre>public&nbsp;java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/integrations/curseforgeplugin/CurseMod.html" title="class in fr.flowarg.flowupdater.integrations.curseforgeplugin">CurseMod</a>&gt;&nbsp;getAllCurseMods()</pre>
 </li>
 </ul>
 </li>
