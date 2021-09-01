@@ -1,8 +1,8 @@
 fr.flowarg.flowupdater
 fr.flowarg.flowupdater.download
 fr.flowarg.flowupdater.download.json
-fr.flowarg.flowupdater.integrations.curseforgeplugin
-fr.flowarg.flowupdater.integrations.optifineplugin
+fr.flowarg.flowupdater.integrations.curseforgeintegration
+fr.flowarg.flowupdater.integrations.optifineintegration
 fr.flowarg.flowupdater.utils
 fr.flowarg.flowupdater.utils.builderapi
 fr.flowarg.flowupdater.versions
