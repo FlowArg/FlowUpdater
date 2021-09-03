@@ -1,21 +1,15 @@
 package fr.flowarg.flowupdater.utils.builderapi;
 
-import fr.flowarg.flowupdater.FlowUpdater;
-import fr.flowarg.flowupdater.versions.AbstractForgeVersion;
-import fr.flowarg.flowupdater.versions.VanillaVersion;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
 /**
- * Builder API
- * 
- * @author flow
+ * Builder API ; Represent an argument for a Builder implementation.
  * @version 1.6
+ * @author flow
  * 
- * Used for {@link FlowUpdater} and {@link VanillaVersion} and {@link AbstractForgeVersion}
  * @param <T> Object Argument
- * 
- * Represent an argument for a Builder implementation.
  */
 public class BuilderArgument<T>
 {
@@ -24,30 +18,55 @@ public class BuilderArgument<T>
     private T object = null;
     private boolean isRequired;
 
-    public BuilderArgument(String objectName, Supplier<T> initialValue)
+    /**
+     * Construct a new BuilderArgument.
+     * @param objectName The name of the object.
+     * @param initialValue The initial value's wrapper.
+     */
+    public BuilderArgument(String objectName, @NotNull Supplier<T> initialValue)
     {
         this.objectName = objectName;
         this.object = initialValue.get();
     }
-    
+
+    /**
+     * Construct a new basic BuilderArgument.
+     * @param objectName The name of the object.
+     */
     public BuilderArgument(String objectName)
     {
         this.objectName = objectName;
     }
-    
-    public BuilderArgument(String objectName, Supplier<T> initialValue, Supplier<T> badObject)
+
+    /**
+     * Construct a new BuilderArgument.
+     * @param objectName The name of the object.
+     * @param initialValue The initial value's wrapper.
+     * @param badObject The initial bad value's wrapper.
+     */
+    public BuilderArgument(String objectName, @NotNull Supplier<T> initialValue, @NotNull Supplier<T> badObject)
     {
         this.objectName = objectName;
         this.object = initialValue.get();
         this.badObject = badObject.get();
     }
-    
-    public BuilderArgument(Supplier<T> badObject, String objectName)
+
+    /**
+     * Construct a new BuilderArgument.
+     * @param badObject The initial bad value's wrapper.
+     * @param objectName The name of the object.
+     */
+    public BuilderArgument(@NotNull Supplier<T> badObject, String objectName)
     {
         this.objectName = objectName;
         this.badObject = badObject.get();
     }
-    
+
+    /**
+     * Check and get the wrapped object.
+     * @return the wrapper object.
+     * @throws BuilderException it the builder configuration is invalid.
+     */
     public T get() throws BuilderException
     {
         if(this.object == this.badObject && this.badObject != null)
@@ -61,36 +80,61 @@ public class BuilderArgument<T>
         }
         else return this.object;
     }
-    
+
+    /**
+     * Define the new wrapped object.
+     * @param object the new wrapper object to define.
+     */
     public void set(T object)
     {
         this.object = object;
     }
-    
-    public BuilderArgument<T> require(BuilderArgument<?>... required)
+
+    /**
+     * Indicate that provided arguments are required if this argument is builded.
+     * @param required required arguments.
+     * @return this.
+     */
+    public BuilderArgument<T> require(BuilderArgument<?> @NotNull ... required)
     {
         for (BuilderArgument<?> arg : required)
             arg.isRequired = true;
         return this;
     }
-    
+
+    /**
+     * Indicate that argument is required.
+     * @return this.
+     */
     public BuilderArgument<T> required()
     {
         this.isRequired = true;
         return this;
     }
-    
+
+    /**
+     * Indicate that argument is optional.
+     * @return this.
+     */
     public BuilderArgument<T> optional()
     {
         this.isRequired = false;
         return this;
     }
-    
+
+    /**
+     * Get the name of the current object's name.
+     * @return the object's name.
+     */
     public String getObjectName()
     {
         return this.objectName;
     }
-    
+
+    /**
+     * Get the bad object.
+     * @return the bad object.
+     */
     public T badObject()
     {
         return this.badObject;

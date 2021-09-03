@@ -1,18 +1,9 @@
 package fr.flowarg.flowupdater.utils.builderapi;
 
-import fr.flowarg.flowupdater.FlowUpdater;
-import fr.flowarg.flowupdater.versions.AbstractForgeVersion;
-import fr.flowarg.flowupdater.versions.VanillaVersion;
-
 /**
- * Builder API
- * 
- * @author flow
+ * Builder API ; This exception is thrown when an error occurred with Builder API.
  * @version 1.6
- * 
- * Used for {@link FlowUpdater} and {@link VanillaVersion} and {@link AbstractForgeVersion}
- * 
- * This exception is thrown when an error occurred with Builder API.
+ * @author flow
  */
 public class BuilderException extends RuntimeException
 {

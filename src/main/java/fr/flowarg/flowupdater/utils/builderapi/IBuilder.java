@@ -1,14 +1,11 @@
 package fr.flowarg.flowupdater.utils.builderapi;
 
 /**
- * Builder API ;
- * Used for {@link fr.flowarg.flowupdater.FlowUpdater}, {@link fr.flowarg.flowupdater.versions.VanillaVersion}, {@link fr.flowarg.flowupdater.versions.AbstractForgeVersion}, {@link fr.flowarg.flowupdater.versions.FabricVersion}
+ * Builder API ; Builder interface.
  * @version 1.6
  * @author flow
  *
  * @param <T> Object returned.
- * 
- * Builder interface.
  */
 @FunctionalInterface
 public interface IBuilder<T> 
