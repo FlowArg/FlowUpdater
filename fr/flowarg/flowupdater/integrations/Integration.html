@@ -107,6 +107,9 @@
 <br>
 <pre>public abstract class <span class="typeNameLabel">Integration</span>
 extends java.lang.Object</pre>
+<div class="block">The new Integration system replaces old plugin system which had some problems such as unavailability to communicate directly with FlowUpdater.
+ This new system is more easy to use: no more annoying updater's options, no more extra-dependencies.
+ Polymorphism and inheritance can now be used to avoid code duplication.</div>
 </li>
 </ul>
 </div>
@@ -149,7 +152,9 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/integrations/Integration.html#Integration-fr.flowarg.flowlogger.ILogger-java.nio.file.Path-">Integration</a></span>(fr.flowarg.flowlogger.ILogger&nbsp;logger,
-           java.nio.file.Path&nbsp;folder)</code>&nbsp;</td>
+           java.nio.file.Path&nbsp;folder)</code>
+<div class="block">Default constructor of a basic Integration.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -216,9 +221,13 @@ extends java.lang.Object</pre>
 <pre>public&nbsp;Integration(fr.flowarg.flowlogger.ILogger&nbsp;logger,
                    java.nio.file.Path&nbsp;folder)
             throws java.lang.Exception</pre>
+<div class="block">Default constructor of a basic Integration.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>logger</code> - the logger used.</dd>
+<dd><code>folder</code> - the folder where the plugin can work.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.lang.Exception</code></dd>
+<dd><code>java.lang.Exception</code> - if an error occurred.</dd>
 </dl>
 </li>
 </ul>

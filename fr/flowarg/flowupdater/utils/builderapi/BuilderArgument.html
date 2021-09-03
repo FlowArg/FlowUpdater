@@ -107,15 +107,13 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <dl>
 <dt><span class="paramLabel">Type Parameters:</span></dt>
-<dd><code>T</code> - Object Argument
- 
- Represent an argument for a Builder implementation.</dd>
+<dd><code>T</code> - Object Argument</dd>
 </dl>
 <hr>
 <br>
 <pre>public class <span class="typeNameLabel">BuilderArgument&lt;T&gt;</span>
 extends java.lang.Object</pre>
-<div class="block">Builder API</div>
+<div class="block">Builder API ; Represent an argument for a Builder implementation.</div>
 </li>
 </ul>
 </div>
@@ -134,20 +132,28 @@ extends java.lang.Object</pre>
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html#BuilderArgument-java.lang.String-">BuilderArgument</a></span>(java.lang.String&nbsp;objectName)</code>&nbsp;</td>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html#BuilderArgument-java.lang.String-">BuilderArgument</a></span>(java.lang.String&nbsp;objectName)</code>
+<div class="block">Construct a new basic BuilderArgument.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html#BuilderArgument-java.lang.String-java.util.function.Supplier-">BuilderArgument</a></span>(java.lang.String&nbsp;objectName,
-               java.util.function.Supplier&lt;<a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="type parameter in BuilderArgument">T</a>&gt;&nbsp;initialValue)</code>&nbsp;</td>
+               @NotNull java.util.function.Supplier&lt;<a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="type parameter in BuilderArgument">T</a>&gt;&nbsp;initialValue)</code>
+<div class="block">Construct a new BuilderArgument.</div>
+</td>
 </tr>
 <tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html#BuilderArgument-java.lang.String-java.util.function.Supplier-java.util.function.Supplier-">BuilderArgument</a></span>(java.lang.String&nbsp;objectName,
-               java.util.function.Supplier&lt;<a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="type parameter in BuilderArgument">T</a>&gt;&nbsp;initialValue,
-               java.util.function.Supplier&lt;<a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="type parameter in BuilderArgument">T</a>&gt;&nbsp;badObject)</code>&nbsp;</td>
+               @NotNull java.util.function.Supplier&lt;<a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="type parameter in BuilderArgument">T</a>&gt;&nbsp;initialValue,
+               @NotNull java.util.function.Supplier&lt;<a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="type parameter in BuilderArgument">T</a>&gt;&nbsp;badObject)</code>
+<div class="block">Construct a new BuilderArgument.</div>
+</td>
 </tr>
 <tr class="rowColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html#BuilderArgument-java.util.function.Supplier-java.lang.String-">BuilderArgument</a></span>(java.util.function.Supplier&lt;<a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="type parameter in BuilderArgument">T</a>&gt;&nbsp;badObject,
-               java.lang.String&nbsp;objectName)</code>&nbsp;</td>
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html#BuilderArgument-java.util.function.Supplier-java.lang.String-">BuilderArgument</a></span>(@NotNull java.util.function.Supplier&lt;<a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="type parameter in BuilderArgument">T</a>&gt;&nbsp;badObject,
+               java.lang.String&nbsp;objectName)</code>
+<div class="block">Construct a new BuilderArgument.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -166,31 +172,45 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code><a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="type parameter in BuilderArgument">T</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html#badObject--">badObject</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html#badObject--">badObject</a></span>()</code>
+<div class="block">Get the bad object.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="type parameter in BuilderArgument">T</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html#get--">get</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html#get--">get</a></span>()</code>
+<div class="block">Check and get the wrapped object.</div>
+</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html#getObjectName--">getObjectName</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html#getObjectName--">getObjectName</a></span>()</code>
+<div class="block">Get the name of the current object's name.</div>
+</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="class in fr.flowarg.flowupdater.utils.builderapi">BuilderArgument</a>&lt;<a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="type parameter in BuilderArgument">T</a>&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html#optional--">optional</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html#optional--">optional</a></span>()</code>
+<div class="block">Indicate that argument is optional.</div>
+</td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="class in fr.flowarg.flowupdater.utils.builderapi">BuilderArgument</a>&lt;<a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="type parameter in BuilderArgument">T</a>&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html#require-fr.flowarg.flowupdater.utils.builderapi.BuilderArgument...-">require</a></span>(<a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="class in fr.flowarg.flowupdater.utils.builderapi">BuilderArgument</a>&lt;?&gt;...&nbsp;required)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html#require-fr.flowarg.flowupdater.utils.builderapi.BuilderArgument...-">require</a></span>(<a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="class in fr.flowarg.flowupdater.utils.builderapi">BuilderArgument</a>&lt;?&gt;...&nbsp;required)</code>
+<div class="block">Indicate that provided arguments are required if this argument is builded.</div>
+</td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="class in fr.flowarg.flowupdater.utils.builderapi">BuilderArgument</a>&lt;<a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="type parameter in BuilderArgument">T</a>&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html#required--">required</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html#required--">required</a></span>()</code>
+<div class="block">Indicate that argument is required.</div>
+</td>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html#set-T-">set</a></span>(<a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="type parameter in BuilderArgument">T</a>&nbsp;object)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html#set-T-">set</a></span>(<a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="type parameter in BuilderArgument">T</a>&nbsp;object)</code>
+<div class="block">Define the new wrapped object.</div>
+</td>
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
@@ -225,7 +245,14 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>BuilderArgument</h4>
 <pre>public&nbsp;BuilderArgument(java.lang.String&nbsp;objectName,
-                       java.util.function.Supplier&lt;<a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="type parameter in BuilderArgument">T</a>&gt;&nbsp;initialValue)</pre>
+                       @NotNull
+                       @NotNull java.util.function.Supplier&lt;<a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="type parameter in BuilderArgument">T</a>&gt;&nbsp;initialValue)</pre>
+<div class="block">Construct a new BuilderArgument.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>objectName</code> - The name of the object.</dd>
+<dd><code>initialValue</code> - The initial value's wrapper.</dd>
+</dl>
 </li>
 </ul>
 <a name="BuilderArgument-java.lang.String-">
@@ -235,6 +262,11 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>BuilderArgument</h4>
 <pre>public&nbsp;BuilderArgument(java.lang.String&nbsp;objectName)</pre>
+<div class="block">Construct a new basic BuilderArgument.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>objectName</code> - The name of the object.</dd>
+</dl>
 </li>
 </ul>
 <a name="BuilderArgument-java.lang.String-java.util.function.Supplier-java.util.function.Supplier-">
@@ -244,8 +276,17 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>BuilderArgument</h4>
 <pre>public&nbsp;BuilderArgument(java.lang.String&nbsp;objectName,
-                       java.util.function.Supplier&lt;<a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="type parameter in BuilderArgument">T</a>&gt;&nbsp;initialValue,
-                       java.util.function.Supplier&lt;<a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="type parameter in BuilderArgument">T</a>&gt;&nbsp;badObject)</pre>
+                       @NotNull
+                       @NotNull java.util.function.Supplier&lt;<a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="type parameter in BuilderArgument">T</a>&gt;&nbsp;initialValue,
+                       @NotNull
+                       @NotNull java.util.function.Supplier&lt;<a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="type parameter in BuilderArgument">T</a>&gt;&nbsp;badObject)</pre>
+<div class="block">Construct a new BuilderArgument.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>objectName</code> - The name of the object.</dd>
+<dd><code>initialValue</code> - The initial value's wrapper.</dd>
+<dd><code>badObject</code> - The initial bad value's wrapper.</dd>
+</dl>
 </li>
 </ul>
 <a name="BuilderArgument-java.util.function.Supplier-java.lang.String-">
@@ -254,8 +295,15 @@ extends java.lang.Object</pre>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>BuilderArgument</h4>
-<pre>public&nbsp;BuilderArgument(java.util.function.Supplier&lt;<a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="type parameter in BuilderArgument">T</a>&gt;&nbsp;badObject,
+<pre>public&nbsp;BuilderArgument(@NotNull
+                       @NotNull java.util.function.Supplier&lt;<a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="type parameter in BuilderArgument">T</a>&gt;&nbsp;badObject,
                        java.lang.String&nbsp;objectName)</pre>
+<div class="block">Construct a new BuilderArgument.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>badObject</code> - The initial bad value's wrapper.</dd>
+<dd><code>objectName</code> - The name of the object.</dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -274,9 +322,12 @@ extends java.lang.Object</pre>
 <h4>get</h4>
 <pre>public&nbsp;<a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="type parameter in BuilderArgument">T</a>&nbsp;get()
       throws <a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderException.html" title="class in fr.flowarg.flowupdater.utils.builderapi">BuilderException</a></pre>
+<div class="block">Check and get the wrapped object.</div>
 <dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the wrapper object.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderException.html" title="class in fr.flowarg.flowupdater.utils.builderapi">BuilderException</a></code></dd>
+<dd><code><a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderException.html" title="class in fr.flowarg.flowupdater.utils.builderapi">BuilderException</a></code> - it the builder configuration is invalid.</dd>
 </dl>
 </li>
 </ul>
@@ -289,6 +340,11 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>set</h4>
 <pre>public&nbsp;void&nbsp;set(<a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="type parameter in BuilderArgument">T</a>&nbsp;object)</pre>
+<div class="block">Define the new wrapped object.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>object</code> - the new wrapper object to define.</dd>
+</dl>
 </li>
 </ul>
 <a name="require-fr.flowarg.flowupdater.utils.builderapi.BuilderArgument...-">
@@ -298,6 +354,13 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>require</h4>
 <pre>public&nbsp;<a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="class in fr.flowarg.flowupdater.utils.builderapi">BuilderArgument</a>&lt;<a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="type parameter in BuilderArgument">T</a>&gt;&nbsp;require(<a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="class in fr.flowarg.flowupdater.utils.builderapi">BuilderArgument</a>&lt;?&gt;...&nbsp;required)</pre>
+<div class="block">Indicate that provided arguments are required if this argument is builded.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>required</code> - required arguments.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>this.</dd>
+</dl>
 </li>
 </ul>
 <a name="required--">
@@ -307,6 +370,11 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>required</h4>
 <pre>public&nbsp;<a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="class in fr.flowarg.flowupdater.utils.builderapi">BuilderArgument</a>&lt;<a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="type parameter in BuilderArgument">T</a>&gt;&nbsp;required()</pre>
+<div class="block">Indicate that argument is required.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>this.</dd>
+</dl>
 </li>
 </ul>
 <a name="optional--">
@@ -316,6 +384,11 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>optional</h4>
 <pre>public&nbsp;<a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="class in fr.flowarg.flowupdater.utils.builderapi">BuilderArgument</a>&lt;<a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="type parameter in BuilderArgument">T</a>&gt;&nbsp;optional()</pre>
+<div class="block">Indicate that argument is optional.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>this.</dd>
+</dl>
 </li>
 </ul>
 <a name="getObjectName--">
@@ -325,6 +398,11 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getObjectName</h4>
 <pre>public&nbsp;java.lang.String&nbsp;getObjectName()</pre>
+<div class="block">Get the name of the current object's name.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the object's name.</dd>
+</dl>
 </li>
 </ul>
 <a name="badObject--">
@@ -334,6 +412,11 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>badObject</h4>
 <pre>public&nbsp;<a href="../../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderArgument.html" title="type parameter in BuilderArgument">T</a>&nbsp;badObject()</pre>
+<div class="block">Get the bad object.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the bad object.</dd>
+</dl>
 </li>
 </ul>
 <a name="toString--">
