@@ -1,6 +1,7 @@
 package fr.flowarg.flowupdater.download;
 
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fr.flowarg.flowcompat.Platform;
 import fr.flowarg.flowlogger.ILogger;
@@ -19,7 +20,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * This method handles all parsing stuff about vanilla files.
+ * This class handles all parsing stuff about vanilla files.
  */
 public class VanillaReader
 {
@@ -205,21 +206,26 @@ public class VanillaReader
 
     private boolean checkRules(JsonObject obj)
     {
-        if (obj.get("rules") == null) return true;
+        final JsonElement rulesElement = obj.get("rules");
+        if (rulesElement == null) return true;
 
         final AtomicBoolean canDownload = new AtomicBoolean(true);
 
-        obj.get("rules").getAsJsonArray().forEach(jsonElement -> {
-            if (jsonElement.getAsJsonObject().getAsJsonPrimitive("action").getAsString().equals("allow"))
-            {
-                if (jsonElement.getAsJsonObject().getAsJsonObject("os") == null) return;
+        rulesElement.getAsJsonArray().forEach(jsonElement -> {
+            final JsonObject object = jsonElement.getAsJsonObject();
+            final String actionValue = object.getAsJsonPrimitive("action").getAsString();
+            final JsonObject osObject = object.getAsJsonObject("os");
 
-                final String os = jsonElement.getAsJsonObject().getAsJsonObject("os").getAsJsonPrimitive("name").getAsString();
+            if (actionValue.equals("allow"))
+            {
+                if (osObject == null) return;
+
+                final String os = osObject.getAsJsonPrimitive("name").getAsString();
                 canDownload.set(this.check(os));
             }
-            else if (jsonElement.getAsJsonObject().getAsJsonPrimitive("action").getAsString().equals("disallow"))
+            else if (actionValue.equals("disallow"))
             {
-                final String os = jsonElement.getAsJsonObject().getAsJsonObject("os").getAsJsonPrimitive("name").getAsString();
+                final String os = osObject.getAsJsonPrimitive("name").getAsString();
                 if(this.check(os))
                     canDownload.set(false);
             }
