@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
+import java.util.Optional;
 
 public class OptiFineIntegration extends Integration
 {
@@ -77,7 +78,10 @@ public class OptiFineIntegration extends Integration
         try
         {
             final String[] respLine = IOUtils.getContent(new URL("https://optifine.net/adloadx?f=OptiFine_" + optiFineVersion)).split("\n");
-            return Arrays.stream(respLine).filter(s -> s.contains("downloadx?f=OptiFine")).findFirst().get().replace("' onclick='onDownload()'>OptiFine " + optiFineVersion.replace("_", " ") +"</a>", "").replace("<a href='downloadx?f=OptiFine_" + optiFineVersion + "&x=", "").replace(" ", "");
+            final Optional<String> result = Arrays.stream(respLine).filter(s -> s.contains("downloadx?f=OptiFine")).findFirst();
+            if(result.isPresent())
+                return result.get().replace("' onclick='onDownload()'>OptiFine " + optiFineVersion.replace("_", " ") +"</a>", "").replace("<a href='downloadx?f=OptiFine_" + optiFineVersion + "&x=", "").replace(" ", "");
+            else throw new FlowUpdaterException("No line found in: " + Arrays.toString(respLine));
         }
         catch (Exception e)
         {
@@ -90,7 +94,10 @@ public class OptiFineIntegration extends Integration
         try
         {
             final String[] respLine = IOUtils.getContent(new URL("https://optifine.net/adloadx?f=" + optiFineVersion)).split("\n");
-            return Arrays.stream(respLine).filter(s -> s.contains("downloadx?f=preview")).findFirst().get().replace("' onclick='onDownload()'>" + optiFineVersion.replace("_", " ") +"</a>", "").replace("<a href='downloadx?f=" + optiFineVersion + "&x=", "").replace(" ", "");
+            final Optional<String> result = Arrays.stream(respLine).filter(s -> s.contains("downloadx?f=OptiFine")).findFirst();
+            if(result.isPresent())
+                return result.get().replace("' onclick='onDownload()'>" + optiFineVersion.replace("_", " ") +"</a>", "").replace("<a href='downloadx?f=" + optiFineVersion + "&x=", "").replace(" ", "");
+            else throw new FlowUpdaterException("No line found in: " + Arrays.toString(respLine));
         }
         catch (Exception e)
         {

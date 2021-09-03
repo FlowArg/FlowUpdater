@@ -5,11 +5,22 @@ import fr.flowarg.flowlogger.ILogger;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+/**
+ * The new Integration system replaces old plugin system which had some problems such as unavailability to communicate directly with FlowUpdater.
+ * This new system is more easy to use: no more annoying updater's options, no more extra-dependencies.
+ * Polymorphism and inheritance can now be used to avoid code duplication.
+ */
 public abstract class Integration
 {
     protected final ILogger logger;
     protected final Path folder;
 
+    /**
+     * Default constructor of a basic Integration.
+     * @param logger the logger used.
+     * @param folder the folder where the plugin can work.
+     * @throws Exception if an error occurred.
+     */
     public Integration(ILogger logger, Path folder) throws Exception
     {
         this.logger = logger;
