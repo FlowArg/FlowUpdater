@@ -21,7 +21,6 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
@@ -30,31 +29,28 @@ import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+/**
+ * This integration supports all CurseForge stuff that FlowUpdater needs such as retrieve mods and mod packs from CurseForge.
+ */
 public class CurseForgeIntegration extends Integration
 {
+    /**
+     * Construct a new CurseForge Integration.
+     * @param logger the logger used.
+     * @param folder the folder where the plugin can work.
+     * @throws Exception if an error occurred.
+     */
     public CurseForgeIntegration(ILogger logger, Path folder) throws Exception
     {
         super(logger, folder);
     }
 
-    @NotNull
-    public URL getURLOfFile(int projectID, int fileID)
-    {
-        try
-        {
-            return new URL(IOUtils.getContent(new URL(String.format("https://addons-ecs.forgesvc.net/api/v2/addon/%d/file/%d/download-url", projectID, fileID))));
-        } catch (Exception e)
-        {
-            throw new FlowUpdaterException(e);
-        }
-    }
-
-    @NotNull
-    public CurseMod getCurseMod(@NotNull ProjectMod mod)
-    {
-        return this.getCurseMod(mod.getProjectID(), mod.getFileID());
-    }
-
+    /**
+     * Get a CurseMod object with a project identifier and a file identifier.
+     * @param projectID project identifier.
+     * @param fileID file identifier.
+     * @return the curse's mod corresponding to passed parameters.
+     */
     @NotNull
     public CurseMod getCurseMod(int projectID, int fileID)
     {
@@ -80,6 +76,13 @@ public class CurseForgeIntegration extends Integration
         }
     }
 
+    /**
+     * Get a CurseForge's mod pack object with a project identifier and a file identifier.
+     * @param projectID project identifier.
+     * @param fileID file identifier.
+     * @param installExtFiles should install other files like configs.
+     * @return the curse's mod pack corresponding to passed parameters.
+     */
     public CurseModPack getCurseModPack(int projectID, int fileID, boolean installExtFiles)
     {
         try
@@ -89,9 +92,26 @@ public class CurseForgeIntegration extends Integration
         }
         catch (Exception e)
         {
-            e.printStackTrace();
-            return null;
+            throw new FlowUpdaterException(e);
         }
+    }
+
+    @NotNull
+    private URL getURLOfFile(int projectID, int fileID)
+    {
+        try
+        {
+            return new URL(IOUtils.getContent(new URL(String.format("https://addons-ecs.forgesvc.net/api/v2/addon/%d/file/%d/download-url", projectID, fileID))));
+        } catch (Exception e)
+        {
+            throw new FlowUpdaterException(e);
+        }
+    }
+
+    @NotNull
+    private CurseMod getCurseMod(@NotNull ProjectMod mod)
+    {
+        return this.getCurseMod(mod.getProjectID(), mod.getFileID());
     }
 
     private @NotNull Path checkForUpdates(int projectID, int fileID) throws Exception
@@ -184,14 +204,14 @@ public class CurseForgeIntegration extends Integration
     {
         this.logger.info("Fetching mods...");
 
-        final Path dirPath = Paths.get(this.folder.getParent().toString());
-        final BufferedReader manifestReader = Files.newBufferedReader(Paths.get(dirPath.toString(), "manifest.json"));
+        final Path dirPath = this.folder.getParent();
+        final BufferedReader manifestReader = Files.newBufferedReader(dirPath.resolve("manifest.json"));
         final JsonObject manifestObj = JsonParser.parseReader(manifestReader).getAsJsonObject();
         final List<ProjectMod> manifestFiles = new ArrayList<>();
 
         manifestObj.getAsJsonArray("files").forEach(jsonElement -> manifestFiles.add(ProjectMod.fromJsonObject(jsonElement.getAsJsonObject())));
 
-        final Path cachePath = Paths.get(dirPath.toString(), "manifest.cache.json");
+        final Path cachePath = dirPath.resolve("manifest.cache.json");
         if(Files.notExists(cachePath))
             Files.write(cachePath, Collections.singletonList("[]"), StandardCharsets.UTF_8);
 

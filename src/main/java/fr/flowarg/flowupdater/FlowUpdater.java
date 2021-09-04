@@ -7,7 +7,7 @@ import fr.flowarg.flowupdater.download.*;
 import fr.flowarg.flowupdater.download.json.ExternalFile;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.utils.IOUtils;
-import fr.flowarg.flowupdater.utils.IntegrationManager;
+import fr.flowarg.flowupdater.integrations.IntegrationManager;
 import fr.flowarg.flowupdater.utils.UpdaterOptions;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;

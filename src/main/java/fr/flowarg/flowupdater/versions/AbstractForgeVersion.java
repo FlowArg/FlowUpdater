@@ -15,7 +15,7 @@ import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.download.json.OptiFineInfo;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
-import fr.flowarg.flowupdater.utils.IntegrationManager;
+import fr.flowarg.flowupdater.integrations.IntegrationManager;
 import fr.flowarg.flowzipper.ZipUtils;
 
 import java.io.InputStream;
@@ -235,7 +235,6 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
 
     /**
      * {@inheritDoc}
-     * @param allCurseMods
      */
     @Override
     public void setAllCurseMods(List<CurseMod> allCurseMods)

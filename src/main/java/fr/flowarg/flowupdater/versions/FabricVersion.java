@@ -17,7 +17,7 @@ import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseMod;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
-import fr.flowarg.flowupdater.utils.IntegrationManager;
+import fr.flowarg.flowupdater.integrations.IntegrationManager;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
 import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
@@ -354,7 +354,6 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
 
     /**
      * {@inheritDoc}
-     * @param allCurseMods
      */
     @Override
     public void setAllCurseMods(List<CurseMod> allCurseMods) {

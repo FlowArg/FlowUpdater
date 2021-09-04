@@ -17,6 +17,9 @@ import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Optional;
 
+/**
+ * This integration supports the download of OptiFine in any version from the official site (https://optifine.net).
+ */
 public class OptiFineIntegration extends Integration
 {
     public OptiFineIntegration(ILogger logger, Path folder) throws Exception
@@ -69,10 +72,6 @@ public class OptiFineIntegration extends Integration
         byteStream.close();
     }
 
-    /**
-     * @param optiFineVersion the version of OptiFine
-     * @return the download key
-     */
     private @NotNull String getJson(String optiFineVersion)
     {
         try

@@ -1,4 +1,4 @@
-package fr.flowarg.flowupdater.utils;
+package fr.flowarg.flowupdater.integrations;
 
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
@@ -9,6 +9,7 @@ import fr.flowarg.flowupdater.download.IProgressCallback;
 import fr.flowarg.flowupdater.download.Step;
 import fr.flowarg.flowupdater.download.json.CurseFileInfo;
 import fr.flowarg.flowupdater.download.json.CurseModPackInfo;
+import fr.flowarg.flowupdater.download.json.OptiFineInfo;
 import fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseForgeIntegration;
 import fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseMod;
 import fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseModPack;
@@ -40,7 +41,7 @@ public class IntegrationManager
         {
             final CurseForgeIntegration curseForgeIntegration = new CurseForgeIntegration(this.logger, dir.getParent().resolve(".cfp"));
 
-            final List<CurseMod> allCurseMods = new ArrayList<>(curseFeaturesUser.getCurseMods().size());
+            final List<CurseMod> allCurseMods = new ArrayList<>();
 
             for (CurseFileInfo info : curseFeaturesUser.getCurseMods())
             {
@@ -67,7 +68,7 @@ public class IntegrationManager
 
             this.progressCallback.step(Step.MOD_PACK);
             final CurseModPack modPack = curseForgeIntegration.getCurseModPack(modPackInfo.getProjectID(), modPackInfo.getFileID(), modPackInfo.isInstallExtFiles());
-            this.logger.info("Loading mod pack: " + modPack.getName() + " (" + modPack.getVersion() + ") by " + modPack.getAuthor() + '.');
+            this.logger.info(String.format("Loading mod pack: %s (%s) by %s.", modPack.getName(), modPack.getVersion(), modPack.getAuthor()));
             modPack.getMods().forEach(mod -> {
                 allCurseMods.add(mod);
                 try
@@ -104,12 +105,13 @@ public class IntegrationManager
 
     public void loadOptiFineIntegration(Path dir, AbstractForgeVersion forgeVersion)
     {
-        if(forgeVersion.getOptiFineInfo() == null) return;
+        final OptiFineInfo info = forgeVersion.getOptiFineInfo();
+        if(info == null) return;
 
         try
         {
             final OptiFineIntegration optifineIntegration = new OptiFineIntegration(this.logger, dir.getParent().resolve(".op"));
-            final OptiFine optifine = optifineIntegration.getOptiFine(forgeVersion.getOptiFineInfo().getVersion(), forgeVersion.getOptiFineInfo().isPreview());
+            final OptiFine optifine = optifineIntegration.getOptiFine(info.getVersion(), info.isPreview());
             this.downloadList.setOptiFine(optifine);
         } catch (Exception e)
         {
