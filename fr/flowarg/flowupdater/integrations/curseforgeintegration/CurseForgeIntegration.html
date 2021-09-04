@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10};
+var methods = {"i0":10,"i1":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -114,6 +114,7 @@ var activeTableTab = "activeTableTab";
 <br>
 <pre>public class <span class="typeNameLabel">CurseForgeIntegration</span>
 extends <a href="../../../../../fr/flowarg/flowupdater/integrations/Integration.html" title="class in fr.flowarg.flowupdater.integrations">Integration</a></pre>
+<div class="block">This integration supports all CurseForge stuff that FlowUpdater needs such as retrieve mods and mod packs from CurseForge.</div>
 </li>
 </ul>
 </div>
@@ -148,7 +149,9 @@ extends <a href="../../../../../fr/flowarg/flowupdater/integrations/Integration.
 </tr>
 <tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/CurseForgeIntegration.html#CurseForgeIntegration-fr.flowarg.flowlogger.ILogger-java.nio.file.Path-">CurseForgeIntegration</a></span>(fr.flowarg.flowlogger.ILogger&nbsp;logger,
-                     java.nio.file.Path&nbsp;folder)</code>&nbsp;</td>
+                     java.nio.file.Path&nbsp;folder)</code>
+<div class="block">Construct a new CurseForge Integration.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -167,23 +170,18 @@ extends <a href="../../../../../fr/flowarg/flowupdater/integrations/Integration.
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>@NotNull <a href="../../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/CurseMod.html" title="class in fr.flowarg.flowupdater.integrations.curseforgeintegration">CurseMod</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/CurseForgeIntegration.html#getCurseMod-fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseForgeIntegration.ProjectMod-">getCurseMod</a></span>(@NotNull fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseForgeIntegration.ProjectMod&nbsp;mod)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/CurseForgeIntegration.html#getCurseMod-int-int-">getCurseMod</a></span>(int&nbsp;projectID,
+           int&nbsp;fileID)</code>
+<div class="block">Get a CurseMod object with a project identifier and a file identifier.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code>@NotNull <a href="../../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/CurseMod.html" title="class in fr.flowarg.flowupdater.integrations.curseforgeintegration">CurseMod</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/CurseForgeIntegration.html#getCurseMod-int-int-">getCurseMod</a></span>(int&nbsp;projectID,
-           int&nbsp;fileID)</code>&nbsp;</td>
-</tr>
-<tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/CurseModPack.html" title="class in fr.flowarg.flowupdater.integrations.curseforgeintegration">CurseModPack</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/CurseForgeIntegration.html#getCurseModPack-int-int-boolean-">getCurseModPack</a></span>(int&nbsp;projectID,
                int&nbsp;fileID,
-               boolean&nbsp;installExtFiles)</code>&nbsp;</td>
-</tr>
-<tr id="i3" class="rowColor">
-<td class="colFirst"><code>@NotNull java.net.URL</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/CurseForgeIntegration.html#getURLOfFile-int-int-">getURLOfFile</a></span>(int&nbsp;projectID,
-            int&nbsp;fileID)</code>&nbsp;</td>
+               boolean&nbsp;installExtFiles)</code>
+<div class="block">Get a CurseForge's mod pack object with a project identifier and a file identifier.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -216,9 +214,13 @@ extends <a href="../../../../../fr/flowarg/flowupdater/integrations/Integration.
 <pre>public&nbsp;CurseForgeIntegration(fr.flowarg.flowlogger.ILogger&nbsp;logger,
                              java.nio.file.Path&nbsp;folder)
                       throws java.lang.Exception</pre>
+<div class="block">Construct a new CurseForge Integration.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>logger</code> - the logger used.</dd>
+<dd><code>folder</code> - the folder where the plugin can work.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.lang.Exception</code></dd>
+<dd><code>java.lang.Exception</code> - if an error occurred.</dd>
 </dl>
 </li>
 </ul>
@@ -230,28 +232,6 @@ extends <a href="../../../../../fr/flowarg/flowupdater/integrations/Integration.
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="getURLOfFile-int-int-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getURLOfFile</h4>
-<pre>@NotNull
-public&nbsp;@NotNull java.net.URL&nbsp;getURLOfFile(int&nbsp;projectID,
-                                                   int&nbsp;fileID)</pre>
-</li>
-</ul>
-<a name="getCurseMod-fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseForgeIntegration.ProjectMod-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getCurseMod</h4>
-<pre>@NotNull
-public&nbsp;@NotNull <a href="../../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/CurseMod.html" title="class in fr.flowarg.flowupdater.integrations.curseforgeintegration">CurseMod</a>&nbsp;getCurseMod(@NotNull
-                                              @NotNull fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseForgeIntegration.ProjectMod&nbsp;mod)</pre>
-</li>
-</ul>
 <a name="getCurseMod-int-int-">
 <!--   -->
 </a>
@@ -261,6 +241,14 @@ public&nbsp;@NotNull <a href="../../../../../fr/flowarg/flowupdater/integrations
 <pre>@NotNull
 public&nbsp;@NotNull <a href="../../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/CurseMod.html" title="class in fr.flowarg.flowupdater.integrations.curseforgeintegration">CurseMod</a>&nbsp;getCurseMod(int&nbsp;projectID,
                                               int&nbsp;fileID)</pre>
+<div class="block">Get a CurseMod object with a project identifier and a file identifier.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>projectID</code> - project identifier.</dd>
+<dd><code>fileID</code> - file identifier.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the curse's mod corresponding to passed parameters.</dd>
+</dl>
 </li>
 </ul>
 <a name="getCurseModPack-int-int-boolean-">
@@ -272,6 +260,15 @@ public&nbsp;@NotNull <a href="../../../../../fr/flowarg/flowupdater/integrations
 <pre>public&nbsp;<a href="../../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/CurseModPack.html" title="class in fr.flowarg.flowupdater.integrations.curseforgeintegration">CurseModPack</a>&nbsp;getCurseModPack(int&nbsp;projectID,
                                     int&nbsp;fileID,
                                     boolean&nbsp;installExtFiles)</pre>
+<div class="block">Get a CurseForge's mod pack object with a project identifier and a file identifier.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>projectID</code> - project identifier.</dd>
+<dd><code>fileID</code> - file identifier.</dd>
+<dd><code>installExtFiles</code> - should install other files like configs.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the curse's mod pack corresponding to passed parameters.</dd>
+</dl>
 </li>
 </ul>
 </li>
