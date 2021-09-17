@@ -16,9 +16,9 @@ public class MCP
     private final String clientSha1;
     private final long clientSize;
 
-    private final String serverURL;
-    private final String serverSha1;
-    private final long serverSize;
+    private String serverURL;
+    private String serverSha1;
+    private long serverSize;
 
     /**
      * Construct a new MCP object.
@@ -28,7 +28,9 @@ public class MCP
      * @param serverURL URL of server.jar. Can be ""
      * @param serverSha1 SHA1 of server.jar. Can be ""
      * @param serverSize Size (bytes) of server.jar. Can be -1
+     * @deprecated Deprecated server download.
      */
+    @Deprecated
     public MCP(String clientURL, String clientSha1, long clientSize, String serverURL, String serverSha1, long serverSize)
     {
         this.clientURL = clientURL;
@@ -38,6 +40,19 @@ public class MCP
         this.serverSha1 = serverSha1;
         this.serverSize = serverSize;
     }
+
+    /**
+     * Construct a new MCP object.
+     * @param clientURL URL of client.jar
+     * @param clientSha1 SHA1 of client.jar
+     * @param clientSize Size (bytes) of client.jar
+     */
+    public MCP(String clientURL, String clientSha1, long clientSize)
+    {
+        this.clientURL = clientURL;
+        this.clientSha1 = clientSha1;
+        this.clientSize = clientSize;
+    }
     
     /**
      * Provide an MCP instance from a JSON file.
@@ -45,10 +60,7 @@ public class MCP
      * {
      *     "clientURL": "https://url.com/launcher/client.jar",
      *     "clientSha1": "9b0a9d70320811e7af2e8741653f029151a6719a",
-     *     "serverURL": "https://url.com/launcher/server.jar",
-     *     "serverSha1": "777039aab46578247b8954e2f7d482826315fca8",
-     *     "clientSize": 1234,
-     *     "serverSize": 1234
+     *     "clientSize": 1234
      * }
      * @param jsonUrl the JSON file URL.
      * @return the MCP instance.
@@ -56,13 +68,7 @@ public class MCP
     public static MCP getMCPFromJson(URL jsonUrl)
     {
         final JsonObject object = IOUtils.readJson(jsonUrl).getAsJsonObject();
-        
-        return new MCP(object.get("clientURL").getAsString(),
-                       object.get("clientSha1").getAsString(),
-                       object.get("clientSize").getAsLong(),
-                       object.get("serverURL").getAsString(),
-                       object.get("serverSha1").getAsString(),
-                       object.get("serverSize").getAsLong());
+        return new MCP(object.get("clientURL").getAsString(), object.get("clientSha1").getAsString(), object.get("clientSize").getAsLong());
     }
 
     /**

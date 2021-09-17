@@ -66,6 +66,7 @@ public class UpdaterOptions
             return this;
         }
 
+        @Deprecated
         public UpdaterOptionsBuilder withDownloadServer(boolean downloadServer)
         {
             this.downloadServerArgument.set(downloadServer);
