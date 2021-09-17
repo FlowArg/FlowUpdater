@@ -128,13 +128,22 @@ extends java.lang.Object</pre>
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/download/json/MCP.html#MCP-java.lang.String-java.lang.String-long-">MCP</a></span>(java.lang.String&nbsp;clientURL,
+   java.lang.String&nbsp;clientSha1,
+   long&nbsp;clientSize)</code>
+<div class="block">Construct a new MCP object.</div>
+</td>
+</tr>
+<tr class="rowColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/download/json/MCP.html#MCP-java.lang.String-java.lang.String-long-java.lang.String-java.lang.String-long-">MCP</a></span>(java.lang.String&nbsp;clientURL,
    java.lang.String&nbsp;clientSha1,
    long&nbsp;clientSize,
    java.lang.String&nbsp;serverURL,
    java.lang.String&nbsp;serverSha1,
    long&nbsp;serverSize)</code>
-<div class="block">Construct a new MCP object.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Deprecated server download.</span></div>
+</div>
 </td>
 </tr>
 </table>
@@ -225,15 +234,17 @@ extends java.lang.Object</pre>
 <a name="MCP-java.lang.String-java.lang.String-long-java.lang.String-java.lang.String-long-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>MCP</h4>
-<pre>public&nbsp;MCP(java.lang.String&nbsp;clientURL,
-           java.lang.String&nbsp;clientSha1,
-           long&nbsp;clientSize,
-           java.lang.String&nbsp;serverURL,
-           java.lang.String&nbsp;serverSha1,
-           long&nbsp;serverSize)</pre>
+<pre>@Deprecated
+public&nbsp;MCP(java.lang.String&nbsp;clientURL,
+                       java.lang.String&nbsp;clientSha1,
+                       long&nbsp;clientSize,
+                       java.lang.String&nbsp;serverURL,
+                       java.lang.String&nbsp;serverSha1,
+                       long&nbsp;serverSize)</pre>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Deprecated server download.</span></div>
 <div class="block">Construct a new MCP object.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -243,6 +254,24 @@ extends java.lang.Object</pre>
 <dd><code>serverURL</code> - URL of server.jar. Can be ""</dd>
 <dd><code>serverSha1</code> - SHA1 of server.jar. Can be ""</dd>
 <dd><code>serverSize</code> - Size (bytes) of server.jar. Can be -1</dd>
+</dl>
+</li>
+</ul>
+<a name="MCP-java.lang.String-java.lang.String-long-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>MCP</h4>
+<pre>public&nbsp;MCP(java.lang.String&nbsp;clientURL,
+           java.lang.String&nbsp;clientSha1,
+           long&nbsp;clientSize)</pre>
+<div class="block">Construct a new MCP object.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>clientURL</code> - URL of client.jar</dd>
+<dd><code>clientSha1</code> - SHA1 of client.jar</dd>
+<dd><code>clientSize</code> - Size (bytes) of client.jar</dd>
 </dl>
 </li>
 </ul>
@@ -266,10 +295,7 @@ extends java.lang.Object</pre>
  {
      "clientURL": "https://url.com/launcher/client.jar",
      "clientSha1": "9b0a9d70320811e7af2e8741653f029151a6719a",
-     "serverURL": "https://url.com/launcher/server.jar",
-     "serverSha1": "777039aab46578247b8954e2f7d482826315fca8",
-     "clientSize": 1234,
-     "serverSize": 1234
+     "clientSize": 1234
  }</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
