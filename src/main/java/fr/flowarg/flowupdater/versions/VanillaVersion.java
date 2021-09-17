@@ -101,7 +101,7 @@ public class VanillaVersion
         return this.json.getAsJsonObject().getAsJsonObject("downloads").getAsJsonObject("server");
     }
 
-    public JsonObject getMinecraftAssetsIndex() 
+    public JsonObject getMinecraftAssetIndex()
     {
         return this.json.getAsJsonObject().getAsJsonObject("assetIndex");
     }
@@ -111,7 +111,7 @@ public class VanillaVersion
      */
     private InputStream getJsonVersion()
     {
-        final AtomicReference<String> version = new AtomicReference<>(null);
+        final AtomicReference<String> version = new AtomicReference<>(this.getName());
         final AtomicReference<InputStream> result = new AtomicReference<>(null);
 
         try
@@ -124,7 +124,7 @@ public class VanillaVersion
                     version.set(launcherMeta.getAsJsonObject("latest").get("snapshot").getAsString());
                 else version.set(launcherMeta.getAsJsonObject("latest").get("release").getAsString());
             }
-            else version.set(this.getName());
+
             launcherMeta.getAsJsonArray("versions").forEach(jsonElement ->
             {
                 if (!jsonElement.getAsJsonObject().get("id").getAsString().equals(version.get())) return;
@@ -195,10 +195,10 @@ public class VanillaVersion
         private final BuilderArgument<MCP> mcpArgument = new BuilderArgument<MCP>("MCP").optional();
         private final BuilderArgument<Boolean> snapshotArgument = new BuilderArgument<>("Snapshot", () -> false).optional();
         private final BuilderArgument<VersionType> versionTypeArgument = new BuilderArgument<VersionType>("VersionType").required();
-        private final BuilderArgument<AssetIndex> customAssetIndex = new BuilderArgument<AssetIndex>("CustomAssetIndex").optional();
-        private final BuilderArgument<List<AssetDownloadable>> anotherAssets = new BuilderArgument<List<AssetDownloadable>>("AnotherAssets", ArrayList::new).optional();
-        private final BuilderArgument<List<Downloadable>> anotherLibraries = new BuilderArgument<List<Downloadable>>("AnotherLibraries", ArrayList::new).optional();
-        private final BuilderArgument<JsonObject> customVersionJson = new BuilderArgument<JsonObject>("CustomVersionJson").optional();
+        private final BuilderArgument<AssetIndex> customAssetIndexArgument = new BuilderArgument<AssetIndex>("CustomAssetIndex").optional();
+        private final BuilderArgument<List<AssetDownloadable>> anotherAssetsArgument = new BuilderArgument<List<AssetDownloadable>>("AnotherAssets", ArrayList::new).optional();
+        private final BuilderArgument<List<Downloadable>> anotherLibrariesArgument = new BuilderArgument<List<Downloadable>>("AnotherLibraries", ArrayList::new).optional();
+        private final BuilderArgument<JsonObject> customVersionJsonArgument = new BuilderArgument<JsonObject>("CustomVersionJson").optional();
 
         public VanillaVersionBuilder withName(String name)
         {
@@ -224,27 +224,27 @@ public class VanillaVersion
             return this;
         }
 
-        public VanillaVersionBuilder withCustomAssetIndex(AssetIndex versionType)
+        public VanillaVersionBuilder withCustomAssetIndex(AssetIndex assetIndex)
         {
-            this.customAssetIndex.set(versionType);
+            this.customAssetIndexArgument.set(assetIndex);
             return this;
         }
 
         public VanillaVersionBuilder withAnotherAssets(List<AssetDownloadable> anotherAssets)
         {
-            this.anotherAssets.set(anotherAssets);
+            this.anotherAssetsArgument.set(anotherAssets);
             return this;
         }
 
         public VanillaVersionBuilder withAnotherLibraries(List<Downloadable> anotherLibraries)
         {
-            this.anotherLibraries.set(anotherLibraries);
+            this.anotherLibrariesArgument.set(anotherLibraries);
             return this;
         }
 
         public VanillaVersionBuilder withCustomVersionJson(JsonObject customVersionJson)
         {
-            this.customVersionJson.set(customVersionJson);
+            this.customVersionJsonArgument.set(customVersionJson);
             return this;
         }
 
@@ -253,8 +253,8 @@ public class VanillaVersion
         {
             return new VanillaVersion(this.nameArgument.get(), this.mcpArgument.get(),
                                       this.snapshotArgument.get(), this.versionTypeArgument.get(),
-                                      this.customAssetIndex.get(), this.anotherAssets.get(),
-                                      this.anotherLibraries.get(), this.customVersionJson.get());
+                                      this.customAssetIndexArgument.get(), this.anotherAssetsArgument.get(),
+                                      this.anotherLibrariesArgument.get(), this.customVersionJsonArgument.get());
         }
     }
 }

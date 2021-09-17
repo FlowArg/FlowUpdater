@@ -109,7 +109,7 @@ public class VanillaReader
     {
         if(this.version.getCustomAssetIndex() != null) return;
 
-        final JsonObject assetIndex = this.version.getMinecraftAssetsIndex();
+        final JsonObject assetIndex = this.version.getMinecraftAssetIndex();
         final String url = assetIndex.getAsJsonPrimitive("url").getAsString();
         final int size = assetIndex.getAsJsonPrimitive("size").getAsInt();
         final String name = "assets/indexes/" + url.substring(url.lastIndexOf('/') + 1);
@@ -195,7 +195,7 @@ public class VanillaReader
         final Set<AssetDownloadable> toDownload = new HashSet<>(this.version.getAnotherAssets());
         final AssetIndex assetIndex;
 
-        if(this.version.getCustomAssetIndex() == null) assetIndex = new GsonBuilder().disableHtmlEscaping().create().fromJson(IOUtils.getContent(new URL(this.version.getMinecraftAssetsIndex().get("url").getAsString())), AssetIndex.class);
+        if(this.version.getCustomAssetIndex() == null) assetIndex = new GsonBuilder().disableHtmlEscaping().create().fromJson(IOUtils.getContent(new URL(this.version.getMinecraftAssetIndex().get("url").getAsString())), AssetIndex.class);
         else assetIndex = this.version.getCustomAssetIndex();
 
         for (final Map.Entry<String, AssetDownloadable> entry : assetIndex.getUniqueObjects().entrySet())

@@ -129,7 +129,7 @@ public class FlowUpdater
             return;
         }
 
-        this.logger.info(String.format("Reading data about %s Minecraft version...", version.getName()));
+        this.logger.info(String.format("Reading data about %s Minecraft version...", this.version.getName()));
         new VanillaReader(this).read();
 
         final Path modsDirPath = dir.resolve("mods");
