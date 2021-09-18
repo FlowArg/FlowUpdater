@@ -64,7 +64,7 @@ public class VanillaVersion
     
     public JsonObject getMinecraftClient() 
     {
-        if(this.versionType == VersionType.MCP && !this.custom)
+        if(this.versionType == VersionType.MCP && !this.custom && this.mcp != null)
         {
             final JsonObject result = new JsonObject();
             final String sha1 = this.mcp.getClientSha1();
@@ -72,9 +72,9 @@ public class VanillaVersion
             final long size = this.mcp.getClientSize();
             if(StringUtils.checkString(sha1) && StringUtils.checkString(url) && size > 0)
             {
-                result.addProperty("sha1", this.mcp.getClientSha1());
-                result.addProperty("size", this.mcp.getClientSize());
-                result.addProperty("url", this.mcp.getClientURL());
+                result.addProperty("sha1", sha1);
+                result.addProperty("size", size);
+                result.addProperty("url", url);
                 return result;
             }
             else FlowUpdater.DEFAULT_LOGGER.warn("Skipped MCP Client");
@@ -84,7 +84,7 @@ public class VanillaVersion
     
     public JsonObject getMinecraftServer() 
     {
-        if(versionType == VersionType.MCP)
+        if(versionType == VersionType.MCP && this.mcp != null)
         {
             final JsonObject result = new JsonObject();
             final String sha1 = this.mcp.getServerSha1();

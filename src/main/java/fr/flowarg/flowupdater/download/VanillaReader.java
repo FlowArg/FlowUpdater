@@ -28,7 +28,7 @@ public class VanillaReader
     private final ILogger logger;
     private final boolean shouldLog;
     private final IProgressCallback callback;
-    private final DownloadList info;
+    private final DownloadList downloadList;
     private final boolean downloadServer;
 
     /**
@@ -41,7 +41,7 @@ public class VanillaReader
         this.logger = flowUpdater.getLogger();
         this.shouldLog = !flowUpdater.getUpdaterOptions().isSilentRead();
         this.callback = flowUpdater.getCallback();
-        this.info = flowUpdater.getDownloadList();
+        this.downloadList = flowUpdater.getDownloadList();
         this.downloadServer = flowUpdater.getUpdaterOptions().isDownloadServer();
     }
 
@@ -62,8 +62,8 @@ public class VanillaReader
         this.parseAssetIndex();
 
         if(this.shouldLog)
-            this.logger.debug("Reading jars for client/server game...");
-        this.parseClientServerJars();
+            this.logger.debug("Reading jars of client/server...");
+        this.parseClientServer();
 
         if(this.shouldLog)
             this.logger.debug("Reading natives...");
@@ -82,14 +82,11 @@ public class VanillaReader
     private void parseLibraries()
     {
         this.version.getMinecraftLibrariesJson().forEach(jsonElement -> {
-            final boolean canDownload;
             final JsonObject element = jsonElement.getAsJsonObject();
 
             if (element == null) return;
 
-            canDownload = this.checkRules(element);
-
-            if (!canDownload) return;
+            if (!this.checkRules(element)) return;
             if (element.getAsJsonObject("downloads").getAsJsonObject("artifact") == null) return;
 
             final JsonObject obj = element.getAsJsonObject("downloads").getAsJsonObject("artifact");
@@ -100,9 +97,9 @@ public class VanillaReader
 
             if(this.shouldLog)
                 this.logger.debug("Reading " + path + " from " + url + "... SHA1 is : " + sha1);
-            this.info.getDownloadableFiles().add(new Downloadable(url, size, sha1, path));
+            this.downloadList.getDownloadableFiles().add(new Downloadable(url, size, sha1, path));
         });
-        this.info.getDownloadableFiles().addAll(this.version.getAnotherLibraries());
+        this.downloadList.getDownloadableFiles().addAll(this.version.getAnotherLibraries());
     }
 
     private void parseAssetIndex()
@@ -117,10 +114,10 @@ public class VanillaReader
 
         if(this.shouldLog)
             this.logger.debug("Reading assets index from " + url + "... SHA1 is : " + sha1);
-        this.info.getDownloadableFiles().add(new Downloadable(url, size, sha1, name));
+        this.downloadList.getDownloadableFiles().add(new Downloadable(url, size, sha1, name));
     }
 
-    private void parseClientServerJars()
+    private void parseClientServer()
     {
         final JsonObject client = this.version.getMinecraftClient();
         final String clientURL = client.getAsJsonPrimitive("url").getAsString();
@@ -130,7 +127,7 @@ public class VanillaReader
 
         if(this.shouldLog)
             this.logger.debug("Reading client jar from " + clientURL + "... SHA1 is : " + clientSha1);
-        this.info.getDownloadableFiles().add(new Downloadable(clientURL, clientSize, clientSha1, clientName));
+        this.downloadList.getDownloadableFiles().add(new Downloadable(clientURL, clientSize, clientSha1, clientName));
 
         if(!this.downloadServer) return;
 
@@ -143,7 +140,7 @@ public class VanillaReader
         if(this.shouldLog)
             this.logger.debug("Reading server jar from " + serverURL + "... SHA1 is : " + serverSha1);
 
-        this.info.getDownloadableFiles().add(new Downloadable(serverURL, serverSize, serverSha1, serverName));
+        this.downloadList.getDownloadableFiles().add(new Downloadable(serverURL, serverSize, serverSha1, serverName));
     }
 
     private void parseNatives()
@@ -187,7 +184,7 @@ public class VanillaReader
 
         if(this.shouldLog)
             this.logger.debug("Reading " + name + " from " + url + "... SHA1 is : " + sha1);
-        this.info.getDownloadableFiles().add(new Downloadable(url, size, sha1, name));
+        this.downloadList.getDownloadableFiles().add(new Downloadable(url, size, sha1, name));
     }
 
     private void parseAssets() throws IOException
@@ -201,7 +198,7 @@ public class VanillaReader
         for (final Map.Entry<String, AssetDownloadable> entry : assetIndex.getUniqueObjects().entrySet())
             toDownload.add(new AssetDownloadable(entry.getValue().getHash(), entry.getValue().getSize()));
 
-        this.info.getDownloadableAssets().addAll(toDownload);
+        this.downloadList.getDownloadableAssets().addAll(toDownload);
     }
 
     private boolean checkRules(JsonObject obj)
