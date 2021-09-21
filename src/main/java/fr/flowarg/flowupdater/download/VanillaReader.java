@@ -85,15 +85,16 @@ public class VanillaReader
             final JsonObject element = jsonElement.getAsJsonObject();
 
             if (element == null) return;
-
             if (!this.checkRules(element)) return;
-            if (element.getAsJsonObject("downloads").getAsJsonObject("artifact") == null) return;
 
-            final JsonObject obj = element.getAsJsonObject("downloads").getAsJsonObject("artifact");
-            final String url = obj.getAsJsonPrimitive("url").getAsString();
-            final int size = obj.getAsJsonPrimitive("size").getAsInt();
-            final String path = "libraries/" + obj.getAsJsonPrimitive("path").getAsString();
-            final String sha1 = obj.getAsJsonPrimitive("sha1").getAsString();
+            final JsonObject artifact = element.getAsJsonObject("downloads").getAsJsonObject("artifact");
+
+            if (artifact == null) return;
+
+            final String url = artifact.getAsJsonPrimitive("url").getAsString();
+            final int size = artifact.getAsJsonPrimitive("size").getAsInt();
+            final String path = "libraries/" + artifact.getAsJsonPrimitive("path").getAsString();
+            final String sha1 = artifact.getAsJsonPrimitive("sha1").getAsString();
 
             if(this.shouldLog)
                 this.logger.debug("Reading " + path + " from " + url + "... SHA1 is : " + sha1);
@@ -223,8 +224,7 @@ public class VanillaReader
             else if (actionValue.equals("disallow"))
             {
                 final String os = osObject.getAsJsonPrimitive("name").getAsString();
-                if(this.check(os))
-                    canDownload.set(false);
+                canDownload.set(!this.check(os));
             }
         });
 
