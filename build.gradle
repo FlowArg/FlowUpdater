@@ -1,62 +1,55 @@
-allprojects {
-    apply plugin: 'java-library'
-    apply plugin: 'idea'
-    apply plugin: 'maven-publish'
-    apply plugin: 'signing'
+apply plugin: 'java-library'
+apply plugin: 'idea'
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
 
-    group 'fr.flowarg'
-
-    java {
-        toolchain {
-            languageVersion = JavaLanguageVersion.of(8)
-        }
-    }
-
-    compileJava {
-        options.encoding = 'UTF-8'
-        sourceCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    repositories {
-        mavenCentral()
-        mavenLocal()
-        maven {
-            url "https://jitpack.io/"
-            name = "JitPack"
-        }
-    }
-
-    task sourcesJar(type: Jar) {
-        classifier 'sources'
-        from sourceSets.main.allSource
-    }
-    
-    task javadocJar(type: Jar) {
-        classifier 'javadoc'
-        from javadoc
-    }
-
-    dependencies {
-        api 'com.google.code.gson:gson:2.8.8'
-        api 'fr.flowarg:flowmultitools:1.4.0'
-        api 'org.jetbrains:annotations:22.0.0'
-    }
-
-    artifacts {
-        archives sourcesJar, javadocJar
-    }
-}
-
+group 'fr.flowarg'
 version '1.5.0'
 archivesBaseName = "flowupdater"
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+}
+
+compileJava {
+    options.encoding = 'UTF-8'
+    sourceCompatibility = JavaVersion.VERSION_1_8
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven {
+        url "https://jitpack.io/"
+        name = "JitPack"
+    }
+}
+
+task sourcesJar(type: Jar) {
+    classifier 'sources'
+    from sourceSets.main.allSource
+}
+    
+task javadocJar(type: Jar) {
+    classifier 'javadoc'
+    from javadoc
+}
+
 dependencies {
+    api 'com.google.code.gson:gson:2.8.8'
+    api 'fr.flowarg:flowmultitools:1.4.0'
+    api 'org.jetbrains:annotations:22.0.0'
+
     // Only for internal tests
     testImplementation 'fr.flowarg:openlauncherlib:3.2.2'
-    testImplementation 'org.json:json:20210307'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.0'
 }
 
+artifacts {
+    archives sourcesJar, javadocJar
+}
 
 publishing {
     publications {
