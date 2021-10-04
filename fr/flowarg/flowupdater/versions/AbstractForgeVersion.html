@@ -269,11 +269,15 @@ implements <a href="../../../../fr/flowarg/flowupdater/download/ICurseFeaturesUs
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#downloadForgeInstaller-java.io.InputStream-java.nio.file.Path-java.nio.file.Path-">downloadForgeInstaller</a></span>(java.io.InputStream&nbsp;stream,
                       java.nio.file.Path&nbsp;install,
-                      java.nio.file.Path&nbsp;patches)</code>&nbsp;</td>
+                      java.nio.file.Path&nbsp;patches)</code>
+<div class="block">This method has to download the Forge's installer and some other files if needed.</div>
+</td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/CurseMod.html" title="class in fr.flowarg.flowupdater.integrations.curseforgeintegration">CurseMod</a>&gt;</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#getAllCurseMods--">getAllCurseMods</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#getAllCurseMods--">getAllCurseMods</a></span>()</code>
+<div class="block">Get the list of curse mods.</div>
+</td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/download/IProgressCallback.html" title="interface in fr.flowarg.flowupdater.download">IProgressCallback</a></code></td>
@@ -295,15 +299,21 @@ implements <a href="../../../../fr/flowarg/flowupdater/download/ICurseFeaturesUs
 </tr>
 <tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/utils/ModFileDeleter.html" title="class in fr.flowarg.flowupdater.utils">ModFileDeleter</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#getFileDeleter--">getFileDeleter</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#getFileDeleter--">getFileDeleter</a></span>()</code>
+<div class="block">Get the mod file deleter assigned to this version.</div>
+</td>
 </tr>
 <tr id="i9" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#getForgeVersion--">getForgeVersion</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#getForgeVersion--">getForgeVersion</a></span>()</code>
+<div class="block">Get the forge version.</div>
+</td>
 </tr>
 <tr id="i10" class="altColor">
 <td class="colFirst"><code>java.net.URL</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#getInstallerUrl--">getInstallerUrl</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#getInstallerUrl--">getInstallerUrl</a></span>()</code>
+<div class="block">Get the url to the installer.</div>
+</td>
 </tr>
 <tr id="i11" class="rowColor">
 <td class="colFirst"><code>fr.flowarg.flowlogger.ILogger</code></td>
@@ -325,7 +335,9 @@ implements <a href="../../../../fr/flowarg/flowupdater/download/ICurseFeaturesUs
 </tr>
 <tr id="i14" class="altColor">
 <td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/download/json/OptiFineInfo.html" title="class in fr.flowarg.flowupdater.download.json">OptiFineInfo</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#getOptiFineInfo--">getOptiFineInfo</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#getOptiFineInfo--">getOptiFineInfo</a></span>()</code>
+<div class="block">Get given OptiFine information.</div>
+</td>
 </tr>
 <tr id="i15" class="rowColor">
 <td class="colFirst"><code>void</code></td>
@@ -350,18 +362,24 @@ implements <a href="../../../../fr/flowarg/flowupdater/download/ICurseFeaturesUs
 <td class="colFirst"><code>protected <a href="../../../../fr/flowarg/flowupdater/versions/IModLoaderVersion.ModLoaderLauncherEnvironment.html" title="class in fr.flowarg.flowupdater.versions">IModLoaderVersion.ModLoaderLauncherEnvironment</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#makeCommand-java.nio.file.Path-java.nio.file.Path-java.nio.file.Path-">makeCommand</a></span>(@NotNull java.nio.file.Path&nbsp;patchedInstaller,
            @NotNull java.nio.file.Path&nbsp;dirToInstall,
-           java.nio.file.Path&nbsp;tempDir)</code>&nbsp;</td>
+           java.nio.file.Path&nbsp;tempDir)</code>
+<div class="block">This method makes a new <a href="../../../../fr/flowarg/flowupdater/versions/IModLoaderVersion.ModLoaderLauncherEnvironment.html" title="class in fr.flowarg.flowupdater.versions"><code>IModLoaderVersion.ModLoaderLauncherEnvironment</code></a> to launch the mod loader's launcher.</div>
+</td>
 </tr>
 <tr id="i19" class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#packPatchedInstaller-java.nio.file.Path-java.nio.file.Path-">packPatchedInstaller</a></span>(@NotNull java.nio.file.Path&nbsp;tempDir,
-                    java.nio.file.Path&nbsp;tempInstallerDir)</code>&nbsp;</td>
+                    java.nio.file.Path&nbsp;tempInstallerDir)</code>
+<div class="block">This methods packs the modified installer to a JAR file.</div>
+</td>
 </tr>
 <tr id="i20" class="altColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#patchForgeInstaller-java.nio.file.Path-java.nio.file.Path-java.nio.file.Path-">patchForgeInstaller</a></span>(java.nio.file.Path&nbsp;install,
                    java.nio.file.Path&nbsp;patches,
-                   java.nio.file.Path&nbsp;tempDir)</code>&nbsp;</td>
+                   java.nio.file.Path&nbsp;tempDir)</code>
+<div class="block">This method has to patch the Forge's installer with FlowUpdater's changes.</div>
+</td>
 </tr>
 <tr id="i21" class="rowColor">
 <td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/versions/IModLoaderVersion.ModLoaderLauncherEnvironment.html" title="class in fr.flowarg.flowupdater.versions">IModLoaderVersion.ModLoaderLauncherEnvironment</a></code></td>
@@ -636,9 +654,14 @@ implements <a href="../../../../fr/flowarg/flowupdater/download/ICurseFeaturesUs
                                       java.nio.file.Path&nbsp;install,
                                       java.nio.file.Path&nbsp;patches)
                                throws java.lang.Exception</pre>
+<div class="block">This method has to download the Forge's installer and some other files if needed.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>stream</code> - the input stream of the Forge's installer.</dd>
+<dd><code>install</code> - the installation directory.</dd>
+<dd><code>patches</code> - the patches output file.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.lang.Exception</code></dd>
+<dd><code>java.lang.Exception</code> - if an error occurred.</dd>
 </dl>
 </li>
 </ul>
@@ -651,6 +674,13 @@ implements <a href="../../../../fr/flowarg/flowupdater/download/ICurseFeaturesUs
 <pre>protected&nbsp;void&nbsp;patchForgeInstaller(java.nio.file.Path&nbsp;install,
                                    java.nio.file.Path&nbsp;patches,
                                    java.nio.file.Path&nbsp;tempDir)</pre>
+<div class="block">This method has to patch the Forge's installer with FlowUpdater's changes.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>install</code> - the installation directory.</dd>
+<dd><code>patches</code> - the patches file.</dd>
+<dd><code>tempDir</code> - the temporary directory where is the installer stuff.</dd>
+</dl>
 </li>
 </ul>
 <a name="makeCommand-java.nio.file.Path-java.nio.file.Path-java.nio.file.Path-">
@@ -664,6 +694,15 @@ implements <a href="../../../../fr/flowarg/flowupdater/download/ICurseFeaturesUs
                                                                      @NotNull
                                                                      @NotNull java.nio.file.Path&nbsp;dirToInstall,
                                                                      java.nio.file.Path&nbsp;tempDir)</pre>
+<div class="block">This method makes a new <a href="../../../../fr/flowarg/flowupdater/versions/IModLoaderVersion.ModLoaderLauncherEnvironment.html" title="class in fr.flowarg.flowupdater.versions"><code>IModLoaderVersion.ModLoaderLauncherEnvironment</code></a> to launch the mod loader's launcher.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>patchedInstaller</code> - the patched installer path.</dd>
+<dd><code>dirToInstall</code> - the installation directory.</dd>
+<dd><code>tempDir</code> - the temporary directory where is the installer stuff.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the fresh <a href="../../../../fr/flowarg/flowupdater/versions/IModLoaderVersion.ModLoaderLauncherEnvironment.html" title="class in fr.flowarg.flowupdater.versions"><code>IModLoaderVersion.ModLoaderLauncherEnvironment</code></a>.</dd>
+</dl>
 </li>
 </ul>
 <a name="cleanInstaller-java.nio.file.Path-">
@@ -736,9 +775,13 @@ implements <a href="../../../../fr/flowarg/flowupdater/download/ICurseFeaturesUs
                                     @NotNull java.nio.file.Path&nbsp;tempDir,
                                     java.nio.file.Path&nbsp;tempInstallerDir)
                              throws java.lang.Exception</pre>
+<div class="block">This methods packs the modified installer to a JAR file.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>tempDir</code> - the temporary directory where is the installer stuff.</dd>
+<dd><code>tempInstallerDir</code> - the temporary directory where is the installer stuff.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.lang.Exception</code></dd>
+<dd><code>java.lang.Exception</code> - if an error occurred.</dd>
 </dl>
 </li>
 </ul>
@@ -781,6 +824,11 @@ implements <a href="../../../../fr/flowarg/flowupdater/download/ICurseFeaturesUs
 <li class="blockList">
 <h4>getFileDeleter</h4>
 <pre>public&nbsp;<a href="../../../../fr/flowarg/flowupdater/utils/ModFileDeleter.html" title="class in fr.flowarg.flowupdater.utils">ModFileDeleter</a>&nbsp;getFileDeleter()</pre>
+<div class="block">Get the mod file deleter assigned to this version.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a mod file deleter.</dd>
+</dl>
 </li>
 </ul>
 <a name="attachFlowUpdater-fr.flowarg.flowupdater.FlowUpdater-">
@@ -855,6 +903,11 @@ implements <a href="../../../../fr/flowarg/flowupdater/download/ICurseFeaturesUs
 <li class="blockList">
 <h4>getOptiFineInfo</h4>
 <pre>public&nbsp;<a href="../../../../fr/flowarg/flowupdater/download/json/OptiFineInfo.html" title="class in fr.flowarg.flowupdater.download.json">OptiFineInfo</a>&nbsp;getOptiFineInfo()</pre>
+<div class="block">Get given OptiFine information.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>OptiFine information.</dd>
+</dl>
 </li>
 </ul>
 <a name="getModPackInfo--">
@@ -896,6 +949,11 @@ implements <a href="../../../../fr/flowarg/flowupdater/download/ICurseFeaturesUs
 <li class="blockList">
 <h4>getForgeVersion</h4>
 <pre>public&nbsp;java.lang.String&nbsp;getForgeVersion()</pre>
+<div class="block">Get the forge version.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the forge version.</dd>
+</dl>
 </li>
 </ul>
 <a name="getInstallerUrl--">
@@ -905,6 +963,11 @@ implements <a href="../../../../fr/flowarg/flowupdater/download/ICurseFeaturesUs
 <li class="blockList">
 <h4>getInstallerUrl</h4>
 <pre>public&nbsp;java.net.URL&nbsp;getInstallerUrl()</pre>
+<div class="block">Get the url to the installer.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the url to the installer.</dd>
+</dl>
 </li>
 </ul>
 <a name="getAllCurseMods--">
@@ -914,6 +977,11 @@ implements <a href="../../../../fr/flowarg/flowupdater/download/ICurseFeaturesUs
 <li class="blockList">
 <h4>getAllCurseMods</h4>
 <pre>public&nbsp;java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/CurseMod.html" title="class in fr.flowarg.flowupdater.integrations.curseforgeintegration">CurseMod</a>&gt;&nbsp;getAllCurseMods()</pre>
+<div class="block">Get the list of curse mods.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the list of curse mods.</dd>
+</dl>
 </li>
 </ul>
 </li>

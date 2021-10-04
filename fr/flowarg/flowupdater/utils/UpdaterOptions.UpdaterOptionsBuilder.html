@@ -118,6 +118,7 @@ var activeTableTab = "activeTableTab";
 <pre>public static class <span class="typeNameLabel">UpdaterOptions.UpdaterOptionsBuilder</span>
 extends java.lang.Object
 implements <a href="../../../../fr/flowarg/flowupdater/utils/builderapi/IBuilder.html" title="interface in fr.flowarg.flowupdater.utils.builderapi">IBuilder</a>&lt;<a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.html" title="class in fr.flowarg.flowupdater.utils">UpdaterOptions</a>&gt;</pre>
+<div class="block">Builder of <a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.html" title="class in fr.flowarg.flowupdater.utils"><code>UpdaterOptions</code></a></div>
 </li>
 </ul>
 </div>
@@ -156,22 +157,28 @@ implements <a href="../../../../fr/flowarg/flowupdater/utils/builderapi/IBuilder
 <tr id="i0" class="altColor">
 <td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.html" title="class in fr.flowarg.flowupdater.utils">UpdaterOptions</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html#build--">build</a></span>()</code>
-<div class="block">Build a <code>T</code> object.</div>
+<div class="block">Build an <a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.html" title="class in fr.flowarg.flowupdater.utils"><code>UpdaterOptions</code></a> object.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html" title="class in fr.flowarg.flowupdater.utils">UpdaterOptions.UpdaterOptionsBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html#withDownloadServer-boolean-">withDownloadServer</a></span>(boolean&nbsp;downloadServer)</code>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;
+<div class="block"><span class="deprecationComment">Will be removed at 1.6.0.</span></div>
+</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html" title="class in fr.flowarg.flowupdater.utils">UpdaterOptions.UpdaterOptionsBuilder</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html#withExternalFileDeleter-fr.flowarg.flowupdater.utils.ExternalFileDeleter-">withExternalFileDeleter</a></span>(<a href="../../../../fr/flowarg/flowupdater/utils/ExternalFileDeleter.html" title="class in fr.flowarg.flowupdater.utils">ExternalFileDeleter</a>&nbsp;externalFileDeleter)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html#withExternalFileDeleter-fr.flowarg.flowupdater.utils.ExternalFileDeleter-">withExternalFileDeleter</a></span>(<a href="../../../../fr/flowarg/flowupdater/utils/ExternalFileDeleter.html" title="class in fr.flowarg.flowupdater.utils">ExternalFileDeleter</a>&nbsp;externalFileDeleter)</code>
+<div class="block">Append an <a href="../../../../fr/flowarg/flowupdater/utils/ExternalFileDeleter.html" title="class in fr.flowarg.flowupdater.utils"><code>ExternalFileDeleter</code></a> object.</div>
+</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html" title="class in fr.flowarg.flowupdater.utils">UpdaterOptions.UpdaterOptionsBuilder</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html#withSilentRead-boolean-">withSilentRead</a></span>(boolean&nbsp;silentRead)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html#withSilentRead-boolean-">withSilentRead</a></span>(boolean&nbsp;silentRead)</code>
+<div class="block">Enable or disable the silent read option.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -219,6 +226,13 @@ implements <a href="../../../../fr/flowarg/flowupdater/utils/builderapi/IBuilder
 <li class="blockList">
 <h4>withSilentRead</h4>
 <pre>public&nbsp;<a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html" title="class in fr.flowarg.flowupdater.utils">UpdaterOptions.UpdaterOptionsBuilder</a>&nbsp;withSilentRead(boolean&nbsp;silentRead)</pre>
+<div class="block">Enable or disable the silent read option.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>silentRead</code> - the value to define.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the builder.</dd>
+</dl>
 </li>
 </ul>
 <a name="withDownloadServer-boolean-">
@@ -228,8 +242,16 @@ implements <a href="../../../../fr/flowarg/flowupdater/utils/builderapi/IBuilder
 <li class="blockList">
 <h4>withDownloadServer</h4>
 <pre>@Deprecated
+ @ApiStatus.ScheduledForRemoval(inVersion="1.6.0")
 public&nbsp;<a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html" title="class in fr.flowarg.flowupdater.utils">UpdaterOptions.UpdaterOptionsBuilder</a>&nbsp;withDownloadServer(boolean&nbsp;downloadServer)</pre>
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>&nbsp;<span class="deprecationComment">Will be removed at 1.6.0.</span></div>
+<div class="block">Download or not the server</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>downloadServer</code> - the value to define.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the builder.</dd>
+</dl>
 </li>
 </ul>
 <a name="withExternalFileDeleter-fr.flowarg.flowupdater.utils.ExternalFileDeleter-">
@@ -239,6 +261,13 @@ public&nbsp;<a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.Upd
 <li class="blockList">
 <h4>withExternalFileDeleter</h4>
 <pre>public&nbsp;<a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html" title="class in fr.flowarg.flowupdater.utils">UpdaterOptions.UpdaterOptionsBuilder</a>&nbsp;withExternalFileDeleter(<a href="../../../../fr/flowarg/flowupdater/utils/ExternalFileDeleter.html" title="class in fr.flowarg.flowupdater.utils">ExternalFileDeleter</a>&nbsp;externalFileDeleter)</pre>
+<div class="block">Append an <a href="../../../../fr/flowarg/flowupdater/utils/ExternalFileDeleter.html" title="class in fr.flowarg.flowupdater.utils"><code>ExternalFileDeleter</code></a> object.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>externalFileDeleter</code> - the file deleter to define.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the builder.</dd>
+</dl>
 </li>
 </ul>
 <a name="build--">
@@ -249,8 +278,7 @@ public&nbsp;<a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.Upd
 <h4>build</h4>
 <pre>public&nbsp;<a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.html" title="class in fr.flowarg.flowupdater.utils">UpdaterOptions</a>&nbsp;build()
                      throws <a href="../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderException.html" title="class in fr.flowarg.flowupdater.utils.builderapi">BuilderException</a></pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../fr/flowarg/flowupdater/utils/builderapi/IBuilder.html#build--">IBuilder</a></code></span></div>
-<div class="block">Build a <code>T</code> object.</div>
+<div class="block">Build an <a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.html" title="class in fr.flowarg.flowupdater.utils"><code>UpdaterOptions</code></a> object.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../../../../fr/flowarg/flowupdater/utils/builderapi/IBuilder.html#build--">build</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../fr/flowarg/flowupdater/utils/builderapi/IBuilder.html" title="interface in fr.flowarg.flowupdater.utils.builderapi">IBuilder</a>&lt;<a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.html" title="class in fr.flowarg.flowupdater.utils">UpdaterOptions</a>&gt;</code></dd>

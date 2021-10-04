@@ -109,6 +109,7 @@ var activeTableTab = "activeTableTab";
 <br>
 <pre>public class <span class="typeNameLabel">IOUtils</span>
 extends java.lang.Object</pre>
+<div class="block">A basic I/O utility class.</div>
 </li>
 </ul>
 </div>
@@ -146,27 +147,37 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>static java.io.InputStream</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/utils/IOUtils.html#catchForbidden-java.net.URL-">catchForbidden</a></span>(@NotNull java.net.URL&nbsp;url)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/utils/IOUtils.html#catchForbidden-java.net.URL-">catchForbidden</a></span>(@NotNull java.net.URL&nbsp;url)</code>
+<div class="block">A trick to avoid some forbidden response.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/utils/IOUtils.html#copy-fr.flowarg.flowlogger.ILogger-java.nio.file.Path-java.nio.file.Path-">copy</a></span>(@NotNull fr.flowarg.flowlogger.ILogger&nbsp;logger,
     @NotNull java.nio.file.Path&nbsp;in,
-    @NotNull java.nio.file.Path&nbsp;out)</code>&nbsp;</td>
+    @NotNull java.nio.file.Path&nbsp;out)</code>
+<div class="block">Copy a local file to a destination file.</div>
+</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/utils/IOUtils.html#download-fr.flowarg.flowlogger.ILogger-java.net.URL-java.nio.file.Path-">download</a></span>(@NotNull fr.flowarg.flowlogger.ILogger&nbsp;logger,
         @NotNull java.net.URL&nbsp;in,
-        @NotNull java.nio.file.Path&nbsp;out)</code>&nbsp;</td>
+        @NotNull java.nio.file.Path&nbsp;out)</code>
+<div class="block">Download a remote file to a destination file.</div>
+</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>static @NotNull java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/utils/IOUtils.html#getContent-java.net.URL-">getContent</a></span>(java.net.URL&nbsp;url)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/utils/IOUtils.html#getContent-java.net.URL-">getContent</a></span>(java.net.URL&nbsp;url)</code>
+<div class="block">Get the content of a remote url.</div>
+</td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>static java.nio.file.Path</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/utils/IOUtils.html#getMinecraftFolder--">getMinecraftFolder</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/utils/IOUtils.html#getMinecraftFolder--">getMinecraftFolder</a></span>()</code>
+<div class="block">Retrieve the local Minecraft folder path.</div>
+</td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>static com.google.gson.JsonElement</code></td>
@@ -231,6 +242,13 @@ extends java.lang.Object</pre>
                             @NotNull java.net.URL&nbsp;in,
                             @NotNull
                             @NotNull java.nio.file.Path&nbsp;out)</pre>
+<div class="block">Download a remote file to a destination file.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>logger</code> - a valid logger instance.</dd>
+<dd><code>in</code> - the input url.</dd>
+<dd><code>out</code> - the output file.</dd>
+</dl>
 </li>
 </ul>
 <a name="copy-fr.flowarg.flowlogger.ILogger-java.nio.file.Path-java.nio.file.Path-">
@@ -245,6 +263,13 @@ extends java.lang.Object</pre>
                         @NotNull java.nio.file.Path&nbsp;in,
                         @NotNull
                         @NotNull java.nio.file.Path&nbsp;out)</pre>
+<div class="block">Copy a local file to a destination file.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>logger</code> - a valid logger instance.</dd>
+<dd><code>in</code> - the input file.</dd>
+<dd><code>out</code> - the output file.</dd>
+</dl>
 </li>
 </ul>
 <a name="getContent-java.net.URL-">
@@ -255,6 +280,13 @@ extends java.lang.Object</pre>
 <h4>getContent</h4>
 <pre>@NotNull
 public static&nbsp;@NotNull java.lang.String&nbsp;getContent(java.net.URL&nbsp;url)</pre>
+<div class="block">Get the content of a remote url.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>url</code> - the destination url</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the content.</dd>
+</dl>
 </li>
 </ul>
 <a name="readJson-java.net.URL-">
@@ -298,9 +330,14 @@ public static&nbsp;@NotNull java.lang.String&nbsp;getContent(java.net.URL&nbsp;u
 <pre>public static&nbsp;java.io.InputStream&nbsp;catchForbidden(@NotNull
                                                  @NotNull java.net.URL&nbsp;url)
                                           throws java.io.IOException</pre>
+<div class="block">A trick to avoid some forbidden response.</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>url</code> - the destination url.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the opened connection.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code></dd>
+<dd><code>java.io.IOException</code> - if an I/O error occurred.</dd>
 </dl>
 </li>
 </ul>
@@ -311,6 +348,11 @@ public static&nbsp;@NotNull java.lang.String&nbsp;getContent(java.net.URL&nbsp;u
 <li class="blockList">
 <h4>getMinecraftFolder</h4>
 <pre>public static&nbsp;java.nio.file.Path&nbsp;getMinecraftFolder()</pre>
+<div class="block">Retrieve the local Minecraft folder path.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the Minecraft folder path.</dd>
+</dl>
 </li>
 </ul>
 </li>
