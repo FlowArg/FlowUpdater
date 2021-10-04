@@ -9,8 +9,6 @@ import fr.flowarg.flowupdater.integrations.optifineintegration.OptiFine;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -21,7 +19,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class DownloadList
 {
     private final List<Downloadable> downloadableFiles = new ArrayList<>();
-    private final Queue<AssetDownloadable> downloadableAssets = new ConcurrentLinkedDeque<>();
+    private final List<AssetDownloadable> downloadableAssets = new ArrayList<>();
     private final List<ExternalFile> extFiles = new ArrayList<>();
     private final List<Mod> mods = new ArrayList<>();
     private final List<CurseMod> curseMods = new ArrayList<>();
@@ -78,7 +76,7 @@ public class DownloadList
      * Get the queue that contains all assets to download.
      * @return the queue that contains all assets to download.
      */
-    public Queue<AssetDownloadable> getDownloadableAssets()
+    public List<AssetDownloadable> getDownloadableAssets()
     {
         return this.downloadableAssets;
     }

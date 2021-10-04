@@ -15,7 +15,6 @@ public class FlowUpdaterException extends RuntimeException
     public FlowUpdaterException(String message, Throwable cause)
     {
         super(message, cause);
-        cause.printStackTrace();
     }
 
     public FlowUpdaterException(Throwable cause)

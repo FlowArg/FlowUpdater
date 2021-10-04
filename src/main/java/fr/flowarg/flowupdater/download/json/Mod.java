@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import fr.flowarg.flowupdater.utils.FlowUpdaterException;
 import fr.flowarg.flowupdater.utils.IOUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ public class Mod
      * @param jsonUrl the JSON file URL.
      * @return a Mod list.
     */
-    public static List<Mod> getModsFromJson(URL jsonUrl)
+    public static @NotNull List<Mod> getModsFromJson(URL jsonUrl)
     {
         final List<Mod> result = new ArrayList<>();
         final JsonObject object = IOUtils.readJson(jsonUrl).getAsJsonObject();
@@ -79,7 +80,7 @@ public class Mod
      * @param jsonUrl the JSON file URL.
      * @return a Mod list.
      */
-    public static List<Mod> getModsFromJson(String jsonUrl)
+    public static @NotNull List<Mod> getModsFromJson(String jsonUrl)
     {
         try
         {

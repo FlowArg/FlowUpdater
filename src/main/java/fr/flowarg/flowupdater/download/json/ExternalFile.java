@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import fr.flowarg.flowupdater.utils.FlowUpdaterException;
 import fr.flowarg.flowupdater.utils.IOUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -76,7 +77,7 @@ public class ExternalFile
      * @param jsonUrl the JSON file URL.
      * @return an external file list.
      */
-    public static List<ExternalFile> getExternalFilesFromJson(URL jsonUrl)
+    public static @NotNull List<ExternalFile> getExternalFilesFromJson(URL jsonUrl)
     {
         final List<ExternalFile> result = new ArrayList<>();
         final JsonArray extfiles = IOUtils.readJson(jsonUrl).getAsJsonObject().getAsJsonArray("extfiles");
@@ -98,7 +99,7 @@ public class ExternalFile
      * @param jsonUrl the JSON file URL.
      * @return an external file list.
      */
-    public static List<ExternalFile> getExternalFilesFromJson(String jsonUrl)
+    public static @NotNull List<ExternalFile> getExternalFilesFromJson(String jsonUrl)
     {
         try
         {

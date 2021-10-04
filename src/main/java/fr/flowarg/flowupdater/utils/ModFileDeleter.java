@@ -4,6 +4,7 @@ import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseMod;
 import fr.flowarg.flowupdater.integrations.optifineintegration.OptiFine;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -101,7 +102,7 @@ public class ModFileDeleter implements IFileDeleter
         badFiles.clear();
     }
 
-    private void processCurseForgeMods(List<CurseMod> allCurseMods, Path fileInDir, Set<Path> badFiles, List<Path> verifiedFiles) throws Exception
+    private void processCurseForgeMods(@NotNull List<CurseMod> allCurseMods, Path fileInDir, Set<Path> badFiles, List<Path> verifiedFiles) throws Exception
     {
         for (CurseMod mod : allCurseMods)
         {

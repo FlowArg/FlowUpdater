@@ -6,6 +6,7 @@ import com.google.gson.JsonParser;
 import fr.flowarg.flowcompat.Platform;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.FlowUpdater;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -22,7 +23,7 @@ public class IOUtils
 {
     private static Path cachedMinecraftPath = null;
 
-    public static void download(ILogger logger, URL in, Path out)
+    public static void download(@NotNull ILogger logger, @NotNull URL in, @NotNull Path out)
     {
         try
         {
@@ -36,7 +37,7 @@ public class IOUtils
         }
     }
 
-    public static void copy(ILogger logger, Path in, Path out)
+    public static void copy(@NotNull ILogger logger, @NotNull Path in, @NotNull Path out)
     {
         try
         {
@@ -50,7 +51,7 @@ public class IOUtils
         }
     }
 
-    public static String getContent(URL url)
+    public static @NotNull String getContent(URL url)
     {
         final StringBuilder sb = new StringBuilder();
 
@@ -122,7 +123,7 @@ public class IOUtils
         return element.getAsJsonObject();
     }
 
-    public static InputStream catchForbidden(URL url) throws IOException
+    public static InputStream catchForbidden(@NotNull URL url) throws IOException
     {
         final HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.addRequestProperty("User-Agent", "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.124 Safari/537.36");

@@ -1,7 +1,5 @@
 package fr.flowarg.flowupdater.versions;
 
-import fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseMod;
-import fr.flowarg.flowupdater.integrations.optifineintegration.OptiFine;
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.FlowUpdater;
@@ -13,10 +11,13 @@ import fr.flowarg.flowupdater.download.json.CurseFileInfo;
 import fr.flowarg.flowupdater.download.json.CurseModPackInfo;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.download.json.OptiFineInfo;
+import fr.flowarg.flowupdater.integrations.IntegrationManager;
+import fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseMod;
+import fr.flowarg.flowupdater.integrations.optifineintegration.OptiFine;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
-import fr.flowarg.flowupdater.integrations.IntegrationManager;
 import fr.flowarg.flowzipper.ZipUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -76,7 +77,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
      * {@inheritDoc}
      */
     @Override
-    public boolean isModLoaderAlreadyInstalled(Path installDir)
+    public boolean isModLoaderAlreadyInstalled(@NotNull Path installDir)
     {
         final Path forgeDir = installDir.resolve("libraries").resolve("net").resolve("minecraftforge").resolve("forge").resolve(this.forgeVersion);
 
@@ -100,7 +101,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
      * {@inheritDoc}
      */
     @Override
-    public ModLoaderLauncherEnvironment prepareModLoaderLauncher(Path dirToInstall, InputStream stream) throws Exception
+    public ModLoaderLauncherEnvironment prepareModLoaderLauncher(@NotNull Path dirToInstall, InputStream stream) throws Exception
     {
         final Path tempDirPath = dirToInstall.resolve(".flowupdater");
         FileUtils.deleteDirectory(tempDirPath);
@@ -144,7 +145,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         }
     }
 
-    protected ModLoaderLauncherEnvironment makeCommand(Path patchedInstaller, Path dirToInstall, Path tempDir)
+    protected ModLoaderLauncherEnvironment makeCommand(@NotNull Path patchedInstaller, @NotNull Path dirToInstall, Path tempDir)
     {
         final List<String> command = new ArrayList<>();
         command.add("java");
@@ -169,7 +170,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
      * {@inheritDoc}
      */
     @Override
-    public boolean checkModLoaderEnv(Path dirToInstall) throws Exception
+    public boolean checkModLoaderEnv(@NotNull Path dirToInstall) throws Exception
     {
         final Path forgeDirPath = dirToInstall.resolve("libraries").resolve("net").resolve("minecraftforge").resolve("forge");
 
@@ -216,7 +217,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         this.fileDeleter.delete(modsDir, this.mods, this.allCurseMods, ofObj);
     }
     
-    protected void packPatchedInstaller(final Path tempDir, final Path tempInstallerDir) throws Exception
+    protected void packPatchedInstaller(final @NotNull Path tempDir, final Path tempInstallerDir) throws Exception
     {
         final Path outputPath = tempDir.resolve("forge-installer-patched.zip");
         ZipUtils.compressFiles(FileUtils.list(tempInstallerDir).toArray(new Path[0]), outputPath);
@@ -251,7 +252,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
      * {@inheritDoc}
      */
     @Override
-    public void attachFlowUpdater(FlowUpdater flowUpdater)
+    public void attachFlowUpdater(@NotNull FlowUpdater flowUpdater)
     {
         this.callback = flowUpdater.getCallback();
         this.logger = flowUpdater.getLogger();

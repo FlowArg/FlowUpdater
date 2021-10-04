@@ -44,7 +44,7 @@ dependencies {
 
     // Only for internal tests
     testImplementation 'fr.flowarg:openlauncherlib:3.2.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
 }
 
 artifacts {

@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import fr.flowarg.flowupdater.utils.FlowUpdaterException;
 import fr.flowarg.flowupdater.utils.IOUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class CurseFileInfo
      * @param jsonUrl the url of the remote JSON file.
      * @return a collection of {@link CurseFileInfo}.
      */
-    public static List<CurseFileInfo> getFilesFromJson(URL jsonUrl)
+    public static @NotNull List<CurseFileInfo> getFilesFromJson(URL jsonUrl)
     {
         final List<CurseFileInfo> result = new ArrayList<>();
         final JsonObject object = IOUtils.readJson(jsonUrl).getAsJsonObject();
@@ -53,7 +54,7 @@ public class CurseFileInfo
      * @param jsonUrl the url of the remote JSON file.
      * @return a collection of {@link CurseFileInfo}.
      */
-    public static List<CurseFileInfo> getFilesFromJson(String jsonUrl)
+    public static @NotNull List<CurseFileInfo> getFilesFromJson(String jsonUrl)
     {
         try
         {

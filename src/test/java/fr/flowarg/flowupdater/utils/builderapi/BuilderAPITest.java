@@ -1,5 +1,7 @@
 package fr.flowarg.flowupdater.utils.builderapi;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -80,8 +82,9 @@ public class BuilderAPITest
             return this;
         }
 
+        @Contract(" -> new")
         @Override
-        public TestObject build() throws BuilderException
+        public @NotNull TestObject build() throws BuilderException
         {
             return new TestObject(
                     this.anArgument.get(),
@@ -107,8 +110,9 @@ public class BuilderAPITest
             return this;
         }
 
+        @Contract(" -> new")
         @Override
-        public AnotherTestObject build() throws BuilderException
+        public @NotNull AnotherTestObject build() throws BuilderException
         {
             return new AnotherTestObject(
                     this.aBooleanArgument.get(),

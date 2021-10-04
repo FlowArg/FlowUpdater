@@ -3,6 +3,7 @@ package fr.flowarg.flowupdater.download.json;
 import com.google.gson.JsonObject;
 import fr.flowarg.flowupdater.utils.FlowUpdaterException;
 import fr.flowarg.flowupdater.utils.IOUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -65,7 +66,7 @@ public class MCP
      * @param jsonUrl the JSON file URL.
      * @return the MCP instance.
      */
-    public static MCP getMCPFromJson(URL jsonUrl)
+    public static @NotNull MCP getMCPFromJson(URL jsonUrl)
     {
         final JsonObject object = IOUtils.readJson(jsonUrl).getAsJsonObject();
         return new MCP(object.get("clientURL").getAsString(), object.get("clientSha1").getAsString(), object.get("clientSize").getAsLong());
@@ -76,7 +77,7 @@ public class MCP
      * @param jsonUrl the JSON file URL.
      * @return the MCP instance.
      */
-    public static MCP getMCPFromJson(String jsonUrl)
+    public static @NotNull MCP getMCPFromJson(String jsonUrl)
     {
         try
         {

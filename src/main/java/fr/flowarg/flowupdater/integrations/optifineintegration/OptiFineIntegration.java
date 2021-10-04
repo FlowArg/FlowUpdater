@@ -79,7 +79,7 @@ public class OptiFineIntegration extends Integration
             final String[] respLine = IOUtils.getContent(new URL("https://optifine.net/adloadx?f=OptiFine_" + optiFineVersion)).split("\n");
             final Optional<String> result = Arrays.stream(respLine).filter(s -> s.contains("downloadx?f=OptiFine")).findFirst();
             if(result.isPresent())
-                return result.get().replace("' onclick='onDownload()'>OptiFine " + optiFineVersion.replace("_", " ") +"</a>", "").replace("<a href='downloadx?f=OptiFine_" + optiFineVersion + "&x=", "").replace(" ", "");
+                return result.get().replace("' onclick='onDownload()'>OptiFine " + optiFineVersion.replace("_", " ") + "</a>", "").replace("<a href='downloadx?f=OptiFine_" + optiFineVersion + "&x=", "").replace(" ", "");
             else throw new FlowUpdaterException("No line found in: " + Arrays.toString(respLine));
         }
         catch (Exception e)
@@ -93,9 +93,9 @@ public class OptiFineIntegration extends Integration
         try
         {
             final String[] respLine = IOUtils.getContent(new URL("https://optifine.net/adloadx?f=" + optiFineVersion)).split("\n");
-            final Optional<String> result = Arrays.stream(respLine).filter(s -> s.contains("downloadx?f=OptiFine")).findFirst();
+            final Optional<String> result = Arrays.stream(respLine).filter(s -> s.contains("downloadx?f=preview")).findFirst();
             if(result.isPresent())
-                return result.get().replace("' onclick='onDownload()'>" + optiFineVersion.replace("_", " ") +"</a>", "").replace("<a href='downloadx?f=" + optiFineVersion + "&x=", "").replace(" ", "");
+                return result.get().replace("' onclick='onDownload()'>" + optiFineVersion.replace("_", " ") + "</a>", "").replace("<a href='downloadx?f=" + optiFineVersion + "&x=", "").replace(" ", "");
             else throw new FlowUpdaterException("No line found in: " + Arrays.toString(respLine));
         }
         catch (Exception e)

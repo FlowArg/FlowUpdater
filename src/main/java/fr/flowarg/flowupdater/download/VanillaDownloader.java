@@ -7,6 +7,7 @@ import fr.flowarg.flowupdater.FlowUpdater;
 import fr.flowarg.flowupdater.download.json.Downloadable;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowzipper.ZipUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.net.URL;
@@ -41,7 +42,7 @@ public class VanillaDownloader
      * @param flowUpdater the flow updater object.
      * @throws IOException if an I/O error occurred.
      */
-    public VanillaDownloader(Path dir, FlowUpdater flowUpdater) throws IOException
+    public VanillaDownloader(Path dir, @NotNull FlowUpdater flowUpdater) throws IOException
     {
         this.dir = dir;
         this.logger = flowUpdater.getLogger();

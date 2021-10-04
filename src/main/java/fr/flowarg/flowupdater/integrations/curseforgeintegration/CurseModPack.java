@@ -1,5 +1,7 @@
 package fr.flowarg.flowupdater.integrations.curseforgeintegration;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 /**
@@ -70,7 +72,7 @@ public class CurseModPack
             this.required = required;
         }
 
-        CurseModPackMod(CurseMod base, boolean required)
+        CurseModPackMod(@NotNull CurseMod base, boolean required)
         {
             this(base.getName(), base.getDownloadURL(), base.getMd5(), base.getLength(), required);
         }

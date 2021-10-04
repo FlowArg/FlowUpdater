@@ -11,6 +11,7 @@ import fr.flowarg.flowupdater.download.json.AssetIndex;
 import fr.flowarg.flowupdater.download.json.Downloadable;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.versions.VanillaVersion;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.net.URL;
@@ -35,7 +36,7 @@ public class VanillaReader
      * Construct a new VanillaReader.
      * @param flowUpdater the flow updater object.
      */
-    public VanillaReader(FlowUpdater flowUpdater)
+    public VanillaReader(@NotNull FlowUpdater flowUpdater)
     {
         this.version = flowUpdater.getVersion();
         this.logger = flowUpdater.getLogger();
@@ -168,7 +169,7 @@ public class VanillaReader
         });
     }
     
-    private void getNativeForOS(String os, JsonObject obj)
+    private void getNativeForOS(@NotNull String os, @NotNull JsonObject obj)
     {
         final String url = obj.getAsJsonPrimitive("url").getAsString();
         final int size = obj.getAsJsonPrimitive("size").getAsInt();
@@ -202,7 +203,7 @@ public class VanillaReader
         this.downloadList.getDownloadableAssets().addAll(toDownload);
     }
 
-    private boolean checkRules(JsonObject obj)
+    private boolean checkRules(@NotNull JsonObject obj)
     {
         final JsonElement rulesElement = obj.get("rules");
         if (rulesElement == null) return true;
@@ -231,7 +232,7 @@ public class VanillaReader
         return canDownload.get();
     }
     
-    private boolean check(String str, String str2)
+    private boolean check(@NotNull String str, String str2)
     {
         return str.equalsIgnoreCase(str2);
     }

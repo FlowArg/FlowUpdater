@@ -14,13 +14,16 @@ import fr.flowarg.flowupdater.download.Step;
 import fr.flowarg.flowupdater.download.json.CurseFileInfo;
 import fr.flowarg.flowupdater.download.json.CurseModPackInfo;
 import fr.flowarg.flowupdater.download.json.Mod;
+import fr.flowarg.flowupdater.integrations.IntegrationManager;
 import fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseMod;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
-import fr.flowarg.flowupdater.integrations.IntegrationManager;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
 import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -73,7 +76,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
         this.installerVersion = this.getLatestInstallerVersion();
     }
 
-    private static String getLatestFabricVersion() {
+    private static @Nullable String getLatestFabricVersion() {
         try
         {
             final DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -87,7 +90,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
         }
     }
 
-    private String getLatestInstallerVersion() {
+    private @Nullable String getLatestInstallerVersion() {
         try {
             final DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             final DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -102,7 +105,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
         }
     }
 
-    private static String getLatestVersionOfArtifact(Document doc)
+    private static String getLatestVersionOfArtifact(@NotNull Document doc)
     {
         doc.getDocumentElement().normalize();
 
@@ -123,7 +126,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
      * {@inheritDoc}
      */
     @Override
-    public boolean isModLoaderAlreadyInstalled(Path installDir)
+    public boolean isModLoaderAlreadyInstalled(@NotNull Path installDir)
     {
         return Files.exists(installDir.resolve("libraries").resolve("net").resolve("fabricmc").resolve("fabric-loader").resolve(this.fabricVersion).resolve("fabric-loader-" + this.fabricVersion + ".jar"));
     }
@@ -167,7 +170,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
      * {@inheritDoc}
      */
     @Override
-    public FabricLauncherEnvironment prepareModLoaderLauncher(Path dirToInstall, InputStream stream) throws IOException
+    public FabricLauncherEnvironment prepareModLoaderLauncher(@NotNull Path dirToInstall, InputStream stream) throws IOException
     {
         this.logger.info("Downloading fabric installer...");
 
@@ -183,7 +186,8 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
         return this.makeCommand(tempDirPath, installPath, fabricPath);
     }
 
-    private FabricLauncherEnvironment makeCommand(Path tempDir, Path install, Path fabric)
+    @Contract("_, _, _ -> new")
+    private @NotNull FabricLauncherEnvironment makeCommand(Path tempDir, @NotNull Path install, @NotNull Path fabric)
     {
         final List<String> command = new ArrayList<>();
         command.add("java");
@@ -255,7 +259,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
      * {@inheritDoc}
      */
     @Override
-    public boolean checkModLoaderEnv(Path dirToInstall) throws Exception
+    public boolean checkModLoaderEnv(@NotNull Path dirToInstall) throws Exception
     {
         boolean result= false;
         final Path fabricDirPath = dirToInstall.resolve("libraries").resolve("net").resolve("fabricmc").resolve("fabric-loader");
@@ -293,7 +297,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
      * {@inheritDoc}
      */
     @Override
-    public void attachFlowUpdater(FlowUpdater flowUpdater)
+    public void attachFlowUpdater(@NotNull FlowUpdater flowUpdater)
     {
         this.callback = flowUpdater.getCallback();
         this.logger = flowUpdater.getLogger();

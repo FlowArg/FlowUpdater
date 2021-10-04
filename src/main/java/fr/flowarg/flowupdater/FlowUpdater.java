@@ -6,13 +6,14 @@ import fr.flowarg.flowlogger.Logger;
 import fr.flowarg.flowupdater.download.*;
 import fr.flowarg.flowupdater.download.json.ExternalFile;
 import fr.flowarg.flowupdater.download.json.Mod;
-import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.integrations.IntegrationManager;
+import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.UpdaterOptions;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
 import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
 import fr.flowarg.flowupdater.versions.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.net.URL;
@@ -134,14 +135,16 @@ public class FlowUpdater
 
         final Path modsDirPath = dir.resolve("mods");
 
-        if(this.forgeVersion != null && this.version.getVersionType() == VersionType.FORGE)
+        final VersionType versionType = this.version.getVersionType();
+
+        if(this.forgeVersion != null && versionType == VersionType.FORGE)
         {
             this.checkMods(this.forgeVersion, modsDirPath);
             this.integrationManager.loadCurseForgeIntegration(modsDirPath, this.forgeVersion);
             this.integrationManager.loadOptiFineIntegration(modsDirPath, this.forgeVersion);
         }
 
-        if (this.fabricVersion != null && this.version.getVersionType() == VersionType.FABRIC)
+        if (this.fabricVersion != null && versionType == VersionType.FABRIC)
         {
             this.checkMods(this.fabricVersion, modsDirPath);
             this.integrationManager.loadCurseForgeIntegration(modsDirPath, this.fabricVersion);
@@ -152,13 +155,13 @@ public class FlowUpdater
 
         new VanillaDownloader(dir, this).download();
 
-        if(this.version.getVersionType() == VersionType.MCP || this.version.getVersionType() == VersionType.VANILLA) return;
+        if(versionType == VersionType.MCP || versionType == VersionType.VANILLA) return;
 
-        if(this.version.getVersionType() == VersionType.FORGE) this.installModLoader(this.forgeVersion, dir, "Forge");
-        if(this.version.getVersionType() == VersionType.FABRIC) this.installModLoader(this.fabricVersion, dir, "Fabric");
+        if(versionType == VersionType.FORGE) this.installModLoader(this.forgeVersion, dir, "Forge");
+        if(versionType == VersionType.FABRIC) this.installModLoader(this.fabricVersion, dir, "Fabric");
     }
 
-    private void checkMods(IModLoaderVersion modLoader, Path modsDir) throws Exception
+    private void checkMods(@NotNull IModLoaderVersion modLoader, Path modsDir) throws Exception
     {
         for(Mod mod : modLoader.getMods())
         {

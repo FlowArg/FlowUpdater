@@ -6,6 +6,7 @@ import fr.flowarg.flowupdater.download.json.CurseModPackInfo;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.download.json.OptiFineInfo;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -60,7 +61,7 @@ public class NewForgeVersion extends AbstractForgeVersion
      * {@inheritDoc}
      */
     @Override
-    public boolean checkModLoaderEnv(Path dirToInstall) throws Exception
+    public boolean checkModLoaderEnv(@NotNull Path dirToInstall) throws Exception
     {
         if(this.isCompatible() && super.checkModLoaderEnv(dirToInstall))
         {
@@ -87,7 +88,7 @@ public class NewForgeVersion extends AbstractForgeVersion
      * {@inheritDoc}
      */
     @Override
-    protected void cleanInstaller(Path tempInstallerDir) throws Exception
+    protected void cleanInstaller(@NotNull Path tempInstallerDir) throws Exception
     {
         FileUtils.deleteDirectory(tempInstallerDir.resolve("net"));
         FileUtils.deleteDirectory(tempInstallerDir.resolve("com"));

@@ -16,6 +16,7 @@ import fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseModPack;
 import fr.flowarg.flowupdater.integrations.optifineintegration.OptiFine;
 import fr.flowarg.flowupdater.integrations.optifineintegration.OptiFineIntegration;
 import fr.flowarg.flowupdater.versions.AbstractForgeVersion;
+import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,7 +29,7 @@ public class IntegrationManager
     private final ILogger logger;
     private final DownloadList downloadList;
 
-    public IntegrationManager(FlowUpdater updater)
+    public IntegrationManager(@NotNull FlowUpdater updater)
     {
         this.progressCallback = updater.getCallback();
         this.logger = updater.getLogger();
@@ -103,7 +104,7 @@ public class IntegrationManager
         }
     }
 
-    public void loadOptiFineIntegration(Path dir, AbstractForgeVersion forgeVersion)
+    public void loadOptiFineIntegration(Path dir, @NotNull AbstractForgeVersion forgeVersion)
     {
         final OptiFineInfo info = forgeVersion.getOptiFineInfo();
         if(info == null) return;

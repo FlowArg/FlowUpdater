@@ -3,6 +3,7 @@ package fr.flowarg.flowupdater.utils;
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowupdater.download.DownloadList;
 import fr.flowarg.flowupdater.download.json.ExternalFile;
+import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -17,7 +18,7 @@ public class ExternalFileDeleter implements IFileDeleter
      * @param dir the base dir.
      * @throws Exception thrown if an error occurred
      */
-    public void delete(List<ExternalFile> externalFiles, DownloadList downloadList, Path dir) throws Exception
+    public void delete(@NotNull List<ExternalFile> externalFiles, DownloadList downloadList, Path dir) throws Exception
     {
         if(externalFiles.isEmpty()) return;
 
