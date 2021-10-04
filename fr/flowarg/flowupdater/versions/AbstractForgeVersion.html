@@ -249,13 +249,13 @@ implements <a href="../../../../fr/flowarg/flowupdater/download/ICurseFeaturesUs
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#attachFlowUpdater-fr.flowarg.flowupdater.FlowUpdater-">attachFlowUpdater</a></span>(<a href="../../../../fr/flowarg/flowupdater/FlowUpdater.html" title="class in fr.flowarg.flowupdater">FlowUpdater</a>&nbsp;flowUpdater)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#attachFlowUpdater-fr.flowarg.flowupdater.FlowUpdater-">attachFlowUpdater</a></span>(@NotNull <a href="../../../../fr/flowarg/flowupdater/FlowUpdater.html" title="class in fr.flowarg.flowupdater">FlowUpdater</a>&nbsp;flowUpdater)</code>
 <div class="block">Attach <a href="../../../../fr/flowarg/flowupdater/FlowUpdater.html" title="class in fr.flowarg.flowupdater"><code>FlowUpdater</code></a> object to mod loaders, allow them to retrieve some information.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#checkModLoaderEnv-java.nio.file.Path-">checkModLoaderEnv</a></span>(java.nio.file.Path&nbsp;dirToInstall)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#checkModLoaderEnv-java.nio.file.Path-">checkModLoaderEnv</a></span>(@NotNull java.nio.file.Path&nbsp;dirToInstall)</code>
 <div class="block">Check if the minecraft installation already contains another mod loader installation not corresponding to this version.</div>
 </td>
 </tr>
@@ -342,19 +342,19 @@ implements <a href="../../../../fr/flowarg/flowupdater/download/ICurseFeaturesUs
 </tr>
 <tr id="i17" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#isModLoaderAlreadyInstalled-java.nio.file.Path-">isModLoaderAlreadyInstalled</a></span>(java.nio.file.Path&nbsp;installDir)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#isModLoaderAlreadyInstalled-java.nio.file.Path-">isModLoaderAlreadyInstalled</a></span>(@NotNull java.nio.file.Path&nbsp;installDir)</code>
 <div class="block">Check if the current mod loader is already installed.</div>
 </td>
 </tr>
 <tr id="i18" class="altColor">
 <td class="colFirst"><code>protected <a href="../../../../fr/flowarg/flowupdater/versions/IModLoaderVersion.ModLoaderLauncherEnvironment.html" title="class in fr.flowarg.flowupdater.versions">IModLoaderVersion.ModLoaderLauncherEnvironment</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#makeCommand-java.nio.file.Path-java.nio.file.Path-java.nio.file.Path-">makeCommand</a></span>(java.nio.file.Path&nbsp;patchedInstaller,
-           java.nio.file.Path&nbsp;dirToInstall,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#makeCommand-java.nio.file.Path-java.nio.file.Path-java.nio.file.Path-">makeCommand</a></span>(@NotNull java.nio.file.Path&nbsp;patchedInstaller,
+           @NotNull java.nio.file.Path&nbsp;dirToInstall,
            java.nio.file.Path&nbsp;tempDir)</code>&nbsp;</td>
 </tr>
 <tr id="i19" class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#packPatchedInstaller-java.nio.file.Path-java.nio.file.Path-">packPatchedInstaller</a></span>(java.nio.file.Path&nbsp;tempDir,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#packPatchedInstaller-java.nio.file.Path-java.nio.file.Path-">packPatchedInstaller</a></span>(@NotNull java.nio.file.Path&nbsp;tempDir,
                     java.nio.file.Path&nbsp;tempInstallerDir)</code>&nbsp;</td>
 </tr>
 <tr id="i20" class="altColor">
@@ -365,7 +365,7 @@ implements <a href="../../../../fr/flowarg/flowupdater/download/ICurseFeaturesUs
 </tr>
 <tr id="i21" class="rowColor">
 <td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/versions/IModLoaderVersion.ModLoaderLauncherEnvironment.html" title="class in fr.flowarg.flowupdater.versions">IModLoaderVersion.ModLoaderLauncherEnvironment</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#prepareModLoaderLauncher-java.nio.file.Path-java.io.InputStream-">prepareModLoaderLauncher</a></span>(java.nio.file.Path&nbsp;dirToInstall,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#prepareModLoaderLauncher-java.nio.file.Path-java.io.InputStream-">prepareModLoaderLauncher</a></span>(@NotNull java.nio.file.Path&nbsp;dirToInstall,
                         java.io.InputStream&nbsp;stream)</code>
 <div class="block">Various setup before mod loader's installer launch.</div>
 </td>
@@ -570,7 +570,8 @@ implements <a href="../../../../fr/flowarg/flowupdater/download/ICurseFeaturesUs
 <ul class="blockList">
 <li class="blockList">
 <h4>isModLoaderAlreadyInstalled</h4>
-<pre>public&nbsp;boolean&nbsp;isModLoaderAlreadyInstalled(java.nio.file.Path&nbsp;installDir)</pre>
+<pre>public&nbsp;boolean&nbsp;isModLoaderAlreadyInstalled(@NotNull
+                                           @NotNull java.nio.file.Path&nbsp;installDir)</pre>
 <div class="block">Check if the current mod loader is already installed.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
@@ -607,7 +608,8 @@ implements <a href="../../../../fr/flowarg/flowupdater/download/ICurseFeaturesUs
 <ul class="blockList">
 <li class="blockList">
 <h4>prepareModLoaderLauncher</h4>
-<pre>public&nbsp;<a href="../../../../fr/flowarg/flowupdater/versions/IModLoaderVersion.ModLoaderLauncherEnvironment.html" title="class in fr.flowarg.flowupdater.versions">IModLoaderVersion.ModLoaderLauncherEnvironment</a>&nbsp;prepareModLoaderLauncher(java.nio.file.Path&nbsp;dirToInstall,
+<pre>public&nbsp;<a href="../../../../fr/flowarg/flowupdater/versions/IModLoaderVersion.ModLoaderLauncherEnvironment.html" title="class in fr.flowarg.flowupdater.versions">IModLoaderVersion.ModLoaderLauncherEnvironment</a>&nbsp;prepareModLoaderLauncher(@NotNull
+                                                                               @NotNull java.nio.file.Path&nbsp;dirToInstall,
                                                                                java.io.InputStream&nbsp;stream)
                                                                         throws java.lang.Exception</pre>
 <div class="block">Various setup before mod loader's installer launch.</div>
@@ -657,8 +659,10 @@ implements <a href="../../../../fr/flowarg/flowupdater/download/ICurseFeaturesUs
 <ul class="blockList">
 <li class="blockList">
 <h4>makeCommand</h4>
-<pre>protected&nbsp;<a href="../../../../fr/flowarg/flowupdater/versions/IModLoaderVersion.ModLoaderLauncherEnvironment.html" title="class in fr.flowarg.flowupdater.versions">IModLoaderVersion.ModLoaderLauncherEnvironment</a>&nbsp;makeCommand(java.nio.file.Path&nbsp;patchedInstaller,
-                                                                     java.nio.file.Path&nbsp;dirToInstall,
+<pre>protected&nbsp;<a href="../../../../fr/flowarg/flowupdater/versions/IModLoaderVersion.ModLoaderLauncherEnvironment.html" title="class in fr.flowarg.flowupdater.versions">IModLoaderVersion.ModLoaderLauncherEnvironment</a>&nbsp;makeCommand(@NotNull
+                                                                     @NotNull java.nio.file.Path&nbsp;patchedInstaller,
+                                                                     @NotNull
+                                                                     @NotNull java.nio.file.Path&nbsp;dirToInstall,
                                                                      java.nio.file.Path&nbsp;tempDir)</pre>
 </li>
 </ul>
@@ -685,7 +689,8 @@ implements <a href="../../../../fr/flowarg/flowupdater/download/ICurseFeaturesUs
 <ul class="blockList">
 <li class="blockList">
 <h4>checkModLoaderEnv</h4>
-<pre>public&nbsp;boolean&nbsp;checkModLoaderEnv(java.nio.file.Path&nbsp;dirToInstall)
+<pre>public&nbsp;boolean&nbsp;checkModLoaderEnv(@NotNull
+                                 @NotNull java.nio.file.Path&nbsp;dirToInstall)
                           throws java.lang.Exception</pre>
 <div class="block">Check if the minecraft installation already contains another mod loader installation not corresponding to this version.</div>
 <dl>
@@ -727,7 +732,8 @@ implements <a href="../../../../fr/flowarg/flowupdater/download/ICurseFeaturesUs
 <ul class="blockList">
 <li class="blockList">
 <h4>packPatchedInstaller</h4>
-<pre>protected&nbsp;void&nbsp;packPatchedInstaller(java.nio.file.Path&nbsp;tempDir,
+<pre>protected&nbsp;void&nbsp;packPatchedInstaller(@NotNull
+                                    @NotNull java.nio.file.Path&nbsp;tempDir,
                                     java.nio.file.Path&nbsp;tempInstallerDir)
                              throws java.lang.Exception</pre>
 <dl>
@@ -783,7 +789,8 @@ implements <a href="../../../../fr/flowarg/flowupdater/download/ICurseFeaturesUs
 <ul class="blockList">
 <li class="blockList">
 <h4>attachFlowUpdater</h4>
-<pre>public&nbsp;void&nbsp;attachFlowUpdater(<a href="../../../../fr/flowarg/flowupdater/FlowUpdater.html" title="class in fr.flowarg.flowupdater">FlowUpdater</a>&nbsp;flowUpdater)</pre>
+<pre>public&nbsp;void&nbsp;attachFlowUpdater(@NotNull
+                              @NotNull <a href="../../../../fr/flowarg/flowupdater/FlowUpdater.html" title="class in fr.flowarg.flowupdater">FlowUpdater</a>&nbsp;flowUpdater)</pre>
 <div class="block">Attach <a href="../../../../fr/flowarg/flowupdater/FlowUpdater.html" title="class in fr.flowarg.flowupdater"><code>FlowUpdater</code></a> object to mod loaders, allow them to retrieve some information.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>

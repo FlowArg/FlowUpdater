@@ -169,13 +169,13 @@ extends <a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersio
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/NewForgeVersion.html#checkModLoaderEnv-java.nio.file.Path-">checkModLoaderEnv</a></span>(java.nio.file.Path&nbsp;dirToInstall)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/NewForgeVersion.html#checkModLoaderEnv-java.nio.file.Path-">checkModLoaderEnv</a></span>(@NotNull java.nio.file.Path&nbsp;dirToInstall)</code>
 <div class="block">Check if the minecraft installation already contains another mod loader installation not corresponding to this version.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/NewForgeVersion.html#cleanInstaller-java.nio.file.Path-">cleanInstaller</a></span>(java.nio.file.Path&nbsp;tempInstallerDir)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/NewForgeVersion.html#cleanInstaller-java.nio.file.Path-">cleanInstaller</a></span>(@NotNull java.nio.file.Path&nbsp;tempInstallerDir)</code>
 <div class="block">Clean temp installer directory.</div>
 </td>
 </tr>
@@ -252,7 +252,8 @@ extends <a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersio
 <ul class="blockList">
 <li class="blockList">
 <h4>checkModLoaderEnv</h4>
-<pre>public&nbsp;boolean&nbsp;checkModLoaderEnv(java.nio.file.Path&nbsp;dirToInstall)
+<pre>public&nbsp;boolean&nbsp;checkModLoaderEnv(@NotNull
+                                 @NotNull java.nio.file.Path&nbsp;dirToInstall)
                           throws java.lang.Exception</pre>
 <div class="block">Check if the minecraft installation already contains another mod loader installation not corresponding to this version.</div>
 <dl>
@@ -284,7 +285,8 @@ extends <a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersio
 <ul class="blockListLast">
 <li class="blockList">
 <h4>cleanInstaller</h4>
-<pre>protected&nbsp;void&nbsp;cleanInstaller(java.nio.file.Path&nbsp;tempInstallerDir)
+<pre>protected&nbsp;void&nbsp;cleanInstaller(@NotNull
+                              @NotNull java.nio.file.Path&nbsp;tempInstallerDir)
                        throws java.lang.Exception</pre>
 <div class="block">Clean temp installer directory.</div>
 <dl>
