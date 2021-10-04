@@ -116,6 +116,13 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         return this.makeCommand(tempDirPath.resolve("forge-installer-patched.jar"), dirToInstall, tempDirPath);
     }
 
+    /**
+     * This method has to download the Forge's installer and some other files if needed.
+     * @param stream the input stream of the Forge's installer.
+     * @param install the installation directory.
+     * @param patches the patches output file.
+     * @throws Exception if an error occurred.
+     */
     protected void downloadForgeInstaller(InputStream stream, Path install, Path patches) throws Exception
     {
         this.logger.info("Downloading " + (this.old ? "old" : "new") + " forge installer...");
@@ -124,6 +131,12 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         Files.copy(new URL("https://flowarg.github.io/minecraft/launcher/" + (this.old ? "old" : "") + "patches.jar").openStream(), patches, StandardCopyOption.REPLACE_EXISTING);
     }
 
+    /**
+     * This method has to patch the Forge's installer with FlowUpdater's changes.
+     * @param install the installation directory.
+     * @param patches the patches file.
+     * @param tempDir the temporary directory where is the installer stuff.
+     */
     protected void patchForgeInstaller(Path install, Path patches, Path tempDir)
     {
         try {
@@ -145,6 +158,13 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         }
     }
 
+    /**
+     * This method makes a new {@link fr.flowarg.flowupdater.versions.IModLoaderVersion.ModLoaderLauncherEnvironment} to launch the mod loader's launcher.
+     * @param patchedInstaller the patched installer path.
+     * @param dirToInstall the installation directory.
+     * @param tempDir the temporary directory where is the installer stuff.
+     * @return the fresh {@link fr.flowarg.flowupdater.versions.IModLoaderVersion.ModLoaderLauncherEnvironment}.
+     */
     protected ModLoaderLauncherEnvironment makeCommand(@NotNull Path patchedInstaller, @NotNull Path dirToInstall, Path tempDir)
     {
         final List<String> command = new ArrayList<>();
@@ -216,7 +236,12 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
 
         this.fileDeleter.delete(modsDir, this.mods, this.allCurseMods, ofObj);
     }
-    
+
+    /** This methods packs the modified installer to a JAR file.
+     * @param tempDir  the temporary directory where is the installer stuff.
+     * @param tempInstallerDir the temporary directory where is the installer stuff.
+     * @throws Exception if an error occurred.
+     */
     protected void packPatchedInstaller(final @NotNull Path tempDir, final Path tempInstallerDir) throws Exception
     {
         final Path outputPath = tempDir.resolve("forge-installer-patched.zip");
@@ -243,6 +268,10 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         this.allCurseMods = allCurseMods;
     }
 
+    /**
+     * Get the mod file deleter assigned to this version.
+     * @return a mod file deleter.
+     */
     public ModFileDeleter getFileDeleter()
     {
         return this.fileDeleter;
@@ -257,7 +286,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         this.callback = flowUpdater.getCallback();
         this.logger = flowUpdater.getLogger();
         this.downloadList = flowUpdater.getDownloadList();
-        this.vanilla = flowUpdater.getVersion();
+        this.vanilla = flowUpdater.getVanillaVersion();
         if (!forgeVersion.contains("-"))
             this.forgeVersion = this.vanilla.getName() + '-' + forgeVersion;
         else this.forgeVersion = forgeVersion.trim();
@@ -297,6 +326,10 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         return this.curseMods;
     }
 
+    /**
+     * Get given OptiFine information.
+     * @return OptiFine information.
+     */
     public OptiFineInfo getOptiFineInfo()
     {
         return this.optiFineInfo;
@@ -319,16 +352,28 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         return this.logger;
     }
 
+    /**
+     * Get the forge version.
+     * @return the forge version.
+     */
     public String getForgeVersion()
     {
         return this.forgeVersion;
     }
 
+    /**
+     * Get the url to the installer.
+     * @return the url to the installer.
+     */
     public URL getInstallerUrl()
     {
         return this.installerUrl;
     }
 
+    /**
+     * Get the list of curse mods.
+     * @return the list of curse mods.
+     */
     public List<CurseMod> getAllCurseMods()
     {
         return this.allCurseMods;

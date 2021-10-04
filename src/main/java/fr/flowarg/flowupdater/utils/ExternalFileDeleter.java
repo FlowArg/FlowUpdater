@@ -9,6 +9,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+/**
+ * A file deleter designed to check external files.
+ */
 public class ExternalFileDeleter implements IFileDeleter
 {
     /**

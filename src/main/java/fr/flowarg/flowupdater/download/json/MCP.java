@@ -3,6 +3,7 @@ package fr.flowarg.flowupdater.download.json;
 import com.google.gson.JsonObject;
 import fr.flowarg.flowupdater.utils.FlowUpdaterException;
 import fr.flowarg.flowupdater.utils.IOUtils;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.MalformedURLException;
@@ -32,6 +33,7 @@ public class MCP
      * @deprecated Deprecated server download.
      */
     @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "1.6.0")
     public MCP(String clientURL, String clientSha1, long clientSize, String serverURL, String serverSha1, long serverSize)
     {
         this.clientURL = clientURL;

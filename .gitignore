@@ -7,3 +7,4 @@ build
 out
 forge-installer.jar.log
 forge-installer-patched.jar.log
+installer.log

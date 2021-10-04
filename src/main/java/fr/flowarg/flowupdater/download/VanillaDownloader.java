@@ -51,7 +51,7 @@ public class VanillaDownloader
 
         this.natives = this.dir.resolve("natives");
         this.assets = this.dir.resolve("assets");
-        this.vanillaJsonURL = flowUpdater.getVersion().getJsonURL();
+        this.vanillaJsonURL = flowUpdater.getVanillaVersion().getJsonURL();
 
         Files.createDirectories(this.dir.resolve("libraries"));
         Files.createDirectories(this.assets);

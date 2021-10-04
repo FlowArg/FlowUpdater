@@ -19,10 +19,19 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+/**
+ * A basic I/O utility class.
+ */
 public class IOUtils
 {
     private static Path cachedMinecraftPath = null;
 
+    /**
+     * Download a remote file to a destination file.
+     * @param logger a valid logger instance.
+     * @param in the input url.
+     * @param out the output file.
+     */
     public static void download(@NotNull ILogger logger, @NotNull URL in, @NotNull Path out)
     {
         try
@@ -37,6 +46,12 @@ public class IOUtils
         }
     }
 
+    /**
+     * Copy a local file to a destination file.
+     * @param logger a valid logger instance.
+     * @param in the input file.
+     * @param out the output file.
+     */
     public static void copy(@NotNull ILogger logger, @NotNull Path in, @NotNull Path out)
     {
         try
@@ -51,6 +66,11 @@ public class IOUtils
         }
     }
 
+    /**
+     * Get the content of a remote url.
+     * @param url the destination url
+     * @return the content.
+     */
     public static @NotNull String getContent(URL url)
     {
         final StringBuilder sb = new StringBuilder();
@@ -123,6 +143,12 @@ public class IOUtils
         return element.getAsJsonObject();
     }
 
+    /**
+     * A trick to avoid some forbidden response.
+     * @param url the destination url.
+     * @return the opened connection.
+     * @throws IOException if an I/O error occurred.
+     */
     public static InputStream catchForbidden(@NotNull URL url) throws IOException
     {
         final HttpURLConnection connection = (HttpURLConnection)url.openConnection();
@@ -131,6 +157,10 @@ public class IOUtils
         return connection.getInputStream();
     }
 
+    /**
+     * Retrieve the local Minecraft folder path.
+     * @return the Minecraft folder path.
+     */
     public static Path getMinecraftFolder()
     {
         if(cachedMinecraftPath == null)

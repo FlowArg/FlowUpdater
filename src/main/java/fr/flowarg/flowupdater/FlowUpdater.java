@@ -13,6 +13,7 @@ import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
 import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
 import fr.flowarg.flowupdater.versions.*;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -30,7 +31,7 @@ import java.util.List;
 public class FlowUpdater
 {
     /** Vanilla version's object to update/install */
-    private final VanillaVersion version;
+    private final VanillaVersion vanillaVersion;
 
     /** Logger object */
     private final ILogger logger;
@@ -63,7 +64,7 @@ public class FlowUpdater
     public static final IProgressCallback NULL_CALLBACK = new IProgressCallback()
     {
         @Override
-        public void init(ILogger logger)
+        public void init(@NotNull ILogger logger)
         {
             logger.info("Default callback will be used.");
         }
@@ -74,7 +75,7 @@ public class FlowUpdater
 
     /**
      * Basic constructor for {@link FlowUpdater}, use {@link FlowUpdaterBuilder} to instantiate a new {@link FlowUpdater}.
-     * @param version {@link VanillaVersion} to update.
+     * @param vanillaVersion {@link VanillaVersion} to update.
      * @param logger {@link ILogger} used for log information.
      * @param updaterOptions {@link UpdaterOptions} for this updater
      * @param callback {@link IProgressCallback} used for update progression. If it's null, it will automatically be assigned to {@link FlowUpdater#NULL_CALLBACK}.
@@ -83,13 +84,13 @@ public class FlowUpdater
      * @param forgeVersion {@link AbstractForgeVersion} to install, can be null.
      * @param fabricVersion {@link FabricVersion} to install, can be null.
      */
-    private FlowUpdater(VanillaVersion version, ILogger logger,
+    private FlowUpdater(VanillaVersion vanillaVersion, ILogger logger,
             UpdaterOptions updaterOptions, IProgressCallback callback,
             List<ExternalFile> externalFiles, List<Runnable> postExecutions,
             AbstractForgeVersion forgeVersion, FabricVersion fabricVersion)
     {
         this.logger = logger;
-        this.version = version;
+        this.vanillaVersion = vanillaVersion;
         this.externalFiles = externalFiles;
         this.postExecutions = postExecutions;
         this.forgeVersion = forgeVersion;
@@ -98,12 +99,12 @@ public class FlowUpdater
         this.callback = callback;
         this.downloadList = new DownloadList();
         this.integrationManager = new IntegrationManager(this);
-        this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.version.getName(), "1.5.0"));
+        this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.vanillaVersion.getName(), "1.5.0"));
         this.callback.init(this.logger);
     }
 
     /**
-     * This method updates the Minecraft Installation in the given directory. If the {@link #version} is {@link VanillaVersion#NULL_VERSION}, the updater will
+     * This method updates the Minecraft Installation in the given directory. If the {@link #vanillaVersion} is {@link VanillaVersion#NULL_VERSION}, the updater will
      * run only external files and post executions.
      * @param dir Directory where is the Minecraft installation.
      * @throws IOException if an I/O problem occurred.
@@ -124,18 +125,18 @@ public class FlowUpdater
 
     private void updateMinecraft(Path dir) throws Exception
     {
-        if(this.version == VanillaVersion.NULL_VERSION)
+        if(this.vanillaVersion == VanillaVersion.NULL_VERSION)
         {
             this.downloadList.init();
             return;
         }
 
-        this.logger.info(String.format("Reading data about %s Minecraft version...", this.version.getName()));
+        this.logger.info(String.format("Reading data about %s Minecraft version...", this.vanillaVersion.getName()));
         new VanillaReader(this).read();
 
         final Path modsDirPath = dir.resolve("mods");
 
-        final VersionType versionType = this.version.getVersionType();
+        final VersionType versionType = this.vanillaVersion.getVersionType();
 
         if(this.forgeVersion != null && versionType == VersionType.FORGE)
         {
@@ -245,6 +246,7 @@ public class FlowUpdater
          * @deprecated Use {@link #withVanillaVersion(VanillaVersion)} instead.
          */
         @Deprecated
+        @ApiStatus.ScheduledForRemoval(inVersion = "1.6.0")
         public FlowUpdaterBuilder withVersion(VanillaVersion version)
         {
             this.versionArgument.set(version);
@@ -364,13 +366,48 @@ public class FlowUpdater
 
     // Some getters
 
-    public VanillaVersion getVersion() { return this.version; }
-    public ILogger getLogger() { return this.logger; }
-    public AbstractForgeVersion getForgeVersion() { return this.forgeVersion; }
-    public IProgressCallback getCallback() { return this.callback; }
-    public List<ExternalFile> getExternalFiles() { return this.externalFiles; }
-    public List<Runnable> getPostExecutions() { return this.postExecutions; }
-    public DownloadList getDownloadList() { return this.downloadList; }
-    public UpdaterOptions getUpdaterOptions() { return this.updaterOptions; }
-    public FabricVersion getFabricVersion() { return fabricVersion; }
+    public VanillaVersion getVanillaVersion()
+    {
+        return this.vanillaVersion;
+    }
+
+    public ILogger getLogger()
+    {
+        return this.logger;
+    }
+
+    public AbstractForgeVersion getForgeVersion()
+    {
+        return this.forgeVersion;
+    }
+
+    public IProgressCallback getCallback()
+    {
+        return this.callback;
+    }
+
+    public List<ExternalFile> getExternalFiles()
+    {
+        return this.externalFiles;
+    }
+
+    public List<Runnable> getPostExecutions()
+    {
+        return this.postExecutions;
+    }
+
+    public DownloadList getDownloadList()
+    {
+        return this.downloadList;
+    }
+
+    public UpdaterOptions getUpdaterOptions()
+    {
+        return this.updaterOptions;
+    }
+
+    public FabricVersion getFabricVersion()
+    {
+        return this.fabricVersion;
+    }
 }

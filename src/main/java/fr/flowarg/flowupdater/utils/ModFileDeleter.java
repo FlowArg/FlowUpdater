@@ -12,6 +12,9 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * A file deleter designed to check mods.
+ */
 public class ModFileDeleter implements IFileDeleter
 {
     private final boolean useFileDeleter;

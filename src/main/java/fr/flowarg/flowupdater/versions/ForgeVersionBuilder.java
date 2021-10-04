@@ -8,6 +8,7 @@ import fr.flowarg.flowupdater.utils.ModFileDeleter;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
 import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,6 +75,7 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
      * @deprecated use {@link #withCurseModPack(CurseModPackInfo)} instead.
      */
     @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "1.6.0")
     public ForgeVersionBuilder withModPack(CurseModPackInfo modPackInfo)
     {
         this.modPackArgument.set(modPackInfo);

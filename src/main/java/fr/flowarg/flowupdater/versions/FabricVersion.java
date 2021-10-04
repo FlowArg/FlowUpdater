@@ -21,6 +21,7 @@ import fr.flowarg.flowupdater.utils.ModFileDeleter;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
 import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -302,7 +303,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
         this.callback = flowUpdater.getCallback();
         this.logger = flowUpdater.getLogger();
         this.downloadList = flowUpdater.getDownloadList();
-        this.vanilla = flowUpdater.getVersion();
+        this.vanilla = flowUpdater.getVanillaVersion();
         try {
             this.installerUrl = new URL(String.format("https://maven.fabricmc.net/net/fabricmc/fabric-installer/%s/fabric-installer-%s.jar", installerVersion, installerVersion));
         } catch (Exception e) {
@@ -432,6 +433,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
          * @deprecated use {@link #withCurseModPack(CurseModPackInfo)} instead.
          */
         @Deprecated
+        @ApiStatus.ScheduledForRemoval(inVersion = "1.6.0")
         public FabricVersionBuilder withModPack(CurseModPackInfo modPackInfo)
         {
             this.modPackArgument.set(modPackInfo);

@@ -38,7 +38,7 @@ public class VanillaReader
      */
     public VanillaReader(@NotNull FlowUpdater flowUpdater)
     {
-        this.version = flowUpdater.getVersion();
+        this.version = flowUpdater.getVanillaVersion();
         this.logger = flowUpdater.getLogger();
         this.shouldLog = !flowUpdater.getUpdaterOptions().isSilentRead();
         this.callback = flowUpdater.getCallback();
