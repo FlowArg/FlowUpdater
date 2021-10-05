@@ -28,4 +28,10 @@ public interface ICurseFeaturesUser
      * @param curseMods curse mods to define.
      */
     void setAllCurseMods(List<CurseMod> curseMods);
+
+    /**
+     * Get the list of curse mods.
+     * @return the list of curse mods.
+     */
+    List<CurseMod> getAllCurseMods();
 }

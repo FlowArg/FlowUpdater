@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Builder of {@link AbstractForgeVersion}
+ * Builder for {@link AbstractForgeVersion}
  * @author Flow Arg (FlowArg)
  */
 public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
@@ -33,18 +33,32 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
     private final BuilderArgument<ModFileDeleter> fileDeleterArgument = new BuilderArgument<>("ModFileDeleter", () -> new ModFileDeleter(false)).optional();
     private final BuilderArgument<CurseModPackInfo> modPackArgument = new BuilderArgument<CurseModPackInfo>("ModPack").optional();
 
+    /**
+     * @param forgeVersion the Forge version you want to install.
+     * @return the builder.
+     */
     public ForgeVersionBuilder withForgeVersion(String forgeVersion)
     {
         this.forgeVersionArgument.set(forgeVersion);
         return this;
     }
 
+    /**
+     * Append a mods list to the version.
+     * @param mods mods to append.
+     * @return the builder.
+     */
     public ForgeVersionBuilder withMods(List<Mod> mods)
     {
         this.modsArgument.set(mods);
         return this;
     }
 
+    /**
+     * Append a mods list to the version.
+     * @param curseMods CurseForge's mods to append.
+     * @return the builder.
+     */
     public ForgeVersionBuilder withCurseMods(List<CurseFileInfo> curseMods)
     {
         this.curseModsArgument.set(curseMods);
@@ -54,7 +68,7 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
     /**
      * Assign to the future forge version a mod pack.
      * @param modPackInfo the mod pack information to assign.
-     * @return the current builder.
+     * @return the builder.
      */
     public ForgeVersionBuilder withCurseModPack(CurseModPackInfo modPackInfo)
     {
@@ -62,6 +76,11 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
         return this;
     }
 
+    /**
+     * Append a file deleter to the version.
+     * @param fileDeleter the file deleter to append.
+     * @return the builder.
+     */
     public ForgeVersionBuilder withFileDeleter(ModFileDeleter fileDeleter)
     {
         this.fileDeleterArgument.set(fileDeleter);
@@ -71,7 +90,7 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
     /**
      * Assign to the future forge version a mod pack.
      * @param modPackInfo the mod pack information to assign.
-     * @return the current builder.
+     * @return the builder.
      * @deprecated use {@link #withCurseModPack(CurseModPackInfo)} instead.
      */
     @Deprecated
@@ -82,13 +101,22 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
         return this;
     }
 
-
-    public ForgeVersionBuilder withOptiFine(OptiFineInfo optiFine)
+    /**
+     * Append some OptiFine download's information.
+     * @param optiFineInfo provided information.
+     * @return the builder.
+     */
+    public ForgeVersionBuilder withOptiFine(OptiFineInfo optiFineInfo)
     {
-        this.optiFineArgument.set(optiFine);
+        this.optiFineArgument.set(optiFineInfo);
         return this;
     }
 
+    /**
+     * Build a new {@link AbstractForgeVersion} instance with provided arguments.
+     * @return the freshly created instance.
+     * @throws BuilderException if an error occurred.
+     */
     @Override
     public AbstractForgeVersion build() throws BuilderException
     {

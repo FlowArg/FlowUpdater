@@ -74,7 +74,7 @@ public class NewForgeVersion extends AbstractForgeVersion
         return false;
     }
 
-    public boolean isCompatible()
+    private boolean isCompatible()
     {
         for (String str : this.compatibleVersions)
         {

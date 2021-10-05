@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * The object that contains Fabric's stuff.
  * @author antoineok https://github.com/antoineok
  */
 public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
@@ -345,14 +346,26 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
         return this.logger;
     }
 
+    /**
+     * Get the Fabric's version.
+     * @return the Fabric's version.
+     */
     public String getFabricVersion() {
         return this.fabricVersion;
     }
 
+    /**
+     * Get the Fabric's installer's url.
+     * @return the Fabric's installer's url.
+     */
     public URL getInstallerUrl() {
         return this.installerUrl;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public List<CurseMod> getAllCurseMods() {
         return this.allCurseMods;
     }
@@ -379,6 +392,9 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
     @Override
     public CurseModPackInfo getModPackInfo() { return modPackInfo; }
 
+    /**
+     * Builder for {@link FabricVersion}.
+     */
     public static class FabricVersionBuilder implements IBuilder<FabricVersion>
     {
         private final BuilderArgument<String> fabricVersionArgument = new BuilderArgument<>("FabricVersion", FabricVersion::getLatestFabricVersion).optional();
@@ -388,7 +404,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
         private final BuilderArgument<CurseModPackInfo> modPackArgument = new BuilderArgument<CurseModPackInfo>("ModPack").optional();
 
         /**
-         * @param fabricVersion the fabric version you want to install (don't use this function if you want to use the latest fabric version automatically).
+         * @param fabricVersion the Fabric version you want to install (don't use this function if you want to use the latest fabric version automatically).
          * @return the builder.
          */
         public FabricVersionBuilder withFabricVersion(String fabricVersion)
@@ -397,12 +413,22 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
             return this;
         }
 
+        /**
+         * Append a mods list to the version.
+         * @param mods mods to append.
+         * @return the builder.
+         */
         public FabricVersionBuilder withMods(List<Mod> mods)
         {
             this.modsArgument.set(mods);
             return this;
         }
 
+        /**
+         * Append a mods list to the version.
+         * @param curseMods CurseForge's mods to append.
+         * @return the builder.
+         */
         public FabricVersionBuilder withCurseMods(List<CurseFileInfo> curseMods)
         {
             this.curseModsArgument.set(curseMods);
@@ -420,6 +446,11 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
             return this;
         }
 
+        /**
+         * Append a file deleter to the version.
+         * @param fileDeleter the file deleter to append.
+         * @return the builder.
+         */
         public FabricVersionBuilder withFileDeleter(ModFileDeleter fileDeleter)
         {
             this.fileDeleterArgument.set(fileDeleter);
@@ -440,6 +471,11 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
             return this;
         }
 
+        /**
+         * Build a new {@link FabricVersion} instance with provided arguments.
+         * @return the freshly created instance.
+         * @throws BuilderException if an error occurred.
+         */
         @Override
         public FabricVersion build() throws BuilderException {
             return new FabricVersion(

@@ -292,7 +292,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         else this.forgeVersion = forgeVersion.trim();
         try
         {
-            this.installerUrl = new URL(String.format("https://files.minecraftforge.net/maven/net/minecraftforge/forge/%s/forge-%s-installer.jar", this.forgeVersion, this.forgeVersion));
+            this.installerUrl = new URL(String.format("https://maven.minecraftforge.net/net/minecraftforge/forge/%s/forge-%s-installer.jar", this.forgeVersion, this.forgeVersion));
         } catch (Exception e)
         {
             this.logger.printStackTrace(e);
@@ -371,9 +371,9 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     }
 
     /**
-     * Get the list of curse mods.
-     * @return the list of curse mods.
+     * {@inheritDoc}
      */
+    @Override
     public List<CurseMod> getAllCurseMods()
     {
         return this.allCurseMods;
