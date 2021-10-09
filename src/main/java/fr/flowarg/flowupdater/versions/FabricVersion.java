@@ -178,7 +178,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
 
         final Path tempDirPath = dirToInstall.resolve(".flowupdater");
         FileUtils.deleteDirectory(tempDirPath);
-        final Path fabricPath = tempDirPath.resolve("zeWorld");
+        final Path fabricPath = tempDirPath.resolve("tempfabric");
         final Path installPath = tempDirPath.resolve(String.format("fabric-installer-%s.jar", installerVersion));
 
         Files.createDirectories(tempDirPath);
