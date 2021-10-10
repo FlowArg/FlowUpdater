@@ -8,6 +8,8 @@ import fr.flowarg.flowupdater.FlowUpdater;
  */
 public enum Step
 {
+    /** Integration loading */
+    INTEGRATION,
     /** ModPack preparation */
     MOD_PACK,
     /** JSON reading */

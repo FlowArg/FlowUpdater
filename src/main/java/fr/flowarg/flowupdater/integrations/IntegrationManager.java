@@ -38,6 +38,7 @@ public class IntegrationManager
 
     public void loadCurseForgeIntegration(Path dir, ICurseFeaturesUser curseFeaturesUser)
     {
+        this.progressCallback.step(Step.INTEGRATION);
         try
         {
             final CurseForgeIntegration curseForgeIntegration = new CurseForgeIntegration(this.logger, dir.getParent().resolve(".cfp"));
@@ -50,12 +51,16 @@ public class IntegrationManager
                 allCurseMods.add(mod);
 
                 final Path filePath = dir.resolve(mod.getName());
+                final boolean exists = Files.exists(filePath);
 
-                if(Files.exists(filePath) && FileUtils.getMD5(filePath).equals(mod.getMd5()) && FileUtils.getFileSizeBytes(filePath) == mod.getLength()) continue;
+                if(exists && FileUtils.getMD5(filePath).equals(mod.getMd5()) && FileUtils.getFileSizeBytes(filePath) == mod.getLength()) continue;
 
-                if (mod.getMd5().contains("-")) continue;
+                if(exists)
+                {
+                    if (mod.getMd5().contains("-")) continue;
+                    Files.deleteIfExists(filePath);
+                }
 
-                Files.deleteIfExists(filePath);
                 this.downloadList.getCurseMods().add(mod);
             }
 
