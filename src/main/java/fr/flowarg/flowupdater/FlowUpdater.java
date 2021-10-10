@@ -366,46 +366,82 @@ public class FlowUpdater
 
     // Some getters
 
+    /**
+     * Get the {@link VanillaVersion} attached to this {@link FlowUpdater} instance.
+     * @return a vanilla version.
+     */
     public VanillaVersion getVanillaVersion()
     {
         return this.vanillaVersion;
     }
 
+    /**
+     * Get the current logger.
+     * @return a logger.
+     */
     public ILogger getLogger()
     {
         return this.logger;
     }
 
+    /**
+     * Get the Forge version attached to this FlowUpdater instance.
+     * @return a Forge version.
+     */
     public AbstractForgeVersion getForgeVersion()
     {
         return this.forgeVersion;
     }
 
+    /**
+     * Get the current callback.
+     * @return a callback.
+     */
     public IProgressCallback getCallback()
     {
         return this.callback;
     }
 
+    /**
+     * Get the list of external files.
+     * @return external files.
+     */
     public List<ExternalFile> getExternalFiles()
     {
         return this.externalFiles;
     }
 
+    /**
+     * Get the list of post executions.
+     * @return all post executions
+     */
     public List<Runnable> getPostExecutions()
     {
         return this.postExecutions;
     }
 
+    /**
+     * Get the download list which contains all download information.
+     * @return a {@link DownloadList} instance.
+     */
     public DownloadList getDownloadList()
     {
         return this.downloadList;
     }
 
+    /**
+     * Get the FlowUpdater's options.
+     * @return some useful settings.
+     */
     public UpdaterOptions getUpdaterOptions()
     {
         return this.updaterOptions;
     }
 
+    /**
+     * Get the Fabric version attached to this FlowUpdater instance.
+     * @return a Fabric version.
+     */
     public FabricVersion getFabricVersion()
     {
         return this.fabricVersion;

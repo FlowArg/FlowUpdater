@@ -29,6 +29,10 @@ public class IntegrationManager
     private final ILogger logger;
     private final DownloadList downloadList;
 
+    /**
+     * Construct a new Integration Manager.
+     * @param updater a {@link FlowUpdater} instance.
+     */
     public IntegrationManager(@NotNull FlowUpdater updater)
     {
         this.progressCallback = updater.getCallback();
@@ -36,6 +40,11 @@ public class IntegrationManager
         this.downloadList = updater.getDownloadList();
     }
 
+    /**
+     * This method loads the CurseForge integration and fetches some data.
+     * @param dir the installation directory.
+     * @param curseFeaturesUser a version that accepts CurseForge's features stuff.
+     */
     public void loadCurseForgeIntegration(Path dir, ICurseFeaturesUser curseFeaturesUser)
     {
         this.progressCallback.step(Step.INTEGRATION);
@@ -109,6 +118,11 @@ public class IntegrationManager
         }
     }
 
+    /**
+     * This method loads the OptiFine integration and fetches OptiFine data.
+     * @param dir the installation directory.
+     * @param forgeVersion the current Forge version.
+     */
     public void loadOptiFineIntegration(Path dir, @NotNull AbstractForgeVersion forgeVersion)
     {
         final OptiFineInfo info = forgeVersion.getOptiFineInfo();
@@ -123,10 +137,5 @@ public class IntegrationManager
         {
             this.logger.printStackTrace(e);
         }
-    }
-
-    public ILogger getLogger()
-    {
-        return this.logger;
     }
 }
