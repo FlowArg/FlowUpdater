@@ -9,7 +9,6 @@ import fr.flowarg.flowupdater.integrations.IntegrationManager;
 import fr.flowarg.flowupdater.utils.IOUtils;
 
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.List;
@@ -59,6 +58,10 @@ public interface IModLoaderVersion
      */
     List<Mod> getMods();
 
+    /**
+     * Download mods in the mods' folder.
+     * @param modsDir mods' folder
+     */
     default void installAllMods(Path modsDir)
     {
         this.getDownloadList().getMods().forEach(mod -> {
@@ -68,7 +71,7 @@ public interface IModLoaderVersion
                 IOUtils.download(this.getLogger(), new URL(mod.getDownloadURL()), modFilePath);
                 this.getCallback().onFileDownloaded(modFilePath);
             }
-            catch (MalformedURLException e)
+            catch (Exception e)
             {
                 this.getLogger().printStackTrace(e);
             }
@@ -83,7 +86,7 @@ public interface IModLoaderVersion
                 IOUtils.download(this.getLogger(), new URL(curseMod.getDownloadURL()), modFilePath);
                 this.getCallback().onFileDownloaded(modFilePath);
             }
-            catch (MalformedURLException e)
+            catch (Exception e)
             {
                 this.getLogger().printStackTrace(e);
             }
@@ -118,22 +121,38 @@ public interface IModLoaderVersion
      */
     IProgressCallback getCallback();
 
+    /**
+     * This class represents a process' environment with a working directory and the launch command.
+     */
     class ModLoaderLauncherEnvironment
     {
         private final List<String> command;
         private final Path tempDir;
 
+        /**
+         * Construct a new {@link ModLoaderLauncherEnvironment} object.
+         * @param command the process' command.
+         * @param tempDir the working directory.
+         */
         public ModLoaderLauncherEnvironment(List<String> command, Path tempDir)
         {
             this.command = command;
             this.tempDir = tempDir;
         }
 
+        /**
+         * Get the process' command.
+         * @return the process' command.
+         */
         public List<String> getCommand()
         {
             return this.command;
         }
 
+        /**
+         * Get the working directory.
+         * @return the working directory.
+         */
         public Path getTempDir()
         {
             return this.tempDir;

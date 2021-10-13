@@ -13,8 +13,8 @@ import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
 import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
+import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class VanillaVersion
 {
     /**
-     * Default version used for no minecraft updates.
+     * Default version. It used when an update doesn't need a Minecraft installation.
      */
     public static final VanillaVersion NULL_VERSION = new VanillaVersion("no", null, false, null, null, new ArrayList<>(), new ArrayList<>(), null);
     
@@ -56,12 +56,20 @@ public class VanillaVersion
         if(!this.name.equals("no"))
             this.json = (customVersionJson == null ? IOUtils.readJson(this.getJsonVersion()) : customVersionJson);
     }
-    
+
+    /**
+     * Get the JSON array representing all Minecraft's libraries.
+     * @return the libraries in JSON format.
+     */
     public JsonArray getMinecraftLibrariesJson() 
     {
         return this.json.getAsJsonObject().getAsJsonArray("libraries");
     }
-    
+
+    /**
+     * Get the JSON object representing Minecraft's client.
+     * @return the client in JSON format.
+     */
     public JsonObject getMinecraftClient() 
     {
         if(this.versionType == VersionType.MCP && !this.custom && this.mcp != null)
@@ -81,8 +89,12 @@ public class VanillaVersion
         }
         return this.json.getAsJsonObject().getAsJsonObject("downloads").getAsJsonObject("client");
     }
-    
-    public JsonObject getMinecraftServer() 
+
+    /**
+     * Get the JSON object representing Minecraft's server.
+     * @return the server in JSON format.
+     */
+    public JsonObject getMinecraftServer()
     {
         if(versionType == VersionType.MCP && this.mcp != null)
         {
@@ -101,6 +113,10 @@ public class VanillaVersion
         return this.json.getAsJsonObject().getAsJsonObject("downloads").getAsJsonObject("server");
     }
 
+    /**
+     * Get the JSON object representing Minecraft's asset index.
+     * @return the asset index in JSON format.
+     */
     public JsonObject getMinecraftAssetIndex()
     {
         return this.json.getAsJsonObject().getAsJsonObject("assetIndex");
@@ -132,12 +148,12 @@ public class VanillaVersion
                 {
                     this.jsonURL = jsonElement.getAsJsonObject().get("url").getAsString();
                     result.set(new URL(this.jsonURL).openStream());
-                } catch (IOException e)
+                } catch (Exception e)
                 {
                     e.printStackTrace();
                 }
             });
-        } catch (IOException e)
+        } catch (Exception e)
         {
             e.printStackTrace();
         }
@@ -145,41 +161,73 @@ public class VanillaVersion
         return result.get();
     }
 
-    public String getName()
+    /**
+     * Get the name of the version.
+     * @return the name of the version.
+     */
+    public @NotNull String getName()
     {
         return this.name;
     }
 
-    public MCP getMcp()
+    /**
+     * Get the MCP object of the version.
+     * @return the MCP object of the version.
+     */
+    public MCP getMCP()
     {
         return this.mcp;
     }
 
+    /**
+     * Is the current version a snapshot ?
+     * @return if the current version is a snapshot.
+     */
     public boolean isSnapshot()
     {
         return this.snapshot;
     }
 
+    /**
+     * Get the current version type.
+     * @return the version type.
+     */
     public VersionType getVersionType()
     {
         return this.versionType;
     }
 
+    /**
+     * The custom asset index.
+     * @return the custom asset index.
+     */
     public AssetIndex getCustomAssetIndex()
     {
         return this.customAssetIndex;
     }
 
+    /**
+     * The list of custom assets.
+     * @return The list of custom assets.
+     */
     public List<AssetDownloadable> getAnotherAssets()
     {
         return this.anotherAssets;
     }
 
+    /**
+     * The list of custom libraries.
+     * @return The list of custom libraries.
+     */
     public List<Downloadable> getAnotherLibraries()
     {
         return this.anotherLibraries;
     }
 
+    /**
+     * Get the url of the JSON version.
+     * @return the url of the JSON version.
+     */
     public String getJsonURL()
     {
         return this.jsonURL;
@@ -200,54 +248,99 @@ public class VanillaVersion
         private final BuilderArgument<List<Downloadable>> anotherLibrariesArgument = new BuilderArgument<List<Downloadable>>("AnotherLibraries", ArrayList::new).optional();
         private final BuilderArgument<JsonObject> customVersionJsonArgument = new BuilderArgument<JsonObject>("CustomVersionJson").optional();
 
+        /**
+         * Define the name of the wanted Minecraft version.
+         * @param name wanted Minecraft version.
+         * @return the builder.
+         */
         public VanillaVersionBuilder withName(String name)
         {
             this.nameArgument.set(name);
             return this;
         }
-        
+
+        /**
+         * Append a mcp object to the version
+         * @param mcp the mcp object to append.
+         * @return the builder.
+         */
         public VanillaVersionBuilder withMCP(MCP mcp)
         {
             this.mcpArgument.set(mcp);
             return this;
         }
-        
+
+        /**
+         * Is the version a snapshot ?
+         * @param snapshot if the version is a snapshot.
+         * @return the builder.
+         */
         public VanillaVersionBuilder withSnapshot(boolean snapshot)
         {
             this.snapshotArgument.set(snapshot);
             return this;
         }
-        
+
+        /**
+         * Define the {@link VersionType} of the version.
+         * @param versionType the version type to define
+         * @return the builder.
+         */
         public VanillaVersionBuilder withVersionType(VersionType versionType)
         {
             this.versionTypeArgument.set(versionType);
             return this;
         }
 
+        /**
+         * Add custom asset index to the version.
+         * @param assetIndex the custom asset index to add.
+         * @return the builder.
+         */
         public VanillaVersionBuilder withCustomAssetIndex(AssetIndex assetIndex)
         {
             this.customAssetIndexArgument.set(assetIndex);
             return this;
         }
 
+        /**
+         * Add custom assets to the version.
+         * @param anotherAssets custom assets to add.
+         * @return the builder.
+         */
         public VanillaVersionBuilder withAnotherAssets(List<AssetDownloadable> anotherAssets)
         {
             this.anotherAssetsArgument.set(anotherAssets);
             return this;
         }
 
+        /**
+         * Add custom libraries to the version.
+         * @param anotherLibraries custom libraries to add.
+         * @return the builder.
+         */
         public VanillaVersionBuilder withAnotherLibraries(List<Downloadable> anotherLibraries)
         {
             this.anotherLibrariesArgument.set(anotherLibraries);
             return this;
         }
 
+        /**
+         * Define the version's json.
+         * @param customVersionJson the custom version's json to set.
+         * @return the builder.
+         */
         public VanillaVersionBuilder withCustomVersionJson(JsonObject customVersionJson)
         {
             this.customVersionJsonArgument.set(customVersionJson);
             return this;
         }
 
+        /**
+         * Build a new {@link VanillaVersion} instance with provided arguments.
+         * @return the freshly created instance.
+         * @throws BuilderException if an error occurred.
+         */
         @Override
         public VanillaVersion build() throws BuilderException
         {

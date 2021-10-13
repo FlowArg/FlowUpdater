@@ -23,6 +23,9 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The integration manager loads integrations stuff at the startup of FlowUpdater.
+ */
 public class IntegrationManager
 {
     private final IProgressCallback progressCallback;
