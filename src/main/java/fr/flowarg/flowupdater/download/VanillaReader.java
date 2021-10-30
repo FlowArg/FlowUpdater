@@ -54,30 +54,29 @@ public class VanillaReader
     {
         this.callback.step(Step.READ);
         if(this.shouldLog)
-            this.logger.debug("Reading libraries information...");
+            this.logger.debug("Parsing libraries information...");
         long start = System.currentTimeMillis();
         this.parseLibraries();
 
         if(this.shouldLog)
-            this.logger.debug("Reading assets information...");
+            this.logger.debug("Parsing asset index information...");
         this.parseAssetIndex();
 
         if(this.shouldLog)
-            this.logger.debug("Reading jars of client/server...");
+            this.logger.debug("Parsing the information of client/server's jar...");
         this.parseClientServer();
 
         if(this.shouldLog)
-            this.logger.debug("Reading natives...");
+            this.logger.debug("Parsing natives information...");
         this.parseNatives();
 
         if(this.shouldLog)
-            this.logger.debug("Reading assets...");
+            this.logger.debug("Parsing assets information...");
         this.parseAssets();
 
         if(!this.shouldLog) return;
 
-        final long end = System.currentTimeMillis();
-        this.logger.debug("Parsing of the json file took " + (end - start) + " milliseconds...");
+        this.logger.debug("Parsing of the json file took " + (System.currentTimeMillis() - start) + " milliseconds...");
     }
 
     private void parseLibraries()
@@ -99,7 +98,11 @@ public class VanillaReader
 
             if(this.shouldLog)
                 this.logger.debug("Reading " + path + " from " + url + "... SHA1 is : " + sha1);
-            this.downloadList.getDownloadableFiles().add(new Downloadable(url, size, sha1, path));
+
+            final Downloadable downloadable = new Downloadable(url, size, sha1, path);
+
+            if(!this.downloadList.getDownloadableFiles().contains(downloadable))
+                this.downloadList.getDownloadableFiles().add(downloadable);
         });
         this.downloadList.getDownloadableFiles().addAll(this.version.getAnotherLibraries());
     }
@@ -232,13 +235,8 @@ public class VanillaReader
         return canDownload.get();
     }
     
-    private boolean check(@NotNull String str, String str2)
+    private boolean check(@NotNull String os)
     {
-        return str.equalsIgnoreCase(str2);
-    }
-    
-    private boolean check(String os)
-    {
-        return (this.check(os, "osx") && Platform.isOnMac()) || (this.check(os, "macos") && Platform.isOnMac()) || (this.check(os, "windows") && Platform.isOnWindows()) || (this.check(os, "linux") && Platform.isOnLinux());
+        return (os.equalsIgnoreCase("osx") && Platform.isOnMac()) || (os.equalsIgnoreCase("macos") && Platform.isOnMac()) || (os.equalsIgnoreCase("windows") && Platform.isOnWindows()) || (os.equalsIgnoreCase("linux") && Platform.isOnLinux());
     }
 }

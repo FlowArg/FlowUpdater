@@ -59,4 +59,14 @@ public class AssetDownloadable
     {
         return this.file;
     }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final AssetDownloadable that = (AssetDownloadable)o;
+        return this.file.equals(that.file) && this.size == that.size && this.hash.equals(that.hash) && this.url.equals(that.url);
+    }
 }

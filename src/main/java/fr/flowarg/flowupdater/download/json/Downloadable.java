@@ -1,5 +1,7 @@
 package fr.flowarg.flowupdater.download.json;
 
+import java.util.Objects;
+
 /**
  * This class represent a classic downloadable file such as a library, the client/server or natives.
  */
@@ -59,5 +61,14 @@ public class Downloadable
     public String getName()
     {
         return this.name;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final Downloadable that = (Downloadable)o;
+        return this.size == that.size && Objects.equals(this.url, that.url) && Objects.equals(this.sha1, that.sha1) && Objects.equals(this.name, that.name);
     }
 }
