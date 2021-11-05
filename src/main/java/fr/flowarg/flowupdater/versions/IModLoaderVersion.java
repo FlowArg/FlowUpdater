@@ -47,10 +47,9 @@ public interface IModLoaderVersion
     /**
      * Install all mods in the mods' directory.
      * @param modsDir mods directory.
-     * @param integrationManager used to check loaded plugins.
      * @throws Exception if an I/O error occurred.
      */
-    void installMods(Path modsDir, IntegrationManager integrationManager) throws Exception;
+    void installMods(Path modsDir) throws Exception;
 
     /**
      * Get all processed mods / mods to process.

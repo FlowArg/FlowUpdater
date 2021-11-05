@@ -11,7 +11,6 @@ import fr.flowarg.flowupdater.download.json.CurseFileInfo;
 import fr.flowarg.flowupdater.download.json.CurseModPackInfo;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.download.json.OptiFineInfo;
-import fr.flowarg.flowupdater.integrations.IntegrationManager;
 import fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseMod;
 import fr.flowarg.flowupdater.integrations.optifineintegration.OptiFine;
 import fr.flowarg.flowupdater.utils.IOUtils;
@@ -212,7 +211,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
      * {@inheritDoc}
      */
     @Override
-    public void installMods(Path modsDir, IntegrationManager integrationManager) throws Exception
+    public void installMods(Path modsDir) throws Exception
     {
         this.callback.step(Step.MODS);
         this.installAllMods(modsDir);
@@ -237,7 +236,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         this.fileDeleter.delete(modsDir, this.mods, this.allCurseMods, ofObj);
     }
 
-    /** This methods packs the modified installer to a JAR file.
+    /** This method packs the modified installer to a JAR file.
      * @param tempDir  the temporary directory where is the installer stuff.
      * @param tempInstallerDir the temporary directory where is the installer stuff.
      * @throws Exception if an error occurred.
@@ -368,14 +367,5 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     public URL getInstallerUrl()
     {
         return this.installerUrl;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<CurseMod> getAllCurseMods()
-    {
-        return this.allCurseMods;
     }
 }

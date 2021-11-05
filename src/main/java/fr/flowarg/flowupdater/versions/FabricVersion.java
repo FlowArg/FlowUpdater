@@ -14,7 +14,6 @@ import fr.flowarg.flowupdater.download.Step;
 import fr.flowarg.flowupdater.download.json.CurseFileInfo;
 import fr.flowarg.flowupdater.download.json.CurseModPackInfo;
 import fr.flowarg.flowupdater.download.json.Mod;
-import fr.flowarg.flowupdater.integrations.IntegrationManager;
 import fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseMod;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
@@ -283,7 +282,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
      * {@inheritDoc}
      */
     @Override
-    public void installMods(Path modsDir, IntegrationManager integrationManager) throws Exception
+    public void installMods(Path modsDir) throws Exception
     {
         this.callback.step(Step.MODS);
 
@@ -360,14 +359,6 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
      */
     public URL getInstallerUrl() {
         return this.installerUrl;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<CurseMod> getAllCurseMods() {
-        return this.allCurseMods;
     }
 
     /**
