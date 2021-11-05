@@ -16,7 +16,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -200,9 +199,7 @@ public class VanillaReader
         if(this.version.getCustomAssetIndex() == null) assetIndex = new GsonBuilder().disableHtmlEscaping().create().fromJson(IOUtils.getContent(new URL(this.version.getMinecraftAssetIndex().get("url").getAsString())), AssetIndex.class);
         else assetIndex = this.version.getCustomAssetIndex();
 
-        for (final Map.Entry<String, AssetDownloadable> entry : assetIndex.getUniqueObjects().entrySet())
-            toDownload.add(new AssetDownloadable(entry.getValue().getHash(), entry.getValue().getSize()));
-
+        assetIndex.getUniqueObjects().values().forEach(assetDownloadable -> toDownload.add(new AssetDownloadable(assetDownloadable.getHash(), assetDownloadable.getSize())));
         this.downloadList.getDownloadableAssets().addAll(toDownload);
     }
 
