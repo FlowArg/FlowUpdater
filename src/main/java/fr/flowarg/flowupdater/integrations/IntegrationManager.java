@@ -53,9 +53,16 @@ public class IntegrationManager
         this.progressCallback.step(Step.INTEGRATION);
         try
         {
-            final CurseForgeIntegration curseForgeIntegration = new CurseForgeIntegration(this.logger, dir.getParent().resolve(".cfp"));
-
+            final CurseModPackInfo modPackInfo = curseFeaturesUser.getModPackInfo();
             final List<CurseMod> allCurseMods = new ArrayList<>();
+
+            if(curseFeaturesUser.getCurseMods().isEmpty() && modPackInfo == null)
+            {
+                curseFeaturesUser.setAllCurseMods(allCurseMods);
+                return;
+            }
+
+            final CurseForgeIntegration curseForgeIntegration = new CurseForgeIntegration(this.logger, dir.getParent().resolve(".cfp"));
 
             for (CurseFileInfo info : curseFeaturesUser.getCurseMods())
             {
@@ -75,8 +82,6 @@ public class IntegrationManager
 
                 this.downloadList.getCurseMods().add(mod);
             }
-
-            final CurseModPackInfo modPackInfo = curseFeaturesUser.getModPackInfo();
 
             if (modPackInfo == null)
             {

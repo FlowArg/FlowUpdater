@@ -48,7 +48,7 @@ public class NewForgeVersion extends AbstractForgeVersion
             final Process process = processBuilder.start();
             process.waitFor();
 
-            this.logger.info("Successfully installed Forge !");
+            this.logger.info("Successfully installed Forge!");
             FileUtils.deleteDirectory(forgeLauncherEnvironment.getTempDir());
         }
         catch (IOException | InterruptedException e)

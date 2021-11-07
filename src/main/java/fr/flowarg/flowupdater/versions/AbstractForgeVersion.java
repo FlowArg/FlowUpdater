@@ -286,9 +286,9 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         this.logger = flowUpdater.getLogger();
         this.downloadList = flowUpdater.getDownloadList();
         this.vanilla = flowUpdater.getVanillaVersion();
-        if (!forgeVersion.contains("-"))
-            this.forgeVersion = this.vanilla.getName() + '-' + forgeVersion;
-        else this.forgeVersion = forgeVersion.trim();
+        if (!this.forgeVersion.contains("-"))
+            this.forgeVersion = this.vanilla.getName() + '-' + this.forgeVersion;
+        else this.forgeVersion = this.forgeVersion.trim();
         try
         {
             this.installerUrl = new URL(String.format("https://maven.minecraftforge.net/net/minecraftforge/forge/%s/forge-%s-installer.jar", this.forgeVersion, this.forgeVersion));

@@ -5,7 +5,6 @@ import fr.flowarg.flowupdater.FlowUpdater;
 import fr.flowarg.flowupdater.download.DownloadList;
 import fr.flowarg.flowupdater.download.IProgressCallback;
 import fr.flowarg.flowupdater.download.json.Mod;
-import fr.flowarg.flowupdater.integrations.IntegrationManager;
 import fr.flowarg.flowupdater.utils.IOUtils;
 
 import java.io.InputStream;

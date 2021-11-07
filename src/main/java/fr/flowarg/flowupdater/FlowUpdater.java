@@ -180,7 +180,7 @@ public class FlowUpdater
             modLoader.attachFlowUpdater(this);
             if(!modLoader.isModLoaderAlreadyInstalled(dir))
                 modLoader.install(dir);
-            else this.logger.info(name + " is already installed ! Skipping installation...");
+            else this.logger.info(name + " is already installed! Skipping installation...");
             modLoader.installMods(dir.resolve("mods"));
         }
     }

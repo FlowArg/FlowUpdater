@@ -76,7 +76,7 @@ public class OldForgeVersion extends AbstractForgeVersion
             final Process process = processBuilder.start();
             process.waitFor();
             
-            this.logger.info("Successfully installed Forge !");
+            this.logger.info("Successfully installed Forge!");
             FileUtils.deleteDirectory(forgeLauncherEnvironment.getTempDir());
             return true;
         }
