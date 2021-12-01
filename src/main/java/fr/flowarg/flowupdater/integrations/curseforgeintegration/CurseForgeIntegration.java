@@ -54,19 +54,20 @@ public class CurseForgeIntegration extends Integration
     @NotNull
     public CurseMod getCurseMod(int projectID, int fileID)
     {
-        final URL url = this.getURLOfFile(projectID, fileID);
+        final String url = this.getURLOfFile(projectID, fileID);
 
         HttpsURLConnection connection = null;
 
         try
         {
-            connection = (HttpsURLConnection)url.openConnection();
+            final String downloadURL = url.replace(" ", "%20");
+            connection = (HttpsURLConnection)new URL(downloadURL).openConnection();
             connection.setRequestMethod("GET");
             connection.setInstanceFollowRedirects(true);
             connection.setUseCaches(false);
             final String md5 = connection.getHeaderField("ETag").replace("\"", "");
             final int length = Integer.parseInt(connection.getHeaderField("Content-Length"));
-            return new CurseMod(url.getFile().substring(url.getFile().lastIndexOf('/') + 1), url.toExternalForm(), md5, length);
+            return new CurseMod(url.substring(url.lastIndexOf('/') + 1), downloadURL, md5, length);
         } catch (Exception e)
         {
             throw new FlowUpdaterException(e);
@@ -97,11 +98,11 @@ public class CurseForgeIntegration extends Integration
     }
 
     @NotNull
-    private URL getURLOfFile(int projectID, int fileID)
+    private String getURLOfFile(int projectID, int fileID)
     {
         try
         {
-            return new URL(IOUtils.getContent(new URL(String.format("https://addons-ecs.forgesvc.net/api/v2/addon/%d/file/%d/download-url", projectID, fileID))));
+            return IOUtils.getContent(new URL(String.format("https://addons-ecs.forgesvc.net/api/v2/addon/%d/file/%d/download-url", projectID, fileID)));
         } catch (Exception e)
         {
             throw new FlowUpdaterException(e);
@@ -116,13 +117,13 @@ public class CurseForgeIntegration extends Integration
 
     private @NotNull Path checkForUpdates(int projectID, int fileID) throws Exception
     {
-        final URL link = this.getURLOfFile(projectID, fileID);
-        final String linkStr = link.toExternalForm();
-        final Path outPath = this.folder.resolve(linkStr.substring(linkStr.lastIndexOf('/') + 1));
-        final String md5 = this.getMD5(link);
+        final String link = this.getURLOfFile(projectID, fileID);
+        final Path outPath = this.folder.resolve(link.substring(link.lastIndexOf('/') + 1));
+        final URL url = new URL(link);
+        final String md5 = this.getMD5(url);
 
         if(Files.notExists(outPath) || (!md5.contains("-") && !FileUtils.getMD5(outPath).equalsIgnoreCase(md5)))
-            IOUtils.download(this.logger, link, outPath);
+            IOUtils.download(this.logger, url, outPath);
 
         return outPath;
     }
@@ -172,16 +173,14 @@ public class CurseForgeIntegration extends Integration
             if(entryName.equals("modlist.html"))
                 continue;
 
-            if(installExtFiles)
-            {
-                if(Files.notExists(flPath))
-                {
-                    if (flPath.getFileName().toString().endsWith(flPath.getFileSystem().getSeparator())) Files.createDirectories(flPath);
-                    if (entry.isDirectory()) continue;
+            if(!installExtFiles || Files.exists(flPath)) continue;
 
-                    this.transferAndClose(flPath, zipFile, entry);
-                }
-            }
+            if (flPath.getFileName().toString().endsWith(flPath.getFileSystem().getSeparator()))
+                Files.createDirectories(flPath);
+
+            if (entry.isDirectory()) continue;
+
+            this.transferAndClose(flPath, zipFile, entry);
         }
         zipFile.close();
     }
