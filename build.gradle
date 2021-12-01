@@ -4,7 +4,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 group 'fr.flowarg'
-version '1.5.0'
+version '1.5.1'
 archivesBaseName = "flowupdater"
 
 java {
@@ -38,7 +38,7 @@ task javadocJar(type: Jar) {
 }
 
 dependencies {
-    api 'com.google.code.gson:gson:2.8.8'
+    api 'com.google.code.gson:gson:2.8.9'
     api 'fr.flowarg:flowmultitools:1.4.0'
     api 'org.jetbrains:annotations:22.0.0'
 
