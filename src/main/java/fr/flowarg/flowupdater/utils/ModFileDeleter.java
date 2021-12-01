@@ -111,7 +111,7 @@ public class ModFileDeleter implements IFileDeleter
         {
             if (mod.getName().equalsIgnoreCase(fileInDir.getFileName().toString()))
             {
-                if (mod.getMd5().contains("-") || (FileUtils.getMD5(fileInDir).equalsIgnoreCase(mod.getMd5()) && FileUtils.getFileSizeBytes(fileInDir) == mod.getLength()))
+                if (FileUtils.getFileSizeBytes(fileInDir) == mod.getLength() && (mod.getMd5().contains("-") || FileUtils.getMD5(fileInDir).equalsIgnoreCase(mod.getMd5())))
                 {
                     badFiles.remove(fileInDir);
                     verifiedFiles.add(fileInDir);

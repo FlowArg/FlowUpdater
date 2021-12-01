@@ -70,16 +70,14 @@ public class IntegrationManager
                 allCurseMods.add(mod);
 
                 final Path filePath = dir.resolve(mod.getName());
-                final boolean exists = Files.exists(filePath);
 
-                if(exists && FileUtils.getMD5(filePath).equals(mod.getMd5()) && FileUtils.getFileSizeBytes(filePath) == mod.getLength()) continue;
+                if(Files.exists(filePath)
+                        && FileUtils.getFileSizeBytes(filePath) == mod.getLength()
+                        && (FileUtils.getMD5(filePath).equalsIgnoreCase(mod.getMd5())
+                        || mod.getMd5().contains("-")))
+                    continue;
 
-                if(exists)
-                {
-                    if (mod.getMd5().contains("-")) continue;
-                    Files.deleteIfExists(filePath);
-                }
-
+                Files.deleteIfExists(filePath);
                 this.downloadList.getCurseMods().add(mod);
             }
 
@@ -105,13 +103,17 @@ public class IntegrationManager
                         flag = !mod.isRequired();
                         break;
                     }
-                    if(!flag && (Files.notExists(filePath) || !FileUtils.getMD5(filePath).equalsIgnoreCase(mod.getMd5()) || FileUtils.getFileSizeBytes(filePath) != mod.getLength()))
-                    {
-                        if (mod.getMd5().contains("-")) return;
 
-                        Files.deleteIfExists(filePath);
-                        this.downloadList.getCurseMods().add(mod);
-                    }
+                    if(flag) return;
+
+                    if(Files.exists(filePath)
+                            && FileUtils.getFileSizeBytes(filePath) == mod.getLength()
+                            && (FileUtils.getMD5(filePath).equalsIgnoreCase(mod.getMd5())
+                            || mod.getMd5().contains("-")))
+                        return;
+
+                    Files.deleteIfExists(filePath);
+                    this.downloadList.getCurseMods().add(mod);
                 } catch (Exception e)
                 {
                     this.logger.printStackTrace(e);
