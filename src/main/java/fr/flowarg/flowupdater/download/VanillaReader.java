@@ -45,6 +45,12 @@ public class VanillaReader
         this.downloadServer = flowUpdater.getUpdaterOptions().isDownloadServer();
     }
 
+    private void silentDebug(String message)
+    {
+        if (this.shouldLog)
+            this.logger.debug(message);
+    }
+
     /**
      * This method calls others methods to parse each part of the given Minecraft Version.
      * @throws IOException if an I/O error occurred.
@@ -52,30 +58,23 @@ public class VanillaReader
     public void read() throws IOException
     {
         this.callback.step(Step.READ);
-        if(this.shouldLog)
-            this.logger.debug("Parsing libraries information...");
+        this.silentDebug("Parsing libraries information...");
         long start = System.currentTimeMillis();
         this.parseLibraries();
 
-        if(this.shouldLog)
-            this.logger.debug("Parsing asset index information...");
+        this.silentDebug("Parsing asset index information...");
         this.parseAssetIndex();
 
-        if(this.shouldLog)
-            this.logger.debug("Parsing the information of client/server's jar...");
+        this.silentDebug("Parsing the information of client/server's jar...");
         this.parseClientServer();
 
-        if(this.shouldLog)
-            this.logger.debug("Parsing natives information...");
+        this.silentDebug("Parsing natives information...");
         this.parseNatives();
 
-        if(this.shouldLog)
-            this.logger.debug("Parsing assets information...");
+        this.silentDebug("Parsing assets information...");
         this.parseAssets();
 
-        if(!this.shouldLog) return;
-
-        this.logger.debug("Parsing of the json file took " + (System.currentTimeMillis() - start) + " milliseconds...");
+        this.silentDebug("Parsing of the json file took " + (System.currentTimeMillis() - start) + " milliseconds...");
     }
 
     private void parseLibraries()
@@ -95,8 +94,7 @@ public class VanillaReader
             final String path = "libraries/" + artifact.getAsJsonPrimitive("path").getAsString();
             final String sha1 = artifact.getAsJsonPrimitive("sha1").getAsString();
 
-            if(this.shouldLog)
-                this.logger.debug("Reading " + path + " from " + url + "... SHA1 is : " + sha1);
+            this.silentDebug("Reading " + path + " from " + url + "... SHA1 is : " + sha1);
 
             final Downloadable downloadable = new Downloadable(url, size, sha1, path);
 
@@ -116,8 +114,7 @@ public class VanillaReader
         final String name = "assets/indexes/" + url.substring(url.lastIndexOf('/') + 1);
         final String sha1 = assetIndex.getAsJsonPrimitive("sha1").getAsString();
 
-        if(this.shouldLog)
-            this.logger.debug("Reading assets index from " + url + "... SHA1 is : " + sha1);
+        this.silentDebug("Reading assets index from " + url + "... SHA1 is : " + sha1);
         this.downloadList.getDownloadableFiles().add(new Downloadable(url, size, sha1, name));
     }
 
@@ -129,8 +126,7 @@ public class VanillaReader
         final String clientName = clientURL.substring(clientURL.lastIndexOf('/') + 1);
         final String clientSha1 = client.getAsJsonPrimitive("sha1").getAsString();
 
-        if(this.shouldLog)
-            this.logger.debug("Reading client jar from " + clientURL + "... SHA1 is : " + clientSha1);
+        this.silentDebug("Reading client jar from " + clientURL + "... SHA1 is : " + clientSha1);
         this.downloadList.getDownloadableFiles().add(new Downloadable(clientURL, clientSize, clientSha1, clientName));
 
         if(!this.downloadServer) return;
@@ -141,8 +137,7 @@ public class VanillaReader
         final String serverName = serverURL.substring(serverURL.lastIndexOf('/') + 1);
         final String serverSha1 = server.getAsJsonPrimitive("sha1").getAsString();
 
-        if(this.shouldLog)
-            this.logger.debug("Reading server jar from " + serverURL + "... SHA1 is : " + serverSha1);
+        this.silentDebug("Reading server jar from " + serverURL + "... SHA1 is : " + serverSha1);
 
         this.downloadList.getDownloadableFiles().add(new Downloadable(serverURL, serverSize, serverSha1, serverName));
     }
@@ -186,8 +181,7 @@ public class VanillaReader
         }
         else if(name.contains("-3.2.2-") && name.contains("lwjgl")) return;
 
-        if(this.shouldLog)
-            this.logger.debug("Reading " + name + " from " + url + "... SHA1 is : " + sha1);
+        this.silentDebug("Reading " + name + " from " + url + "... SHA1 is : " + sha1);
         this.downloadList.getDownloadableFiles().add(new Downloadable(url, size, sha1, name));
     }
 
