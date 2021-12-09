@@ -8,6 +8,8 @@ public class CurseModPackInfo extends CurseFileInfo
     private final boolean installExtFiles;
     private final String[] excluded;
 
+    private String url = "";
+
     /**
      * Construct a new CurseModPackInfo object.
      * @param projectID the ID of the project.
@@ -18,6 +20,20 @@ public class CurseModPackInfo extends CurseFileInfo
     public CurseModPackInfo(int projectID, int fileID, boolean installExtFiles, String... excluded)
     {
         super(projectID, fileID);
+        this.installExtFiles = installExtFiles;
+        this.excluded = excluded;
+    }
+
+    /**
+     * Construct a new CurseModPackInfo object.
+     * @param url the url of the mod pack zip.
+     * @param installExtFiles should install external files like config and resource packs.
+     * @param excluded mods to exclude.
+     */
+    public CurseModPackInfo(String url, boolean installExtFiles, String... excluded)
+    {
+        super(0, 0);
+        this.url = url;
         this.installExtFiles = installExtFiles;
         this.excluded = excluded;
     }
@@ -38,5 +54,14 @@ public class CurseModPackInfo extends CurseFileInfo
     public String[] getExcluded()
     {
         return this.excluded;
+    }
+
+    /**
+     * Get the url of the mod pack.
+     * @return the url of the mod pack if it's not from CurseForge's servers.
+     */
+    public String getUrl()
+    {
+        return this.url;
     }
 }

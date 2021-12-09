@@ -88,7 +88,7 @@ public class IntegrationManager
             }
 
             this.progressCallback.step(Step.MOD_PACK);
-            final CurseModPack modPack = curseForgeIntegration.getCurseModPack(modPackInfo.getProjectID(), modPackInfo.getFileID(), modPackInfo.isInstallExtFiles());
+            final CurseModPack modPack = curseForgeIntegration.getCurseModPack(modPackInfo);
             this.logger.info(String.format("Loading mod pack: %s (%s) by %s.", modPack.getName(), modPack.getVersion(), modPack.getAuthor()));
             modPack.getMods().forEach(mod -> {
                 allCurseMods.add(mod);

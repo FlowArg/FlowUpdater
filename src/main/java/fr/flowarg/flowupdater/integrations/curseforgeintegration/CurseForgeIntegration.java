@@ -7,6 +7,7 @@ import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowstringer.StringUtils;
 import fr.flowarg.flowupdater.download.json.CurseFileInfo;
+import fr.flowarg.flowupdater.download.json.CurseModPackInfo;
 import fr.flowarg.flowupdater.integrations.Integration;
 import fr.flowarg.flowupdater.utils.FlowUpdaterException;
 import fr.flowarg.flowupdater.utils.IOUtils;
@@ -79,16 +80,18 @@ public class CurseForgeIntegration extends Integration
 
     /**
      * Get a CurseForge's mod pack object with a project identifier and a file identifier.
-     * @param projectID project identifier.
-     * @param fileID file identifier.
-     * @param installExtFiles should install other files like configs.
-     * @return the curse's mod pack corresponding to passed parameters.
+     * @param info CurseForge's mod pack info.
+     * @return the curse's mod pack corresponding to given parameters.
      */
-    public CurseModPack getCurseModPack(int projectID, int fileID, boolean installExtFiles)
+    public CurseModPack getCurseModPack(CurseModPackInfo info)
     {
         try
         {
-            this.extractModPack(this.checkForUpdates(projectID, fileID), installExtFiles);
+            this.extractModPack(this.checkForUpdates(
+                    info.getUrl().isEmpty() ?
+                            this.getURLOfFile(info.getProjectID(), info.getFileID()) :
+                            info.getUrl()
+            ), info.isInstallExtFiles());
             return this.parseMods();
         }
         catch (Exception e)
@@ -115,14 +118,12 @@ public class CurseForgeIntegration extends Integration
         return this.getCurseMod(mod.getProjectID(), mod.getFileID());
     }
 
-    private @NotNull Path checkForUpdates(int projectID, int fileID) throws Exception
+    private @NotNull Path checkForUpdates(@NotNull String link) throws Exception
     {
-        final String link = this.getURLOfFile(projectID, fileID);
         final Path outPath = this.folder.resolve(link.substring(link.lastIndexOf('/') + 1));
         final URL url = new URL(link);
         final String md5 = this.getMD5(url);
-
-        if(Files.notExists(outPath) || (!md5.contains("-") && !FileUtils.getMD5(outPath).equalsIgnoreCase(md5)))
+        if(Files.notExists(outPath) || (!md5.contains("-") && !md5.isEmpty() && !FileUtils.getMD5(outPath).equalsIgnoreCase(md5)))
             IOUtils.download(this.logger, url, outPath);
 
         return outPath;
