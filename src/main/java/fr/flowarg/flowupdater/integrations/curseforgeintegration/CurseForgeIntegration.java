@@ -143,7 +143,9 @@ public class CurseForgeIntegration extends Integration
         }
         catch (Exception e)
         {
-            throw new FlowUpdaterException(e);
+            if(link.toExternalForm().contains("forgesvc"))
+                throw new FlowUpdaterException(e);
+            return "";
         }
         finally
         {
