@@ -70,7 +70,7 @@ public class VanillaDownloader
         this.downloadAssets();
         this.extractNatives();
 
-        this.logger.info("All vanilla files are successfully downloaded!");
+        this.logger.info("All vanilla files were successfully downloaded!");
     }
 
     private void downloadLibraries() throws Exception
