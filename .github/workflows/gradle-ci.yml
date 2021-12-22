@@ -5,7 +5,7 @@ on:
     branches: [ master ]
 
 jobs:
-  test:
+  testjava8:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -19,5 +19,22 @@ jobs:
           java-version: '8'
           distribution: 'zulu'
 
-      - name: Build and test project
+      - name: Build and test project with Java 8
+        run: gradle test javadoc
+
+  testjava17:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 7
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+
+      - name: Build and test project with Java 17
         run: gradle test javadoc
