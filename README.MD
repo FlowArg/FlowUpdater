@@ -62,9 +62,9 @@ You can get mods from CurseForge too:
 ```java
 List<CurseFileInfo> modInfos = new ArrayList<>();
 // project ID and file ID
-modInfos.add(new CurseFileInfos(238222, 2988823));
+modInfos.add(new CurseFileInfo(238222, 2988823));
 ```
-You can also get a list of curse mods by providing a json link : `List<CurseFileInfos> mods = CurseFileInfos.getFilesFromJson("https://url.com/launcher/cursemods.json");`.
+You can also get a list of curse mods by providing a json link : `List<CurseFileInfo> mods = CurseFileInfo.getFilesFromJson("https://url.com/launcher/cursemods.json");`.
 
 Then, build a forge version. For example, I will build a NewForgeVersion.
 ```java
