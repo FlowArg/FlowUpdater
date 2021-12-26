@@ -5,7 +5,10 @@ on:
     branches: [ master ]
 
 jobs:
-  testjava8:
+  testjava:
+    strategy:
+      matrix:
+        jdk: [8, 17]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -13,28 +16,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Set up JDK 8
+      - name: Set up JDK ${{ matrix.jdk }}
         uses: actions/setup-java@v2
         with:
-          java-version: '8'
+          java-version: ${{ matrix.jdk }}
           distribution: 'zulu'
 
-      - name: Build and test project with Java 8
-        run: gradle test javadoc
-
-  testjava17:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK 7
-        uses: actions/setup-java@v2
-        with:
-          java-version: '17'
-          distribution: 'zulu'
-
-      - name: Build and test project with Java 17
+      - name: Build and test project with Java ${{ matrix.jdk }}
         run: gradle test javadoc
