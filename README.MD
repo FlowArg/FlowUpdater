@@ -88,7 +88,7 @@ That's all!
 In your vanilla version builder, change the version type to `VersionType.MCP`.
 Finally, set to vanilla version builder a MCP version :
 ```java
-.withMCP(new MCP("clientURL", "name", "clientSha1", "author", "serverURL", "serverSha1", 1215, 20525));
+.withMCP(new MCP("clientURL", "name", "clientSha1", 25008229));
 ```
 If you set an empty/null string in url and sha1 and 0 in size, the updater will use the default minecraft jar.
 Example on client-only mcp downloading :
