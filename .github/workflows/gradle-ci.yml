@@ -16,11 +16,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Set up JDK {{ matrix.jdk }}
+      - name: Set up JDK ${{ matrix.jdk }}
         uses: actions/setup-java@v2
         with:
-          java-version: {{ matrix.jdk }}
+          java-version: ${{ matrix.jdk }}
           distribution: 'zulu'
 
-      - name: Build and test project with Java {{ matrix.jdk }}
+      - name: Build and test project with Java ${{ matrix.jdk }}
         run: gradle test javadoc
