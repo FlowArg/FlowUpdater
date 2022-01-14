@@ -74,7 +74,7 @@ public interface IModLoaderVersion
                 this.getLogger().printStackTrace(e);
             }
             this.getDownloadList().incrementDownloaded(mod.getSize());
-            this.getCallback().update(this.getDownloadList().getDownloadedBytes(), this.getDownloadList().getTotalToDownloadBytes());
+            this.getCallback().update(this.getDownloadList().getDownloadInfo());
         });
 
         this.getDownloadList().getCurseMods().forEach(curseMod -> {
@@ -89,7 +89,7 @@ public interface IModLoaderVersion
                 this.getLogger().printStackTrace(e);
             }
             this.getDownloadList().incrementDownloaded(curseMod.getLength());
-            this.getCallback().update(this.getDownloadList().getDownloadedBytes(), this.getDownloadList().getTotalToDownloadBytes());
+            this.getCallback().update(this.getDownloadList().getDownloadInfo());
         });
     }
 

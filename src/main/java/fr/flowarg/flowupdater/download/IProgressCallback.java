@@ -24,13 +24,12 @@ public interface IProgressCallback
 
     /**
      * This method is called when a new file is downloaded.
-     * @param downloaded Number of downloaded/checked bytes.
-     * @param max Total bytes to download/check.
+     * @param info The {@link DownloadList.DownloadInfo} instance that contains all wanted information.
      */
-    default void update(long downloaded, long max) {}
+    default void update(DownloadList.DownloadInfo info) {}
 
     /**
-     * This method is called before {@link #update(long, long)} when a file is downloaded.
+     * This method is called before {@link #update(DownloadList.DownloadInfo)} when a file is downloaded.
      * @param path the file downloaded.
      */
     default void onFileDownloaded(Path path) {}

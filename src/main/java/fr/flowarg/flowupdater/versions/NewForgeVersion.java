@@ -16,7 +16,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 /**
- * Represent a new Forge version (1.12.2-14.23.5.2851 to 1.17.1)
+ * Represent a new Forge version (1.12.2-14.23.5.2851 to 1.18.1)
  * @author FlowArg
  */
 public class NewForgeVersion extends AbstractForgeVersion

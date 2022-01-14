@@ -69,4 +69,13 @@ public class AssetDownloadable
         final AssetDownloadable that = (AssetDownloadable)o;
         return this.file.equals(that.file) && this.size == that.size && this.hash.equals(that.hash) && this.url.equals(that.url);
     }
+
+    @Override
+    public int hashCode()
+    {
+        int result = this.hash.hashCode();
+        result = 31 * result + (int)(this.size ^ (this.size >>> 32));
+        result = 31 * result + this.url.hashCode();
+        return result;
+    }
 }

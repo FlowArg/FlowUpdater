@@ -147,7 +147,7 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
 
     public enum ForgeVersionType
     {
-        /** 1.12.2-14.23.5.2851 to 1.17.1 */
+        /** 1.12.2-14.23.5.2851 to 1.18.1 */
         NEW,
         /** 1.7 to 1.12.2 */
         OLD

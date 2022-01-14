@@ -190,7 +190,11 @@ public class VanillaReader
         final Set<AssetDownloadable> toDownload = new HashSet<>(this.version.getAnotherAssets());
         final AssetIndex assetIndex;
 
-        if(this.version.getCustomAssetIndex() == null) assetIndex = new GsonBuilder().disableHtmlEscaping().create().fromJson(IOUtils.getContent(new URL(this.version.getMinecraftAssetIndex().get("url").getAsString())), AssetIndex.class);
+        if(this.version.getCustomAssetIndex() == null)
+            assetIndex = new GsonBuilder()
+                    .disableHtmlEscaping()
+                    .create()
+                    .fromJson(IOUtils.getContent(new URL(this.version.getMinecraftAssetIndex().get("url").getAsString())), AssetIndex.class);
         else assetIndex = this.version.getCustomAssetIndex();
 
         assetIndex.getUniqueObjects().values().forEach(assetDownloadable -> toDownload.add(new AssetDownloadable(assetDownloadable.getHash(), assetDownloadable.getSize())));

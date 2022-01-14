@@ -94,7 +94,7 @@ public class VanillaDownloader
             }
 
             this.downloadList.incrementDownloaded(downloadable.getSize());
-            this.callback.update(this.downloadList.getDownloadedBytes(), this.downloadList.getTotalToDownloadBytes());
+            this.callback.update(this.downloadList.getDownloadInfo());
         }
     }
 
@@ -164,7 +164,7 @@ public class VanillaDownloader
         this.logger.info("Checking assets...");
         this.callback.step(Step.DL_ASSETS);
 
-        final ExecutorService executorService = Executors.newCachedThreadPool();
+        final ExecutorService executorService = Executors.newWorkStealingPool();
 
         this.downloadList.getDownloadableAssets().forEach(assetDownloadable -> executorService.submit(() -> {
             try
@@ -184,7 +184,7 @@ public class VanillaDownloader
                 }
 
                 this.downloadList.incrementDownloaded(assetDownloadable.getSize());
-                this.callback.update(this.downloadList.getDownloadedBytes(), this.downloadList.getTotalToDownloadBytes());
+                this.callback.update(this.downloadList.getDownloadInfo());
             }
             catch (Exception e)
             {

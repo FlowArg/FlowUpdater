@@ -230,7 +230,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
                 this.logger.printStackTrace(e);
             }
             this.downloadList.incrementDownloaded(ofObj.getSize());
-            this.callback.update(this.downloadList.getDownloadedBytes(), this.downloadList.getTotalToDownloadBytes());
+            this.callback.update(this.downloadList.getDownloadInfo());
         }
 
         this.fileDeleter.delete(modsDir, this.mods, this.allCurseMods, ofObj);

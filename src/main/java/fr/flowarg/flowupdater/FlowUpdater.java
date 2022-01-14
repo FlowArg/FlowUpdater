@@ -175,37 +175,35 @@ public class FlowUpdater
 
     private void installModLoader(IModLoaderVersion modLoader, Path dir, String name) throws Exception
     {
-        if(modLoader != null)
-        {
-            modLoader.attachFlowUpdater(this);
-            if(!modLoader.isModLoaderAlreadyInstalled(dir))
-                modLoader.install(dir);
-            else this.logger.info(name + " is already installed! Skipping installation...");
-            modLoader.installMods(dir.resolve("mods"));
-        }
+        if(modLoader == null) return;
+
+        modLoader.attachFlowUpdater(this);
+        if(!modLoader.isModLoaderAlreadyInstalled(dir))
+            modLoader.install(dir);
+        else this.logger.info(name + " is already installed! Skipping installation...");
+        modLoader.installMods(dir.resolve("mods"));
     }
 
     private void updateExtFiles(Path dir)
     {
-        if(!this.downloadList.getExtFiles().isEmpty())
-        {
-            this.callback.step(Step.EXTERNAL_FILES);
-            this.logger.info("Downloading external file(s)...");
-            this.downloadList.getExtFiles().forEach(extFile -> {
-                try
-                {
-                    final Path filePath = dir.resolve(extFile.getPath());
-                    IOUtils.download(this.logger, new URL(extFile.getDownloadURL()), filePath);
-                    this.callback.onFileDownloaded(filePath);
-                }
-                catch (IOException e)
-                {
-                    this.logger.printStackTrace(e);
-                }
-                this.downloadList.incrementDownloaded(extFile.getSize());
-                this.callback.update(this.downloadList.getDownloadedBytes(), this.downloadList.getTotalToDownloadBytes());
-            });
-        }
+        if(this.downloadList.getExtFiles().isEmpty()) return;
+
+        this.callback.step(Step.EXTERNAL_FILES);
+        this.logger.info("Downloading external file(s)...");
+        this.downloadList.getExtFiles().forEach(extFile -> {
+            try
+            {
+                final Path filePath = dir.resolve(extFile.getPath());
+                IOUtils.download(this.logger, new URL(extFile.getDownloadURL()), filePath);
+                this.callback.onFileDownloaded(filePath);
+            }
+            catch (IOException e)
+            {
+                this.logger.printStackTrace(e);
+            }
+            this.downloadList.incrementDownloaded(extFile.getSize());
+            this.callback.update(this.downloadList.getDownloadInfo());
+        });
     }
 
     private void runPostExecutions()
@@ -220,7 +218,7 @@ public class FlowUpdater
     private void endUpdate()
     {
         this.callback.step(Step.END);
-        this.callback.update(this.downloadList.getTotalToDownloadBytes(), this.downloadList.getTotalToDownloadBytes());
+        this.callback.update(this.downloadList.getDownloadInfo());
         this.downloadList.clear();
     }
 

@@ -6,10 +6,14 @@ import fr.flowarg.flowupdater.download.json.ExternalFile;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseMod;
 import fr.flowarg.flowupdater.integrations.optifineintegration.OptiFine;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Represent information about download status. Used with {@link IProgressCallback} progress system.
@@ -23,9 +27,9 @@ public class DownloadList
     private final List<ExternalFile> extFiles = new ArrayList<>();
     private final List<Mod> mods = new ArrayList<>();
     private final List<CurseMod> curseMods = new ArrayList<>();
+    private final Lock updateInfoLock = new ReentrantLock();
     private OptiFine optiFine = null;
-    private final AtomicLong totalToDownloadBytes = new AtomicLong(0);
-    private final AtomicLong downloadedBytes = new AtomicLong(0);
+    private DownloadInfo downloadInfo;
     private boolean init = false;
 
     /**
@@ -33,43 +37,92 @@ public class DownloadList
      */
     public void init()
     {
-        if(this.init) return;
+        if (this.init) return;
 
-        this.downloadableFiles.forEach(downloadable -> this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + downloadable.getSize()));
-        this.downloadableAssets.forEach(downloadable -> this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + downloadable.getSize()));
-        this.extFiles.forEach(externalFile -> this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + externalFile.getSize()));
-        this.mods.forEach(mod -> this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + mod.getSize()));
-        this.curseMods.forEach(obj -> this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + (long)(obj.getLength())));
+        this.downloadInfo = new DownloadInfo();
+        this.downloadableFiles.forEach(downloadable -> this.downloadInfo.totalToDownloadBytes.set(this.downloadInfo.totalToDownloadBytes.get() + downloadable.getSize()));
+        this.downloadableAssets.forEach(downloadable -> this.downloadInfo.totalToDownloadBytes.set(this.downloadInfo.totalToDownloadBytes.get() + downloadable.getSize()));
+        this.extFiles.forEach(externalFile -> this.downloadInfo.totalToDownloadBytes.set(this.downloadInfo.totalToDownloadBytes.get() + externalFile.getSize()));
+        this.mods.forEach(mod -> this.downloadInfo.totalToDownloadBytes.set(this.downloadInfo.totalToDownloadBytes.get() + mod.getSize()));
+        this.curseMods.forEach(obj -> this.downloadInfo.totalToDownloadBytes.set(this.downloadInfo.totalToDownloadBytes.get() + (long)(obj.getLength())));
+
+        this.downloadInfo.totalToDownloadFiles.set(this.downloadInfo.totalToDownloadFiles.get() + this.downloadableFiles.size() + this.downloadableAssets.size() + this.extFiles.size() + this.mods.size() + this.curseMods.size());
+
         if (this.optiFine != null)
-            this.totalToDownloadBytes.set(this.totalToDownloadBytes.get() + (long)(this.optiFine.getSize()));
+        {
+            this.downloadInfo.totalToDownloadBytes.set(this.downloadInfo.totalToDownloadBytes.get() + (long)(this.optiFine.getSize()));
+            this.downloadInfo.totalToDownloadFiles.incrementAndGet();
+        }
         this.init = true;
     }
 
     /**
-     * This method increments the number of bytes downloaded by the number of bytes passed as parameter.
+     * This method increments the number of bytes downloaded by the number of bytes passed in parameter.
      * @param bytes number of bytes to add to downloaded bytes.
      */
     public void incrementDownloaded(long bytes)
     {
-        this.downloadedBytes.set(this.downloadedBytes.get() + bytes);
+        this.updateInfoLock.lock();
+        this.downloadInfo.downloadedFiles.incrementAndGet();
+        this.downloadInfo.downloadedBytes.set(this.downloadInfo.downloadedBytes.get() + bytes);
+        this.updateInfoLock.unlock();
     }
 
     /**
      * Get the total of bytes to download.
      * @return bytes to download.
+     * @deprecated use {@link DownloadInfo#getTotalToDownloadBytes()} instead.
      */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "1.6.0")
     public long getTotalToDownloadBytes()
     {
-        return this.totalToDownloadBytes.get();
+        return this.downloadInfo.totalToDownloadBytes.get();
     }
 
     /**
      * Get the downloaded bytes.
      * @return the downloaded bytes.
+     * @deprecated use {@link DownloadInfo#getDownloadedBytes()} instead.
      */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "1.6.0")
     public long getDownloadedBytes()
     {
-        return this.downloadedBytes.get();
+        return this.downloadInfo.downloadedBytes.get();
+    }
+
+    /**
+     * Get the number of files to download.
+     * @return number of files to download.
+     * @deprecated use {@link DownloadInfo#getTotalToDownloadFiles} instead.
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "1.6.0")
+    public int getTotalToDownloadFiles()
+    {
+        return this.downloadInfo.totalToDownloadFiles.get();
+    }
+
+    /**
+     * Get the number of downloaded files.
+     * @return the number of downloaded files.
+     * @deprecated use {@link DownloadInfo#getDownloadedFiles} instead.
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "1.6.0")
+    public int getDownloadedFiles()
+    {
+        return this.downloadInfo.downloadedFiles.get();
+    }
+
+    /**
+     * Get the new API to get information about the progress of the download.
+     * @return the instance of {@link DownloadInfo}.
+     */
+    public DownloadInfo getDownloadInfo()
+    {
+        return this.downloadInfo;
     }
 
     /**
@@ -136,7 +189,7 @@ public class DownloadList
     }
 
     /**
-     * Clear and reset that download list object.
+     * Clear and reset this download list object.
      */
     public void clear()
     {
@@ -146,8 +199,62 @@ public class DownloadList
         this.mods.clear();
         this.curseMods.clear();
         this.optiFine = null;
-        this.totalToDownloadBytes.set(0);
-        this.downloadedBytes.set(0);
+        this.downloadInfo.reset();
         this.init = false;
+    }
+
+    public static class DownloadInfo
+    {
+        private final AtomicLong totalToDownloadBytes = new AtomicLong(0);
+        private final AtomicLong downloadedBytes = new AtomicLong(0);
+        private final AtomicInteger totalToDownloadFiles = new AtomicInteger(0);
+        private final AtomicInteger downloadedFiles = new AtomicInteger(0);
+
+        /**
+         * Reset this download info object.
+         */
+        public void reset()
+        {
+            this.totalToDownloadBytes.set(0);
+            this.downloadedBytes.set(0);
+            this.totalToDownloadFiles.set(0);
+            this.downloadedFiles.set(0);
+        }
+
+        /**
+         * Get the total of bytes to download.
+         * @return bytes to download.
+         */
+        public long getTotalToDownloadBytes()
+        {
+            return this.totalToDownloadBytes.get();
+        }
+
+        /**
+         * Get the downloaded bytes.
+         * @return the downloaded bytes.
+         */
+        public long getDownloadedBytes()
+        {
+            return this.downloadedBytes.get();
+        }
+
+        /**
+         * Get the number of files to download.
+         * @return number of files to download.
+         */
+        public int getTotalToDownloadFiles()
+        {
+            return this.totalToDownloadFiles.get();
+        }
+
+        /**
+         * Get the number of downloaded files.
+         * @return the number of downloaded files.
+         */
+        public int getDownloadedFiles()
+        {
+            return this.downloadedFiles.get();
+        }
     }
 }
