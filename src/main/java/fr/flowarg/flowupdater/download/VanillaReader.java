@@ -197,7 +197,10 @@ public class VanillaReader
                     .fromJson(IOUtils.getContent(new URL(this.version.getMinecraftAssetIndex().get("url").getAsString())), AssetIndex.class);
         else assetIndex = this.version.getCustomAssetIndex();
 
-        assetIndex.getUniqueObjects().values().forEach(assetDownloadable -> toDownload.add(new AssetDownloadable(assetDownloadable.getHash(), assetDownloadable.getSize())));
+        assetIndex.getUniqueObjects()
+                .values()
+                .forEach(assetDownloadable ->
+                                 toDownload.add(new AssetDownloadable(assetDownloadable.getHash(), assetDownloadable.getSize())));
         this.downloadList.getDownloadableAssets().addAll(toDownload);
     }
 
@@ -232,6 +235,9 @@ public class VanillaReader
     
     private boolean check(@NotNull String os)
     {
-        return (os.equalsIgnoreCase("osx") && Platform.isOnMac()) || (os.equalsIgnoreCase("macos") && Platform.isOnMac()) || (os.equalsIgnoreCase("windows") && Platform.isOnWindows()) || (os.equalsIgnoreCase("linux") && Platform.isOnLinux());
+        return (os.equalsIgnoreCase("osx") && Platform.isOnMac()) ||
+                (os.equalsIgnoreCase("macos") && Platform.isOnMac()) ||
+                (os.equalsIgnoreCase("windows") && Platform.isOnWindows()) ||
+                (os.equalsIgnoreCase("linux") && Platform.isOnLinux());
     }
 }

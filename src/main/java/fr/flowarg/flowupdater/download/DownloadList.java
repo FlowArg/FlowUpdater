@@ -40,13 +40,27 @@ public class DownloadList
         if (this.init) return;
 
         this.downloadInfo = new DownloadInfo();
-        this.downloadableFiles.forEach(downloadable -> this.downloadInfo.totalToDownloadBytes.set(this.downloadInfo.totalToDownloadBytes.get() + downloadable.getSize()));
-        this.downloadableAssets.forEach(downloadable -> this.downloadInfo.totalToDownloadBytes.set(this.downloadInfo.totalToDownloadBytes.get() + downloadable.getSize()));
-        this.extFiles.forEach(externalFile -> this.downloadInfo.totalToDownloadBytes.set(this.downloadInfo.totalToDownloadBytes.get() + externalFile.getSize()));
-        this.mods.forEach(mod -> this.downloadInfo.totalToDownloadBytes.set(this.downloadInfo.totalToDownloadBytes.get() + mod.getSize()));
-        this.curseMods.forEach(obj -> this.downloadInfo.totalToDownloadBytes.set(this.downloadInfo.totalToDownloadBytes.get() + (long)(obj.getLength())));
+        this.downloadableFiles.forEach(
+                downloadable -> this.downloadInfo.totalToDownloadBytes.set(
+                        this.downloadInfo.totalToDownloadBytes.get() + downloadable.getSize()));
+        this.downloadableAssets.forEach(
+                downloadable -> this.downloadInfo.totalToDownloadBytes.set(
+                        this.downloadInfo.totalToDownloadBytes.get() + downloadable.getSize()));
+        this.extFiles.forEach(
+                externalFile -> this.downloadInfo.totalToDownloadBytes.set(
+                        this.downloadInfo.totalToDownloadBytes.get() + externalFile.getSize()));
+        this.mods.forEach(
+                mod -> this.downloadInfo.totalToDownloadBytes.set(this.downloadInfo.totalToDownloadBytes.get() + mod.getSize()));
+        this.curseMods.forEach(
+                obj -> this.downloadInfo.totalToDownloadBytes.set(this.downloadInfo.totalToDownloadBytes.get() + (long)(obj.getLength())));
 
-        this.downloadInfo.totalToDownloadFiles.set(this.downloadInfo.totalToDownloadFiles.get() + this.downloadableFiles.size() + this.downloadableAssets.size() + this.extFiles.size() + this.mods.size() + this.curseMods.size());
+        this.downloadInfo.totalToDownloadFiles.set(
+                this.downloadInfo.totalToDownloadFiles.get() +
+                        this.downloadableFiles.size() +
+                        this.downloadableAssets.size() +
+                        this.extFiles.size() +
+                        this.mods.size() +
+                        this.curseMods.size());
 
         if (this.optiFine != null)
         {

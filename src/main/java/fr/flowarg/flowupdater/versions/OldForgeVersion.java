@@ -41,7 +41,12 @@ public class OldForgeVersion extends AbstractForgeVersion
         {
             try
             {
-                this.installerUrl = new URL(String.format("https://files.minecraftforge.net/maven/net/minecraftforge/forge/%s-%s/forge-%s-%s-installer.jar", this.forgeVersion, this.vanilla.getName(), this.forgeVersion, this.vanilla.getName()));
+                this.installerUrl = new URL(
+                        String.format("https://files.minecraftforge.net/maven/net/minecraftforge/forge/%s-%s/forge-%s-%s-installer.jar",
+                                      this.forgeVersion,
+                                      this.vanilla.getName(),
+                                      this.forgeVersion,
+                                      this.vanilla.getName()));
                 if(!this.installForge(dirToInstall, false))
                     this.logger.err("Check the given forge version !");
             }

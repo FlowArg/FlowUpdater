@@ -79,15 +79,20 @@ public class VanillaDownloader
         this.callback.step(Step.DL_LIBS);
 
         final Path vanillaJsonTarget = this.dir.resolve(this.vanillaJsonURL.substring(this.vanillaJsonURL.lastIndexOf('/') + 1));
+        final String vanillaJsonResourceName = this.vanillaJsonURL.substring(this.vanillaJsonURL.lastIndexOf('/'));
+        final String vanillaJsonPathUrl = StringUtils.empty(this.vanillaJsonURL, "https://launchermeta.mojang.com/v1/packages/");
 
-        if(Files.notExists(vanillaJsonTarget) || !FileUtils.getSHA1(vanillaJsonTarget).equals(StringUtils.empty(StringUtils.empty(this.vanillaJsonURL, "https://launchermeta.mojang.com/v1/packages/"), this.vanillaJsonURL.substring(this.vanillaJsonURL.lastIndexOf('/')))))
+        if(Files.notExists(vanillaJsonTarget) || !FileUtils.getSHA1(vanillaJsonTarget)
+                .equals(StringUtils.empty(vanillaJsonPathUrl, vanillaJsonResourceName)))
             IOUtils.download(this.logger, new URL(this.vanillaJsonURL), vanillaJsonTarget);
 
         for (Downloadable downloadable : this.downloadList.getDownloadableFiles())
         {
             final Path filePath = this.dir.resolve(downloadable.getName());
 
-            if(Files.notExists(filePath) || !FileUtils.getSHA1(filePath).equalsIgnoreCase(downloadable.getSha1()) || FileUtils.getFileSizeBytes(filePath) != downloadable.getSize())
+            if(Files.notExists(filePath) ||
+                    !FileUtils.getSHA1(filePath).equalsIgnoreCase(downloadable.getSha1()) ||
+                    FileUtils.getFileSizeBytes(filePath) != downloadable.getSize())
             {
                 IOUtils.download(this.logger, new URL(downloadable.getUrl()), filePath);
                 this.callback.onFileDownloaded(filePath);
@@ -104,14 +109,18 @@ public class VanillaDownloader
         final List<Path> existingNatives = Files.list(this.natives).collect(Collectors.toList());
         if (!existingNatives.isEmpty())
         {
-            for (Path minecraftNative : Files.list(this.natives).filter(path -> path.getFileName().toString().endsWith(".jar")).collect(Collectors.toList()))
+            for (Path minecraftNative : Files.list(this.natives)
+                    .filter(path -> path.getFileName().toString().endsWith(".jar")).collect(Collectors.toList()))
             {
                 final JarFile jarFile = new JarFile(minecraftNative.toFile());
                 final Enumeration<? extends ZipEntry> entries = jarFile.entries();
                 while (entries.hasMoreElements())
                 {
                     final ZipEntry entry = entries.nextElement();
-                    if (entry.isDirectory() || entry.getName().endsWith(".git") || entry.getName().endsWith(".sha1") || entry.getName().contains("META-INF")) continue;
+                    if (entry.isDirectory() ||
+                            entry.getName().endsWith(".git") ||
+                            entry.getName().endsWith(".sha1") ||
+                            entry.getName().contains("META-INF")) continue;
 
                     final Path flPath = this.natives.resolve(entry.getName());
 

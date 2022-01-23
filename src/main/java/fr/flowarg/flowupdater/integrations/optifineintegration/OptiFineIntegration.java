@@ -37,7 +37,11 @@ public class OptiFineIntegration extends Integration
     {
         try
         {
-            final String name = preview ? (optiFineVersion.contains("preview_") && optiFineVersion.contains("OptiFine_") ? optiFineVersion + ".jar" : "preview_OptiFine_" + optiFineVersion + ".jar") : "OptiFine_" + optiFineVersion + ".jar";
+            final String name = preview ?
+                    (optiFineVersion.contains("preview_") && optiFineVersion.contains("OptiFine_") ?
+                            optiFineVersion + ".jar" :
+                            "preview_OptiFine_" + optiFineVersion + ".jar") :
+                    "OptiFine_" + optiFineVersion + ".jar";
             final String newUrl = this.getNewURL(name, preview, optiFineVersion);
             final GetResponse getResponse = this.getResponse(new URL(newUrl));
             final int length = getResponse.contentLength;
@@ -58,7 +62,10 @@ public class OptiFineIntegration extends Integration
 
     private @NotNull String getNewURL(String name, boolean preview, String optiFineVersion)
     {
-        return "https://optifine.net/downloadx?f=" + name + "&x=" + (preview ? this.getJsonPreview(optiFineVersion) : this.getJson(optiFineVersion));
+        return "https://optifine.net/downloadx?f=" +
+                name +
+                "&x=" +
+                (preview ? this.getJsonPreview(optiFineVersion) : this.getJson(optiFineVersion));
     }
 
     private void checkForUpdates(String name, InputStream byteStream, int length, String newUrl) throws Exception
@@ -76,10 +83,15 @@ public class OptiFineIntegration extends Integration
     {
         try
         {
-            final String[] respLine = IOUtils.getContent(new URL("https://optifine.net/adloadx?f=OptiFine_" + optiFineVersion)).split("\n");
+            final String[] respLine = IOUtils.getContent(new URL("https://optifine.net/adloadx?f=OptiFine_" + optiFineVersion))
+                    .split("\n");
             final Optional<String> result = Arrays.stream(respLine).filter(s -> s.contains("downloadx?f=OptiFine")).findFirst();
             if(result.isPresent())
-                return result.get().replace("' onclick='onDownload()'>OptiFine " + optiFineVersion.replace("_", " ") + "</a>", "").replace("<a href='downloadx?f=OptiFine_" + optiFineVersion + "&x=", "").replace(" ", "");
+                return result.get()
+                        .replace("' onclick='onDownload()'>OptiFine " + optiFineVersion.replace("_", " ") +
+                                         "</a>", "")
+                        .replace("<a href='downloadx?f=OptiFine_" + optiFineVersion + "&x=", "")
+                        .replace(" ", "");
             else throw new FlowUpdaterException("No line found in: " + Arrays.toString(respLine));
         }
         catch (Exception e)
@@ -92,10 +104,15 @@ public class OptiFineIntegration extends Integration
     {
         try
         {
-            final String[] respLine = IOUtils.getContent(new URL("https://optifine.net/adloadx?f=" + optiFineVersion)).split("\n");
+            final String[] respLine = IOUtils.getContent(new URL("https://optifine.net/adloadx?f=" + optiFineVersion))
+                    .split("\n");
             final Optional<String> result = Arrays.stream(respLine).filter(s -> s.contains("downloadx?f=preview")).findFirst();
             if(result.isPresent())
-                return result.get().replace("' onclick='onDownload()'>" + optiFineVersion.replace("_", " ") + "</a>", "").replace("<a href='downloadx?f=" + optiFineVersion + "&x=", "").replace(" ", "");
+                return result.get()
+                        .replace("' onclick='onDownload()'>" + optiFineVersion.replace("_", " ") +
+                                         "</a>", "")
+                        .replace("<a href='downloadx?f=" + optiFineVersion + "&x=", "")
+                        .replace(" ", "");
             else throw new FlowUpdaterException("No line found in: " + Arrays.toString(respLine));
         }
         catch (Exception e)
@@ -113,7 +130,8 @@ public class OptiFineIntegration extends Integration
             connection = (HttpsURLConnection)url.openConnection();
             connection.setRequestMethod("GET");
             connection.setUseCaches(false);
-            connection.addRequestProperty("User-Agent", "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.124 Safari/537.36");
+            connection.addRequestProperty("User-Agent",
+                                          "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.124 Safari/537.36");
             connection.setInstanceFollowRedirects(true);
             return new GetResponse(Integer.parseInt(connection.getHeaderField("Content-Length")), connection.getInputStream());
         } catch (Exception e)

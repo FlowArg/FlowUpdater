@@ -77,7 +77,8 @@ public class ModFileDeleter implements IFileDeleter
                 {
                     if (mod.getName().equalsIgnoreCase(fileInDir.getFileName().toString()))
                     {
-                        if (FileUtils.getSHA1(fileInDir).equalsIgnoreCase(mod.getSha1()) && FileUtils.getFileSizeBytes(fileInDir) == mod.getSize())
+                        if (FileUtils.getSHA1(fileInDir).equalsIgnoreCase(mod.getSha1()) &&
+                                FileUtils.getFileSizeBytes(fileInDir) == mod.getSize())
                         {
                             badFiles.remove(fileInDir);
                             verifiedFiles.add(fileInDir);
@@ -105,13 +106,15 @@ public class ModFileDeleter implements IFileDeleter
         badFiles.clear();
     }
 
-    private void processCurseForgeMods(@NotNull List<CurseMod> allCurseMods, Path fileInDir, Set<Path> badFiles, List<Path> verifiedFiles) throws Exception
+    private void processCurseForgeMods(@NotNull List<CurseMod> allCurseMods, Path fileInDir,
+            Set<Path> badFiles, List<Path> verifiedFiles) throws Exception
     {
         for (CurseMod mod : allCurseMods)
         {
             if (mod.getName().equalsIgnoreCase(fileInDir.getFileName().toString()))
             {
-                if (FileUtils.getFileSizeBytes(fileInDir) == mod.getLength() && (mod.getMd5().contains("-") || FileUtils.getMD5(fileInDir).equalsIgnoreCase(mod.getMd5())))
+                if (FileUtils.getFileSizeBytes(fileInDir) == mod.getLength() && (mod.getMd5().contains("-") ||
+                        FileUtils.getMD5(fileInDir).equalsIgnoreCase(mod.getMd5())))
                 {
                     badFiles.remove(fileInDir);
                     verifiedFiles.add(fileInDir);

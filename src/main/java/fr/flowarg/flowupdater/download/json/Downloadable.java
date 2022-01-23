@@ -69,6 +69,9 @@ public class Downloadable
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final Downloadable that = (Downloadable)o;
-        return this.size == that.size && Objects.equals(this.url, that.url) && Objects.equals(this.sha1, that.sha1) && Objects.equals(this.name, that.name);
+        return this.size == that.size &&
+                Objects.equals(this.url, that.url) &&
+                Objects.equals(this.sha1, that.sha1) &&
+                Objects.equals(this.name, that.name);
     }
 }

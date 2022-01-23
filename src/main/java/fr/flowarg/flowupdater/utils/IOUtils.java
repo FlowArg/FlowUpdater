@@ -166,8 +166,8 @@ public class IOUtils
         if(cachedMinecraftPath == null)
             cachedMinecraftPath = Paths.get(
                     Platform.isOnWindows() ? System.getenv("APPDATA")
-                    : (Platform.isOnMac() ? System.getProperty("user.home") + "/Library/Application Support/" : System.getProperty("user.home")),
-                    ".minecraft"
+                    : (Platform.isOnMac() ? System.getProperty("user.home") + "/Library/Application Support/" :
+                            System.getProperty("user.home")), ".minecraft"
             );
         return cachedMinecraftPath;
     }

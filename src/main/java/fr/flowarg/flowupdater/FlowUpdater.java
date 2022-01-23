@@ -78,7 +78,8 @@ public class FlowUpdater
      * @param vanillaVersion {@link VanillaVersion} to update.
      * @param logger {@link ILogger} used for log information.
      * @param updaterOptions {@link UpdaterOptions} for this updater
-     * @param callback {@link IProgressCallback} used for update progression. If it's null, it will automatically be assigned to {@link FlowUpdater#NULL_CALLBACK}.
+     * @param callback {@link IProgressCallback} used for update progression. If it's null, it will be
+     * automatically assigned to {@link FlowUpdater#NULL_CALLBACK}.
      * @param externalFiles {@link List<ExternalFile>} are downloaded before postExecutions.
      * @param postExecutions {@link List<Runnable>} are called after update.
      * @param forgeVersion {@link AbstractForgeVersion} to install, can be null.
@@ -99,13 +100,16 @@ public class FlowUpdater
         this.callback = callback;
         this.downloadList = new DownloadList();
         this.integrationManager = new IntegrationManager(this);
-        this.logger.info(String.format("------------------------- FlowUpdater for Minecraft %s v%s -------------------------", this.vanillaVersion.getName(), "1.5.2"));
+        this.logger.info(String.format(
+                "------------------------- FlowUpdater for Minecraft %s v%s -------------------------",
+                this.vanillaVersion.getName(), "1.5.3"));
         this.callback.init(this.logger);
     }
 
     /**
-     * This method updates the Minecraft Installation in the given directory. If the {@link #vanillaVersion} is {@link VanillaVersion#NULL_VERSION}, the updater will
-     * run only external files and post executions.
+     * This method updates the Minecraft Installation in the given directory.
+     * If the {@link #vanillaVersion} is {@link VanillaVersion#NULL_VERSION}, the updater will
+     * only run external files and post executions.
      * @param dir Directory where is the Minecraft installation.
      * @throws IOException if an I/O problem occurred.
      */
@@ -168,7 +172,9 @@ public class FlowUpdater
         {
             final Path filePath = modsDir.resolve(mod.getName());
 
-            if(Files.notExists(filePath) || !FileUtils.getSHA1(filePath).equalsIgnoreCase(mod.getSha1()) || FileUtils.getFileSizeBytes(filePath) != mod.getSize())
+            if(Files.notExists(filePath) ||
+                    !FileUtils.getSHA1(filePath).equalsIgnoreCase(mod.getSha1()) ||
+                    FileUtils.getFileSizeBytes(filePath) != mod.getSize())
                 this.downloadList.getMods().add(mod);
         }
     }

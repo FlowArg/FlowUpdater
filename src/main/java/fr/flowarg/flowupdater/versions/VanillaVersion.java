@@ -26,7 +26,9 @@ public class VanillaVersion
     /**
      * Default version. It used when an update doesn't need a Minecraft installation.
      */
-    public static final VanillaVersion NULL_VERSION = new VanillaVersion("no", null, false, null, null, new ArrayList<>(), new ArrayList<>(), null);
+    public static final VanillaVersion NULL_VERSION = new VanillaVersion("no", null, false,
+                                                                         null, null, new ArrayList<>(),
+                                                                         new ArrayList<>(), null);
     
     private final String name;
     private final MCP mcp;
@@ -132,7 +134,10 @@ public class VanillaVersion
 
         try
         {
-            final JsonObject launcherMeta = IOUtils.readJson(new URL("https://launchermeta.mojang.com/mc/game/version_manifest.json").openStream()).getAsJsonObject();
+            final JsonObject launcherMeta = IOUtils.readJson(
+                    new URL("https://launchermeta.mojang.com/mc/game/version_manifest.json")
+                            .openStream())
+                    .getAsJsonObject();
 
             if (this.getName().equals("latest"))
             {

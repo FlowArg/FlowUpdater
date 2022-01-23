@@ -68,7 +68,9 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
      * @param fileDeleter {@link ModFileDeleter} used to clean up mods' dir.
      * @param modPackInfo {@link CurseModPackInfo} the mod pack you want to install.
      */
-    private FabricVersion(List<Mod> mods, List<CurseFileInfo> curseMods, String fabricVersion, ModFileDeleter fileDeleter, CurseModPackInfo modPackInfo) {
+    private FabricVersion(List<Mod> mods, List<CurseFileInfo> curseMods, String fabricVersion,
+            ModFileDeleter fileDeleter, CurseModPackInfo modPackInfo)
+    {
         this.mods = mods;
         this.fileDeleter = fileDeleter;
         this.curseMods = curseMods;
@@ -82,7 +84,8 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
         {
             final DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             final DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            final Document doc = dBuilder.parse(new URL("https://maven.fabricmc.net/net/fabricmc/fabric-loader/maven-metadata.xml").openStream());
+            final Document doc = dBuilder.parse(
+                    new URL("https://maven.fabricmc.net/net/fabricmc/fabric-loader/maven-metadata.xml").openStream());
 
             return getLatestVersionOfArtifact(doc);
         } catch (Exception e) {
@@ -95,7 +98,8 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
         try {
             final DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             final DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            final Document doc = dBuilder.parse(new URL("https://maven.fabricmc.net/net/fabricmc/fabric-installer/maven-metadata.xml").openStream());
+            final Document doc = dBuilder.parse(
+                    new URL("https://maven.fabricmc.net/net/fabricmc/fabric-installer/maven-metadata.xml").openStream());
 
             return getLatestVersionOfArtifact(doc);
         }
@@ -129,7 +133,13 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
     @Override
     public boolean isModLoaderAlreadyInstalled(@NotNull Path installDir)
     {
-        return Files.exists(installDir.resolve("libraries").resolve("net").resolve("fabricmc").resolve("fabric-loader").resolve(this.fabricVersion).resolve("fabric-loader-" + this.fabricVersion + ".jar"));
+        return Files.exists(
+                installDir.resolve("libraries")
+                        .resolve("net")
+                        .resolve("fabricmc")
+                        .resolve("fabric-loader")
+                        .resolve(this.fabricVersion)
+                        .resolve("fabric-loader-" + this.fabricVersion + ".jar"));
     }
 
     private class FabricLauncherEnvironment extends ModLoaderLauncherEnvironment
@@ -222,17 +232,20 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
             this.logger.info("Launching fabric installer...");
             fabricLauncherEnvironment.launchFabricInstaller();
 
-            final Path jsonPath = fabricLauncherEnvironment.getFabric().resolve("versions").resolve(String.format("fabric-loader-%s-%s", this.fabricVersion, this.vanilla.getName()));
+            final Path jsonPath = fabricLauncherEnvironment.getFabric()
+                    .resolve("versions")
+                    .resolve(String.format("fabric-loader-%s-%s", this.fabricVersion, this.vanilla.getName()));
             final Path jsonFilePath = jsonPath.resolve(jsonPath.getFileName().toString() + ".json");
 
-            final JsonObject obj = JsonParser.parseString(StringUtils.toString(Files.readAllLines(jsonFilePath, StandardCharsets.UTF_8))).getAsJsonObject();
+            final JsonObject obj = JsonParser.parseString(
+                    StringUtils.toString(Files.readAllLines(jsonFilePath, StandardCharsets.UTF_8))).getAsJsonObject();
             final JsonArray libs = obj.getAsJsonArray("libraries");
 
             final Path libraries = dirToInstall.resolve("libraries");
             libs.forEach(el -> {
                 final JsonObject artifact = el.getAsJsonObject();
                 final String[] parts = artifact.get("name").getAsString().split(":");
-                this.downloadArtifacts(libraries, artifact.get("url").getAsString(), parts[0], parts[1], parts[2]);
+                this.downloadArtifacts(libraries, artifact.get("url").getAsString(), parts);
             });
 
             this.logger.info("Successfully installed Fabric !");
@@ -243,13 +256,24 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
         }
     }
 
-    private void downloadArtifacts(Path dir, String repositoryUrl, String group, String name, String version)
+    private void downloadArtifacts(Path dir, String repositoryUrl, String[] metadata)
     {
+        final String group = metadata[0];
+        final String name = metadata[1];
+        final String version = metadata[2];
+
+        final String groupSlash = group.replace('.', '/');
+        final String groupDir = group.replace(".", dir.getFileSystem().getSeparator());
+
         try
         {
             IOUtils.download(this.logger,
-                             new URL(repositoryUrl + group.replace('.', '/') + '/' + name + '/' + version + '/' + String.format("%s-%s.jar", name, version)),
-                             dir.resolve(group.replace(".", dir.getFileSystem().getSeparator())).resolve(name).resolve(version).resolve(String.format("%s-%s.jar", name, version)));
+                             new URL(repositoryUrl + groupSlash + '/' + name + '/' + version + '/' +
+                                             String.format("%s-%s.jar", name, version)),
+                             dir.resolve(groupDir)
+                                     .resolve(name)
+                                     .resolve(version)
+                                     .resolve(String.format("%s-%s.jar", name, version)));
         } catch (Exception e)
         {
             this.logger.printStackTrace(e);
@@ -305,7 +329,9 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
         this.downloadList = flowUpdater.getDownloadList();
         this.vanilla = flowUpdater.getVanillaVersion();
         try {
-            this.installerUrl = new URL(String.format("https://maven.fabricmc.net/net/fabricmc/fabric-installer/%s/fabric-installer-%s.jar", installerVersion, installerVersion));
+            this.installerUrl = new URL(
+                    String.format("https://maven.fabricmc.net/net/fabricmc/fabric-installer/%s/fabric-installer-%s.jar",
+                                  installerVersion, installerVersion));
         } catch (Exception e) {
             this.logger.printStackTrace(e);
         }
@@ -395,7 +421,8 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
         private final BuilderArgument<CurseModPackInfo> modPackArgument = new BuilderArgument<CurseModPackInfo>("ModPack").optional();
 
         /**
-         * @param fabricVersion the Fabric version you want to install (don't use this function if you want to use the latest fabric version automatically).
+         * @param fabricVersion the Fabric version you want to install
+         * (don't use this function if you want to use the latest fabric version).
          * @return the builder.
          */
         public FabricVersionBuilder withFabricVersion(String fabricVersion)

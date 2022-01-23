@@ -78,11 +78,17 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     @Override
     public boolean isModLoaderAlreadyInstalled(@NotNull Path installDir)
     {
-        final Path forgeDir = installDir.resolve("libraries").resolve("net").resolve("minecraftforge").resolve("forge").resolve(this.forgeVersion);
+        final Path forgeDir = installDir
+                .resolve("libraries")
+                .resolve("net")
+                .resolve("minecraftforge")
+                .resolve("forge")
+                .resolve(this.forgeVersion);
 
         if(Files.notExists(forgeDir)) return false;
 
-        return Files.exists(forgeDir.resolve("forge-" + this.forgeVersion + ".jar")) || Files.exists(forgeDir.resolve("forge-" + this.forgeVersion + "-universal.jar"));
+        return Files.exists(forgeDir.resolve("forge-" + this.forgeVersion + ".jar")) ||
+                Files.exists(forgeDir.resolve("forge-" + this.forgeVersion + "-universal.jar"));
     }
 
     /**
@@ -127,7 +133,8 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         this.logger.info("Downloading " + (this.old ? "old" : "new") + " forge installer...");
         Files.copy(stream, install, StandardCopyOption.REPLACE_EXISTING);
         this.logger.info("Downloading patches...");
-        Files.copy(new URL("https://flowarg.github.io/minecraft/launcher/" + (this.old ? "old" : "") + "patches.jar").openStream(), patches, StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(new URL("https://flowarg.github.io/minecraft/launcher/" + (this.old ? "old" : "") + "patches.jar").openStream(),
+                   patches, StandardCopyOption.REPLACE_EXISTING);
     }
 
     /**
@@ -158,7 +165,8 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     }
 
     /**
-     * This method makes a new {@link fr.flowarg.flowupdater.versions.IModLoaderVersion.ModLoaderLauncherEnvironment} to launch the mod loader's launcher.
+     * This method makes a new {@link fr.flowarg.flowupdater.versions.IModLoaderVersion.ModLoaderLauncherEnvironment}
+     * to launch the mod loader's launcher.
      * @param patchedInstaller the patched installer path.
      * @param dirToInstall the installation directory.
      * @param tempDir the temporary directory where is the installer stuff.
@@ -224,7 +232,8 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
             {
                 final Path optiFineFilePath = modsDir.resolve(ofObj.getName());
 
-                if (Files.notExists(optiFineFilePath) || Files.size(optiFineFilePath) != ofObj.getSize()) IOUtils.copy(this.logger, modsDir.getParent().resolve(".op").resolve(ofObj.getName()), optiFineFilePath);
+                if (Files.notExists(optiFineFilePath) || Files.size(optiFineFilePath) != ofObj.getSize())
+                    IOUtils.copy(this.logger, modsDir.getParent().resolve(".op").resolve(ofObj.getName()), optiFineFilePath);
             } catch (Exception e)
             {
                 this.logger.printStackTrace(e);
@@ -245,7 +254,8 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     {
         final Path outputPath = tempDir.resolve("forge-installer-patched.zip");
         ZipUtils.compressFiles(FileUtils.list(tempInstallerDir).toArray(new Path[0]), outputPath);
-        Files.move(outputPath, Paths.get(outputPath.toString().replace(".zip", ".jar")), StandardCopyOption.REPLACE_EXISTING);
+        Files.move(outputPath, Paths.get(outputPath.toString().replace(".zip", ".jar")),
+                   StandardCopyOption.REPLACE_EXISTING);
         FileUtils.deleteDirectory(tempInstallerDir);
     }
 
@@ -291,7 +301,9 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         else this.forgeVersion = this.forgeVersion.trim();
         try
         {
-            this.installerUrl = new URL(String.format("https://maven.minecraftforge.net/net/minecraftforge/forge/%s/forge-%s-installer.jar", this.forgeVersion, this.forgeVersion));
+            this.installerUrl = new URL(
+                    String.format("https://maven.minecraftforge.net/net/minecraftforge/forge/%s/forge-%s-installer.jar",
+                                  this.forgeVersion, this.forgeVersion));
         } catch (Exception e)
         {
             this.logger.printStackTrace(e);
