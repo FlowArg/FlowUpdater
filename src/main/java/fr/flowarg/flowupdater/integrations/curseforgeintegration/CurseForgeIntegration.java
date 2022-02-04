@@ -52,6 +52,7 @@ public class CurseForgeIntegration extends Integration
      * @param projectID project identifier.
      * @param fileID file identifier.
      * @return the curse's mod corresponding to passed parameters.
+     * @throws Exception if the request fail.
      */
     @NotNull
     public CurseMod getCurseMod(int projectID, int fileID) throws Exception
