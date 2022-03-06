@@ -27,13 +27,12 @@ public class VanillaVersion
      * Default version. It used when an update doesn't need a Minecraft installation.
      */
     public static final VanillaVersion NULL_VERSION = new VanillaVersion("no", null, false,
-                                                                         null, null, new ArrayList<>(),
+                                                                         null, new ArrayList<>(),
                                                                          new ArrayList<>(), null);
     
     private final String name;
     private final MCP mcp;
     private final boolean snapshot;
-    private final VersionType versionType;
     private final AssetIndex customAssetIndex;
     private final List<AssetDownloadable> anotherAssets;
     private final List<Downloadable> anotherLibraries;
@@ -43,14 +42,13 @@ public class VanillaVersion
     private String jsonURL = null;
     
     private VanillaVersion(String name, MCP mcp,
-            boolean snapshot, VersionType versionType,
+            boolean snapshot,
             AssetIndex customAssetIndex, List<AssetDownloadable> anotherAssets,
             List<Downloadable> anotherLibraries, JsonObject customVersionJson)
     {
         this.name = name;
         this.mcp = mcp;
         this.snapshot = snapshot;
-        this.versionType = versionType;
         this.customAssetIndex = customAssetIndex;
         this.anotherAssets = anotherAssets;
         this.anotherLibraries = anotherLibraries;
@@ -74,7 +72,7 @@ public class VanillaVersion
      */
     public JsonObject getMinecraftClient() 
     {
-        if(this.versionType == VersionType.MCP && !this.custom && this.mcp != null)
+        if(!this.custom && this.mcp != null)
         {
             final JsonObject result = new JsonObject();
             final String sha1 = this.mcp.getClientSha1();
@@ -90,29 +88,6 @@ public class VanillaVersion
             else FlowUpdater.DEFAULT_LOGGER.warn("Skipped MCP Client");
         }
         return this.json.getAsJsonObject().getAsJsonObject("downloads").getAsJsonObject("client");
-    }
-
-    /**
-     * Get the JSON object representing Minecraft's server.
-     * @return the server in JSON format.
-     */
-    public JsonObject getMinecraftServer()
-    {
-        if(versionType == VersionType.MCP && this.mcp != null)
-        {
-            final JsonObject result = new JsonObject();
-            final String sha1 = this.mcp.getServerSha1();
-            final String url = this.mcp.getServerURL();
-            final long size = this.mcp.getServerSize();
-            if(StringUtils.checkString(url) && StringUtils.checkString(sha1) && size > 0)
-            {
-                result.addProperty("sha1", this.mcp.getServerSha1());
-                result.addProperty("size", this.mcp.getServerSize());
-                result.addProperty("url", this.mcp.getServerURL());
-                return result;
-            }
-        }
-        return this.json.getAsJsonObject().getAsJsonObject("downloads").getAsJsonObject("server");
     }
 
     /**
@@ -194,15 +169,6 @@ public class VanillaVersion
     }
 
     /**
-     * Get the current version type.
-     * @return the version type.
-     */
-    public VersionType getVersionType()
-    {
-        return this.versionType;
-    }
-
-    /**
      * The custom asset index.
      * @return the custom asset index.
      */
@@ -247,7 +213,6 @@ public class VanillaVersion
         private final BuilderArgument<String> nameArgument = new BuilderArgument<String>("Name").required();
         private final BuilderArgument<MCP> mcpArgument = new BuilderArgument<MCP>("MCP").optional();
         private final BuilderArgument<Boolean> snapshotArgument = new BuilderArgument<>("Snapshot", () -> false).optional();
-        private final BuilderArgument<VersionType> versionTypeArgument = new BuilderArgument<VersionType>("VersionType").required();
         private final BuilderArgument<AssetIndex> customAssetIndexArgument = new BuilderArgument<AssetIndex>("CustomAssetIndex").optional();
         private final BuilderArgument<List<AssetDownloadable>> anotherAssetsArgument = new BuilderArgument<List<AssetDownloadable>>("AnotherAssets", ArrayList::new).optional();
         private final BuilderArgument<List<Downloadable>> anotherLibrariesArgument = new BuilderArgument<List<Downloadable>>("AnotherLibraries", ArrayList::new).optional();
@@ -283,17 +248,6 @@ public class VanillaVersion
         public VanillaVersionBuilder withSnapshot(boolean snapshot)
         {
             this.snapshotArgument.set(snapshot);
-            return this;
-        }
-
-        /**
-         * Define the {@link VersionType} of the version.
-         * @param versionType the version type to define
-         * @return the builder.
-         */
-        public VanillaVersionBuilder withVersionType(VersionType versionType)
-        {
-            this.versionTypeArgument.set(versionType);
             return this;
         }
 
@@ -350,7 +304,7 @@ public class VanillaVersion
         public VanillaVersion build() throws BuilderException
         {
             return new VanillaVersion(this.nameArgument.get(), this.mcpArgument.get(),
-                                      this.snapshotArgument.get(), this.versionTypeArgument.get(),
+                                      this.snapshotArgument.get(),
                                       this.customAssetIndexArgument.get(), this.anotherAssetsArgument.get(),
                                       this.anotherLibrariesArgument.get(), this.customVersionJsonArgument.get());
         }

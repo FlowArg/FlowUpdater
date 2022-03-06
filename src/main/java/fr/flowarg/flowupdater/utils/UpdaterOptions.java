@@ -3,7 +3,6 @@ package fr.flowarg.flowupdater.utils;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
 import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
-import org.jetbrains.annotations.ApiStatus;
 
 /**
  * Represent some settings for FlowUpdater
@@ -12,16 +11,14 @@ import org.jetbrains.annotations.ApiStatus;
  */
 public class UpdaterOptions
 {
-    public static final UpdaterOptions DEFAULT = new UpdaterOptions(true, false, new ExternalFileDeleter());
+    public static final UpdaterOptions DEFAULT = new UpdaterOptions(true, new ExternalFileDeleter());
 
     private final boolean silentRead;
-    private final boolean downloadServer;
     private final ExternalFileDeleter externalFileDeleter;
 
-    private UpdaterOptions(boolean silentRead, boolean downloadServer, ExternalFileDeleter externalFileDeleter)
+    private UpdaterOptions(boolean silentRead, ExternalFileDeleter externalFileDeleter)
     {
         this.silentRead = silentRead;
-        this.downloadServer = downloadServer;
         this.externalFileDeleter = externalFileDeleter;
     }
 
@@ -33,16 +30,6 @@ public class UpdaterOptions
     public boolean isSilentRead()
     {
         return this.silentRead;
-    }
-
-    /**
-     * If this option is set to true, {@link fr.flowarg.flowupdater.FlowUpdater} will download the Minecraft Server.
-     * Default: false
-     * @return downloadServer value.
-     */
-    public boolean isDownloadServer()
-    {
-        return this.downloadServer;
     }
 
     /**
@@ -76,20 +63,6 @@ public class UpdaterOptions
         }
 
         /**
-         * Download or not the server
-         * @param downloadServer the value to define.
-         * @deprecated Will be removed at 1.6.0.
-         * @return the builder.
-         */
-        @Deprecated
-        @ApiStatus.ScheduledForRemoval(inVersion = "1.6.0")
-        public UpdaterOptionsBuilder withDownloadServer(boolean downloadServer)
-        {
-            this.downloadServerArgument.set(downloadServer);
-            return this;
-        }
-
-        /**
          * Append an {@link ExternalFileDeleter} object.
          * @param externalFileDeleter the file deleter to define.
          * @return the builder.
@@ -108,7 +81,6 @@ public class UpdaterOptions
         {
             return new UpdaterOptions(
                     this.silentReadArgument.get(),
-                    this.downloadServerArgument.get(),
                     this.externalFileDeleterArgument.get()
             );
         }

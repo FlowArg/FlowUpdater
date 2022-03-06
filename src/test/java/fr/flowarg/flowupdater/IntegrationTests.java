@@ -38,7 +38,6 @@ public class IntegrationTests
         {
             final VanillaVersion version = new VanillaVersion.VanillaVersionBuilder()
                     .withName("1.18.1")
-                    .withVersionType(VersionType.VANILLA)
                     .build();
 
             final FlowUpdater updater = new FlowUpdater.FlowUpdaterBuilder()
@@ -69,7 +68,6 @@ public class IntegrationTests
         {
             final VanillaVersion version = new VanillaVersion.VanillaVersionBuilder()
                     .withName(vanilla)
-                    .withVersionType(VersionType.FORGE)
                     .build();
 
             final AbstractForgeVersion forgeVersion = new ForgeVersionBuilder(ForgeVersionBuilder.ForgeVersionType.NEW)
@@ -78,7 +76,7 @@ public class IntegrationTests
 
             final FlowUpdater updater = new FlowUpdater.FlowUpdaterBuilder()
                     .withVanillaVersion(version)
-                    .withForgeVersion(forgeVersion)
+                    .withModLoaderVersion(forgeVersion)
                     .build();
 
             updater.update(UPDATE_DIR);
@@ -105,7 +103,6 @@ public class IntegrationTests
         {
             final VanillaVersion version = new VanillaVersion.VanillaVersionBuilder()
                     .withName(vanilla)
-                    .withVersionType(VersionType.FORGE)
                     .build();
 
             final AbstractForgeVersion forgeVersion = new ForgeVersionBuilder(ForgeVersionBuilder.ForgeVersionType.OLD)
@@ -114,7 +111,7 @@ public class IntegrationTests
 
             final FlowUpdater updater = new FlowUpdater.FlowUpdaterBuilder()
                     .withVanillaVersion(version)
-                    .withForgeVersion(forgeVersion)
+                    .withModLoaderVersion(forgeVersion)
                     .build();
 
             updater.update(UPDATE_DIR);
@@ -139,14 +136,13 @@ public class IntegrationTests
         {
             final VanillaVersion version = new VanillaVersion.VanillaVersionBuilder()
                     .withName("1.18.1")
-                    .withVersionType(VersionType.FABRIC)
                     .build();
 
             final FabricVersion fabricVersion = new FabricVersion.FabricVersionBuilder().build();
 
             final FlowUpdater updater = new FlowUpdater.FlowUpdaterBuilder()
                     .withVanillaVersion(version)
-                    .withFabricVersion(fabricVersion)
+                    .withModLoaderVersion(fabricVersion)
                     .build();
 
             updater.update(UPDATE_DIR);

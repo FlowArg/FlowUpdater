@@ -29,7 +29,6 @@ public class VanillaReader
     private final boolean shouldLog;
     private final IProgressCallback callback;
     private final DownloadList downloadList;
-    private final boolean downloadServer;
 
     /**
      * Construct a new VanillaReader.
@@ -42,7 +41,6 @@ public class VanillaReader
         this.shouldLog = !flowUpdater.getUpdaterOptions().isSilentRead();
         this.callback = flowUpdater.getCallback();
         this.downloadList = flowUpdater.getDownloadList();
-        this.downloadServer = flowUpdater.getUpdaterOptions().isDownloadServer();
     }
 
     private void silentDebug(String message)
@@ -128,18 +126,6 @@ public class VanillaReader
 
         this.silentDebug("Reading client jar from " + clientURL + "... SHA1 is : " + clientSha1);
         this.downloadList.getDownloadableFiles().add(new Downloadable(clientURL, clientSize, clientSha1, clientName));
-
-        if(!this.downloadServer) return;
-
-        final JsonObject server = this.version.getMinecraftServer();
-        final String serverURL = server.getAsJsonPrimitive("url").getAsString();
-        final int serverSize = server.getAsJsonPrimitive("size").getAsInt();
-        final String serverName = serverURL.substring(serverURL.lastIndexOf('/') + 1);
-        final String serverSha1 = server.getAsJsonPrimitive("sha1").getAsString();
-
-        this.silentDebug("Reading server jar from " + serverURL + "... SHA1 is : " + serverSha1);
-
-        this.downloadList.getDownloadableFiles().add(new Downloadable(serverURL, serverSize, serverSha1, serverName));
     }
 
     private void parseNatives()

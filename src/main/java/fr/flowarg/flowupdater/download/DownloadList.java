@@ -6,7 +6,6 @@ import fr.flowarg.flowupdater.download.json.ExternalFile;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseMod;
 import fr.flowarg.flowupdater.integrations.optifineintegration.OptiFine;
-import org.jetbrains.annotations.ApiStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,54 +79,6 @@ public class DownloadList
         this.downloadInfo.downloadedFiles.incrementAndGet();
         this.downloadInfo.downloadedBytes.set(this.downloadInfo.downloadedBytes.get() + bytes);
         this.updateInfoLock.unlock();
-    }
-
-    /**
-     * Get the total of bytes to download.
-     * @return bytes to download.
-     * @deprecated use {@link DownloadInfo#getTotalToDownloadBytes()} instead.
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "1.6.0")
-    public long getTotalToDownloadBytes()
-    {
-        return this.downloadInfo.totalToDownloadBytes.get();
-    }
-
-    /**
-     * Get the downloaded bytes.
-     * @return the downloaded bytes.
-     * @deprecated use {@link DownloadInfo#getDownloadedBytes()} instead.
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "1.6.0")
-    public long getDownloadedBytes()
-    {
-        return this.downloadInfo.downloadedBytes.get();
-    }
-
-    /**
-     * Get the number of files to download.
-     * @return number of files to download.
-     * @deprecated use {@link DownloadInfo#getTotalToDownloadFiles} instead.
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "1.6.0")
-    public int getTotalToDownloadFiles()
-    {
-        return this.downloadInfo.totalToDownloadFiles.get();
-    }
-
-    /**
-     * Get the number of downloaded files.
-     * @return the number of downloaded files.
-     * @deprecated use {@link DownloadInfo#getDownloadedFiles} instead.
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "1.6.0")
-    public int getDownloadedFiles()
-    {
-        return this.downloadInfo.downloadedFiles.get();
     }
 
     /**

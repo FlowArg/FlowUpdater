@@ -8,19 +8,18 @@ import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowstringer.StringUtils;
 import fr.flowarg.flowupdater.FlowUpdater;
 import fr.flowarg.flowupdater.download.DownloadList;
-import fr.flowarg.flowupdater.download.ICurseFeaturesUser;
 import fr.flowarg.flowupdater.download.IProgressCallback;
 import fr.flowarg.flowupdater.download.Step;
 import fr.flowarg.flowupdater.download.json.CurseFileInfo;
 import fr.flowarg.flowupdater.download.json.CurseModPackInfo;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseMod;
+import fr.flowarg.flowupdater.integrations.curseforgeintegration.ICurseFeaturesUser;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
 import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -472,20 +471,6 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
         public FabricVersionBuilder withFileDeleter(ModFileDeleter fileDeleter)
         {
             this.fileDeleterArgument.set(fileDeleter);
-            return this;
-        }
-
-        /**
-         * Assign to the future forge version a mod pack.
-         * @param modPackInfo the mod pack information to assign.
-         * @return the current builder.
-         * @deprecated use {@link #withCurseModPack(CurseModPackInfo)} instead.
-         */
-        @Deprecated
-        @ApiStatus.ScheduledForRemoval(inVersion = "1.6.0")
-        public FabricVersionBuilder withModPack(CurseModPackInfo modPackInfo)
-        {
-            this.modPackArgument.set(modPackInfo);
             return this;
         }
 

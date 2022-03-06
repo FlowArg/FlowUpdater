@@ -12,8 +12,10 @@ import fr.flowarg.flowupdater.utils.UpdaterOptions;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
 import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
-import fr.flowarg.flowupdater.versions.*;
-import org.jetbrains.annotations.ApiStatus;
+import fr.flowarg.flowupdater.versions.AbstractForgeVersion;
+import fr.flowarg.flowupdater.versions.FabricVersion;
+import fr.flowarg.flowupdater.versions.IModLoaderVersion;
+import fr.flowarg.flowupdater.versions.VanillaVersion;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -36,11 +38,8 @@ public class FlowUpdater
     /** Logger object */
     private final ILogger logger;
 
-    /** Forge Version to install, can be null if you want a vanilla/MCP/Fabric installation */
-    private final AbstractForgeVersion forgeVersion;
-
-    /** Fabric version to install, can be null if you want a vanilla/MCP/Forge installation **/
-    private final FabricVersion fabricVersion;
+    /** Mod loader version to install, can be null if you want a vanilla or MCP version */
+    private final IModLoaderVersion modLoaderVersion;
 
     /** Progress callback to notify installation progress */
     private final IProgressCallback callback;
@@ -82,27 +81,25 @@ public class FlowUpdater
      * automatically assigned to {@link FlowUpdater#NULL_CALLBACK}.
      * @param externalFiles {@link List<ExternalFile>} are downloaded before postExecutions.
      * @param postExecutions {@link List<Runnable>} are called after update.
-     * @param forgeVersion {@link AbstractForgeVersion} to install, can be null.
-     * @param fabricVersion {@link FabricVersion} to install, can be null.
+     * @param modLoaderVersion {@link IModLoaderVersion} to install, can be null.
      */
     private FlowUpdater(VanillaVersion vanillaVersion, ILogger logger,
             UpdaterOptions updaterOptions, IProgressCallback callback,
             List<ExternalFile> externalFiles, List<Runnable> postExecutions,
-            AbstractForgeVersion forgeVersion, FabricVersion fabricVersion)
+            IModLoaderVersion modLoaderVersion)
     {
         this.logger = logger;
         this.vanillaVersion = vanillaVersion;
         this.externalFiles = externalFiles;
         this.postExecutions = postExecutions;
-        this.forgeVersion = forgeVersion;
-        this.fabricVersion = fabricVersion;
+        this.modLoaderVersion = modLoaderVersion;
         this.updaterOptions = updaterOptions;
         this.callback = callback;
         this.downloadList = new DownloadList();
         this.integrationManager = new IntegrationManager(this);
         this.logger.info(String.format(
                 "------------------------- FlowUpdater for Minecraft %s v%s -------------------------",
-                this.vanillaVersion.getName(), "1.5.3"));
+                this.vanillaVersion.getName(), "1.6.0"));
         this.callback.init(this.logger);
     }
 
@@ -140,19 +137,19 @@ public class FlowUpdater
 
         final Path modsDirPath = dir.resolve("mods");
 
-        final VersionType versionType = this.vanillaVersion.getVersionType();
-
-        if(this.forgeVersion != null && versionType == VersionType.FORGE)
+        if(this.modLoaderVersion instanceof AbstractForgeVersion)
         {
-            this.checkMods(this.forgeVersion, modsDirPath);
-            this.integrationManager.loadCurseForgeIntegration(modsDirPath, this.forgeVersion);
-            this.integrationManager.loadOptiFineIntegration(modsDirPath, this.forgeVersion);
+            final AbstractForgeVersion forgeVersion = (AbstractForgeVersion) this.modLoaderVersion;
+            this.checkMods(forgeVersion, modsDirPath);
+            this.integrationManager.loadCurseForgeIntegration(modsDirPath, forgeVersion);
+            this.integrationManager.loadOptiFineIntegration(modsDirPath, forgeVersion);
         }
 
-        if (this.fabricVersion != null && versionType == VersionType.FABRIC)
+        if (this.modLoaderVersion instanceof FabricVersion)
         {
-            this.checkMods(this.fabricVersion, modsDirPath);
-            this.integrationManager.loadCurseForgeIntegration(modsDirPath, this.fabricVersion);
+            final FabricVersion fabricVersion = (FabricVersion) this.modLoaderVersion;
+            this.checkMods(fabricVersion, modsDirPath);
+            this.integrationManager.loadCurseForgeIntegration(modsDirPath, fabricVersion);
         }
 
         if (Files.notExists(dir))
@@ -160,10 +157,11 @@ public class FlowUpdater
 
         new VanillaDownloader(dir, this).download();
 
-        if(versionType == VersionType.MCP || versionType == VersionType.VANILLA) return;
-
-        if(versionType == VersionType.FORGE) this.installModLoader(this.forgeVersion, dir, "Forge");
-        if(versionType == VersionType.FABRIC) this.installModLoader(this.fabricVersion, dir, "Fabric");
+        if(this.modLoaderVersion != null)
+            this.installModLoader(this.modLoaderVersion, dir, this.modLoaderVersion instanceof AbstractForgeVersion ?
+                    "Forge" : (this.modLoaderVersion instanceof FabricVersion ?
+                    "Fabric" :
+                    "Unknown"));
     }
 
     private void checkMods(@NotNull IModLoaderVersion modLoader, Path modsDir) throws Exception
@@ -240,22 +238,7 @@ public class FlowUpdater
         private final BuilderArgument<IProgressCallback> progressCallbackArgument = new BuilderArgument<>("Callback", () -> NULL_CALLBACK).optional();
         private final BuilderArgument<List<ExternalFile>> externalFilesArgument = new BuilderArgument<List<ExternalFile>>("External Files", ArrayList::new).optional();
         private final BuilderArgument<List<Runnable>> postExecutionsArgument = new BuilderArgument<List<Runnable>>("Post Executions", ArrayList::new).optional();
-        private final BuilderArgument<AbstractForgeVersion> forgeVersionArgument = new BuilderArgument<AbstractForgeVersion>("ForgeVersion").optional().require(this.versionArgument);
-        private final BuilderArgument<FabricVersion> fabricVersionArgument = new BuilderArgument<FabricVersion>("FabricVersion").optional().require(this.versionArgument);
-
-        /**
-         * Append a {@link VanillaVersion} object in the final FlowUpdater instance.
-         * @param version the {@link VanillaVersion} to append and install.
-         * @return the builder.
-         * @deprecated Use {@link #withVanillaVersion(VanillaVersion)} instead.
-         */
-        @Deprecated
-        @ApiStatus.ScheduledForRemoval(inVersion = "1.6.0")
-        public FlowUpdaterBuilder withVersion(VanillaVersion version)
-        {
-            this.versionArgument.set(version);
-            return this;
-        }
+        private final BuilderArgument<IModLoaderVersion> modLoaderVersionArgument = new BuilderArgument<IModLoaderVersion>("ModLoader").optional().require(this.versionArgument);
 
         /**
          * Append a {@link VanillaVersion} object in the final FlowUpdater instance.
@@ -324,26 +307,14 @@ public class FlowUpdater
         }
 
         /**
-         * Necessary if you want to install a Forge version.
-         * Append a {@link AbstractForgeVersion} object in the final FlowUpdater instance.
-         * @param forgeVersion the {@link AbstractForgeVersion} to append and install.
+         * Necessary if you want to install a mod loader like Forge or Fabric for instance.
+         * Append a {@link IModLoaderVersion} object in the final FlowUpdater instance.
+         * @param modLoaderVersion the {@link IModLoaderVersion} to append and install.
          * @return the builder.
          */
-        public FlowUpdaterBuilder withForgeVersion(AbstractForgeVersion forgeVersion)
+        public FlowUpdaterBuilder withModLoaderVersion(IModLoaderVersion modLoaderVersion)
         {
-            this.forgeVersionArgument.set(forgeVersion);
-            return this;
-        }
-
-        /**
-         * Necessary if you want to install a Fabric version.
-         * Append a {@link FabricVersion} object in the final FlowUpdater instance.
-         * @param fabricVersion the {@link FabricVersion} to append and install.
-         * @return the builder.
-         */
-        public FlowUpdaterBuilder withFabricVersion(FabricVersion fabricVersion)
-        {
-            this.fabricVersionArgument.set(fabricVersion);
+            this.modLoaderVersionArgument.set(modLoaderVersion);
             return this;
         }
 
@@ -362,8 +333,7 @@ public class FlowUpdater
                     this.progressCallbackArgument.get(),
                     this.externalFilesArgument.get(),
                     this.postExecutionsArgument.get(),
-                    this.forgeVersionArgument.get(),
-                    this.fabricVersionArgument.get()
+                    this.modLoaderVersionArgument.get()
             );
         }
     }
@@ -380,21 +350,21 @@ public class FlowUpdater
     }
 
     /**
+     * Get th {@link IModLoaderVersion} attached to this {@link FlowUpdater} instance.
+     * @return a mod loader version.
+     */
+    public IModLoaderVersion getModLoaderVersion()
+    {
+        return this.modLoaderVersion;
+    }
+
+    /**
      * Get the current logger.
      * @return a logger.
      */
     public ILogger getLogger()
     {
         return this.logger;
-    }
-
-    /**
-     * Get the Forge version attached to this FlowUpdater instance.
-     * @return a Forge version.
-     */
-    public AbstractForgeVersion getForgeVersion()
-    {
-        return this.forgeVersion;
     }
 
     /**
@@ -440,14 +410,5 @@ public class FlowUpdater
     public UpdaterOptions getUpdaterOptions()
     {
         return this.updaterOptions;
-    }
-
-    /**
-     * Get the Fabric version attached to this FlowUpdater instance.
-     * @return a Fabric version.
-     */
-    public FabricVersion getFabricVersion()
-    {
-        return this.fabricVersion;
     }
 }
