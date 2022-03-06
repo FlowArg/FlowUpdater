@@ -20,11 +20,9 @@ public enum Step
     DL_ASSETS,
     /** Extract natives */
     EXTRACT_NATIVES,
-    /** Install a forge version. Skipped if {@link FlowUpdater#getForgeVersion()} is null. */
-    FORGE,
-    /** Install a fabric version. Skipped if {@link FlowUpdater#getFabricVersion()} is null. */
-    FABRIC,
-    /** Download mods. Skipped if {@link FlowUpdater#getForgeVersion()} or {@link FlowUpdater#getFabricVersion()} is null. */
+    /** Install a mod loader version. Skipped if {@link FlowUpdater#getModLoaderVersion()} is null. */
+    MOD_LOADER,
+    /** Download mods. Skipped if {@link FlowUpdater#getModLoaderVersion()} is null. */
     MODS,
     /** Download other files. */
     EXTERNAL_FILES,

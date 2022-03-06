@@ -221,8 +221,8 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
     @Override
     public void install(final Path dirToInstall) throws Exception
     {
-        this.callback.step(Step.FABRIC);
-        this.logger.info("Installing fabric, version: " + this.fabricVersion + "...");
+        this.callback.step(Step.MOD_LOADER);
+        this.logger.info("Installing Fabric, version: " + this.fabricVersion + "...");
         this.checkModLoaderEnv(dirToInstall);
 
         try (BufferedInputStream stream = new BufferedInputStream(this.installerUrl.openStream()))

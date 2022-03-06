@@ -97,8 +97,8 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     @Override
     public void install(final Path dirToInstall) throws Exception
     {
-        this.callback.step(Step.FORGE);
-        this.logger.info("Installing forge, version: " + this.forgeVersion + "...");
+        this.callback.step(Step.MOD_LOADER);
+        this.logger.info("Installing Forge, version: " + this.forgeVersion + "...");
         this.checkModLoaderEnv(dirToInstall);
     }
 
