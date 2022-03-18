@@ -38,12 +38,12 @@ task javadocJar(type: Jar) {
 }
 
 dependencies {
-    api 'com.google.code.gson:gson:2.8.9'
+    api 'com.google.code.gson:gson:2.9.0'
     api 'fr.flowarg:flowmultitools:1.4.0'
-    api 'org.jetbrains:annotations:22.0.0'
+    api 'org.jetbrains:annotations:23.0.0'
 
     // Only for internal tests
-    testImplementation 'fr.flowarg:openlauncherlib:3.2.3'
+    testImplementation 'fr.flowarg:openlauncherlib:3.2.4'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
 }
 
@@ -83,7 +83,7 @@ publishing {
                     developer {
                         id = 'flowarg'
                         name = 'Flow Arg'
-                        email = 'coutureflorence3@gmail.com'
+                        email = 'flow@flowarg.fr'
                     }
                 }
             }
