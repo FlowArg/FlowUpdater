@@ -82,7 +82,7 @@ AbstractForgeVersion forgeVersion = new ForgeVersionBuilder(ForgeVersionBuilder.
 
 Finally, set the Forge version corresponding to the wanted Forge version :
 ```java
-.withModLoader(forgeVersion);
+.withModLoaderVersion(forgeVersion);
 ```
 That's all!
 
@@ -121,7 +121,7 @@ FabricVersion fabricVersion = new FabricVersionBuilder()
 
 Finally, set the Fabric version corresponding to the wanted Fabric version :
 ```java
-.withModLoader(fabricVersion);
+.withModLoaderVersion(fabricVersion);
 ```
 That's all!
 
