@@ -8,8 +8,14 @@
 [ ![discord-shield][] ][discord-invite]
 
 # FlowUpdater
+Check the [Wiki](https://github.com/FlowArg/FlowUpdater/wiki) to know how to use **FlowUpdater** and more information.
+Currently, all the documentation (only on GitHub, the documentation in the code is up-to-date) isn't up-to-date because I don't have the time currently to make the tutorial.
 
-Check the [Wiki](https://github.com/FlowArg/FlowUpdater/wiki) to know how to use **FlowUpdater** and more information. 
+## Legal and fork notices :warning:
+The CurseForge integration works with an API Key which is mine at the moment. **You CAN'T use this key for other purposes outside FlowUpdater.**
+If you wish to fork this project, **you HAVE TO use your own API Key**.
+
+
 ## Usage
 
 ### Vanilla
@@ -17,20 +23,18 @@ Check the [Wiki](https://github.com/FlowArg/FlowUpdater/wiki) to know how to use
 First, create a new VanillaVersion, specify arguments.
 Then build the version :
 ```java
-VanillaVersion version = new VanillaVersionBuilder().withName("1.15.2").withVersionType(VersionType.VANILLA).build();
+VanillaVersion version = new VanillaVersionBuilder().withName("1.15.2").build();
 ```
 NOTE : Builders are all static classes except `ForgeVersionBuilder`.
 
-You have to put the version you want as parameter, you can set a snapshot if you want or `latest`.
-If you have specified "latest" to the version name, and that the version is a snapshot, replace false by true.
-
+You have to put the version you want as parameter, you can set a snapshot (you must set the `withSnapshot` parameter to `true`) if you want or `latest`.
 The most of FlowUpdater objects are buildable:
 Build a new UpdaterOptions object:
 I'm not enabling the re-extracting of natives at each update (`withReExtractNatives(true)`) because `FlowUpdater` know which natives must be extracted.
 ```java
 UpdaterOptions options = new UpdaterOptionsBuilder().build();
 ```
-Note that currently `UpdaterOptions` is useless unless you must enable the legacy `withDownloadServer` option or a custom `ExternalFileDeleter` or disabling the silent reading.
+Note that currently `UpdaterOptions` is useless unless you want to use a custom `ExternalFileDeleter` or you want to disable the silent reading.
 
 Then, instantiate a new FlowUpdater with ``FlowUpdaterBuilder#withXArguments#withAnotherArguemtn#build``. Check the code/[JavaDoc](https://flowarg.github.io/FlowUpdater) for more information.
 
@@ -71,14 +75,14 @@ Then, build a forge version. For example, I will build a NewForgeVersion.
 AbstractForgeVersion forgeVersion = new ForgeVersionBuilder(ForgeVersionBuilder.ForgeVersionType.NEW)
             .withForgeVersion("31.2.29")
             .withCurseMods(modInfos)
-            .withOptifine(new OptifineInfo("1.16.3_HD_U_G3", false)) // installing OptiFine for 1.16.3, false = not a preview
+            .withOptiFine(new OptiFineInfo("1.16.3_HD_U_G3", false)) // installing OptiFine for 1.16.3, false = not a preview
             .withUseFileDeleter(new ModFileDeleter(true, "jei.jar")) // delete bad mods, don't remove the file jei.jar if it's present in the mods' dir.
             .build();
 ```
 
 Finally, set the Forge version corresponding to the wanted Forge version :
 ```java
-.withForgeVersion(forgeVersion);
+.withModLoader(forgeVersion);
 ```
 That's all!
 
@@ -93,7 +97,7 @@ Finally, set to vanilla version builder a MCP version :
 If you set an empty/null string in url and sha1 and 0 in size, the updater will use the default minecraft jar.
 Example on client-only mcp downloading :
 ```java
-.withMCP(new MCP("https://mighya.eu/resources/Client.jar", "f2c219e485831af2bae9464eebbe4765128c6ad6", "", "", 23005862, 210052));
+.withMCP(new MCP("https://mighya.eu/resources/Client.jar", "f2c219e485831af2bae9464eebbe4765128c6ad6", 23005862));
 ```
 You can get an MCP object instance by providing a json link too : `.withMCP(MCP.getMCPFromJson("https://url.com/launcher/mcp.json"));`.
 Nothing else to add :).
@@ -111,13 +115,13 @@ FabricVersion fabricVersion = new FabricVersionBuilder()
             .withFabricVersion("0.10.8")
             .withCurseMods(modInfos)
             .withMods(mods)
-            .withUseFileDeleter(new ModFileDeleter(true, "sodium.jar")) // delete bad mods ; doesn't remove the file sodium.jar if it's present in the mods' dir.
+            .withUseFileDeleter(new ModFileDeleter(true, "sodium.jar")) // delete bad mods ; but it won't remove the file sodium.jar if it's present in the mods' dir.
             .build();
 ```
 
 Finally, set the Fabric version corresponding to the wanted Fabric version :
 ```java
-.withFabricVersion(fabricVersion);
+.withModLoader(fabricVersion);
 ```
 That's all!
 
