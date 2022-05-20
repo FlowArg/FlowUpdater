@@ -15,9 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -167,15 +165,12 @@ public class VanillaDownloader
         natives.close();
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     private void downloadAssets()
     {
         this.logger.info("Checking assets...");
         this.callback.step(Step.DL_ASSETS);
 
-        final ExecutorService executorService = Executors.newWorkStealingPool();
-
-        this.downloadList.getDownloadableAssets().forEach(assetDownloadable -> executorService.submit(() -> {
+        IOUtils.executeAsyncForEach(this.downloadList.getDownloadableAssets(), Executors.newWorkStealingPool(), assetDownloadable -> {
             try
             {
                 final Path downloadPath = this.assets.resolve(assetDownloadable.getFile());
@@ -199,15 +194,6 @@ public class VanillaDownloader
             {
                 this.logger.printStackTrace(e);
             }
-        }));
-
-        try
-        {
-            executorService.shutdown();
-            executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
-        } catch (InterruptedException e)
-        {
-            this.logger.printStackTrace(e);
-        }
+        });
     }
 }

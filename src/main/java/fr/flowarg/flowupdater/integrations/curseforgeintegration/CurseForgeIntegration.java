@@ -1,15 +1,12 @@
 package fr.flowarg.flowupdater.integrations.curseforgeintegration;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowstringer.StringUtils;
 import fr.flowarg.flowupdater.download.json.CurseFileInfo;
 import fr.flowarg.flowupdater.download.json.CurseModPackInfo;
 import fr.flowarg.flowupdater.integrations.Integration;
-import fr.flowarg.flowupdater.utils.FlowUpdaterException;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,10 +21,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -36,8 +31,13 @@ import java.util.zip.ZipFile;
  */
 public class CurseForgeIntegration extends Integration
 {
+    private static final String CF_API_URL = "https://api.curseforge.com";
+    private static final String CF_API_KEY = "JDJhJDEwJHBFZjhacXFwWE4zbVdtLm5aZ2pBMC5kdm9ibnhlV3hQZWZma2Q5ZEhCRWFid2VaUWh2cUtpJDJhJ";
+    private static final String MOD_FILE_ENDPOINT = "/v1/mods/{modId}/files/{fileId}";
+
     /**
-     * Construct a new CurseForge Integration.
+     * Default constructor of a basic Integration.
+     *
      * @param logger the logger used.
      * @param folder the folder where the plugin can work.
      * @throws Exception if an error occurred.
@@ -47,103 +47,44 @@ public class CurseForgeIntegration extends Integration
         super(logger, folder);
     }
 
-    /**
-     * Get a CurseMod object with a project identifier and a file identifier.
-     * @param projectID project identifier.
-     * @param fileID file identifier.
-     * @return the curse's mod corresponding to passed parameters.
-     * @throws Exception if the request fail.
-     */
-    @NotNull
-    public CurseMod getCurseMod(int projectID, int fileID) throws Exception
+    public CurseMod fetchMod(CurseFileInfo curseFileInfo)
     {
-        final String url = this.getURLOfFile(projectID, fileID);
+        return this.parseModFile(this.fetchModLink(curseFileInfo));
+    }
 
-        HttpsURLConnection connection = null;
+    public String fetchModLink(CurseFileInfo curseFileInfo)
+    {
+        final String url = CF_API_URL + MOD_FILE_ENDPOINT
+                .replace("{modId}", String.valueOf(curseFileInfo.getProjectID()))
+                .replace("{fileId}", String.valueOf(curseFileInfo.getFileID()));
 
-        try
-        {
-            final String downloadURL = url.replace(" ", "%20");
-            connection = (HttpsURLConnection)new URL(downloadURL).openConnection();
-            connection.setRequestMethod("GET");
-            connection.setInstanceFollowRedirects(true);
-            connection.setUseCaches(false);
-            final String md5 = connection.getHeaderField("ETag").replace("\"", "");
-            final int length = Integer.parseInt(connection.getHeaderField("Content-Length"));
-            return new CurseMod(url.substring(url.lastIndexOf('/') + 1), downloadURL, md5, length);
-        } catch (Exception e)
-        {
-            throw new FlowUpdaterException(e);
-        } finally
-        {
-            if (connection != null) connection.disconnect();
-        }
+        return this.makeRequest(url);
     }
 
     /**
-     * Get a CurseForge's mod pack object with a project identifier and a file identifier.
-     * @param info CurseForge's mod pack info.
-     * @return the curse's mod pack corresponding to given parameters.
+     * Make a request to the CurseForge API.
+     *
+     * Oh my god, fuck Java 8 HTTP API, it's so fucking bad. Hope we drop Java 8 as soon as possible.
+     *
+     * @param url the url to request.
+     * @return the response of the request.
      */
-    public CurseModPack getCurseModPack(CurseModPackInfo info)
-    {
-        try
-        {
-            this.extractModPack(this.checkForUpdates(
-                    info.getUrl().isEmpty() ?
-                            this.getURLOfFile(info.getProjectID(), info.getFileID()) :
-                            info.getUrl()
-            ), info.isInstallExtFiles());
-            return this.parseMods();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    @NotNull
-    private String getURLOfFile(int projectID, int fileID) throws Exception
-    {
-        return IOUtils.getContent(new URL(
-                String.format("https://addons-ecs.forgesvc.net/api/v2/addon/%d/file/%d/download-url",
-                              projectID, fileID)));
-    }
-
-    @NotNull
-    private CurseMod getCurseMod(@NotNull ProjectMod mod) throws Exception
-    {
-        return this.getCurseMod(mod.getProjectID(), mod.getFileID());
-    }
-
-    private @NotNull Path checkForUpdates(@NotNull String link) throws Exception
-    {
-        final Path outPath = this.folder.resolve(link.substring(link.lastIndexOf('/') + 1));
-        final URL url = new URL(link);
-        final String md5 = this.getMD5(url);
-        if(Files.notExists(outPath) || (!md5.contains("-") && !md5.isEmpty() && !FileUtils.getMD5(outPath).equalsIgnoreCase(md5)))
-            IOUtils.download(this.logger, url, outPath);
-
-        return outPath;
-    }
-
-    private @NotNull String getMD5(URL link)
+    private String makeRequest(String url)
     {
         HttpsURLConnection connection = null;
         try
         {
-            connection = (HttpsURLConnection)link.openConnection();
+            connection = (HttpsURLConnection)new URL(url).openConnection();
             connection.setRequestMethod("GET");
             connection.setInstanceFollowRedirects(true);
             connection.setUseCaches(false);
+            connection.setRequestProperty("Accept", "application/json");
+            connection.setRequestProperty("x-api-key", this.getCurseForgeAPIKey());
 
-            return connection.getHeaderField("ETag").replace("\"", "");
+            return IOUtils.getContent(connection.getInputStream());
         }
         catch (Exception e)
         {
-            if(link.toExternalForm().contains("forgesvc"))
-                throw new FlowUpdaterException(e);
             return "";
         }
         finally
@@ -151,6 +92,75 @@ public class CurseForgeIntegration extends Integration
             if(connection != null)
                 connection.disconnect();
         }
+    }
+
+    // Debug TODO: Remove this when CurseForge API is fixed.
+    public static int bad = 0;
+
+    /**
+     * Parse the CurseForge API to retrieve the mod file.
+     */
+    private CurseMod parseModFile(String jsonResponse)
+    {
+        final JsonObject data = JsonParser.parseString(jsonResponse).getAsJsonObject().getAsJsonObject("data");
+        final String fileName = data.get("fileName").getAsString();
+        final JsonElement downloadURLElement = data.get("downloadUrl");
+
+        if(downloadURLElement instanceof JsonNull)
+        {
+            logger.debug("Bad mod: " + jsonResponse);
+            bad++;
+            // TODO: Remove this when CurseForge API is fixed.
+            return null;
+        }
+
+        final String downloadURL = downloadURLElement.getAsString();
+        final long fileLength = data.get("fileLength").getAsLong();
+
+        final AtomicReference<String> sha1 = new AtomicReference<>("");
+
+        data.getAsJsonArray("hashes").forEach(hashObject -> {
+            final String hash = hashObject.getAsJsonObject().get("value").getAsString();
+            if(hash.length() == 40)
+                sha1.set(hash);
+        });
+
+        if(sha1.get().isEmpty())
+        {
+            logger.debug("Bad mod: " + jsonResponse);
+            bad++;
+            // TODO: Remove this when CurseForge API is fixed.
+            return null;
+        }
+
+        return new CurseMod(fileName, downloadURL, sha1.get(), fileLength);
+    }
+
+    /**
+     * Get a CurseForge's mod pack object with a project identifier and a file identifier.
+     * @param info CurseForge's mod pack info.
+     * @return the curse's mod pack corresponding to given parameters.
+     */
+    public CurseModPack getCurseModPack(CurseModPackInfo info) throws Exception
+    {
+        final Path modPackFile = this.checkForUpdate(info);
+        this.extractModPack(modPackFile, info.isInstallExtFiles());
+        return this.parseMods();
+    }
+
+    private Path checkForUpdate(CurseModPackInfo info) throws Exception
+    {
+        final String link = info.getUrl().isEmpty() ? this.fetchModLink(info) : info.getUrl();
+        final CurseMod modPackFile = this.parseModFile(link);
+
+        if(modPackFile == null)
+            return null;
+
+        final Path outPath = this.folder.resolve(modPackFile.getName());
+        if(Files.notExists(outPath) || !FileUtils.getSHA1(outPath).equalsIgnoreCase(modPackFile.getSha1()))
+            IOUtils.download(this.logger, new URL(modPackFile.getDownloadURL()), outPath);
+
+        return outPath;
     }
 
     private void extractModPack(@NotNull Path out, boolean installExtFiles) throws Exception
@@ -187,20 +197,6 @@ public class CurseForgeIntegration extends Integration
         zipFile.close();
     }
 
-    private void transferAndClose(@NotNull Path flPath, ZipFile zipFile, ZipEntry entry) throws Exception
-    {
-        if(Files.notExists(flPath.getParent()))
-            Files.createDirectories(flPath.getParent());
-        try(OutputStream pathStream = Files.newOutputStream(flPath);
-            BufferedOutputStream fo = new BufferedOutputStream(pathStream);
-            InputStream is = zipFile.getInputStream(entry)
-        )
-        {
-            while (is.available() > 0) fo.write(is.read());
-        }
-    }
-
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     private @NotNull CurseModPack parseMods() throws Exception
     {
         this.logger.info("Fetching mods...");
@@ -211,10 +207,10 @@ public class CurseForgeIntegration extends Integration
         final List<ProjectMod> manifestFiles = new ArrayList<>();
 
         manifestObj.getAsJsonArray("files")
-                .forEach(jsonElement ->
-                                 manifestFiles.add(ProjectMod.fromJsonObject(jsonElement.getAsJsonObject())));
+                .forEach(jsonElement -> manifestFiles.add(ProjectMod.fromJsonObject(jsonElement.getAsJsonObject())));
 
         final Path cachePath = dirPath.resolve("manifest.cache.json");
+
         if(Files.notExists(cachePath))
             Files.write(cachePath, Collections.singletonList("[]"), StandardCharsets.UTF_8);
 
@@ -226,45 +222,15 @@ public class CurseForgeIntegration extends Integration
             final JsonObject object = jsonElement.getAsJsonObject();
             final String name = object.get("name").getAsString();
             final String downloadURL = object.get("downloadURL").getAsString();
-            final String md5 = object.get("md5").getAsString();
+            final String sha1 = object.get("sha1").getAsString();
             final int length = object.get("length").getAsInt();
             final ProjectMod projectMod = ProjectMod.fromJsonObject(object);
 
-            mods.add(new CurseModPack.CurseModPackMod(name, downloadURL, md5, length, projectMod.isRequired()));
+            mods.add(new CurseModPack.CurseModPackMod(name, downloadURL, sha1, length, projectMod.isRequired()));
             manifestFiles.remove(projectMod);
         });
 
-        final ExecutorService executorService = Executors.newCachedThreadPool();
-        final List<ProjectMod> fails = new ArrayList<>();
-        final AtomicBoolean appendFails = new AtomicBoolean(false);
-
-        manifestFiles.forEach(
-                projectMod -> executorService.submit(
-                        () -> this.fetchAndSerializeProjectMod(
-                                projectMod,
-                                cacheArray,
-                                appendFails,
-                                mods,
-                                fails
-                        )
-                )
-        );
-
-        try
-        {
-            executorService.shutdown();
-            executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-
-        appendFails.set(true);
-        if(!fails.isEmpty())
-        {
-            Thread.sleep(1000L);
-            fails.forEach(projectMod -> this.fetchAndSerializeProjectMod(projectMod, cacheArray, appendFails, mods, fails));
-        }
+        IOUtils.executeAsyncForEach(manifestFiles, Executors.newWorkStealingPool(), projectMod -> this.fetchAndSerializeProjectMod(projectMod, cacheArray, mods));
 
         manifestReader.close();
         cacheReader.close();
@@ -277,20 +243,24 @@ public class CurseForgeIntegration extends Integration
         return new CurseModPack(modPackName, modPackVersion, modPackAuthor, new ArrayList<>(mods));
     }
 
-    private void fetchAndSerializeProjectMod(@NotNull ProjectMod projectMod, JsonArray cacheArray, AtomicBoolean appendFails,
-            Queue<CurseModPack.CurseModPackMod> mods, List<ProjectMod> fails)
+    private void fetchAndSerializeProjectMod(@NotNull ProjectMod projectMod, JsonArray cacheArray,
+            Queue<CurseModPack.CurseModPackMod> mods)
     {
         final boolean required = projectMod.isRequired();
 
         try
         {
-            final CurseMod retrievedMod = this.getCurseMod(projectMod);
+            final CurseMod retrievedMod = this.fetchMod(projectMod);
+
+            if(retrievedMod == null)
+                return;
+
             final CurseModPack.CurseModPackMod mod = new CurseModPack.CurseModPackMod(retrievedMod, required);
             final JsonObject inCache = new JsonObject();
 
             inCache.addProperty("name", mod.getName());
             inCache.addProperty("downloadURL", mod.getDownloadURL());
-            inCache.addProperty("md5", mod.getMd5());
+            inCache.addProperty("sha1", mod.getSha1());
             inCache.addProperty("length", mod.getLength());
             inCache.addProperty("required", required);
             inCache.addProperty("projectID", projectMod.getProjectID());
@@ -301,9 +271,20 @@ public class CurseForgeIntegration extends Integration
         }
         catch (Exception e)
         {
-            if(appendFails.get())
-                fails.add(projectMod);
-            else e.printStackTrace();
+            e.printStackTrace();
+        }
+    }
+
+    private void transferAndClose(@NotNull Path flPath, ZipFile zipFile, ZipEntry entry) throws Exception
+    {
+        if(Files.notExists(flPath.getParent()))
+            Files.createDirectories(flPath.getParent());
+        try(OutputStream pathStream = Files.newOutputStream(flPath);
+            BufferedOutputStream fo = new BufferedOutputStream(pathStream);
+            InputStream is = zipFile.getInputStream(entry)
+        )
+        {
+            while (is.available() > 0) fo.write(is.read());
         }
     }
 
@@ -328,5 +309,15 @@ public class CurseForgeIntegration extends Integration
         {
             return this.required;
         }
+    }
+
+    /**
+     * Get the CurseForge API Key.
+     */
+    private static String cacheKey = "";
+
+    private String getCurseForgeAPIKey()
+    {
+        return cacheKey.isEmpty() ? cacheKey = StringUtils.toString(Base64.getDecoder().decode(CF_API_KEY.substring(0, CF_API_KEY.length() - 5))) : cacheKey;
     }
 }

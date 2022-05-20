@@ -18,6 +18,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 /**
  * A basic I/O utility class.
@@ -56,7 +59,7 @@ public class IOUtils
     {
         try
         {
-            logger.info(String.format("Copying %s to %s...", in.toString(), out.toString()));
+            logger.info(String.format("Copying %s to %s...", in, out));
             Files.createDirectories(out.getParent());
             Files.copy(in, out, StandardCopyOption.REPLACE_EXISTING);
         }
@@ -67,15 +70,32 @@ public class IOUtils
     }
 
     /**
-     * Get the content of a remote url.
+     * Get the content from a remote url.
      * @param url the destination url
      * @return the content.
      */
     public static @NotNull String getContent(URL url)
     {
+        try
+        {
+            return getContent(catchForbidden(url));
+        } catch (IOException e)
+        {
+            FlowUpdater.DEFAULT_LOGGER.printStackTrace(e);
+            return "";
+        }
+    }
+
+    /**
+     * Get the content from a remote stream.
+     * @param remote the remote stream
+     * @return the content.
+     */
+    public static @NotNull String getContent(InputStream remote)
+    {
         final StringBuilder sb = new StringBuilder();
 
-        try(InputStream stream = new BufferedInputStream(catchForbidden(url)))
+        try(InputStream stream = new BufferedInputStream(remote))
         {
             final ReadableByteChannel rbc = Channels.newChannel(stream);
             final Reader enclosedReader = Channels.newReader(rbc, StandardCharsets.UTF_8.newDecoder(), -1);
@@ -155,6 +175,26 @@ public class IOUtils
         connection.addRequestProperty("User-Agent", "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.124 Safari/537.36");
         connection.setInstanceFollowRedirects(true);
         return connection.getInputStream();
+    }
+
+    /**
+     * Execute asynchronously a task for a collection of items.
+     * @param iterable the collection of items.
+     * @param service the executor service.
+     * @param runnable the task to execute.
+     * @param <T> the type of the items.
+     */
+    public static <T> void executeAsyncForEach(Iterable<T> iterable, ExecutorService service, Consumer<T> runnable)
+    {
+        try
+        {
+            iterable.forEach(t -> service.submit(() -> runnable.accept(t)));
+            service.shutdown();
+            service.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
+        } catch (InterruptedException e)
+        {
+            throw new FlowUpdaterException(e);
+        }
     }
 
     /**

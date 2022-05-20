@@ -66,15 +66,14 @@ public class IntegrationManager
 
             for (CurseFileInfo info : curseFeaturesUser.getCurseMods())
             {
-                final CurseMod mod = curseForgeIntegration.getCurseMod(info.getProjectID(), info.getFileID());
+                final CurseMod mod = curseForgeIntegration.fetchMod(info);
                 allCurseMods.add(mod);
 
                 final Path filePath = dir.resolve(mod.getName());
 
                 if(Files.exists(filePath)
                         && FileUtils.getFileSizeBytes(filePath) == mod.getLength()
-                        && (FileUtils.getMD5(filePath).equalsIgnoreCase(mod.getMd5())
-                        || mod.getMd5().contains("-")))
+                        && (FileUtils.getSHA1(filePath).equalsIgnoreCase(mod.getSha1())))
                     continue;
 
                 Files.deleteIfExists(filePath);
@@ -108,8 +107,7 @@ public class IntegrationManager
 
                     if(Files.exists(filePath)
                             && FileUtils.getFileSizeBytes(filePath) == mod.getLength()
-                            && (FileUtils.getMD5(filePath).equalsIgnoreCase(mod.getMd5())
-                            || mod.getMd5().contains("-")))
+                            && (FileUtils.getSHA1(filePath).equalsIgnoreCase(mod.getSha1())))
                         return;
 
                     Files.deleteIfExists(filePath);

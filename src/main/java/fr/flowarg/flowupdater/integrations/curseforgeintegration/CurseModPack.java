@@ -66,15 +66,15 @@ public class CurseModPack
     {
         private final boolean required;
 
-        CurseModPackMod(String name, String downloadURL, String md5, int length, boolean required)
+        CurseModPackMod(String name, String downloadURL, String sha1, long length, boolean required)
         {
-            super(name, downloadURL, md5, length);
+            super(name, downloadURL, sha1, length);
             this.required = required;
         }
 
         CurseModPackMod(@NotNull CurseMod base, boolean required)
         {
-            this(base.getName(), base.getDownloadURL(), base.getMd5(), base.getLength(), required);
+            this(base.getName(), base.getDownloadURL(), base.getSha1(), base.getLength(), required);
         }
 
         /**

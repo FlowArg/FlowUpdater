@@ -7,14 +7,14 @@ public class CurseMod
 {
     private final String name;
     private final String downloadURL;
-    private final String md5;
-    private final int length;
+    private final String sha1;
+    private final long length;
 
-    CurseMod(String name, String downloadURL, String md5, int length)
+    CurseMod(String name, String downloadURL, String sha1, long length)
     {
         this.name = name;
         this.downloadURL = downloadURL;
-        this.md5 = md5;
+        this.sha1 = sha1;
         this.length = length;
     }
 
@@ -37,19 +37,19 @@ public class CurseMod
     }
 
     /**
-     * Get the mod's md5.
-     * @return the mod's md5.
+     * Get the mod's sha1.
+     * @return the mod's sha1.
      */
-    public String getMd5()
+    public String getSha1()
     {
-        return this.md5;
+        return this.sha1;
     }
 
     /**
      * Get the mod's length.
      * @return the mod's length.
      */
-    public int getLength()
+    public long getLength()
     {
         return this.length;
     }
