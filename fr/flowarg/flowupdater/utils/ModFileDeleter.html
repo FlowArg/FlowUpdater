@@ -153,9 +153,8 @@ implements <a href="../../../../fr/flowarg/flowupdater/utils/IFileDeleter.html" 
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/utils/ModFileDeleter.html#delete-java.nio.file.Path-java.util.List-java.util.List-fr.flowarg.flowupdater.integrations.optifineintegration.OptiFine-">delete</a></span>(java.nio.file.Path&nbsp;modsDir,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/utils/ModFileDeleter.html#delete-java.nio.file.Path-java.util.List-fr.flowarg.flowupdater.integrations.optifineintegration.OptiFine-">delete</a></span>(java.nio.file.Path&nbsp;modsDir,
       java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/Mod.html" title="class in fr.flowarg.flowupdater.download.json">Mod</a>&gt;&nbsp;mods,
-      java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/CurseMod.html" title="class in fr.flowarg.flowupdater.integrations.curseforgeintegration">CurseMod</a>&gt;&nbsp;allCurseMods,
       <a href="../../../../fr/flowarg/flowupdater/integrations/optifineintegration/OptiFine.html" title="class in fr.flowarg.flowupdater.integrations.optifineintegration">OptiFine</a>&nbsp;optiFine)</code>
 <div class="block">Delete all bad files in the provided directory.</div>
 </td>
@@ -208,7 +207,7 @@ implements <a href="../../../../fr/flowarg/flowupdater/utils/IFileDeleter.html" 
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="delete-java.nio.file.Path-java.util.List-java.util.List-fr.flowarg.flowupdater.integrations.optifineintegration.OptiFine-">
+<a name="delete-java.nio.file.Path-java.util.List-fr.flowarg.flowupdater.integrations.optifineintegration.OptiFine-">
 <!--   -->
 </a>
 <ul class="blockList">
@@ -216,7 +215,6 @@ implements <a href="../../../../fr/flowarg/flowupdater/utils/IFileDeleter.html" 
 <h4>delete</h4>
 <pre>public&nbsp;void&nbsp;delete(java.nio.file.Path&nbsp;modsDir,
                    java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/Mod.html" title="class in fr.flowarg.flowupdater.download.json">Mod</a>&gt;&nbsp;mods,
-                   java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/CurseMod.html" title="class in fr.flowarg.flowupdater.integrations.curseforgeintegration">CurseMod</a>&gt;&nbsp;allCurseMods,
                    <a href="../../../../fr/flowarg/flowupdater/integrations/optifineintegration/OptiFine.html" title="class in fr.flowarg.flowupdater.integrations.optifineintegration">OptiFine</a>&nbsp;optiFine)
             throws java.lang.Exception</pre>
 <div class="block">Delete all bad files in the provided directory.</div>
@@ -224,7 +222,6 @@ implements <a href="../../../../fr/flowarg/flowupdater/utils/IFileDeleter.html" 
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>modsDir</code> - the mod's folder.</dd>
 <dd><code>mods</code> - the mods list.</dd>
-<dd><code>allCurseMods</code> - the curse's mods list.</dd>
 <dd><code>optiFine</code> - the OptiFine object.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.lang.Exception</code> - thrown if an error occurred</dd>
