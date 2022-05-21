@@ -99,7 +99,7 @@ public class FlowUpdater
         this.integrationManager = new IntegrationManager(this);
         this.logger.info(String.format(
                 "------------------------- FlowUpdater for Minecraft %s v%s -------------------------",
-                this.vanillaVersion.getName(), "1.6.0"));
+                this.vanillaVersion.getName(), "1.7.0"));
         this.callback.init(this.logger);
     }
 
