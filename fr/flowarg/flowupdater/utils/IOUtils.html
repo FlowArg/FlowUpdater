@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -168,24 +168,38 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i3" class="rowColor">
-<td class="colFirst"><code>static @NotNull java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/utils/IOUtils.html#getContent-java.net.URL-">getContent</a></span>(java.net.URL&nbsp;url)</code>
-<div class="block">Get the content of a remote url.</div>
+<td class="colFirst"><code>static &lt;T&gt;&nbsp;void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/utils/IOUtils.html#executeAsyncForEach-java.lang.Iterable-java.util.concurrent.ExecutorService-java.util.function.Consumer-">executeAsyncForEach</a></span>(java.lang.Iterable&lt;T&gt;&nbsp;iterable,
+                   java.util.concurrent.ExecutorService&nbsp;service,
+                   java.util.function.Consumer&lt;T&gt;&nbsp;runnable)</code>
+<div class="block">Execute asynchronously a task for a collection of items.</div>
 </td>
 </tr>
 <tr id="i4" class="altColor">
+<td class="colFirst"><code>static @NotNull java.lang.String</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/utils/IOUtils.html#getContent-java.io.InputStream-">getContent</a></span>(java.io.InputStream&nbsp;remote)</code>
+<div class="block">Get the content from a remote stream.</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code>static @NotNull java.lang.String</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/utils/IOUtils.html#getContent-java.net.URL-">getContent</a></span>(java.net.URL&nbsp;url)</code>
+<div class="block">Get the content from a remote url.</div>
+</td>
+</tr>
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>static java.nio.file.Path</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/utils/IOUtils.html#getMinecraftFolder--">getMinecraftFolder</a></span>()</code>
 <div class="block">Retrieve the local Minecraft folder path.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>static com.google.gson.JsonElement</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/utils/IOUtils.html#readJson-java.io.InputStream-">readJson</a></span>(java.io.InputStream&nbsp;inputStream)</code>
 <div class="block">Reading an inputStream in a json element</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>static com.google.gson.JsonElement</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/utils/IOUtils.html#readJson-java.net.URL-">readJson</a></span>(java.net.URL&nbsp;jsonURL)</code>
 <div class="block">Reading an url in a json element</div>
@@ -280,10 +294,27 @@ extends java.lang.Object</pre>
 <h4>getContent</h4>
 <pre>@NotNull
 public static&nbsp;@NotNull java.lang.String&nbsp;getContent(java.net.URL&nbsp;url)</pre>
-<div class="block">Get the content of a remote url.</div>
+<div class="block">Get the content from a remote url.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>url</code> - the destination url</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the content.</dd>
+</dl>
+</li>
+</ul>
+<a name="getContent-java.io.InputStream-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getContent</h4>
+<pre>@NotNull
+public static&nbsp;@NotNull java.lang.String&nbsp;getContent(java.io.InputStream&nbsp;remote)</pre>
+<div class="block">Get the content from a remote stream.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>remote</code> - the remote stream</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the content.</dd>
 </dl>
@@ -338,6 +369,26 @@ public static&nbsp;@NotNull java.lang.String&nbsp;getContent(java.net.URL&nbsp;u
 <dd>the opened connection.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.io.IOException</code> - if an I/O error occurred.</dd>
+</dl>
+</li>
+</ul>
+<a name="executeAsyncForEach-java.lang.Iterable-java.util.concurrent.ExecutorService-java.util.function.Consumer-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>executeAsyncForEach</h4>
+<pre>public static&nbsp;&lt;T&gt;&nbsp;void&nbsp;executeAsyncForEach(java.lang.Iterable&lt;T&gt;&nbsp;iterable,
+                                           java.util.concurrent.ExecutorService&nbsp;service,
+                                           java.util.function.Consumer&lt;T&gt;&nbsp;runnable)</pre>
+<div class="block">Execute asynchronously a task for a collection of items.</div>
+<dl>
+<dt><span class="paramLabel">Type Parameters:</span></dt>
+<dd><code>T</code> - the type of the items.</dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>iterable</code> - the collection of items.</dd>
+<dd><code>service</code> - the executor service.</dd>
+<dd><code>runnable</code> - the task to execute.</dd>
 </dl>
 </li>
 </ul>

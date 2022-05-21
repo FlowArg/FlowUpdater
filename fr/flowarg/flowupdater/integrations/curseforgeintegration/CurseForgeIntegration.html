@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10};
+var methods = {"i0":10,"i1":10,"i2":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -73,13 +73,13 @@ var activeTableTab = "activeTableTab";
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li><a href="#fields.inherited.from.class.fr.flowarg.flowupdater.integrations.Integration">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
@@ -127,6 +127,17 @@ extends <a href="../../../../../fr/flowarg/flowupdater/integrations/Integration.
 <!--   -->
 </a>
 <h3>Field Summary</h3>
+<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Field Summary table, listing fields, and an explanation">
+<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Field and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/CurseForgeIntegration.html#bad">bad</a></span></code>&nbsp;</td>
+</tr>
+</table>
 <ul class="blockList">
 <li class="blockList"><a name="fields.inherited.from.class.fr.flowarg.flowupdater.integrations.Integration">
 <!--   -->
@@ -150,7 +161,7 @@ extends <a href="../../../../../fr/flowarg/flowupdater/integrations/Integration.
 <tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/CurseForgeIntegration.html#CurseForgeIntegration-fr.flowarg.flowlogger.ILogger-java.nio.file.Path-">CurseForgeIntegration</a></span>(fr.flowarg.flowlogger.ILogger&nbsp;logger,
                      java.nio.file.Path&nbsp;folder)</code>
-<div class="block">Construct a new CurseForge Integration.</div>
+<div class="block">Default constructor of a basic Integration.</div>
 </td>
 </tr>
 </table>
@@ -169,13 +180,14 @@ extends <a href="../../../../../fr/flowarg/flowupdater/integrations/Integration.
 <th class="colLast" scope="col">Method and Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>@NotNull <a href="../../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/CurseMod.html" title="class in fr.flowarg.flowupdater.integrations.curseforgeintegration">CurseMod</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/CurseForgeIntegration.html#getCurseMod-int-int-">getCurseMod</a></span>(int&nbsp;projectID,
-           int&nbsp;fileID)</code>
-<div class="block">Get a CurseMod object with a project identifier and a file identifier.</div>
-</td>
+<td class="colFirst"><code><a href="../../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/CurseMod.html" title="class in fr.flowarg.flowupdater.integrations.curseforgeintegration">CurseMod</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/CurseForgeIntegration.html#fetchMod-fr.flowarg.flowupdater.download.json.CurseFileInfo-">fetchMod</a></span>(<a href="../../../../../fr/flowarg/flowupdater/download/json/CurseFileInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseFileInfo</a>&nbsp;curseFileInfo)</code>&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/CurseForgeIntegration.html#fetchModLink-fr.flowarg.flowupdater.download.json.CurseFileInfo-">fetchModLink</a></span>(<a href="../../../../../fr/flowarg/flowupdater/download/json/CurseFileInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseFileInfo</a>&nbsp;curseFileInfo)</code>&nbsp;</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/CurseModPack.html" title="class in fr.flowarg.flowupdater.integrations.curseforgeintegration">CurseModPack</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/CurseForgeIntegration.html#getCurseModPack-fr.flowarg.flowupdater.download.json.CurseModPackInfo-">getCurseModPack</a></span>(<a href="../../../../../fr/flowarg/flowupdater/download/json/CurseModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseModPackInfo</a>&nbsp;info)</code>
 <div class="block">Get a CurseForge's mod pack object with a project identifier and a file identifier.</div>
@@ -197,6 +209,23 @@ extends <a href="../../../../../fr/flowarg/flowupdater/integrations/Integration.
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
+<!-- ============ FIELD DETAIL =========== -->
+<ul class="blockList">
+<li class="blockList"><a name="field.detail">
+<!--   -->
+</a>
+<h3>Field Detail</h3>
+<a name="bad">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>bad</h4>
+<pre>public&nbsp;int bad</pre>
+</li>
+</ul>
+</li>
+</ul>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor.detail">
@@ -212,7 +241,7 @@ extends <a href="../../../../../fr/flowarg/flowupdater/integrations/Integration.
 <pre>public&nbsp;CurseForgeIntegration(fr.flowarg.flowlogger.ILogger&nbsp;logger,
                              java.nio.file.Path&nbsp;folder)
                       throws java.lang.Exception</pre>
-<div class="block">Construct a new CurseForge Integration.</div>
+<div class="block">Default constructor of a basic Integration.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>logger</code> - the logger used.</dd>
@@ -230,26 +259,22 @@ extends <a href="../../../../../fr/flowarg/flowupdater/integrations/Integration.
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="getCurseMod-int-int-">
+<a name="fetchMod-fr.flowarg.flowupdater.download.json.CurseFileInfo-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getCurseMod</h4>
-<pre>@NotNull
-public&nbsp;@NotNull <a href="../../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/CurseMod.html" title="class in fr.flowarg.flowupdater.integrations.curseforgeintegration">CurseMod</a>&nbsp;getCurseMod(int&nbsp;projectID,
-                                              int&nbsp;fileID)
-                                       throws java.lang.Exception</pre>
-<div class="block">Get a CurseMod object with a project identifier and a file identifier.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>projectID</code> - project identifier.</dd>
-<dd><code>fileID</code> - file identifier.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>the curse's mod corresponding to passed parameters.</dd>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.lang.Exception</code> - if the request fail.</dd>
-</dl>
+<h4>fetchMod</h4>
+<pre>public&nbsp;<a href="../../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/CurseMod.html" title="class in fr.flowarg.flowupdater.integrations.curseforgeintegration">CurseMod</a>&nbsp;fetchMod(<a href="../../../../../fr/flowarg/flowupdater/download/json/CurseFileInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseFileInfo</a>&nbsp;curseFileInfo)</pre>
+</li>
+</ul>
+<a name="fetchModLink-fr.flowarg.flowupdater.download.json.CurseFileInfo-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>fetchModLink</h4>
+<pre>public&nbsp;java.lang.String&nbsp;fetchModLink(<a href="../../../../../fr/flowarg/flowupdater/download/json/CurseFileInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseFileInfo</a>&nbsp;curseFileInfo)</pre>
 </li>
 </ul>
 <a name="getCurseModPack-fr.flowarg.flowupdater.download.json.CurseModPackInfo-">
@@ -258,13 +283,16 @@ public&nbsp;@NotNull <a href="../../../../../fr/flowarg/flowupdater/integrations
 <ul class="blockListLast">
 <li class="blockList">
 <h4>getCurseModPack</h4>
-<pre>public&nbsp;<a href="../../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/CurseModPack.html" title="class in fr.flowarg.flowupdater.integrations.curseforgeintegration">CurseModPack</a>&nbsp;getCurseModPack(<a href="../../../../../fr/flowarg/flowupdater/download/json/CurseModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseModPackInfo</a>&nbsp;info)</pre>
+<pre>public&nbsp;<a href="../../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/CurseModPack.html" title="class in fr.flowarg.flowupdater.integrations.curseforgeintegration">CurseModPack</a>&nbsp;getCurseModPack(<a href="../../../../../fr/flowarg/flowupdater/download/json/CurseModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseModPackInfo</a>&nbsp;info)
+                             throws java.lang.Exception</pre>
 <div class="block">Get a CurseForge's mod pack object with a project identifier and a file identifier.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>info</code> - CurseForge's mod pack info.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the curse's mod pack corresponding to given parameters.</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.lang.Exception</code></dd>
 </dl>
 </li>
 </ul>
@@ -321,13 +349,13 @@ public&nbsp;@NotNull <a href="../../../../../fr/flowarg/flowupdater/integrations
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li><a href="#fields.inherited.from.class.fr.flowarg.flowupdater.integrations.Integration">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
