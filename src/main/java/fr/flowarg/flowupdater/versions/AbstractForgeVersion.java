@@ -10,7 +10,6 @@ import fr.flowarg.flowupdater.download.json.CurseFileInfo;
 import fr.flowarg.flowupdater.download.json.CurseModPackInfo;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.download.json.OptiFineInfo;
-import fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseMod;
 import fr.flowarg.flowupdater.integrations.curseforgeintegration.ICurseFeaturesUser;
 import fr.flowarg.flowupdater.integrations.optifineintegration.OptiFine;
 import fr.flowarg.flowupdater.utils.IOUtils;
@@ -41,7 +40,6 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     protected final CurseModPackInfo modPackInfo;
     protected final boolean old;
 
-    protected List<CurseMod> allCurseMods;
     protected URL installerUrl;
     protected DownloadList downloadList;
     protected ILogger logger;
@@ -242,7 +240,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
             this.callback.update(this.downloadList.getDownloadInfo());
         }
 
-        this.fileDeleter.delete(modsDir, this.mods, this.allCurseMods, ofObj);
+        this.fileDeleter.delete(modsDir, this.mods, ofObj);
     }
 
     /** This method packs the modified installer to a JAR file.
@@ -272,9 +270,9 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
      * {@inheritDoc}
      */
     @Override
-    public void setAllCurseMods(List<CurseMod> allCurseMods)
+    public void setAllCurseMods(List<Mod> allCurseMods)
     {
-        this.allCurseMods = allCurseMods;
+        this.mods.addAll(allCurseMods);
     }
 
     /**

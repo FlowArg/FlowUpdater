@@ -2,9 +2,7 @@ package fr.flowarg.flowupdater.utils;
 
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowupdater.download.json.Mod;
-import fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseMod;
 import fr.flowarg.flowupdater.integrations.optifineintegration.OptiFine;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -30,11 +28,10 @@ public class ModFileDeleter implements IFileDeleter
      * Delete all bad files in the provided directory.
      * @param modsDir the mod's folder.
      * @param mods the mods list.
-     * @param allCurseMods the curse's mods list.
      * @param optiFine the OptiFine object.
      * @throws Exception thrown if an error occurred
      */
-    public void delete(Path modsDir, List<Mod> mods, List<CurseMod> allCurseMods, OptiFine optiFine) throws Exception
+    public void delete(Path modsDir, List<Mod> mods, OptiFine optiFine) throws Exception
     {
         if(!this.isUseFileDeleter()) return;
 
@@ -47,15 +44,13 @@ public class ModFileDeleter implements IFileDeleter
             if(verifiedFiles.contains(fileInDir))
                 continue;
 
-            if(mods.isEmpty() && allCurseMods.isEmpty() && optiFine == null)
+            if(mods.isEmpty() && optiFine == null)
             {
                 if (!verifiedFiles.contains(fileInDir))
                     badFiles.add(fileInDir);
             }
             else
             {
-                this.processCurseForgeMods(allCurseMods, fileInDir, badFiles, verifiedFiles);
-
                 if (optiFine != null)
                 {
                     if (optiFine.getName().equalsIgnoreCase(fileInDir.getFileName().toString()))
@@ -77,8 +72,7 @@ public class ModFileDeleter implements IFileDeleter
                 {
                     if (mod.getName().equalsIgnoreCase(fileInDir.getFileName().toString()))
                     {
-                        if (FileUtils.getSHA1(fileInDir).equalsIgnoreCase(mod.getSha1()) &&
-                                Files.size(fileInDir) == mod.getSize())
+                        if (Files.size(fileInDir) == mod.getSize() && (mod.getSha1().isEmpty() || FileUtils.getSHA1(fileInDir).equalsIgnoreCase(mod.getSha1())))
                         {
                             badFiles.remove(fileInDir);
                             verifiedFiles.add(fileInDir);
@@ -104,28 +98,6 @@ public class ModFileDeleter implements IFileDeleter
             }
         });
         badFiles.clear();
-    }
-
-    private void processCurseForgeMods(@NotNull List<CurseMod> allCurseMods, Path fileInDir,
-            Set<Path> badFiles, List<Path> verifiedFiles) throws Exception
-    {
-        for (CurseMod mod : allCurseMods)
-        {
-            if (mod.getName().equalsIgnoreCase(fileInDir.getFileName().toString()))
-            {
-                if (Files.size(fileInDir) == mod.getLength() && (mod.getSha1().isEmpty() || FileUtils.getSHA1(fileInDir).equalsIgnoreCase(mod.getSha1())))
-                {
-                    badFiles.remove(fileInDir);
-                    verifiedFiles.add(fileInDir);
-                }
-                else badFiles.add(fileInDir);
-            }
-            else
-            {
-                if (!verifiedFiles.contains(fileInDir))
-                    badFiles.add(fileInDir);
-            }
-        }
     }
 
     public boolean isUseFileDeleter()

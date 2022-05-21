@@ -4,7 +4,6 @@ import fr.flowarg.flowupdater.download.json.AssetDownloadable;
 import fr.flowarg.flowupdater.download.json.Downloadable;
 import fr.flowarg.flowupdater.download.json.ExternalFile;
 import fr.flowarg.flowupdater.download.json.Mod;
-import fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseMod;
 import fr.flowarg.flowupdater.integrations.optifineintegration.OptiFine;
 
 import java.util.ArrayList;
@@ -25,7 +24,6 @@ public class DownloadList
     private final List<AssetDownloadable> downloadableAssets = new ArrayList<>();
     private final List<ExternalFile> extFiles = new ArrayList<>();
     private final List<Mod> mods = new ArrayList<>();
-    private final List<CurseMod> curseMods = new ArrayList<>();
     private final Lock updateInfoLock = new ReentrantLock();
     private OptiFine optiFine = null;
     private DownloadInfo downloadInfo;
@@ -50,16 +48,13 @@ public class DownloadList
                         this.downloadInfo.totalToDownloadBytes.get() + externalFile.getSize()));
         this.mods.forEach(
                 mod -> this.downloadInfo.totalToDownloadBytes.set(this.downloadInfo.totalToDownloadBytes.get() + mod.getSize()));
-        this.curseMods.forEach(
-                obj -> this.downloadInfo.totalToDownloadBytes.set(this.downloadInfo.totalToDownloadBytes.get() + (long)(obj.getLength())));
 
         this.downloadInfo.totalToDownloadFiles.set(
                 this.downloadInfo.totalToDownloadFiles.get() +
                         this.downloadableFiles.size() +
                         this.downloadableAssets.size() +
                         this.extFiles.size() +
-                        this.mods.size() +
-                        this.curseMods.size());
+                        this.mods.size());
 
         if (this.optiFine != null)
         {
@@ -127,15 +122,6 @@ public class DownloadList
     }
 
     /**
-     * Get the list that contains all curse mods.
-     * @return the list that contains all curse mods.
-     */
-    public List<CurseMod> getCurseMods()
-    {
-        return this.curseMods;
-    }
-
-    /**
      * Get the OptiFine object.
      * @return the OptiFine object.
      */
@@ -162,7 +148,6 @@ public class DownloadList
         this.extFiles.clear();
         this.downloadableAssets.clear();
         this.mods.clear();
-        this.curseMods.clear();
         this.optiFine = null;
         this.downloadInfo.reset();
         this.init = false;

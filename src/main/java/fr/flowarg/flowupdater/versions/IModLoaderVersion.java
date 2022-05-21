@@ -76,21 +76,6 @@ public interface IModLoaderVersion
             this.getDownloadList().incrementDownloaded(mod.getSize());
             this.getCallback().update(this.getDownloadList().getDownloadInfo());
         });
-
-        this.getDownloadList().getCurseMods().forEach(curseMod -> {
-            try
-            {
-                final Path modFilePath = modsDir.resolve(curseMod.getName());
-                IOUtils.download(this.getLogger(), new URL(curseMod.getDownloadURL()), modFilePath);
-                this.getCallback().onFileDownloaded(modFilePath);
-            }
-            catch (Exception e)
-            {
-                this.getLogger().printStackTrace(e);
-            }
-            this.getDownloadList().incrementDownloaded(curseMod.getLength());
-            this.getCallback().update(this.getDownloadList().getDownloadInfo());
-        });
     }
 
     /**

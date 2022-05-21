@@ -1,5 +1,6 @@
 package fr.flowarg.flowupdater.integrations.curseforgeintegration;
 
+import fr.flowarg.flowupdater.download.json.Mod;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -62,19 +63,19 @@ public class CurseModPack
     /**
      * A Curse Forge's mod from a mod pack.
      */
-    public static class CurseModPackMod extends CurseMod
+    public static class CurseModPackMod extends Mod
     {
         private final boolean required;
 
-        CurseModPackMod(String name, String downloadURL, String sha1, long length, boolean required)
+        CurseModPackMod(String name, String downloadURL, String sha1, long size, boolean required)
         {
-            super(name, downloadURL, sha1, length);
+            super(name, downloadURL, sha1, size);
             this.required = required;
         }
 
-        CurseModPackMod(@NotNull CurseMod base, boolean required)
+        CurseModPackMod(@NotNull Mod base, boolean required)
         {
-            this(base.getName(), base.getDownloadURL(), base.getSha1(), base.getLength(), required);
+            this(base.getName(), base.getDownloadURL(), base.getSha1(), base.getSize(), required);
         }
 
         /**

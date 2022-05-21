@@ -13,7 +13,6 @@ import fr.flowarg.flowupdater.download.Step;
 import fr.flowarg.flowupdater.download.json.CurseFileInfo;
 import fr.flowarg.flowupdater.download.json.CurseModPackInfo;
 import fr.flowarg.flowupdater.download.json.Mod;
-import fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseMod;
 import fr.flowarg.flowupdater.integrations.curseforgeintegration.ICurseFeaturesUser;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
@@ -41,7 +40,7 @@ import java.util.List;
 
 /**
  * The object that contains Fabric's stuff.
- * @author antoineok https://github.com/antoineok
+ * @author antoineok <a href="https://github.com/antoineok">antoineok's GitHub</a>
  */
 public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
 {
@@ -49,7 +48,6 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
     private final String fabricVersion;
     private final List<CurseFileInfo> curseMods;
     private final ModFileDeleter fileDeleter;
-    private List<CurseMod> allCurseMods;
     private final String installerVersion;
     private final CurseModPackInfo modPackInfo;
 
@@ -310,7 +308,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
         this.callback.step(Step.MODS);
 
         this.installAllMods(modsDir);
-        this.fileDeleter.delete(modsDir, this.mods, this.allCurseMods, null);
+        this.fileDeleter.delete(modsDir, this.mods, null);
     }
 
     public ModFileDeleter getFileDeleter() {
@@ -390,8 +388,9 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion
      * {@inheritDoc}
      */
     @Override
-    public void setAllCurseMods(List<CurseMod> allCurseMods) {
-        this.allCurseMods = allCurseMods;
+    public void setAllCurseMods(List<Mod> allCurseMods)
+    {
+        this.mods.addAll(allCurseMods);
     }
 
     /**

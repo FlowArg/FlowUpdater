@@ -6,6 +6,7 @@ import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowstringer.StringUtils;
 import fr.flowarg.flowupdater.download.json.CurseFileInfo;
 import fr.flowarg.flowupdater.download.json.CurseModPackInfo;
+import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.integrations.Integration;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import org.jetbrains.annotations.NotNull;
@@ -46,7 +47,7 @@ public class CurseForgeIntegration extends Integration
         super(logger, folder);
     }
 
-    public CurseMod fetchMod(CurseFileInfo curseFileInfo)
+    public Mod fetchMod(CurseFileInfo curseFileInfo)
     {
         return this.parseModFile(this.fetchModLink(curseFileInfo));
     }
@@ -99,7 +100,7 @@ public class CurseForgeIntegration extends Integration
     /**
      * Parse the CurseForge API to retrieve the mod file.
      */
-    private CurseMod parseModFile(String jsonResponse)
+    private Mod parseModFile(String jsonResponse)
     {
         final JsonObject data = JsonParser.parseString(jsonResponse).getAsJsonObject().getAsJsonObject("data");
         final String fileName = data.get("fileName").getAsString();
@@ -123,7 +124,7 @@ public class CurseForgeIntegration extends Integration
                 sha1.set(hash);
         });
 
-        return new CurseMod(fileName, downloadURL, sha1.get(), fileLength);
+        return new Mod(fileName, downloadURL, sha1.get(), fileLength);
     }
 
     /**
@@ -141,7 +142,7 @@ public class CurseForgeIntegration extends Integration
     private Path checkForUpdate(CurseModPackInfo info) throws Exception
     {
         final String link = info.getUrl().isEmpty() ? this.fetchModLink(info) : info.getUrl();
-        final CurseMod modPackFile = this.parseModFile(link);
+        final Mod modPackFile = this.parseModFile(link);
 
         if(modPackFile == null)
         {
@@ -224,7 +225,7 @@ public class CurseForgeIntegration extends Integration
 
         String json = StringUtils.toString(Files.readAllLines(cachePath, StandardCharsets.UTF_8));
 
-        if(json.contains("\"md5\""))
+        if(json.contains("\"md5\"") || json.contains("\"length\""))
         {
             Files.delete(cachePath);
             Files.write(cachePath, Collections.singletonList("[]"), StandardCharsets.UTF_8);
@@ -245,10 +246,10 @@ public class CurseForgeIntegration extends Integration
             final String name = object.get("name").getAsString();
             final String downloadURL = object.get("downloadURL").getAsString();
             final String sha1 = object.get("sha1").getAsString();
-            final int length = object.get("length").getAsInt();
+            final long size = object.get("size").getAsLong();
             final ProjectMod projectMod = ProjectMod.fromJsonObject(object);
 
-            mods.add(new CurseModPack.CurseModPackMod(name, downloadURL, sha1, length, projectMod.isRequired()));
+            mods.add(new CurseModPack.CurseModPackMod(name, downloadURL, sha1, size, projectMod.isRequired()));
             manifestFiles.remove(projectMod);
         });
 
@@ -265,7 +266,7 @@ public class CurseForgeIntegration extends Integration
 
         try
         {
-            final CurseMod retrievedMod = this.fetchMod(projectMod);
+            final Mod retrievedMod = this.fetchMod(projectMod);
 
             if(retrievedMod == null)
                 return;
@@ -276,7 +277,7 @@ public class CurseForgeIntegration extends Integration
             inCache.addProperty("name", mod.getName());
             inCache.addProperty("downloadURL", mod.getDownloadURL());
             inCache.addProperty("sha1", mod.getSha1());
-            inCache.addProperty("length", mod.getLength());
+            inCache.addProperty("size", mod.getSize());
             inCache.addProperty("required", required);
             inCache.addProperty("projectID", projectMod.getProjectID());
             inCache.addProperty("fileID", projectMod.getFileID());

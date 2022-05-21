@@ -8,9 +8,9 @@ import fr.flowarg.flowupdater.download.IProgressCallback;
 import fr.flowarg.flowupdater.download.Step;
 import fr.flowarg.flowupdater.download.json.CurseFileInfo;
 import fr.flowarg.flowupdater.download.json.CurseModPackInfo;
+import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.download.json.OptiFineInfo;
 import fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseForgeIntegration;
-import fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseMod;
 import fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseModPack;
 import fr.flowarg.flowupdater.integrations.curseforgeintegration.ICurseFeaturesUser;
 import fr.flowarg.flowupdater.integrations.optifineintegration.OptiFine;
@@ -54,7 +54,7 @@ public class IntegrationManager
         try
         {
             final CurseModPackInfo modPackInfo = curseFeaturesUser.getModPackInfo();
-            final List<CurseMod> allCurseMods = new ArrayList<>();
+            final List<Mod> allCurseMods = new ArrayList<>();
 
             if(curseFeaturesUser.getCurseMods().isEmpty() && modPackInfo == null)
             {
@@ -66,18 +66,18 @@ public class IntegrationManager
 
             for (CurseFileInfo info : curseFeaturesUser.getCurseMods())
             {
-                final CurseMod mod = curseForgeIntegration.fetchMod(info);
+                final Mod mod = curseForgeIntegration.fetchMod(info);
                 allCurseMods.add(mod);
 
                 final Path filePath = dir.resolve(mod.getName());
 
                 if(Files.exists(filePath)
-                        && Files.size(filePath) == mod.getLength()
+                        && Files.size(filePath) == mod.getSize()
                         && (FileUtils.getSHA1(filePath).equalsIgnoreCase(mod.getSha1())))
                     continue;
 
                 Files.deleteIfExists(filePath);
-                this.downloadList.getCurseMods().add(mod);
+                this.downloadList.getMods().add(mod);
             }
 
             if (modPackInfo == null)
@@ -106,12 +106,12 @@ public class IntegrationManager
                     if(flag) return;
 
                     if(Files.exists(filePath)
-                            && Files.size(filePath) == mod.getLength()
+                            && Files.size(filePath) == mod.getSize()
                             && (mod.getSha1().isEmpty() || FileUtils.getSHA1(filePath).equalsIgnoreCase(mod.getSha1())))
                         return;
 
                     Files.deleteIfExists(filePath);
-                    this.downloadList.getCurseMods().add(mod);
+                    this.downloadList.getMods().add(mod);
                 } catch (Exception e)
                 {
                     this.logger.printStackTrace(e);
@@ -134,7 +134,9 @@ public class IntegrationManager
     public void loadOptiFineIntegration(Path dir, @NotNull AbstractForgeVersion forgeVersion)
     {
         final OptiFineInfo info = forgeVersion.getOptiFineInfo();
-        if(info == null) return;
+
+        if(info == null)
+            return;
 
         try
         {
