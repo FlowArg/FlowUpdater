@@ -1,10 +1,7 @@
 package fr.flowarg.flowupdater.versions;
 
 import fr.flowarg.flowio.FileUtils;
-import fr.flowarg.flowupdater.download.json.CurseFileInfo;
-import fr.flowarg.flowupdater.download.json.CurseModPackInfo;
-import fr.flowarg.flowupdater.download.json.Mod;
-import fr.flowarg.flowupdater.download.json.OptiFineInfo;
+import fr.flowarg.flowupdater.download.json.*;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,7 +13,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 /**
- * Represent a new Forge version (1.12.2-14.23.5.2851 to 1.18.1)
+ * Represent a new Forge version (1.12.2-14.23.5.2851 to 1.19)
  * @author FlowArg
  */
 public class NewForgeVersion extends AbstractForgeVersion
@@ -26,10 +23,10 @@ public class NewForgeVersion extends AbstractForgeVersion
             "1.13", "1.12.2-14.23.5.285", "1.12.2-14.23.5.286"};
 
     NewForgeVersion(String forgeVersion, List<Mod> mods,
-            List<CurseFileInfo> curseMods, ModFileDeleter fileDeleter,
-            OptiFineInfo optiFine, CurseModPackInfo modPack)
+            List<CurseFileInfo> curseMods, List<ModrinthVersionInfo> modrinthMods, ModFileDeleter fileDeleter,
+            OptiFineInfo optiFine, CurseModPackInfo modPack, ModrinthModPackInfo modrinthModPackInfo)
     {
-        super(mods, curseMods, forgeVersion, fileDeleter, optiFine, modPack, false);
+        super(mods, curseMods, modrinthMods, forgeVersion, fileDeleter, optiFine, modPack, modrinthModPackInfo, false);
     }
 
     /**

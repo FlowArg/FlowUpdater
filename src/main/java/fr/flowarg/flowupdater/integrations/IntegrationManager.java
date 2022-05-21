@@ -53,7 +53,7 @@ public class IntegrationManager
         this.progressCallback.step(Step.INTEGRATION);
         try
         {
-            final CurseModPackInfo modPackInfo = curseFeaturesUser.getModPackInfo();
+            final CurseModPackInfo modPackInfo = curseFeaturesUser.getCurseModPackInfo();
             final List<Mod> allCurseMods = new ArrayList<>();
 
             if(curseFeaturesUser.getCurseMods().isEmpty() && modPackInfo == null)

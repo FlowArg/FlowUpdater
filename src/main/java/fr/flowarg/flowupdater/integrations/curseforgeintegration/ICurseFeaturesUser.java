@@ -21,7 +21,7 @@ public interface ICurseFeaturesUser
      * Get information about the mod pack to update.
      * @return mod pack's information.
      */
-    CurseModPackInfo getModPackInfo();
+    CurseModPackInfo getCurseModPackInfo();
 
     /**
      * Define all curse mods to update.

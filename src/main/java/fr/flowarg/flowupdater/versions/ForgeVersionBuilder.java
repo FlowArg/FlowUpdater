@@ -1,9 +1,6 @@
 package fr.flowarg.flowupdater.versions;
 
-import fr.flowarg.flowupdater.download.json.CurseFileInfo;
-import fr.flowarg.flowupdater.download.json.CurseModPackInfo;
-import fr.flowarg.flowupdater.download.json.Mod;
-import fr.flowarg.flowupdater.download.json.OptiFineInfo;
+import fr.flowarg.flowupdater.download.json.*;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
@@ -29,8 +26,10 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
     private final BuilderArgument<OptiFineInfo> optiFineArgument = new BuilderArgument<OptiFineInfo>("OptiFine").optional();
     private final BuilderArgument<List<Mod>> modsArgument = new BuilderArgument<List<Mod>>("Mods", ArrayList::new).optional();
     private final BuilderArgument<List<CurseFileInfo>> curseModsArgument = new BuilderArgument<List<CurseFileInfo>>("CurseMods", ArrayList::new).optional();
+    private final BuilderArgument<List<ModrinthVersionInfo>> modrinthModsArgument = new BuilderArgument<List<ModrinthVersionInfo>>("ModrinthMods", ArrayList::new).optional();
     private final BuilderArgument<ModFileDeleter> fileDeleterArgument = new BuilderArgument<>("ModFileDeleter", () -> new ModFileDeleter(false)).optional();
-    private final BuilderArgument<CurseModPackInfo> modPackArgument = new BuilderArgument<CurseModPackInfo>("ModPack").optional();
+    private final BuilderArgument<CurseModPackInfo> curseModPackArgument = new BuilderArgument<CurseModPackInfo>("CurseModPack").optional();
+    private final BuilderArgument<ModrinthModPackInfo> modrinthPackArgument = new BuilderArgument<ModrinthModPackInfo>("ModrinthModPack").optional();
 
     /**
      * @param forgeVersion the Forge version you want to install.
@@ -65,13 +64,35 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
     }
 
     /**
+     * Append a mods list to the version.
+     * @param modrinthMods Modrinth's mods to append.
+     * @return the builder.
+     */
+    public ForgeVersionBuilder withModrinthMods(List<ModrinthVersionInfo> modrinthMods)
+    {
+        this.modrinthModsArgument.set(modrinthMods);
+        return this;
+    }
+
+    /**
      * Assign to the future forge version a mod pack.
      * @param modPackInfo the mod pack information to assign.
      * @return the builder.
      */
     public ForgeVersionBuilder withCurseModPack(CurseModPackInfo modPackInfo)
     {
-        this.modPackArgument.set(modPackInfo);
+        this.curseModPackArgument.set(modPackInfo);
+        return this;
+    }
+
+    /**
+     * Assign to the future forge version a mod pack.
+     * @param modPackInfo the mod pack information to assign.
+     * @return the builder.
+     */
+    public ForgeVersionBuilder withModrinthModPack(ModrinthModPackInfo modPackInfo)
+    {
+        this.modrinthPackArgument.set(modPackInfo);
         return this;
     }
 
@@ -112,18 +133,22 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
                         this.forgeVersionArgument.get(),
                         this.modsArgument.get(),
                         this.curseModsArgument.get(),
+                        this.modrinthModsArgument.get(),
                         this.fileDeleterArgument.get(),
                         this.optiFineArgument.get(),
-                        this.modPackArgument.get()
+                        this.curseModPackArgument.get(),
+                        this.modrinthPackArgument.get()
                 );
             case OLD:
                 return new OldForgeVersion(
                         this.forgeVersionArgument.get(),
                         this.modsArgument.get(),
                         this.curseModsArgument.get(),
+                        this.modrinthModsArgument.get(),
                         this.fileDeleterArgument.get(),
                         this.optiFineArgument.get(),
-                        this.modPackArgument.get()
+                        this.curseModPackArgument.get(),
+                        this.modrinthPackArgument.get()
                 );
             default:
                 return null;
@@ -132,7 +157,7 @@ public class ForgeVersionBuilder implements IBuilder<AbstractForgeVersion>
 
     public enum ForgeVersionType
     {
-        /** 1.12.2-14.23.5.2851 to 1.18.1 */
+        /** 1.12.2-14.23.5.2851 to 1.19 */
         NEW,
         /** 1.7 to 1.12.2 */
         OLD

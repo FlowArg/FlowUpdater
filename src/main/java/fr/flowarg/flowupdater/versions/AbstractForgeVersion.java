@@ -6,11 +6,9 @@ import fr.flowarg.flowupdater.FlowUpdater;
 import fr.flowarg.flowupdater.download.DownloadList;
 import fr.flowarg.flowupdater.download.IProgressCallback;
 import fr.flowarg.flowupdater.download.Step;
-import fr.flowarg.flowupdater.download.json.CurseFileInfo;
-import fr.flowarg.flowupdater.download.json.CurseModPackInfo;
-import fr.flowarg.flowupdater.download.json.Mod;
-import fr.flowarg.flowupdater.download.json.OptiFineInfo;
+import fr.flowarg.flowupdater.download.json.*;
 import fr.flowarg.flowupdater.integrations.curseforgeintegration.ICurseFeaturesUser;
+import fr.flowarg.flowupdater.integrations.modrinthintegration.IModrinthFeaturesUser;
 import fr.flowarg.flowupdater.integrations.optifineintegration.OptiFine;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
@@ -31,13 +29,15 @@ import java.util.List;
  * Implemented by {@link OldForgeVersion} and {@link NewForgeVersion}
  * @author flow
  */
-public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLoaderVersion
+public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLoaderVersion, IModrinthFeaturesUser
 {
     protected final List<Mod> mods;
     protected final List<CurseFileInfo> curseMods;
+    protected final List<ModrinthVersionInfo> modrinthMods;
     protected final ModFileDeleter fileDeleter;
     protected final OptiFineInfo optiFineInfo;
-    protected final CurseModPackInfo modPackInfo;
+    protected final CurseModPackInfo curseModPackInfo;
+    protected final ModrinthModPackInfo modrinthModPackInfo;
     protected final boolean old;
 
     protected URL installerUrl;
@@ -54,19 +54,21 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
      * @param forgeVersion to install.
      * @param fileDeleter {@link ModFileDeleter} used to clean up mods' dir.
      * @param optiFineInfo OptiFine version to install.
-     * @param modPackInfo mod pack information.
+     * @param curseModPackInfo mod pack information.
      * @param old if the current version of forge is an old forge version.
      */
-    protected AbstractForgeVersion(List<Mod> mods, List<CurseFileInfo> curseMods,
+    protected AbstractForgeVersion(List<Mod> mods, List<CurseFileInfo> curseMods, List<ModrinthVersionInfo> modrinthMods,
             String forgeVersion, ModFileDeleter fileDeleter, OptiFineInfo optiFineInfo,
-            CurseModPackInfo modPackInfo, boolean old)
+            CurseModPackInfo curseModPackInfo, ModrinthModPackInfo modrinthModPackInfo, boolean old)
     {
         this.mods = mods;
         this.curseMods = curseMods;
+        this.modrinthMods = modrinthMods;
         this.forgeVersion = forgeVersion;
         this.fileDeleter = fileDeleter;
         this.optiFineInfo = optiFineInfo;
-        this.modPackInfo = modPackInfo;
+        this.curseModPackInfo = curseModPackInfo;
+        this.modrinthModPackInfo = modrinthModPackInfo;
         this.old = old;
     }
 
@@ -335,6 +337,12 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         return this.curseMods;
     }
 
+    @Override
+    public List<ModrinthVersionInfo> getModrinthMods()
+    {
+        return this.modrinthMods;
+    }
+
     /**
      * Get given OptiFine information.
      * @return OptiFine information.
@@ -348,9 +356,21 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
      * {@inheritDoc}
      */
     @Override
-    public CurseModPackInfo getModPackInfo()
+    public CurseModPackInfo getCurseModPackInfo()
     {
-        return this.modPackInfo;
+        return this.curseModPackInfo;
+    }
+
+    @Override
+    public ModrinthModPackInfo getModrinthModPackInfo()
+    {
+        return this.modrinthModPackInfo;
+    }
+
+    @Override
+    public void setAllModrinthMods(List<Mod> modrinthMods)
+    {
+        this.mods.addAll(modrinthMods);
     }
 
     /**
