@@ -76,7 +76,7 @@
 <dd>
 <div class="block">The base object of a forge version.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#AbstractForgeVersion-java.util.List-java.util.List-java.lang.String-fr.flowarg.flowupdater.utils.ModFileDeleter-fr.flowarg.flowupdater.download.json.OptiFineInfo-fr.flowarg.flowupdater.download.json.CurseModPackInfo-boolean-">AbstractForgeVersion(List&lt;Mod&gt;, List&lt;CurseFileInfo&gt;, String, ModFileDeleter, OptiFineInfo, CurseModPackInfo, boolean)</a></span> - Constructor for class fr.flowarg.flowupdater.versions.<a href="fr/flowarg/flowupdater/versions/AbstractForgeVersion.html" title="class in fr.flowarg.flowupdater.versions">AbstractForgeVersion</a></dt>
+<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#AbstractForgeVersion-java.util.List-java.util.List-java.util.List-java.lang.String-fr.flowarg.flowupdater.utils.ModFileDeleter-fr.flowarg.flowupdater.download.json.OptiFineInfo-fr.flowarg.flowupdater.download.json.CurseModPackInfo-fr.flowarg.flowupdater.download.json.ModrinthModPackInfo-boolean-">AbstractForgeVersion(List&lt;Mod&gt;, List&lt;CurseFileInfo&gt;, List&lt;ModrinthVersionInfo&gt;, String, ModFileDeleter, OptiFineInfo, CurseModPackInfo, ModrinthModPackInfo, boolean)</a></span> - Constructor for class fr.flowarg.flowupdater.versions.<a href="fr/flowarg/flowupdater/versions/AbstractForgeVersion.html" title="class in fr.flowarg.flowupdater.versions">AbstractForgeVersion</a></dt>
 <dd>
 <div class="block">Use <a href="fr/flowarg/flowupdater/versions/ForgeVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions"><code>ForgeVersionBuilder</code></a> to instantiate this class.</div>
 </dd>
@@ -262,6 +262,8 @@
 <dd>
 <div class="block">Construct a new CurseModPackInfo object.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#curseModPackInfo">curseModPackInfo</a></span> - Variable in class fr.flowarg.flowupdater.versions.<a href="fr/flowarg/flowupdater/versions/AbstractForgeVersion.html" title="class in fr.flowarg.flowupdater.versions">AbstractForgeVersion</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#curseMods">curseMods</a></span> - Variable in class fr.flowarg.flowupdater.versions.<a href="fr/flowarg/flowupdater/versions/AbstractForgeVersion.html" title="class in fr.flowarg.flowupdater.versions">AbstractForgeVersion</a></dt>
 <dd>&nbsp;</dd>
 </dl>
@@ -435,6 +437,8 @@
 <dd>
 <div class="block">CurseForge Integration package.</div>
 </dd>
+<dt><a href="fr/flowarg/flowupdater/integrations/modrinthintegration/package-summary.html">fr.flowarg.flowupdater.integrations.modrinthintegration</a> - package fr.flowarg.flowupdater.integrations.modrinthintegration</dt>
+<dd>&nbsp;</dd>
 <dt><a href="fr/flowarg/flowupdater/integrations/optifineintegration/package-summary.html">fr.flowarg.flowupdater.integrations.optifineintegration</a> - package fr.flowarg.flowupdater.integrations.optifineintegration</dt>
 <dd>
 <div class="block">OptiFine Integration package.</div>
@@ -517,6 +521,18 @@
 <dd>
 <div class="block">Get a CurseForge's mod pack object with a project identifier and a file identifier.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/integrations/curseforgeintegration/ICurseFeaturesUser.html#getCurseModPackInfo--">getCurseModPackInfo()</a></span> - Method in interface fr.flowarg.flowupdater.integrations.curseforgeintegration.<a href="fr/flowarg/flowupdater/integrations/curseforgeintegration/ICurseFeaturesUser.html" title="interface in fr.flowarg.flowupdater.integrations.curseforgeintegration">ICurseFeaturesUser</a></dt>
+<dd>
+<div class="block">Get information about the mod pack to update.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#getCurseModPackInfo--">getCurseModPackInfo()</a></span> - Method in class fr.flowarg.flowupdater.versions.<a href="fr/flowarg/flowupdater/versions/AbstractForgeVersion.html" title="class in fr.flowarg.flowupdater.versions">AbstractForgeVersion</a></dt>
+<dd>
+<div class="block">Get information about the mod pack to update.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/versions/FabricVersion.html#getCurseModPackInfo--">getCurseModPackInfo()</a></span> - Method in class fr.flowarg.flowupdater.versions.<a href="fr/flowarg/flowupdater/versions/FabricVersion.html" title="class in fr.flowarg.flowupdater.versions">FabricVersion</a></dt>
+<dd>
+<div class="block">Get information about the mod pack to update.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/integrations/curseforgeintegration/ICurseFeaturesUser.html#getCurseMods--">getCurseMods()</a></span> - Method in interface fr.flowarg.flowupdater.integrations.curseforgeintegration.<a href="fr/flowarg/flowupdater/integrations/curseforgeintegration/ICurseFeaturesUser.html" title="interface in fr.flowarg.flowupdater.integrations.curseforgeintegration">ICurseFeaturesUser</a></dt>
 <dd>
 <div class="block">Get all curse mods to update.</div>
@@ -578,6 +594,10 @@
 <div class="block">Get the mod url.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/download/json/CurseModPackInfo.html#getExcluded--">getExcluded()</a></span> - Method in class fr.flowarg.flowupdater.download.json.<a href="fr/flowarg/flowupdater/download/json/CurseModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseModPackInfo</a></dt>
+<dd>
+<div class="block">Get the excluded mods.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/download/json/ModrinthModPackInfo.html#getExcluded--">getExcluded()</a></span> - Method in class fr.flowarg.flowupdater.download.json.<a href="fr/flowarg/flowupdater/download/json/ModrinthModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">ModrinthModPackInfo</a></dt>
 <dd>
 <div class="block">Get the excluded mods.</div>
 </dd>
@@ -695,18 +715,26 @@
 <dd>
 <div class="block">Get th <a href="fr/flowarg/flowupdater/versions/IModLoaderVersion.html" title="interface in fr.flowarg.flowupdater.versions"><code>IModLoaderVersion</code></a> attached to this <a href="fr/flowarg/flowupdater/FlowUpdater.html" title="class in fr.flowarg.flowupdater"><code>FlowUpdater</code></a> instance.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/integrations/curseforgeintegration/ICurseFeaturesUser.html#getModPackInfo--">getModPackInfo()</a></span> - Method in interface fr.flowarg.flowupdater.integrations.curseforgeintegration.<a href="fr/flowarg/flowupdater/integrations/curseforgeintegration/ICurseFeaturesUser.html" title="interface in fr.flowarg.flowupdater.integrations.curseforgeintegration">ICurseFeaturesUser</a></dt>
+<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/integrations/modrinthintegration/IModrinthFeaturesUser.html#getModrinthModPackInfo--">getModrinthModPackInfo()</a></span> - Method in interface fr.flowarg.flowupdater.integrations.modrinthintegration.<a href="fr/flowarg/flowupdater/integrations/modrinthintegration/IModrinthFeaturesUser.html" title="interface in fr.flowarg.flowupdater.integrations.modrinthintegration">IModrinthFeaturesUser</a></dt>
 <dd>
 <div class="block">Get information about the mod pack to update.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#getModPackInfo--">getModPackInfo()</a></span> - Method in class fr.flowarg.flowupdater.versions.<a href="fr/flowarg/flowupdater/versions/AbstractForgeVersion.html" title="class in fr.flowarg.flowupdater.versions">AbstractForgeVersion</a></dt>
+<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#getModrinthModPackInfo--">getModrinthModPackInfo()</a></span> - Method in class fr.flowarg.flowupdater.versions.<a href="fr/flowarg/flowupdater/versions/AbstractForgeVersion.html" title="class in fr.flowarg.flowupdater.versions">AbstractForgeVersion</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/versions/FabricVersion.html#getModrinthModPackInfo--">getModrinthModPackInfo()</a></span> - Method in class fr.flowarg.flowupdater.versions.<a href="fr/flowarg/flowupdater/versions/FabricVersion.html" title="class in fr.flowarg.flowupdater.versions">FabricVersion</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/integrations/modrinthintegration/IModrinthFeaturesUser.html#getModrinthMods--">getModrinthMods()</a></span> - Method in interface fr.flowarg.flowupdater.integrations.modrinthintegration.<a href="fr/flowarg/flowupdater/integrations/modrinthintegration/IModrinthFeaturesUser.html" title="interface in fr.flowarg.flowupdater.integrations.modrinthintegration">IModrinthFeaturesUser</a></dt>
 <dd>
-<div class="block">Get information about the mod pack to update.</div>
+<div class="block">Get all modrinth mods to update.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/versions/FabricVersion.html#getModPackInfo--">getModPackInfo()</a></span> - Method in class fr.flowarg.flowupdater.versions.<a href="fr/flowarg/flowupdater/versions/FabricVersion.html" title="class in fr.flowarg.flowupdater.versions">FabricVersion</a></dt>
-<dd>
-<div class="block">Get information about the mod pack to update.</div>
-</dd>
+<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#getModrinthMods--">getModrinthMods()</a></span> - Method in class fr.flowarg.flowupdater.versions.<a href="fr/flowarg/flowupdater/versions/AbstractForgeVersion.html" title="class in fr.flowarg.flowupdater.versions">AbstractForgeVersion</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/versions/FabricVersion.html#getModrinthMods--">getModrinthMods()</a></span> - Method in class fr.flowarg.flowupdater.versions.<a href="fr/flowarg/flowupdater/versions/FabricVersion.html" title="class in fr.flowarg.flowupdater.versions">FabricVersion</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/download/json/ModrinthVersionInfo.html#getModrinthVersionsFromJson-java.net.URL-">getModrinthVersionsFromJson(URL)</a></span> - Static method in class fr.flowarg.flowupdater.download.json.<a href="fr/flowarg/flowupdater/download/json/ModrinthVersionInfo.html" title="class in fr.flowarg.flowupdater.download.json">ModrinthVersionInfo</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/download/json/ModrinthVersionInfo.html#getModrinthVersionsFromJson-java.lang.String-">getModrinthVersionsFromJson(String)</a></span> - Static method in class fr.flowarg.flowupdater.download.json.<a href="fr/flowarg/flowupdater/download/json/ModrinthVersionInfo.html" title="class in fr.flowarg.flowupdater.download.json">ModrinthVersionInfo</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/download/DownloadList.html#getMods--">getMods()</a></span> - Method in class fr.flowarg.flowupdater.download.<a href="fr/flowarg/flowupdater/download/DownloadList.html" title="class in fr.flowarg.flowupdater.download">DownloadList</a></dt>
 <dd>
 <div class="block">Get the list that contains all mods.</div>
@@ -785,6 +813,8 @@
 <dd>
 <div class="block">Get the project ID.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/download/json/ModrinthVersionInfo.html#getProjectReference--">getProjectReference()</a></span> - Method in class fr.flowarg.flowupdater.download.json.<a href="fr/flowarg/flowupdater/download/json/ModrinthVersionInfo.html" title="class in fr.flowarg.flowupdater.download.json">ModrinthVersionInfo</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/download/json/Downloadable.html#getSha1--">getSha1()</a></span> - Method in class fr.flowarg.flowupdater.download.json.<a href="fr/flowarg/flowupdater/download/json/Downloadable.html" title="class in fr.flowarg.flowupdater.download.json">Downloadable</a></dt>
 <dd>
 <div class="block">Get the sha1 of the file.</div>
@@ -861,6 +891,10 @@
 <dd>
 <div class="block">Get the mod pack's version.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/download/json/ModrinthVersionInfo.html#getVersionId--">getVersionId()</a></span> - Method in class fr.flowarg.flowupdater.download.json.<a href="fr/flowarg/flowupdater/download/json/ModrinthVersionInfo.html" title="class in fr.flowarg.flowupdater.download.json">ModrinthVersionInfo</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/download/json/ModrinthVersionInfo.html#getVersionNumber--">getVersionNumber()</a></span> - Method in class fr.flowarg.flowupdater.download.json.<a href="fr/flowarg/flowupdater/download/json/ModrinthVersionInfo.html" title="class in fr.flowarg.flowupdater.download.json">ModrinthVersionInfo</a></dt>
+<dd>&nbsp;</dd>
 </dl>
 <a name="I:H">
 <!--   -->
@@ -895,6 +929,8 @@
 <dd>
 <div class="block">This class represents a process' environment with a working directory and the launch command.</div>
 </dd>
+<dt><a href="fr/flowarg/flowupdater/integrations/modrinthintegration/IModrinthFeaturesUser.html" title="interface in fr.flowarg.flowupdater.integrations.modrinthintegration"><span class="typeNameLink">IModrinthFeaturesUser</span></a> - Interface in <a href="fr/flowarg/flowupdater/integrations/modrinthintegration/package-summary.html">fr.flowarg.flowupdater.integrations.modrinthintegration</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/download/DownloadList.html#incrementDownloaded-long-">incrementDownloaded(long)</a></span> - Method in class fr.flowarg.flowupdater.download.<a href="fr/flowarg/flowupdater/download/DownloadList.html" title="class in fr.flowarg.flowupdater.download">DownloadList</a></dt>
 <dd>
 <div class="block">This method increments the number of bytes downloaded by the number of bytes passed in parameter.</div>
@@ -974,6 +1010,10 @@
 <dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/download/json/CurseModPackInfo.html#isInstallExtFiles--">isInstallExtFiles()</a></span> - Method in class fr.flowarg.flowupdater.download.json.<a href="fr/flowarg/flowupdater/download/json/CurseModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseModPackInfo</a></dt>
 <dd>
 <div class="block">Get the <a href="fr/flowarg/flowupdater/download/json/CurseModPackInfo.html#installExtFiles"><code>CurseModPackInfo.installExtFiles</code></a> option.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/download/json/ModrinthModPackInfo.html#isInstallExtFiles--">isInstallExtFiles()</a></span> - Method in class fr.flowarg.flowupdater.download.json.<a href="fr/flowarg/flowupdater/download/json/ModrinthModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">ModrinthModPackInfo</a></dt>
+<dd>
+<div class="block">Get the <a href="fr/flowarg/flowupdater/download/json/ModrinthModPackInfo.html#installExtFiles"><code>ModrinthModPackInfo.installExtFiles</code></a> option.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#isModLoaderAlreadyInstalled-java.nio.file.Path-">isModLoaderAlreadyInstalled(Path)</a></span> - Method in class fr.flowarg.flowupdater.versions.<a href="fr/flowarg/flowupdater/versions/AbstractForgeVersion.html" title="class in fr.flowarg.flowupdater.versions">AbstractForgeVersion</a></dt>
 <dd>
@@ -1064,8 +1104,32 @@
 <dd>
 <div class="block">Construct a new <a href="fr/flowarg/flowupdater/versions/IModLoaderVersion.ModLoaderLauncherEnvironment.html" title="class in fr.flowarg.flowupdater.versions"><code>IModLoaderVersion.ModLoaderLauncherEnvironment</code></a> object.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#modPackInfo">modPackInfo</a></span> - Variable in class fr.flowarg.flowupdater.versions.<a href="fr/flowarg/flowupdater/versions/AbstractForgeVersion.html" title="class in fr.flowarg.flowupdater.versions">AbstractForgeVersion</a></dt>
+<dt><a href="fr/flowarg/flowupdater/integrations/modrinthintegration/ModrinthIntegration.html" title="class in fr.flowarg.flowupdater.integrations.modrinthintegration"><span class="typeNameLink">ModrinthIntegration</span></a> - Class in <a href="fr/flowarg/flowupdater/integrations/modrinthintegration/package-summary.html">fr.flowarg.flowupdater.integrations.modrinthintegration</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/integrations/modrinthintegration/ModrinthIntegration.html#ModrinthIntegration-fr.flowarg.flowlogger.ILogger-java.nio.file.Path-">ModrinthIntegration(ILogger, Path)</a></span> - Constructor for class fr.flowarg.flowupdater.integrations.modrinthintegration.<a href="fr/flowarg/flowupdater/integrations/modrinthintegration/ModrinthIntegration.html" title="class in fr.flowarg.flowupdater.integrations.modrinthintegration">ModrinthIntegration</a></dt>
+<dd>
+<div class="block">Default constructor of a basic Integration.</div>
+</dd>
+<dt><a href="fr/flowarg/flowupdater/download/json/ModrinthModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json"><span class="typeNameLink">ModrinthModPackInfo</span></a> - Class in <a href="fr/flowarg/flowupdater/download/json/package-summary.html">fr.flowarg.flowupdater.download.json</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/download/json/ModrinthModPackInfo.html#ModrinthModPackInfo-java.lang.String-java.lang.String-boolean-java.lang.String...-">ModrinthModPackInfo(String, String, boolean, String...)</a></span> - Constructor for class fr.flowarg.flowupdater.download.json.<a href="fr/flowarg/flowupdater/download/json/ModrinthModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">ModrinthModPackInfo</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/download/json/ModrinthModPackInfo.html#ModrinthModPackInfo-java.lang.String-boolean-java.lang.String...-">ModrinthModPackInfo(String, boolean, String...)</a></span> - Constructor for class fr.flowarg.flowupdater.download.json.<a href="fr/flowarg/flowupdater/download/json/ModrinthModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">ModrinthModPackInfo</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#modrinthModPackInfo">modrinthModPackInfo</a></span> - Variable in class fr.flowarg.flowupdater.versions.<a href="fr/flowarg/flowupdater/versions/AbstractForgeVersion.html" title="class in fr.flowarg.flowupdater.versions">AbstractForgeVersion</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#modrinthMods">modrinthMods</a></span> - Variable in class fr.flowarg.flowupdater.versions.<a href="fr/flowarg/flowupdater/versions/AbstractForgeVersion.html" title="class in fr.flowarg.flowupdater.versions">AbstractForgeVersion</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="fr/flowarg/flowupdater/download/json/ModrinthVersionInfo.html" title="class in fr.flowarg.flowupdater.download.json"><span class="typeNameLink">ModrinthVersionInfo</span></a> - Class in <a href="fr/flowarg/flowupdater/download/json/package-summary.html">fr.flowarg.flowupdater.download.json</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/download/json/ModrinthVersionInfo.html#ModrinthVersionInfo-java.lang.String-java.lang.String-">ModrinthVersionInfo(String, String)</a></span> - Constructor for class fr.flowarg.flowupdater.download.json.<a href="fr/flowarg/flowupdater/download/json/ModrinthVersionInfo.html" title="class in fr.flowarg.flowupdater.download.json">ModrinthVersionInfo</a></dt>
+<dd>
+<div class="block">Construct a new ModrinthVersionInfo object.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/download/json/ModrinthVersionInfo.html#ModrinthVersionInfo-java.lang.String-">ModrinthVersionInfo(String)</a></span> - Constructor for class fr.flowarg.flowupdater.download.json.<a href="fr/flowarg/flowupdater/download/json/ModrinthVersionInfo.html" title="class in fr.flowarg.flowupdater.download.json">ModrinthVersionInfo</a></dt>
+<dd>
+<div class="block">Construct a new ModrinthVersionInfo object.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#mods">mods</a></span> - Variable in class fr.flowarg.flowupdater.versions.<a href="fr/flowarg/flowupdater/versions/AbstractForgeVersion.html" title="class in fr.flowarg.flowupdater.versions">AbstractForgeVersion</a></dt>
 <dd>&nbsp;</dd>
 </dl>
@@ -1076,7 +1140,7 @@
 <dl>
 <dt><a href="fr/flowarg/flowupdater/versions/NewForgeVersion.html" title="class in fr.flowarg.flowupdater.versions"><span class="typeNameLink">NewForgeVersion</span></a> - Class in <a href="fr/flowarg/flowupdater/versions/package-summary.html">fr.flowarg.flowupdater.versions</a></dt>
 <dd>
-<div class="block">Represent a new Forge version (1.12.2-14.23.5.2851 to 1.18.1)</div>
+<div class="block">Represent a new Forge version (1.12.2-14.23.5.2851 to 1.19)</div>
 </dd>
 <dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/FlowUpdater.html#NULL_CALLBACK">NULL_CALLBACK</a></span> - Static variable in class fr.flowarg.flowupdater.<a href="fr/flowarg/flowupdater/FlowUpdater.html" title="class in fr.flowarg.flowupdater">FlowUpdater</a></dt>
 <dd>
@@ -1204,6 +1268,14 @@
 <dd>
 <div class="block">Define all curse mods to update.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/integrations/modrinthintegration/IModrinthFeaturesUser.html#setAllModrinthMods-java.util.List-">setAllModrinthMods(List&lt;Mod&gt;)</a></span> - Method in interface fr.flowarg.flowupdater.integrations.modrinthintegration.<a href="fr/flowarg/flowupdater/integrations/modrinthintegration/IModrinthFeaturesUser.html" title="interface in fr.flowarg.flowupdater.integrations.modrinthintegration">IModrinthFeaturesUser</a></dt>
+<dd>
+<div class="block">Define all modrinth mods to update.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#setAllModrinthMods-java.util.List-">setAllModrinthMods(List&lt;Mod&gt;)</a></span> - Method in class fr.flowarg.flowupdater.versions.<a href="fr/flowarg/flowupdater/versions/AbstractForgeVersion.html" title="class in fr.flowarg.flowupdater.versions">AbstractForgeVersion</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/versions/FabricVersion.html#setAllModrinthMods-java.util.List-">setAllModrinthMods(List&lt;Mod&gt;)</a></span> - Method in class fr.flowarg.flowupdater.versions.<a href="fr/flowarg/flowupdater/versions/FabricVersion.html" title="class in fr.flowarg.flowupdater.versions">FabricVersion</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/download/DownloadList.html#setOptiFine-fr.flowarg.flowupdater.integrations.optifineintegration.OptiFine-">setOptiFine(OptiFine)</a></span> - Method in class fr.flowarg.flowupdater.download.<a href="fr/flowarg/flowupdater/download/DownloadList.html" title="class in fr.flowarg.flowupdater.download">DownloadList</a></dt>
 <dd>
 <div class="block">Define the OptiFine object.</div>
@@ -1367,6 +1439,22 @@ the order they are declared.</div>
 <dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/FlowUpdater.FlowUpdaterBuilder.html#withModLoaderVersion-fr.flowarg.flowupdater.versions.IModLoaderVersion-">withModLoaderVersion(IModLoaderVersion)</a></span> - Method in class fr.flowarg.flowupdater.<a href="fr/flowarg/flowupdater/FlowUpdater.FlowUpdaterBuilder.html" title="class in fr.flowarg.flowupdater">FlowUpdater.FlowUpdaterBuilder</a></dt>
 <dd>
 <div class="block">Necessary if you want to install a mod loader like Forge or Fabric for instance.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/versions/FabricVersion.FabricVersionBuilder.html#withModrinthModPack-fr.flowarg.flowupdater.download.json.ModrinthModPackInfo-">withModrinthModPack(ModrinthModPackInfo)</a></span> - Method in class fr.flowarg.flowupdater.versions.<a href="fr/flowarg/flowupdater/versions/FabricVersion.FabricVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">FabricVersion.FabricVersionBuilder</a></dt>
+<dd>
+<div class="block">Assign to the future forge version a mod pack.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/versions/ForgeVersionBuilder.html#withModrinthModPack-fr.flowarg.flowupdater.download.json.ModrinthModPackInfo-">withModrinthModPack(ModrinthModPackInfo)</a></span> - Method in class fr.flowarg.flowupdater.versions.<a href="fr/flowarg/flowupdater/versions/ForgeVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">ForgeVersionBuilder</a></dt>
+<dd>
+<div class="block">Assign to the future forge version a mod pack.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/versions/FabricVersion.FabricVersionBuilder.html#withModrinthMods-java.util.List-">withModrinthMods(List&lt;ModrinthVersionInfo&gt;)</a></span> - Method in class fr.flowarg.flowupdater.versions.<a href="fr/flowarg/flowupdater/versions/FabricVersion.FabricVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">FabricVersion.FabricVersionBuilder</a></dt>
+<dd>
+<div class="block">Append a mods list to the version.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/versions/ForgeVersionBuilder.html#withModrinthMods-java.util.List-">withModrinthMods(List&lt;ModrinthVersionInfo&gt;)</a></span> - Method in class fr.flowarg.flowupdater.versions.<a href="fr/flowarg/flowupdater/versions/ForgeVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">ForgeVersionBuilder</a></dt>
+<dd>
+<div class="block">Append a mods list to the version.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="fr/flowarg/flowupdater/versions/FabricVersion.FabricVersionBuilder.html#withMods-java.util.List-">withMods(List&lt;Mod&gt;)</a></span> - Method in class fr.flowarg.flowupdater.versions.<a href="fr/flowarg/flowupdater/versions/FabricVersion.FabricVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">FabricVersion.FabricVersionBuilder</a></dt>
 <dd>

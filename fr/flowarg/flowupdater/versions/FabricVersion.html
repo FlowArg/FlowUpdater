@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -107,13 +107,13 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><a href="../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/ICurseFeaturesUser.html" title="interface in fr.flowarg.flowupdater.integrations.curseforgeintegration">ICurseFeaturesUser</a>, <a href="../../../../fr/flowarg/flowupdater/versions/IModLoaderVersion.html" title="interface in fr.flowarg.flowupdater.versions">IModLoaderVersion</a></dd>
+<dd><a href="../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/ICurseFeaturesUser.html" title="interface in fr.flowarg.flowupdater.integrations.curseforgeintegration">ICurseFeaturesUser</a>, <a href="../../../../fr/flowarg/flowupdater/integrations/modrinthintegration/IModrinthFeaturesUser.html" title="interface in fr.flowarg.flowupdater.integrations.modrinthintegration">IModrinthFeaturesUser</a>, <a href="../../../../fr/flowarg/flowupdater/versions/IModLoaderVersion.html" title="interface in fr.flowarg.flowupdater.versions">IModLoaderVersion</a></dd>
 </dl>
 <hr>
 <br>
 <pre>public class <span class="typeNameLabel">FabricVersion</span>
 extends java.lang.Object
-implements <a href="../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/ICurseFeaturesUser.html" title="interface in fr.flowarg.flowupdater.integrations.curseforgeintegration">ICurseFeaturesUser</a>, <a href="../../../../fr/flowarg/flowupdater/versions/IModLoaderVersion.html" title="interface in fr.flowarg.flowupdater.versions">IModLoaderVersion</a></pre>
+implements <a href="../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/ICurseFeaturesUser.html" title="interface in fr.flowarg.flowupdater.integrations.curseforgeintegration">ICurseFeaturesUser</a>, <a href="../../../../fr/flowarg/flowupdater/versions/IModLoaderVersion.html" title="interface in fr.flowarg.flowupdater.versions">IModLoaderVersion</a>, <a href="../../../../fr/flowarg/flowupdater/integrations/modrinthintegration/IModrinthFeaturesUser.html" title="interface in fr.flowarg.flowupdater.integrations.modrinthintegration">IModrinthFeaturesUser</a></pre>
 <div class="block">The object that contains Fabric's stuff.</div>
 </li>
 </ul>
@@ -180,80 +180,98 @@ implements <a href="../../../../fr/flowarg/flowupdater/integrations/curseforgein
 </td>
 </tr>
 <tr id="i3" class="rowColor">
+<td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/download/json/CurseModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseModPackInfo</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/FabricVersion.html#getCurseModPackInfo--">getCurseModPackInfo</a></span>()</code>
+<div class="block">Get information about the mod pack to update.</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/CurseFileInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseFileInfo</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/FabricVersion.html#getCurseMods--">getCurseMods</a></span>()</code>
 <div class="block">Get all curse mods to update.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/download/DownloadList.html" title="class in fr.flowarg.flowupdater.download">DownloadList</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/FabricVersion.html#getDownloadList--">getDownloadList</a></span>()</code>
 <div class="block">Get the <a href="../../../../fr/flowarg/flowupdater/download/DownloadList.html" title="class in fr.flowarg.flowupdater.download"><code>DownloadList</code></a> object.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/FabricVersion.html#getFabricVersion--">getFabricVersion</a></span>()</code>
 <div class="block">Get the Fabric's version.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/utils/ModFileDeleter.html" title="class in fr.flowarg.flowupdater.utils">ModFileDeleter</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/FabricVersion.html#getFileDeleter--">getFileDeleter</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>java.net.URL</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/FabricVersion.html#getInstallerUrl--">getInstallerUrl</a></span>()</code>
 <div class="block">Get the Fabric's installer's url.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>fr.flowarg.flowlogger.ILogger</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/FabricVersion.html#getLogger--">getLogger</a></span>()</code>
 <div class="block">Get the <code>ILogger</code> object.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
-<td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/download/json/CurseModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseModPackInfo</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/FabricVersion.html#getModPackInfo--">getModPackInfo</a></span>()</code>
+<tr id="i10" class="altColor">
+<td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/download/json/ModrinthModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">ModrinthModPackInfo</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/FabricVersion.html#getModrinthModPackInfo--">getModrinthModPackInfo</a></span>()</code>
 <div class="block">Get information about the mod pack to update.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
+<td class="colFirst"><code>java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/ModrinthVersionInfo.html" title="class in fr.flowarg.flowupdater.download.json">ModrinthVersionInfo</a>&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/FabricVersion.html#getModrinthMods--">getModrinthMods</a></span>()</code>
+<div class="block">Get all modrinth mods to update.</div>
+</td>
+</tr>
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/Mod.html" title="class in fr.flowarg.flowupdater.download.json">Mod</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/FabricVersion.html#getMods--">getMods</a></span>()</code>
 <div class="block">Get all processed mods / mods to process.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/FabricVersion.html#install-java.nio.file.Path-">install</a></span>(java.nio.file.Path&nbsp;dirToInstall)</code>
 <div class="block">Install the current mod loader in a specified directory.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/FabricVersion.html#installMods-java.nio.file.Path-">installMods</a></span>(java.nio.file.Path&nbsp;modsDir)</code>
 <div class="block">Install all mods in the mods' directory.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/FabricVersion.html#isModLoaderAlreadyInstalled-java.nio.file.Path-">isModLoaderAlreadyInstalled</a></span>(@NotNull java.nio.file.Path&nbsp;installDir)</code>
 <div class="block">Check if the current mod loader is already installed.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>fr.flowarg.flowupdater.versions.FabricVersion.FabricLauncherEnvironment</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/FabricVersion.html#prepareModLoaderLauncher-java.nio.file.Path-java.io.InputStream-">prepareModLoaderLauncher</a></span>(@NotNull java.nio.file.Path&nbsp;dirToInstall,
                         java.io.InputStream&nbsp;stream)</code>
 <div class="block">Various setup before mod loader's installer launch.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/FabricVersion.html#setAllCurseMods-java.util.List-">setAllCurseMods</a></span>(java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/Mod.html" title="class in fr.flowarg.flowupdater.download.json">Mod</a>&gt;&nbsp;allCurseMods)</code>
 <div class="block">Define all curse mods to update.</div>
+</td>
+</tr>
+<tr id="i18" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/FabricVersion.html#setAllModrinthMods-java.util.List-">setAllModrinthMods</a></span>(java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/Mod.html" title="class in fr.flowarg.flowupdater.download.json">Mod</a>&gt;&nbsp;modrinthMods)</code>
+<div class="block">Define all modrinth mods to update.</div>
 </td>
 </tr>
 </table>
@@ -538,19 +556,70 @@ implements <a href="../../../../fr/flowarg/flowupdater/integrations/curseforgein
 </dl>
 </li>
 </ul>
-<a name="getModPackInfo--">
+<a name="getModrinthMods--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getModrinthMods</h4>
+<pre>public&nbsp;java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/ModrinthVersionInfo.html" title="class in fr.flowarg.flowupdater.download.json">ModrinthVersionInfo</a>&gt;&nbsp;getModrinthMods()</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../fr/flowarg/flowupdater/integrations/modrinthintegration/IModrinthFeaturesUser.html#getModrinthMods--">IModrinthFeaturesUser</a></code></span></div>
+<div class="block">Get all modrinth mods to update.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../fr/flowarg/flowupdater/integrations/modrinthintegration/IModrinthFeaturesUser.html#getModrinthMods--">getModrinthMods</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../fr/flowarg/flowupdater/integrations/modrinthintegration/IModrinthFeaturesUser.html" title="interface in fr.flowarg.flowupdater.integrations.modrinthintegration">IModrinthFeaturesUser</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>all modrinth mods.</dd>
+</dl>
+</li>
+</ul>
+<a name="getCurseModPackInfo--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getCurseModPackInfo</h4>
+<pre>public&nbsp;<a href="../../../../fr/flowarg/flowupdater/download/json/CurseModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseModPackInfo</a>&nbsp;getCurseModPackInfo()</pre>
+<div class="block">Get information about the mod pack to update.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/ICurseFeaturesUser.html#getCurseModPackInfo--">getCurseModPackInfo</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/ICurseFeaturesUser.html" title="interface in fr.flowarg.flowupdater.integrations.curseforgeintegration">ICurseFeaturesUser</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>mod pack's information.</dd>
+</dl>
+</li>
+</ul>
+<a name="getModrinthModPackInfo--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getModrinthModPackInfo</h4>
+<pre>public&nbsp;<a href="../../../../fr/flowarg/flowupdater/download/json/ModrinthModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">ModrinthModPackInfo</a>&nbsp;getModrinthModPackInfo()</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../fr/flowarg/flowupdater/integrations/modrinthintegration/IModrinthFeaturesUser.html#getModrinthModPackInfo--">IModrinthFeaturesUser</a></code></span></div>
+<div class="block">Get information about the mod pack to update.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../fr/flowarg/flowupdater/integrations/modrinthintegration/IModrinthFeaturesUser.html#getModrinthModPackInfo--">getModrinthModPackInfo</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../fr/flowarg/flowupdater/integrations/modrinthintegration/IModrinthFeaturesUser.html" title="interface in fr.flowarg.flowupdater.integrations.modrinthintegration">IModrinthFeaturesUser</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>mod pack's information.</dd>
+</dl>
+</li>
+</ul>
+<a name="setAllModrinthMods-java.util.List-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>getModPackInfo</h4>
-<pre>public&nbsp;<a href="../../../../fr/flowarg/flowupdater/download/json/CurseModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseModPackInfo</a>&nbsp;getModPackInfo()</pre>
-<div class="block">Get information about the mod pack to update.</div>
+<h4>setAllModrinthMods</h4>
+<pre>public&nbsp;void&nbsp;setAllModrinthMods(java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/Mod.html" title="class in fr.flowarg.flowupdater.download.json">Mod</a>&gt;&nbsp;modrinthMods)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../fr/flowarg/flowupdater/integrations/modrinthintegration/IModrinthFeaturesUser.html#setAllModrinthMods-java.util.List-">IModrinthFeaturesUser</a></code></span></div>
+<div class="block">Define all modrinth mods to update.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/ICurseFeaturesUser.html#getModPackInfo--">getModPackInfo</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/ICurseFeaturesUser.html" title="interface in fr.flowarg.flowupdater.integrations.curseforgeintegration">ICurseFeaturesUser</a></code></dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>mod pack's information.</dd>
+<dd><code><a href="../../../../fr/flowarg/flowupdater/integrations/modrinthintegration/IModrinthFeaturesUser.html#setAllModrinthMods-java.util.List-">setAllModrinthMods</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../fr/flowarg/flowupdater/integrations/modrinthintegration/IModrinthFeaturesUser.html" title="interface in fr.flowarg.flowupdater.integrations.modrinthintegration">IModrinthFeaturesUser</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>modrinthMods</code> - modrinth mods to define.</dd>
 </dl>
 </li>
 </ul>

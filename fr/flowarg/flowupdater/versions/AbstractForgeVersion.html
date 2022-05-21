@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":6,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10};
+var methods = {"i0":10,"i1":10,"i2":6,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -107,7 +107,7 @@ var activeTableTab = "activeTableTab";
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><a href="../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/ICurseFeaturesUser.html" title="interface in fr.flowarg.flowupdater.integrations.curseforgeintegration">ICurseFeaturesUser</a>, <a href="../../../../fr/flowarg/flowupdater/versions/IModLoaderVersion.html" title="interface in fr.flowarg.flowupdater.versions">IModLoaderVersion</a></dd>
+<dd><a href="../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/ICurseFeaturesUser.html" title="interface in fr.flowarg.flowupdater.integrations.curseforgeintegration">ICurseFeaturesUser</a>, <a href="../../../../fr/flowarg/flowupdater/integrations/modrinthintegration/IModrinthFeaturesUser.html" title="interface in fr.flowarg.flowupdater.integrations.modrinthintegration">IModrinthFeaturesUser</a>, <a href="../../../../fr/flowarg/flowupdater/versions/IModLoaderVersion.html" title="interface in fr.flowarg.flowupdater.versions">IModLoaderVersion</a></dd>
 </dl>
 <dl>
 <dt>Direct Known Subclasses:</dt>
@@ -117,7 +117,7 @@ var activeTableTab = "activeTableTab";
 <br>
 <pre>public abstract class <span class="typeNameLabel">AbstractForgeVersion</span>
 extends java.lang.Object
-implements <a href="../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/ICurseFeaturesUser.html" title="interface in fr.flowarg.flowupdater.integrations.curseforgeintegration">ICurseFeaturesUser</a>, <a href="../../../../fr/flowarg/flowupdater/versions/IModLoaderVersion.html" title="interface in fr.flowarg.flowupdater.versions">IModLoaderVersion</a></pre>
+implements <a href="../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/ICurseFeaturesUser.html" title="interface in fr.flowarg.flowupdater.integrations.curseforgeintegration">ICurseFeaturesUser</a>, <a href="../../../../fr/flowarg/flowupdater/versions/IModLoaderVersion.html" title="interface in fr.flowarg.flowupdater.versions">IModLoaderVersion</a>, <a href="../../../../fr/flowarg/flowupdater/integrations/modrinthintegration/IModrinthFeaturesUser.html" title="interface in fr.flowarg.flowupdater.integrations.modrinthintegration">IModrinthFeaturesUser</a></pre>
 <div class="block">The base object of a forge version.
  Implemented by <a href="../../../../fr/flowarg/flowupdater/versions/OldForgeVersion.html" title="class in fr.flowarg.flowupdater.versions"><code>OldForgeVersion</code></a> and <a href="../../../../fr/flowarg/flowupdater/versions/NewForgeVersion.html" title="class in fr.flowarg.flowupdater.versions"><code>NewForgeVersion</code></a></div>
 </li>
@@ -158,32 +158,40 @@ implements <a href="../../../../fr/flowarg/flowupdater/integrations/curseforgein
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#callback">callback</a></span></code>&nbsp;</td>
 </tr>
 <tr class="rowColor">
+<td class="colFirst"><code>protected <a href="../../../../fr/flowarg/flowupdater/download/json/CurseModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseModPackInfo</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#curseModPackInfo">curseModPackInfo</a></span></code>&nbsp;</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code>protected java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/CurseFileInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseFileInfo</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#curseMods">curseMods</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected <a href="../../../../fr/flowarg/flowupdater/download/DownloadList.html" title="class in fr.flowarg.flowupdater.download">DownloadList</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#downloadList">downloadList</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>protected <a href="../../../../fr/flowarg/flowupdater/utils/ModFileDeleter.html" title="class in fr.flowarg.flowupdater.utils">ModFileDeleter</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#fileDeleter">fileDeleter</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#forgeVersion">forgeVersion</a></span></code>&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>protected java.net.URL</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#installerUrl">installerUrl</a></span></code>&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>protected fr.flowarg.flowlogger.ILogger</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#logger">logger</a></span></code>&nbsp;</td>
 </tr>
+<tr class="altColor">
+<td class="colFirst"><code>protected <a href="../../../../fr/flowarg/flowupdater/download/json/ModrinthModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">ModrinthModPackInfo</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#modrinthModPackInfo">modrinthModPackInfo</a></span></code>&nbsp;</td>
+</tr>
 <tr class="rowColor">
-<td class="colFirst"><code>protected <a href="../../../../fr/flowarg/flowupdater/download/json/CurseModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseModPackInfo</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#modPackInfo">modPackInfo</a></span></code>&nbsp;</td>
+<td class="colFirst"><code>protected java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/ModrinthVersionInfo.html" title="class in fr.flowarg.flowupdater.download.json">ModrinthVersionInfo</a>&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#modrinthMods">modrinthMods</a></span></code>&nbsp;</td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>protected java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/Mod.html" title="class in fr.flowarg.flowupdater.download.json">Mod</a>&gt;</code></td>
@@ -218,12 +226,14 @@ implements <a href="../../../../fr/flowarg/flowupdater/integrations/curseforgein
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>protected </code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#AbstractForgeVersion-java.util.List-java.util.List-java.lang.String-fr.flowarg.flowupdater.utils.ModFileDeleter-fr.flowarg.flowupdater.download.json.OptiFineInfo-fr.flowarg.flowupdater.download.json.CurseModPackInfo-boolean-">AbstractForgeVersion</a></span>(java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/Mod.html" title="class in fr.flowarg.flowupdater.download.json">Mod</a>&gt;&nbsp;mods,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#AbstractForgeVersion-java.util.List-java.util.List-java.util.List-java.lang.String-fr.flowarg.flowupdater.utils.ModFileDeleter-fr.flowarg.flowupdater.download.json.OptiFineInfo-fr.flowarg.flowupdater.download.json.CurseModPackInfo-fr.flowarg.flowupdater.download.json.ModrinthModPackInfo-boolean-">AbstractForgeVersion</a></span>(java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/Mod.html" title="class in fr.flowarg.flowupdater.download.json">Mod</a>&gt;&nbsp;mods,
                     java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/CurseFileInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseFileInfo</a>&gt;&nbsp;curseMods,
+                    java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/ModrinthVersionInfo.html" title="class in fr.flowarg.flowupdater.download.json">ModrinthVersionInfo</a>&gt;&nbsp;modrinthMods,
                     java.lang.String&nbsp;forgeVersion,
                     <a href="../../../../fr/flowarg/flowupdater/utils/ModFileDeleter.html" title="class in fr.flowarg.flowupdater.utils">ModFileDeleter</a>&nbsp;fileDeleter,
                     <a href="../../../../fr/flowarg/flowupdater/download/json/OptiFineInfo.html" title="class in fr.flowarg.flowupdater.download.json">OptiFineInfo</a>&nbsp;optiFineInfo,
-                    <a href="../../../../fr/flowarg/flowupdater/download/json/CurseModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseModPackInfo</a>&nbsp;modPackInfo,
+                    <a href="../../../../fr/flowarg/flowupdater/download/json/CurseModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseModPackInfo</a>&nbsp;curseModPackInfo,
+                    <a href="../../../../fr/flowarg/flowupdater/download/json/ModrinthModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">ModrinthModPackInfo</a>&nbsp;modrinthModPackInfo,
                     boolean&nbsp;old)</code>
 <div class="block">Use <a href="../../../../fr/flowarg/flowupdater/versions/ForgeVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions"><code>ForgeVersionBuilder</code></a> to instantiate this class.</div>
 </td>
@@ -276,78 +286,90 @@ implements <a href="../../../../fr/flowarg/flowupdater/integrations/curseforgein
 </td>
 </tr>
 <tr id="i5" class="rowColor">
+<td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/download/json/CurseModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseModPackInfo</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#getCurseModPackInfo--">getCurseModPackInfo</a></span>()</code>
+<div class="block">Get information about the mod pack to update.</div>
+</td>
+</tr>
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/CurseFileInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseFileInfo</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#getCurseMods--">getCurseMods</a></span>()</code>
 <div class="block">Get all curse mods to update.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/download/DownloadList.html" title="class in fr.flowarg.flowupdater.download">DownloadList</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#getDownloadList--">getDownloadList</a></span>()</code>
 <div class="block">Get the <a href="../../../../fr/flowarg/flowupdater/download/DownloadList.html" title="class in fr.flowarg.flowupdater.download"><code>DownloadList</code></a> object.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/utils/ModFileDeleter.html" title="class in fr.flowarg.flowupdater.utils">ModFileDeleter</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#getFileDeleter--">getFileDeleter</a></span>()</code>
 <div class="block">Get the mod file deleter assigned to this version.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#getForgeVersion--">getForgeVersion</a></span>()</code>
 <div class="block">Get the forge version.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>java.net.URL</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#getInstallerUrl--">getInstallerUrl</a></span>()</code>
 <div class="block">Get the url to the installer.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>fr.flowarg.flowlogger.ILogger</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#getLogger--">getLogger</a></span>()</code>
 <div class="block">Get the <code>ILogger</code> object.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
-<td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/download/json/CurseModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseModPackInfo</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#getModPackInfo--">getModPackInfo</a></span>()</code>
+<tr id="i12" class="altColor">
+<td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/download/json/ModrinthModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">ModrinthModPackInfo</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#getModrinthModPackInfo--">getModrinthModPackInfo</a></span>()</code>
 <div class="block">Get information about the mod pack to update.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
+<td class="colFirst"><code>java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/ModrinthVersionInfo.html" title="class in fr.flowarg.flowupdater.download.json">ModrinthVersionInfo</a>&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#getModrinthMods--">getModrinthMods</a></span>()</code>
+<div class="block">Get all modrinth mods to update.</div>
+</td>
+</tr>
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/Mod.html" title="class in fr.flowarg.flowupdater.download.json">Mod</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#getMods--">getMods</a></span>()</code>
 <div class="block">Get all processed mods / mods to process.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/download/json/OptiFineInfo.html" title="class in fr.flowarg.flowupdater.download.json">OptiFineInfo</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#getOptiFineInfo--">getOptiFineInfo</a></span>()</code>
 <div class="block">Get given OptiFine information.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#install-java.nio.file.Path-">install</a></span>(java.nio.file.Path&nbsp;dirToInstall)</code>
 <div class="block">Install the current mod loader in a specified directory.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#installMods-java.nio.file.Path-">installMods</a></span>(java.nio.file.Path&nbsp;modsDir)</code>
 <div class="block">Install all mods in the mods' directory.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#isModLoaderAlreadyInstalled-java.nio.file.Path-">isModLoaderAlreadyInstalled</a></span>(@NotNull java.nio.file.Path&nbsp;installDir)</code>
 <div class="block">Check if the current mod loader is already installed.</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>protected <a href="../../../../fr/flowarg/flowupdater/versions/IModLoaderVersion.ModLoaderLauncherEnvironment.html" title="class in fr.flowarg.flowupdater.versions">IModLoaderVersion.ModLoaderLauncherEnvironment</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#makeCommand-java.nio.file.Path-java.nio.file.Path-java.nio.file.Path-">makeCommand</a></span>(@NotNull java.nio.file.Path&nbsp;patchedInstaller,
            @NotNull java.nio.file.Path&nbsp;dirToInstall,
@@ -356,14 +378,14 @@ implements <a href="../../../../fr/flowarg/flowupdater/integrations/curseforgein
  to launch the mod loader's launcher.</div>
 </td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#packPatchedInstaller-java.nio.file.Path-java.nio.file.Path-">packPatchedInstaller</a></span>(@NotNull java.nio.file.Path&nbsp;tempDir,
                     java.nio.file.Path&nbsp;tempInstallerDir)</code>
 <div class="block">This method packs the modified installer to a JAR file.</div>
 </td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#patchForgeInstaller-java.nio.file.Path-java.nio.file.Path-java.nio.file.Path-">patchForgeInstaller</a></span>(java.nio.file.Path&nbsp;install,
                    java.nio.file.Path&nbsp;patches,
@@ -371,17 +393,23 @@ implements <a href="../../../../fr/flowarg/flowupdater/integrations/curseforgein
 <div class="block">This method has to patch the Forge's installer with FlowUpdater's changes.</div>
 </td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i22" class="altColor">
 <td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/versions/IModLoaderVersion.ModLoaderLauncherEnvironment.html" title="class in fr.flowarg.flowupdater.versions">IModLoaderVersion.ModLoaderLauncherEnvironment</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#prepareModLoaderLauncher-java.nio.file.Path-java.io.InputStream-">prepareModLoaderLauncher</a></span>(@NotNull java.nio.file.Path&nbsp;dirToInstall,
                         java.io.InputStream&nbsp;stream)</code>
 <div class="block">Various setup before mod loader's installer launch.</div>
 </td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#setAllCurseMods-java.util.List-">setAllCurseMods</a></span>(java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/Mod.html" title="class in fr.flowarg.flowupdater.download.json">Mod</a>&gt;&nbsp;allCurseMods)</code>
 <div class="block">Define all curse mods to update.</div>
+</td>
+</tr>
+<tr id="i24" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html#setAllModrinthMods-java.util.List-">setAllModrinthMods</a></span>(java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/Mod.html" title="class in fr.flowarg.flowupdater.download.json">Mod</a>&gt;&nbsp;modrinthMods)</code>
+<div class="block">Define all modrinth mods to update.</div>
 </td>
 </tr>
 </table>
@@ -431,6 +459,15 @@ implements <a href="../../../../fr/flowarg/flowupdater/integrations/curseforgein
 <pre>protected final&nbsp;java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/CurseFileInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseFileInfo</a>&gt; curseMods</pre>
 </li>
 </ul>
+<a name="modrinthMods">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>modrinthMods</h4>
+<pre>protected final&nbsp;java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/ModrinthVersionInfo.html" title="class in fr.flowarg.flowupdater.download.json">ModrinthVersionInfo</a>&gt; modrinthMods</pre>
+</li>
+</ul>
 <a name="fileDeleter">
 <!--   -->
 </a>
@@ -449,13 +486,22 @@ implements <a href="../../../../fr/flowarg/flowupdater/integrations/curseforgein
 <pre>protected final&nbsp;<a href="../../../../fr/flowarg/flowupdater/download/json/OptiFineInfo.html" title="class in fr.flowarg.flowupdater.download.json">OptiFineInfo</a> optiFineInfo</pre>
 </li>
 </ul>
-<a name="modPackInfo">
+<a name="curseModPackInfo">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>modPackInfo</h4>
-<pre>protected final&nbsp;<a href="../../../../fr/flowarg/flowupdater/download/json/CurseModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseModPackInfo</a> modPackInfo</pre>
+<h4>curseModPackInfo</h4>
+<pre>protected final&nbsp;<a href="../../../../fr/flowarg/flowupdater/download/json/CurseModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseModPackInfo</a> curseModPackInfo</pre>
+</li>
+</ul>
+<a name="modrinthModPackInfo">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>modrinthModPackInfo</h4>
+<pre>protected final&nbsp;<a href="../../../../fr/flowarg/flowupdater/download/json/ModrinthModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">ModrinthModPackInfo</a> modrinthModPackInfo</pre>
 </li>
 </ul>
 <a name="old">
@@ -529,7 +575,7 @@ implements <a href="../../../../fr/flowarg/flowupdater/integrations/curseforgein
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="AbstractForgeVersion-java.util.List-java.util.List-java.lang.String-fr.flowarg.flowupdater.utils.ModFileDeleter-fr.flowarg.flowupdater.download.json.OptiFineInfo-fr.flowarg.flowupdater.download.json.CurseModPackInfo-boolean-">
+<a name="AbstractForgeVersion-java.util.List-java.util.List-java.util.List-java.lang.String-fr.flowarg.flowupdater.utils.ModFileDeleter-fr.flowarg.flowupdater.download.json.OptiFineInfo-fr.flowarg.flowupdater.download.json.CurseModPackInfo-fr.flowarg.flowupdater.download.json.ModrinthModPackInfo-boolean-">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -537,10 +583,12 @@ implements <a href="../../../../fr/flowarg/flowupdater/integrations/curseforgein
 <h4>AbstractForgeVersion</h4>
 <pre>protected&nbsp;AbstractForgeVersion(java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/Mod.html" title="class in fr.flowarg.flowupdater.download.json">Mod</a>&gt;&nbsp;mods,
                                java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/CurseFileInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseFileInfo</a>&gt;&nbsp;curseMods,
+                               java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/ModrinthVersionInfo.html" title="class in fr.flowarg.flowupdater.download.json">ModrinthVersionInfo</a>&gt;&nbsp;modrinthMods,
                                java.lang.String&nbsp;forgeVersion,
                                <a href="../../../../fr/flowarg/flowupdater/utils/ModFileDeleter.html" title="class in fr.flowarg.flowupdater.utils">ModFileDeleter</a>&nbsp;fileDeleter,
                                <a href="../../../../fr/flowarg/flowupdater/download/json/OptiFineInfo.html" title="class in fr.flowarg.flowupdater.download.json">OptiFineInfo</a>&nbsp;optiFineInfo,
-                               <a href="../../../../fr/flowarg/flowupdater/download/json/CurseModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseModPackInfo</a>&nbsp;modPackInfo,
+                               <a href="../../../../fr/flowarg/flowupdater/download/json/CurseModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseModPackInfo</a>&nbsp;curseModPackInfo,
+                               <a href="../../../../fr/flowarg/flowupdater/download/json/ModrinthModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">ModrinthModPackInfo</a>&nbsp;modrinthModPackInfo,
                                boolean&nbsp;old)</pre>
 <div class="block">Use <a href="../../../../fr/flowarg/flowupdater/versions/ForgeVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions"><code>ForgeVersionBuilder</code></a> to instantiate this class.</div>
 <dl>
@@ -550,7 +598,7 @@ implements <a href="../../../../fr/flowarg/flowupdater/integrations/curseforgein
 <dd><code>forgeVersion</code> - to install.</dd>
 <dd><code>fileDeleter</code> - <a href="../../../../fr/flowarg/flowupdater/utils/ModFileDeleter.html" title="class in fr.flowarg.flowupdater.utils"><code>ModFileDeleter</code></a> used to clean up mods' dir.</dd>
 <dd><code>optiFineInfo</code> - OptiFine version to install.</dd>
-<dd><code>modPackInfo</code> - mod pack information.</dd>
+<dd><code>curseModPackInfo</code> - mod pack information.</dd>
 <dd><code>old</code> - if the current version of forge is an old forge version.</dd>
 </dl>
 </li>
@@ -876,6 +924,23 @@ implements <a href="../../../../fr/flowarg/flowupdater/integrations/curseforgein
 </dl>
 </li>
 </ul>
+<a name="getModrinthMods--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getModrinthMods</h4>
+<pre>public&nbsp;java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/ModrinthVersionInfo.html" title="class in fr.flowarg.flowupdater.download.json">ModrinthVersionInfo</a>&gt;&nbsp;getModrinthMods()</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../fr/flowarg/flowupdater/integrations/modrinthintegration/IModrinthFeaturesUser.html#getModrinthMods--">IModrinthFeaturesUser</a></code></span></div>
+<div class="block">Get all modrinth mods to update.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../fr/flowarg/flowupdater/integrations/modrinthintegration/IModrinthFeaturesUser.html#getModrinthMods--">getModrinthMods</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../fr/flowarg/flowupdater/integrations/modrinthintegration/IModrinthFeaturesUser.html" title="interface in fr.flowarg.flowupdater.integrations.modrinthintegration">IModrinthFeaturesUser</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>all modrinth mods.</dd>
+</dl>
+</li>
+</ul>
 <a name="getOptiFineInfo--">
 <!--   -->
 </a>
@@ -890,19 +955,53 @@ implements <a href="../../../../fr/flowarg/flowupdater/integrations/curseforgein
 </dl>
 </li>
 </ul>
-<a name="getModPackInfo--">
+<a name="getCurseModPackInfo--">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getModPackInfo</h4>
-<pre>public&nbsp;<a href="../../../../fr/flowarg/flowupdater/download/json/CurseModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseModPackInfo</a>&nbsp;getModPackInfo()</pre>
+<h4>getCurseModPackInfo</h4>
+<pre>public&nbsp;<a href="../../../../fr/flowarg/flowupdater/download/json/CurseModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseModPackInfo</a>&nbsp;getCurseModPackInfo()</pre>
 <div class="block">Get information about the mod pack to update.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/ICurseFeaturesUser.html#getModPackInfo--">getModPackInfo</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/ICurseFeaturesUser.html" title="interface in fr.flowarg.flowupdater.integrations.curseforgeintegration">ICurseFeaturesUser</a></code></dd>
+<dd><code><a href="../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/ICurseFeaturesUser.html#getCurseModPackInfo--">getCurseModPackInfo</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/ICurseFeaturesUser.html" title="interface in fr.flowarg.flowupdater.integrations.curseforgeintegration">ICurseFeaturesUser</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>mod pack's information.</dd>
+</dl>
+</li>
+</ul>
+<a name="getModrinthModPackInfo--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getModrinthModPackInfo</h4>
+<pre>public&nbsp;<a href="../../../../fr/flowarg/flowupdater/download/json/ModrinthModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">ModrinthModPackInfo</a>&nbsp;getModrinthModPackInfo()</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../fr/flowarg/flowupdater/integrations/modrinthintegration/IModrinthFeaturesUser.html#getModrinthModPackInfo--">IModrinthFeaturesUser</a></code></span></div>
+<div class="block">Get information about the mod pack to update.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../fr/flowarg/flowupdater/integrations/modrinthintegration/IModrinthFeaturesUser.html#getModrinthModPackInfo--">getModrinthModPackInfo</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../fr/flowarg/flowupdater/integrations/modrinthintegration/IModrinthFeaturesUser.html" title="interface in fr.flowarg.flowupdater.integrations.modrinthintegration">IModrinthFeaturesUser</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>mod pack's information.</dd>
+</dl>
+</li>
+</ul>
+<a name="setAllModrinthMods-java.util.List-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setAllModrinthMods</h4>
+<pre>public&nbsp;void&nbsp;setAllModrinthMods(java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/Mod.html" title="class in fr.flowarg.flowupdater.download.json">Mod</a>&gt;&nbsp;modrinthMods)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../../../fr/flowarg/flowupdater/integrations/modrinthintegration/IModrinthFeaturesUser.html#setAllModrinthMods-java.util.List-">IModrinthFeaturesUser</a></code></span></div>
+<div class="block">Define all modrinth mods to update.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../fr/flowarg/flowupdater/integrations/modrinthintegration/IModrinthFeaturesUser.html#setAllModrinthMods-java.util.List-">setAllModrinthMods</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../fr/flowarg/flowupdater/integrations/modrinthintegration/IModrinthFeaturesUser.html" title="interface in fr.flowarg.flowupdater.integrations.modrinthintegration">IModrinthFeaturesUser</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>modrinthMods</code> - modrinth mods to define.</dd>
 </dl>
 </li>
 </ul>
