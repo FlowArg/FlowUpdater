@@ -12,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
@@ -95,7 +94,7 @@ public class CurseForgeIntegration extends Integration
     }
 
     // Debug TODO: Remove this when CurseForge API is fixed.
-    public static int bad = 0;
+    public int bad = 0;
 
     /**
      * Parse the CurseForge API to retrieve the mod file.
@@ -108,9 +107,8 @@ public class CurseForgeIntegration extends Integration
 
         if(downloadURLElement instanceof JsonNull)
         {
-            logger.debug("Bad mod: " + jsonResponse);
-            bad++;
-            // TODO: Remove this when CurseForge API is fixed.
+            logger.debug("Mod not available: " + jsonResponse);
+            this.bad++;
             return null;
         }
 
@@ -124,14 +122,6 @@ public class CurseForgeIntegration extends Integration
             if(hash.length() == 40)
                 sha1.set(hash);
         });
-
-        if(sha1.get().isEmpty())
-        {
-            logger.debug("Bad mod: " + jsonResponse);
-            bad++;
-            // TODO: Remove this when CurseForge API is fixed.
-            return null;
-        }
 
         return new CurseMod(fileName, downloadURL, sha1.get(), fileLength);
     }
@@ -154,7 +144,10 @@ public class CurseForgeIntegration extends Integration
         final CurseMod modPackFile = this.parseModFile(link);
 
         if(modPackFile == null)
+        {
+            this.logger.err("This mod pack isn't available anymore on CurseForge for 3rd parties. ");
             return null;
+        }
 
         final Path outPath = this.folder.resolve(modPackFile.getName());
         if(Files.notExists(outPath) || !FileUtils.getSHA1(outPath).equalsIgnoreCase(modPackFile.getSha1()))
@@ -202,20 +195,49 @@ public class CurseForgeIntegration extends Integration
         this.logger.info("Fetching mods...");
 
         final Path dirPath = this.folder.getParent();
-        final BufferedReader manifestReader = Files.newBufferedReader(dirPath.resolve("manifest.json"));
-        final JsonObject manifestObj = JsonParser.parseReader(manifestReader).getAsJsonObject();
+        final String manifestJson = StringUtils.toString(Files.readAllLines(dirPath.resolve("manifest.json")));
+        final JsonObject manifestObj = JsonParser.parseString(manifestJson).getAsJsonObject();
+        final String modPackName = manifestObj.get("name").getAsString();
+        final String modPackVersion = manifestObj.get("version").getAsString();
+        final String modPackAuthor = manifestObj.get("author").getAsString();
+        final List<CurseModPack.CurseModPackMod> mods = this.processCacheFile(dirPath, this.populateManifest(manifestObj));
+
+        return new CurseModPack(modPackName, modPackVersion, modPackAuthor, mods);
+    }
+
+    private List<ProjectMod> populateManifest(JsonObject manifestObj)
+    {
         final List<ProjectMod> manifestFiles = new ArrayList<>();
 
         manifestObj.getAsJsonArray("files")
                 .forEach(jsonElement -> manifestFiles.add(ProjectMod.fromJsonObject(jsonElement.getAsJsonObject())));
 
+        return manifestFiles;
+    }
+
+    private List<CurseModPack.CurseModPackMod> processCacheFile(Path dirPath, List<ProjectMod> manifestFiles) throws Exception
+    {
         final Path cachePath = dirPath.resolve("manifest.cache.json");
 
         if(Files.notExists(cachePath))
             Files.write(cachePath, Collections.singletonList("[]"), StandardCharsets.UTF_8);
 
-        final BufferedReader cacheReader = Files.newBufferedReader(cachePath);
-        final JsonArray cacheArray = JsonParser.parseReader(cacheReader).getAsJsonArray();
+        String json = StringUtils.toString(Files.readAllLines(cachePath, StandardCharsets.UTF_8));
+
+        if(json.contains("\"md5\""))
+        {
+            Files.delete(cachePath);
+            Files.write(cachePath, Collections.singletonList("[]"), StandardCharsets.UTF_8);
+            json = StringUtils.toString(Files.readAllLines(cachePath, StandardCharsets.UTF_8));
+        }
+
+        return this.deserializeWriteCache(json, manifestFiles, cachePath);
+    }
+
+    private List<CurseModPack.CurseModPackMod> deserializeWriteCache(String json,
+            List<ProjectMod> manifestFiles, Path cachePath) throws Exception
+    {
+        final JsonArray cacheArray = JsonParser.parseString(json).getAsJsonArray();
         final Queue<CurseModPack.CurseModPackMod> mods = new ConcurrentLinkedQueue<>();
 
         cacheArray.forEach(jsonElement -> {
@@ -231,16 +253,9 @@ public class CurseForgeIntegration extends Integration
         });
 
         IOUtils.executeAsyncForEach(manifestFiles, Executors.newWorkStealingPool(), projectMod -> this.fetchAndSerializeProjectMod(projectMod, cacheArray, mods));
-
-        manifestReader.close();
-        cacheReader.close();
         Files.write(cachePath, Collections.singletonList(cacheArray.toString()), StandardCharsets.UTF_8);
 
-        final String modPackName = manifestObj.get("name").getAsString();
-        final String modPackVersion = manifestObj.get("version").getAsString();
-        final String modPackAuthor = manifestObj.get("author").getAsString();
-
-        return new CurseModPack(modPackName, modPackVersion, modPackAuthor, new ArrayList<>(mods));
+        return new ArrayList<>(mods);
     }
 
     private void fetchAndSerializeProjectMod(@NotNull ProjectMod projectMod, JsonArray cacheArray,
@@ -279,12 +294,13 @@ public class CurseForgeIntegration extends Integration
     {
         if(Files.notExists(flPath.getParent()))
             Files.createDirectories(flPath.getParent());
+
         try(OutputStream pathStream = Files.newOutputStream(flPath);
             BufferedOutputStream fo = new BufferedOutputStream(pathStream);
-            InputStream is = zipFile.getInputStream(entry)
-        )
-        {
-            while (is.available() > 0) fo.write(is.read());
+            InputStream is = zipFile.getInputStream(entry)) {
+
+            while (is.available() > 0)
+                fo.write(is.read());
         }
     }
 

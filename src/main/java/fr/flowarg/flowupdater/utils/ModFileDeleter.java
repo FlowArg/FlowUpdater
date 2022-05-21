@@ -60,7 +60,7 @@ public class ModFileDeleter implements IFileDeleter
                 {
                     if (optiFine.getName().equalsIgnoreCase(fileInDir.getFileName().toString()))
                     {
-                        if (FileUtils.getFileSizeBytes(fileInDir) == optiFine.getSize())
+                        if (Files.size(fileInDir) == optiFine.getSize())
                         {
                             badFiles.remove(fileInDir);
                             verifiedFiles.add(fileInDir);
@@ -78,7 +78,7 @@ public class ModFileDeleter implements IFileDeleter
                     if (mod.getName().equalsIgnoreCase(fileInDir.getFileName().toString()))
                     {
                         if (FileUtils.getSHA1(fileInDir).equalsIgnoreCase(mod.getSha1()) &&
-                                FileUtils.getFileSizeBytes(fileInDir) == mod.getSize())
+                                Files.size(fileInDir) == mod.getSize())
                         {
                             badFiles.remove(fileInDir);
                             verifiedFiles.add(fileInDir);
@@ -113,7 +113,7 @@ public class ModFileDeleter implements IFileDeleter
         {
             if (mod.getName().equalsIgnoreCase(fileInDir.getFileName().toString()))
             {
-                if (FileUtils.getFileSizeBytes(fileInDir) == mod.getLength() && FileUtils.getSHA1(fileInDir).equalsIgnoreCase(mod.getSha1()))
+                if (Files.size(fileInDir) == mod.getLength() && (mod.getSha1().isEmpty() || FileUtils.getSHA1(fileInDir).equalsIgnoreCase(mod.getSha1())))
                 {
                     badFiles.remove(fileInDir);
                     verifiedFiles.add(fileInDir);

@@ -203,12 +203,11 @@ public class IOUtils
      */
     public static Path getMinecraftFolder()
     {
-        if(cachedMinecraftPath == null)
+        return cachedMinecraftPath == null ?
             cachedMinecraftPath = Paths.get(
                     Platform.isOnWindows() ? System.getenv("APPDATA")
-                    : (Platform.isOnMac() ? System.getProperty("user.home") + "/Library/Application Support/" :
-                            System.getProperty("user.home")), ".minecraft"
-            );
-        return cachedMinecraftPath;
+                    : (Platform.isOnMac() ? System.getProperty("user.home") + "/Library/Application Support/"
+                            : System.getProperty("user.home")), ".minecraft")
+                : cachedMinecraftPath;
     }
 }

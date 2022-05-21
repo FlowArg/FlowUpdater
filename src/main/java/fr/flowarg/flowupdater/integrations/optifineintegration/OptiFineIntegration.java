@@ -1,6 +1,5 @@
 package fr.flowarg.flowupdater.integrations.optifineintegration;
 
-import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.integrations.Integration;
 import fr.flowarg.flowupdater.utils.FlowUpdaterException;
@@ -71,7 +70,7 @@ public class OptiFineIntegration extends Integration
     private void checkForUpdates(String name, InputStream byteStream, int length, String newUrl) throws Exception
     {
         final Path outputPath = this.folder.resolve(name);
-        if(Files.notExists(outputPath) || FileUtils.getFileSizeBytes(outputPath) != length)
+        if(Files.notExists(outputPath) || Files.size(outputPath) != length)
         {
             this.logger.info(String.format("Downloading %s from %s...", outputPath.getFileName().toString(), newUrl));
             Files.copy(byteStream, outputPath, StandardCopyOption.REPLACE_EXISTING);

@@ -90,7 +90,7 @@ public class VanillaDownloader
 
             if(Files.notExists(filePath) ||
                     !FileUtils.getSHA1(filePath).equalsIgnoreCase(downloadable.getSha1()) ||
-                    FileUtils.getFileSizeBytes(filePath) != downloadable.getSize())
+                    Files.size(filePath) != downloadable.getSize())
             {
                 IOUtils.download(this.logger, new URL(downloadable.getUrl()), filePath);
                 this.callback.onFileDownloaded(filePath);
@@ -104,11 +104,13 @@ public class VanillaDownloader
     private void extractNatives() throws IOException
     {
         boolean flag = false;
-        final List<Path> existingNatives = Files.list(this.natives).collect(Collectors.toList());
+        final List<Path> existingNatives = FileUtils.list(this.natives);
         if (!existingNatives.isEmpty())
         {
-            for (Path minecraftNative : Files.list(this.natives)
-                    .filter(path -> path.getFileName().toString().endsWith(".jar")).collect(Collectors.toList()))
+            for (Path minecraftNative : FileUtils.list(this.natives)
+                    .stream()
+                    .filter(path -> path.getFileName().toString().endsWith(".jar"))
+                    .collect(Collectors.toList()))
             {
                 final JarFile jarFile = new JarFile(minecraftNative.toFile());
                 final Enumeration<? extends ZipEntry> entries = jarFile.entries();
@@ -175,10 +177,10 @@ public class VanillaDownloader
             {
                 final Path downloadPath = this.assets.resolve(assetDownloadable.getFile());
 
-                if (Files.notExists(downloadPath) || FileUtils.getFileSizeBytes(downloadPath) != assetDownloadable.getSize())
+                if (Files.notExists(downloadPath) || Files.size(downloadPath) != assetDownloadable.getSize())
                 {
                     final Path localAssetPath = IOUtils.getMinecraftFolder().resolve("assets").resolve(assetDownloadable.getFile());
-                    if (Files.exists(localAssetPath) && FileUtils.getFileSizeBytes(localAssetPath) == assetDownloadable.getSize())
+                    if (Files.exists(localAssetPath) && Files.size(localAssetPath) == assetDownloadable.getSize())
                         IOUtils.copy(this.logger, localAssetPath, downloadPath);
                     else
                     {

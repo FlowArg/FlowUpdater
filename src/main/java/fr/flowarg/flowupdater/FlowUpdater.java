@@ -172,7 +172,7 @@ public class FlowUpdater
 
             if(Files.notExists(filePath) ||
                     !FileUtils.getSHA1(filePath).equalsIgnoreCase(mod.getSha1()) ||
-                    FileUtils.getFileSizeBytes(filePath) != mod.getSize())
+                    Files.size(filePath) != mod.getSize())
                 this.downloadList.getMods().add(mod);
         }
     }

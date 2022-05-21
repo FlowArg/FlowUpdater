@@ -72,7 +72,7 @@ public class IntegrationManager
                 final Path filePath = dir.resolve(mod.getName());
 
                 if(Files.exists(filePath)
-                        && FileUtils.getFileSizeBytes(filePath) == mod.getLength()
+                        && Files.size(filePath) == mod.getLength()
                         && (FileUtils.getSHA1(filePath).equalsIgnoreCase(mod.getSha1())))
                     continue;
 
@@ -106,8 +106,8 @@ public class IntegrationManager
                     if(flag) return;
 
                     if(Files.exists(filePath)
-                            && FileUtils.getFileSizeBytes(filePath) == mod.getLength()
-                            && (FileUtils.getSHA1(filePath).equalsIgnoreCase(mod.getSha1())))
+                            && Files.size(filePath) == mod.getLength()
+                            && (mod.getSha1().isEmpty() || FileUtils.getSHA1(filePath).equalsIgnoreCase(mod.getSha1())))
                         return;
 
                     Files.deleteIfExists(filePath);
