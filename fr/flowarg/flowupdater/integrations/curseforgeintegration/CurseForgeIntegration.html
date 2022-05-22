@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -73,13 +73,13 @@ var activeTableTab = "activeTableTab";
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#fields.inherited.from.class.fr.flowarg.flowupdater.integrations.Integration">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
@@ -127,17 +127,6 @@ extends <a href="../../../../../fr/flowarg/flowupdater/integrations/Integration.
 <!--   -->
 </a>
 <h3>Field Summary</h3>
-<table class="memberSummary" border="0" cellpadding="3" cellspacing="0" summary="Field Summary table, listing fields, and an explanation">
-<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colLast" scope="col">Field and Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>int</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/CurseForgeIntegration.html#bad">bad</a></span></code>&nbsp;</td>
-</tr>
-</table>
 <ul class="blockList">
 <li class="blockList"><a name="fields.inherited.from.class.fr.flowarg.flowupdater.integrations.Integration">
 <!--   -->
@@ -185,9 +174,13 @@ extends <a href="../../../../../fr/flowarg/flowupdater/integrations/Integration.
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/CurseForgeIntegration.html#fetchModLink-fr.flowarg.flowupdater.download.json.CurseFileInfo-">fetchModLink</a></span>(<a href="../../../../../fr/flowarg/flowupdater/download/json/CurseFileInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseFileInfo</a>&nbsp;curseFileInfo)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/CurseForgeIntegration.html#fetchModLink-fr.flowarg.flowupdater.download.json.CurseFileInfo-">fetchModLink</a></span>(@NotNull <a href="../../../../../fr/flowarg/flowupdater/download/json/CurseFileInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseFileInfo</a>&nbsp;curseFileInfo)</code>&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/CurseForgeIntegration.html#getBad--">getBad</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="../../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/CurseModPack.html" title="class in fr.flowarg.flowupdater.integrations.curseforgeintegration">CurseModPack</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../fr/flowarg/flowupdater/integrations/curseforgeintegration/CurseForgeIntegration.html#getCurseModPack-fr.flowarg.flowupdater.download.json.CurseModPackInfo-">getCurseModPack</a></span>(<a href="../../../../../fr/flowarg/flowupdater/download/json/CurseModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseModPackInfo</a>&nbsp;info)</code>
 <div class="block">Get a CurseForge's mod pack object with a project identifier and a file identifier.</div>
@@ -209,23 +202,6 @@ extends <a href="../../../../../fr/flowarg/flowupdater/integrations/Integration.
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
-<!-- ============ FIELD DETAIL =========== -->
-<ul class="blockList">
-<li class="blockList"><a name="field.detail">
-<!--   -->
-</a>
-<h3>Field Detail</h3>
-<a name="bad">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>bad</h4>
-<pre>public&nbsp;int bad</pre>
-</li>
-</ul>
-</li>
-</ul>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <ul class="blockList">
 <li class="blockList"><a name="constructor.detail">
@@ -274,7 +250,17 @@ extends <a href="../../../../../fr/flowarg/flowupdater/integrations/Integration.
 <ul class="blockList">
 <li class="blockList">
 <h4>fetchModLink</h4>
-<pre>public&nbsp;java.lang.String&nbsp;fetchModLink(<a href="../../../../../fr/flowarg/flowupdater/download/json/CurseFileInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseFileInfo</a>&nbsp;curseFileInfo)</pre>
+<pre>public&nbsp;java.lang.String&nbsp;fetchModLink(@NotNull
+                                     @NotNull <a href="../../../../../fr/flowarg/flowupdater/download/json/CurseFileInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseFileInfo</a>&nbsp;curseFileInfo)</pre>
+</li>
+</ul>
+<a name="getBad--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getBad</h4>
+<pre>public&nbsp;int&nbsp;getBad()</pre>
 </li>
 </ul>
 <a name="getCurseModPack-fr.flowarg.flowupdater.download.json.CurseModPackInfo-">
@@ -349,13 +335,13 @@ extends <a href="../../../../../fr/flowarg/flowupdater/integrations/Integration.
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#fields.inherited.from.class.fr.flowarg.flowupdater.integrations.Integration">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
