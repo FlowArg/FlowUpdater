@@ -7,7 +7,14 @@ import fr.flowarg.flowcompat.Platform;
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.FlowUpdater;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -195,6 +202,65 @@ public class IOUtils
         {
             throw new FlowUpdaterException(e);
         }
+    }
+
+    public static void downloadArtifacts(ILogger logger, Path dir, String repositoryUrl, String[] metadata)
+    {
+        final String group = metadata[0];
+        final String name = metadata[1];
+        final String version = metadata[2];
+
+        final String groupSlash = group.replace('.', '/');
+        final String groupDir = group.replace(".", dir.getFileSystem().getSeparator());
+
+        try
+        {
+            IOUtils.download(logger,
+                             new URL(repositoryUrl + groupSlash + '/' + name + '/' + version + '/' +
+                                             String.format("%s-%s.jar", name, version)),
+                             dir.resolve(groupDir)
+                                     .resolve(name)
+                                     .resolve(version)
+                                     .resolve(String.format("%s-%s.jar", name, version)));
+        } catch (Exception e)
+        {
+            logger.printStackTrace(e);
+        }
+    }
+
+    public static @Nullable String getLatestArtifactVersion(String mavenMetadataUrl)
+    {
+        try
+        {
+            final DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            final DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            final Document doc = dBuilder.parse(new URL(mavenMetadataUrl).openStream());
+
+            return getLatestArtifactVersion(doc);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static String getLatestArtifactVersion(@NotNull Document doc)
+    {
+        doc.getDocumentElement().normalize();
+
+        final Element root = doc.getDocumentElement();
+        final NodeList nList = root.getElementsByTagName("versioning");
+        String version = "";
+
+        for (int temp = 0; temp < nList.getLength(); temp++)
+        {
+            final Node node = nList.item(temp);
+            if (node.getNodeType() != Node.ELEMENT_NODE)
+                continue;
+            version = ((Element) node).getElementsByTagName("release").item(0).getTextContent();
+        }
+        return version;
     }
 
     /**

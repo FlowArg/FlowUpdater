@@ -7,15 +7,14 @@ import fr.flowarg.flowupdater.download.*;
 import fr.flowarg.flowupdater.download.json.ExternalFile;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.integrations.IntegrationManager;
+import fr.flowarg.flowupdater.integrations.curseforgeintegration.ICurseFeaturesUser;
+import fr.flowarg.flowupdater.integrations.modrinthintegration.IModrinthFeaturesUser;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.UpdaterOptions;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
 import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
-import fr.flowarg.flowupdater.versions.AbstractForgeVersion;
-import fr.flowarg.flowupdater.versions.FabricVersion;
-import fr.flowarg.flowupdater.versions.IModLoaderVersion;
-import fr.flowarg.flowupdater.versions.VanillaVersion;
+import fr.flowarg.flowupdater.versions.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -137,21 +136,18 @@ public class FlowUpdater
 
         final Path modsDirPath = dir.resolve("mods");
 
-        if(this.modLoaderVersion instanceof AbstractForgeVersion)
+        if(this.modLoaderVersion != null)
         {
-            final AbstractForgeVersion forgeVersion = (AbstractForgeVersion) this.modLoaderVersion;
-            this.checkMods(forgeVersion, modsDirPath);
-            this.integrationManager.loadCurseForgeIntegration(modsDirPath, forgeVersion);
-            this.integrationManager.loadModrinthIntegration(modsDirPath, forgeVersion);
-            this.integrationManager.loadOptiFineIntegration(modsDirPath, forgeVersion);
-        }
+            this.checkMods(this.modLoaderVersion, modsDirPath);
 
-        if (this.modLoaderVersion instanceof FabricVersion)
-        {
-            final FabricVersion fabricVersion = (FabricVersion) this.modLoaderVersion;
-            this.checkMods(fabricVersion, modsDirPath);
-            this.integrationManager.loadCurseForgeIntegration(modsDirPath, fabricVersion);
-            this.integrationManager.loadModrinthIntegration(modsDirPath, fabricVersion);
+            if(this.modLoaderVersion instanceof ICurseFeaturesUser)
+                this.integrationManager.loadCurseForgeIntegration(modsDirPath, (ICurseFeaturesUser)this.modLoaderVersion);
+
+            if(this.modLoaderVersion instanceof IModrinthFeaturesUser)
+                this.integrationManager.loadModrinthIntegration(modsDirPath, (IModrinthFeaturesUser)this.modLoaderVersion);
+
+            if(this.modLoaderVersion instanceof AbstractForgeVersion)
+                this.integrationManager.loadOptiFineIntegration(modsDirPath, (AbstractForgeVersion)this.modLoaderVersion);
         }
 
         if (Files.notExists(dir))
@@ -162,8 +158,8 @@ public class FlowUpdater
         if(this.modLoaderVersion != null)
             this.installModLoader(this.modLoaderVersion, dir, this.modLoaderVersion instanceof AbstractForgeVersion ?
                     "Forge" : (this.modLoaderVersion instanceof FabricVersion ?
-                    "Fabric" :
-                    "Unknown"));
+                    "Fabric" : (this.modLoaderVersion instanceof QuiltVersion ?
+                    "Quilt" : "Unknown")));
     }
 
     private void checkMods(@NotNull IModLoaderVersion modLoader, Path modsDir) throws Exception

@@ -37,7 +37,7 @@ public class IntegrationTests
         try
         {
             final VanillaVersion version = new VanillaVersion.VanillaVersionBuilder()
-                    .withName("1.18.1")
+                    .withName("1.18.2")
                     .build();
 
             final FlowUpdater updater = new FlowUpdater.FlowUpdaterBuilder()
@@ -52,7 +52,7 @@ public class IntegrationTests
             e.printStackTrace();
         }
 
-        this.basicAssertions(error, "1.18.1");
+        this.basicAssertions(error, "1.18.2");
     }
 
     @Order(2)
@@ -60,8 +60,8 @@ public class IntegrationTests
     public void testWithNewForgeUsage() throws Exception
     {
         boolean error = false;
-        final String vanilla = "1.18.1";
-        final String forge = "39.0.0";
+        final String vanilla = "1.18.2";
+        final String forge = "40.1.21";
         final String vanillaForge = vanilla + "-" + forge;
 
         try
@@ -135,7 +135,7 @@ public class IntegrationTests
         try
         {
             final VanillaVersion version = new VanillaVersion.VanillaVersionBuilder()
-                    .withName("1.18.1")
+                    .withName("1.18.2")
                     .build();
 
             final FabricVersion fabricVersion = new FabricVersion.FabricVersionBuilder().build();
@@ -153,8 +153,38 @@ public class IntegrationTests
             e.printStackTrace();
         }
 
-        this.basicAssertions(error, "1.18.1");
+        this.basicAssertions(error, "1.18.2");
         assertTrue(Files.exists(UPDATE_DIR.resolve("libraries").resolve("net").resolve("fabricmc").resolve("fabric-loader")));
+    }
+
+    @Order(5)
+    @Test
+    public void testWithQuilt() throws Exception
+    {
+        boolean error = false;
+        try
+        {
+            final VanillaVersion version = new VanillaVersion.VanillaVersionBuilder()
+                    .withName("1.18.2")
+                    .build();
+
+            final QuiltVersion quiltVersion = new QuiltVersion.QuiltVersionBuilder().build();
+
+            final FlowUpdater updater = new FlowUpdater.FlowUpdaterBuilder()
+                    .withVanillaVersion(version)
+                    .withModLoaderVersion(quiltVersion)
+                    .build();
+
+            updater.update(UPDATE_DIR);
+        }
+        catch (Exception e)
+        {
+            error = true;
+            e.printStackTrace();
+        }
+
+        this.basicAssertions(error, "1.18.2");
+        assertTrue(Files.exists(UPDATE_DIR.resolve("libraries").resolve("org").resolve("quiltmc").resolve("quilt-loader")));
     }
 
     private void basicAssertions(boolean error, String version) throws Exception

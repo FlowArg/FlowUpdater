@@ -31,13 +31,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The object that contains Fabric's stuff.
- * @author antoineok <a href="https://github.com/antoineok">antoineok's GitHub</a>
+ * The object that contains Quilt's stuff.
  */
-public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion, IModrinthFeaturesUser
+public class QuiltVersion implements ICurseFeaturesUser, IModLoaderVersion, IModrinthFeaturesUser
 {
     private final List<Mod> mods;
-    private final String fabricVersion;
+    private final String quiltVersion;
     private final List<CurseFileInfo> curseMods;
     private final List<ModrinthVersionInfo> modrinthMods;
     private final ModFileDeleter fileDeleter;
@@ -52,24 +51,24 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion, IMo
     private IProgressCallback callback;
 
     /**
-     * Use {@link FabricVersionBuilder} to instantiate this class.
+     * Use {@link QuiltVersionBuilder} to instantiate this class.
      * @param mods        {@link List<Mod>} to install.
      * @param curseMods   {@link List<CurseFileInfo>} to install.
-     * @param fabricVersion to install.
+     * @param quiltVersion to install.
      * @param fileDeleter {@link ModFileDeleter} used to clean up mods' dir.
      * @param curseModPackInfo {@link CurseModPackInfo} the mod pack you want to install.
      */
-    private FabricVersion(List<Mod> mods, List<CurseFileInfo> curseMods, List<ModrinthVersionInfo> modrinthMods, String fabricVersion,
+    private QuiltVersion(List<Mod> mods, List<CurseFileInfo> curseMods, List<ModrinthVersionInfo> modrinthMods, String quiltVersion,
             ModFileDeleter fileDeleter, CurseModPackInfo curseModPackInfo, ModrinthModPackInfo modrinthModPackInfo)
     {
         this.mods = mods;
         this.fileDeleter = fileDeleter;
         this.curseMods = curseMods;
         this.modrinthMods = modrinthMods;
-        this.fabricVersion = fabricVersion;
+        this.quiltVersion = quiltVersion;
         this.curseModPackInfo = curseModPackInfo;
         this.modrinthModPackInfo = modrinthModPackInfo;
-        this.installerVersion = IOUtils.getLatestArtifactVersion("https://maven.fabricmc.net/net/fabricmc/fabric-installer/maven-metadata.xml");
+        this.installerVersion = IOUtils.getLatestArtifactVersion("https://maven.quiltmc.org/repository/release/org/quiltmc/quilt-installer/maven-metadata.xml");
     }
 
     /**
@@ -80,29 +79,29 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion, IMo
     {
         return Files.exists(
                 installDir.resolve("libraries")
-                        .resolve("net")
-                        .resolve("fabricmc")
-                        .resolve("fabric-loader")
-                        .resolve(this.fabricVersion)
-                        .resolve("fabric-loader-" + this.fabricVersion + ".jar"));
+                        .resolve("org")
+                        .resolve("quiltmc")
+                        .resolve("quilt-loader")
+                        .resolve(this.quiltVersion)
+                        .resolve("quilt-loader-" + this.quiltVersion + ".jar"));
     }
 
-    private class FabricLauncherEnvironment extends ModLoaderLauncherEnvironment
+    private class QuiltLauncherEnvironment extends ModLoaderLauncherEnvironment
     {
-        private final Path fabric;
+        private final Path quilt;
 
-        public FabricLauncherEnvironment(List<String> command, Path tempDir, Path fabric)
+        public QuiltLauncherEnvironment(List<String> command, Path tempDir, Path quilt)
         {
             super(command, tempDir);
-            this.fabric = fabric;
+            this.quilt = quilt;
         }
 
-        public Path getFabric()
+        public Path getQuilt()
         {
-            return this.fabric;
+            return this.quilt;
         }
 
-        public void launchFabricInstaller() throws Exception
+        public void launchQuiltInstaller() throws Exception
         {
             final ProcessBuilder processBuilder = new ProcessBuilder(this.getCommand());
 
@@ -111,10 +110,10 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion, IMo
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
 
-            while ((line = reader.readLine()) != null) FabricVersion.this.logger.info(line);
+            while ((line = reader.readLine()) != null) QuiltVersion.this.logger.info(line);
 
             reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-            while ((line = reader.readLine()) != null) FabricVersion.this.logger.info(line);
+            while ((line = reader.readLine()) != null) QuiltVersion.this.logger.info(line);
 
             process.waitFor();
 
@@ -126,39 +125,37 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion, IMo
      * {@inheritDoc}
      */
     @Override
-    public FabricLauncherEnvironment prepareModLoaderLauncher(@NotNull Path dirToInstall, InputStream stream) throws IOException
+    public QuiltLauncherEnvironment prepareModLoaderLauncher(@NotNull Path dirToInstall, InputStream stream) throws IOException
     {
-        this.logger.info("Downloading fabric installer...");
+        this.logger.info("Downloading quilt installer...");
 
         final Path tempDirPath = dirToInstall.resolve(".flowupdater");
         FileUtils.deleteDirectory(tempDirPath);
-        final Path fabricPath = tempDirPath.resolve("tempfabric");
-        final Path installPath = tempDirPath.resolve(String.format("fabric-installer-%s.jar", installerVersion));
+        final Path quiltPath = tempDirPath.resolve("tempquilt");
+        final Path installPath = tempDirPath.resolve(String.format("quilt-installer-%s.jar", installerVersion));
 
         Files.createDirectories(tempDirPath);
-        Files.createDirectories(fabricPath);
+        Files.createDirectories(quiltPath);
 
         Files.copy(stream, installPath, StandardCopyOption.REPLACE_EXISTING);
-        return this.makeCommand(tempDirPath, installPath, fabricPath);
+        return this.makeCommand(tempDirPath, installPath, quiltPath);
     }
 
     @Contract("_, _, _ -> new")
-    private @NotNull FabricLauncherEnvironment makeCommand(Path tempDir, @NotNull Path install, @NotNull Path fabric)
+    private @NotNull QuiltLauncherEnvironment makeCommand(Path tempDir, @NotNull Path install, @NotNull Path quilt)
     {
         final List<String> command = new ArrayList<>();
         command.add("java");
         command.add("-Xmx256M");
         command.add("-jar");
         command.add(install.toString());
+        command.add("install");
         command.add("client");
-        command.add("-dir");
-        command.add(fabric.toString());
-        command.add("-mcversion");
         command.add(this.vanilla.getName());
-        command.add("-loader");
-        command.add(this.fabricVersion);
-        command.add("-noprofile");
-        return new FabricLauncherEnvironment(command, tempDir, fabric);
+        command.add(this.quiltVersion);
+        command.add("--no-profile");
+        command.add("--install-dir=" + quilt);
+        return new QuiltLauncherEnvironment(command, tempDir, quilt);
     }
 
     /**
@@ -168,23 +165,24 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion, IMo
     public void install(final Path dirToInstall) throws Exception
     {
         this.callback.step(Step.MOD_LOADER);
-        this.logger.info("Installing Fabric, version: " + this.fabricVersion + "...");
+        this.logger.info("Installing Quilt, version: " + this.quiltVersion + "...");
         this.checkModLoaderEnv(dirToInstall);
 
         try (BufferedInputStream stream = new BufferedInputStream(this.installerUrl.openStream()))
         {
-            final FabricLauncherEnvironment fabricLauncherEnvironment = this.prepareModLoaderLauncher(dirToInstall, stream);
-            this.logger.info("Launching fabric installer...");
-            fabricLauncherEnvironment.launchFabricInstaller();
+            final QuiltLauncherEnvironment quiltLauncherEnvironment = this.prepareModLoaderLauncher(dirToInstall, stream);
+            this.logger.info("Launching quilt installer...");
+            quiltLauncherEnvironment.launchQuiltInstaller();
 
-            final Path versionDir = fabricLauncherEnvironment.getFabric()
+            final Path versionDir = quiltLauncherEnvironment.getQuilt()
                     .resolve("versions")
-                    .resolve(String.format("fabric-loader-%s-%s", this.fabricVersion, this.vanilla.getName()));
+                    .resolve(String.format("quilt-loader-%s-%s", this.quiltVersion, this.vanilla.getName()));
 
             final Path jsonFilePath = versionDir.resolve(versionDir.getFileName().toString() + ".json");
 
             final JsonObject obj = JsonParser.parseString(
-                    StringUtils.toString(Files.readAllLines(jsonFilePath, StandardCharsets.UTF_8))).getAsJsonObject();
+                    StringUtils.toString(Files.readAllLines(jsonFilePath, StandardCharsets.UTF_8)))
+                    .getAsJsonObject();
 
             final JsonArray libs = obj.getAsJsonArray("libraries");
             final Path libraries = dirToInstall.resolve("libraries");
@@ -195,8 +193,8 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion, IMo
                 IOUtils.downloadArtifacts(this.logger, libraries, artifact.get("url").getAsString(), parts);
             });
 
-            this.logger.info("Successfully installed Fabric!");
-            FileUtils.deleteDirectory(fabricLauncherEnvironment.getTempDir());
+            this.logger.info("Successfully installed Quilt!");
+            FileUtils.deleteDirectory(quiltLauncherEnvironment.getTempDir());
         } catch (Exception e)
         {
             this.logger.printStackTrace(e);
@@ -210,12 +208,12 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion, IMo
     public boolean checkModLoaderEnv(@NotNull Path dirToInstall) throws Exception
     {
         boolean result= false;
-        final Path fabricDirPath = dirToInstall.resolve("libraries").resolve("net").resolve("fabricmc").resolve("fabric-loader");
-        if (Files.exists(fabricDirPath))
+        final Path quiltDirPath = dirToInstall.resolve("libraries").resolve("org").resolve("quiltmc").resolve("quilt-loader");
+        if (Files.exists(quiltDirPath))
         {
-            for (Path contained : FileUtils.list(fabricDirPath))
+            for (Path contained : FileUtils.list(quiltDirPath))
             {
-                if (!contained.getFileName().toString().contains(this.fabricVersion))
+                if (!contained.getFileName().toString().contains(this.quiltVersion))
                 {
                     FileUtils.deleteDirectory(contained);
                     result = true;
@@ -253,7 +251,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion, IMo
         this.vanilla = flowUpdater.getVanillaVersion();
         try {
             this.installerUrl = new URL(
-                    String.format("https://maven.fabricmc.net/net/fabricmc/fabric-installer/%s/fabric-installer-%s.jar",
+                    String.format("https://maven.quiltmc.org/repository/release/org/quiltmc/quilt-installer/%s/quilt-installer-%s.jar",
                                   installerVersion, installerVersion));
         } catch (Exception e) {
             this.logger.printStackTrace(e);
@@ -296,16 +294,16 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion, IMo
     }
 
     /**
-     * Get the Fabric's version.
-     * @return the Fabric's version.
+     * Get the Quilt's version.
+     * @return the Quilt's version.
      */
-    public String getFabricVersion() {
-        return this.fabricVersion;
+    public String getQuiltVersion() {
+        return this.quiltVersion;
     }
 
     /**
-     * Get the Fabric's installer's url.
-     * @return the Fabric's installer's url.
+     * Get the Quilt's installer's url.
+     * @return the Quilt's installer's url.
      */
     public URL getInstallerUrl() {
         return this.installerUrl;
@@ -353,11 +351,11 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion, IMo
     }
 
     /**
-     * Builder for {@link FabricVersion}.
+     * Builder for {@link QuiltVersion}.
      */
-    public static class FabricVersionBuilder implements IBuilder<FabricVersion>
+    public static class QuiltVersionBuilder implements IBuilder<QuiltVersion>
     {
-        private final BuilderArgument<String> fabricVersionArgument = new BuilderArgument<>("FabricVersion", () -> IOUtils.getLatestArtifactVersion("https://maven.fabricmc.net/net/fabricmc/fabric-loader/maven-metadata.xml")).optional();
+        private final BuilderArgument<String> quiltVersionArgument = new BuilderArgument<>("QuiltVersion", () -> IOUtils.getLatestArtifactVersion("https://maven.quiltmc.org/repository/release/org/quiltmc/quilt-loader/maven-metadata.xml")).optional();
         private final BuilderArgument<List<Mod>> modsArgument = new BuilderArgument<List<Mod>>("Mods", ArrayList::new).optional();
         private final BuilderArgument<List<CurseFileInfo>> curseModsArgument = new BuilderArgument<List<CurseFileInfo>>("CurseMods", ArrayList::new).optional();
         private final BuilderArgument<List<ModrinthVersionInfo>> modrinthModsArgument = new BuilderArgument<List<ModrinthVersionInfo>>("ModrinthMods", ArrayList::new).optional();
@@ -366,13 +364,13 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion, IMo
         private final BuilderArgument<ModrinthModPackInfo> modrinthPackArgument = new BuilderArgument<ModrinthModPackInfo>("ModrinthModPack").optional();
 
         /**
-         * @param fabricVersion the Fabric version you want to install
-         * (don't use this function if you want to use the latest fabric version).
+         * @param quiltVersion the Quilt version you want to install
+         * (don't use this function if you want to use the latest Quilt version).
          * @return the builder.
          */
-        public FabricVersionBuilder withFabricVersion(String fabricVersion)
+        public QuiltVersionBuilder withQuiltVersion(String quiltVersion)
         {
-            this.fabricVersionArgument.set(fabricVersion);
+            this.quiltVersionArgument.set(quiltVersion);
             return this;
         }
 
@@ -381,7 +379,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion, IMo
          * @param mods mods to append.
          * @return the builder.
          */
-        public FabricVersionBuilder withMods(List<Mod> mods)
+        public QuiltVersionBuilder withMods(List<Mod> mods)
         {
             this.modsArgument.set(mods);
             return this;
@@ -392,7 +390,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion, IMo
          * @param curseMods CurseForge's mods to append.
          * @return the builder.
          */
-        public FabricVersionBuilder withCurseMods(List<CurseFileInfo> curseMods)
+        public QuiltVersionBuilder withCurseMods(List<CurseFileInfo> curseMods)
         {
             this.curseModsArgument.set(curseMods);
             return this;
@@ -403,7 +401,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion, IMo
          * @param modrinthMods Modrinth's mods to append.
          * @return the builder.
          */
-        public FabricVersionBuilder withModrinthMods(List<ModrinthVersionInfo> modrinthMods)
+        public QuiltVersionBuilder withModrinthMods(List<ModrinthVersionInfo> modrinthMods)
         {
             this.modrinthModsArgument.set(modrinthMods);
             return this;
@@ -414,7 +412,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion, IMo
          * @param modPackInfo the mod pack information to assign.
          * @return the current builder.
          */
-        public FabricVersionBuilder withCurseModPack(CurseModPackInfo modPackInfo)
+        public QuiltVersionBuilder withCurseModPack(CurseModPackInfo modPackInfo)
         {
             this.curseModPackArgument.set(modPackInfo);
             return this;
@@ -426,7 +424,7 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion, IMo
          * @param modPackInfo the mod pack information to assign.
          * @return the builder.
          */
-        public FabricVersionBuilder withModrinthModPack(ModrinthModPackInfo modPackInfo)
+        public QuiltVersionBuilder withModrinthModPack(ModrinthModPackInfo modPackInfo)
         {
             this.modrinthPackArgument.set(modPackInfo);
             return this;
@@ -437,24 +435,24 @@ public class FabricVersion implements ICurseFeaturesUser, IModLoaderVersion, IMo
          * @param fileDeleter the file deleter to append.
          * @return the builder.
          */
-        public FabricVersionBuilder withFileDeleter(ModFileDeleter fileDeleter)
+        public QuiltVersionBuilder withFileDeleter(ModFileDeleter fileDeleter)
         {
             this.fileDeleterArgument.set(fileDeleter);
             return this;
         }
 
         /**
-         * Build a new {@link FabricVersion} instance with provided arguments.
+         * Build a new {@link QuiltVersion} instance with provided arguments.
          * @return the freshly created instance.
          * @throws BuilderException if an error occurred.
          */
         @Override
-        public FabricVersion build() throws BuilderException {
-            return new FabricVersion(
+        public QuiltVersion build() throws BuilderException {
+            return new QuiltVersion(
                     this.modsArgument.get(),
                     this.curseModsArgument.get(),
                     this.modrinthModsArgument.get(),
-                    this.fabricVersionArgument.get(),
+                    this.quiltVersionArgument.get(),
                     this.fileDeleterArgument.get(),
                     this.curseModPackArgument.get(),
                     this.modrinthPackArgument.get()

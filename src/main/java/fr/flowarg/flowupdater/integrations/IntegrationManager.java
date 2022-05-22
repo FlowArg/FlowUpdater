@@ -67,17 +67,7 @@ public class IntegrationManager
             for (CurseFileInfo info : curseFeaturesUser.getCurseMods())
             {
                 final Mod mod = curseForgeIntegration.fetchMod(info);
-                allCurseMods.add(mod);
-
-                final Path filePath = dir.resolve(mod.getName());
-
-                if(Files.exists(filePath)
-                        && Files.size(filePath) == mod.getSize()
-                        && (FileUtils.getSHA1(filePath).equalsIgnoreCase(mod.getSha1())))
-                    continue;
-
-                Files.deleteIfExists(filePath);
-                this.downloadList.getMods().add(mod);
+                this.checkMod(mod, allCurseMods, dir);
             }
 
             if (modPackInfo == null)
@@ -144,17 +134,7 @@ public class IntegrationManager
             for (ModrinthVersionInfo info : modrinthFeaturesUser.getModrinthMods())
             {
                 final Mod mod = modrinthIntegration.fetchMod(info);
-                allModrinthMods.add(mod);
-
-                final Path filePath = dir.resolve(mod.getName());
-
-                if(Files.exists(filePath)
-                        && Files.size(filePath) == mod.getSize()
-                        && (FileUtils.getSHA1(filePath).equalsIgnoreCase(mod.getSha1())))
-                    continue;
-
-                Files.deleteIfExists(filePath);
-                this.downloadList.getMods().add(mod);
+                this.checkMod(mod, allModrinthMods, dir);
             }
 
             if (modPackInfo == null)
@@ -166,24 +146,9 @@ public class IntegrationManager
             this.progressCallback.step(Step.MOD_PACK);
             final ModrinthModPack modPack = modrinthIntegration.getCurseModPack(modPackInfo);
             this.logger.info(String.format("Loading mod pack: %s (%s).", modPack.getName(), modPack.getVersion()));
-            modPack.getMods().forEach(mod -> {
-                allModrinthMods.add(mod);
-                try
-                {
-                    final Path filePath = dir.resolve(mod.getName());
 
-                    if(Files.exists(filePath)
-                            && Files.size(filePath) == mod.getSize()
-                            && (mod.getSha1().isEmpty() || FileUtils.getSHA1(filePath).equalsIgnoreCase(mod.getSha1())))
-                        return;
-
-                    Files.deleteIfExists(filePath);
-                    this.downloadList.getMods().add(mod);
-                } catch (Exception e)
-                {
-                    this.logger.printStackTrace(e);
-                }
-            });
+            for (Mod mod : modPack.getMods())
+                this.checkMod(mod, allModrinthMods, dir);
 
             modrinthFeaturesUser.setAllModrinthMods(allModrinthMods);
         }
@@ -214,5 +179,20 @@ public class IntegrationManager
         {
             this.logger.printStackTrace(e);
         }
+    }
+
+    private void checkMod(Mod mod, List<Mod> allMods, Path dir) throws Exception
+    {
+        allMods.add(mod);
+
+        final Path filePath = dir.resolve(mod.getName());
+
+        if(Files.exists(filePath)
+                && Files.size(filePath) == mod.getSize()
+                && (mod.getSha1().isEmpty() || FileUtils.getSHA1(filePath).equalsIgnoreCase(mod.getSha1())))
+            return;
+
+        Files.deleteIfExists(filePath);
+        this.downloadList.getMods().add(mod);
     }
 }

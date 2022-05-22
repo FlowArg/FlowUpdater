@@ -152,12 +152,12 @@ public class CurseForgeIntegration extends Integration
 
         if(modPackFile == null)
         {
-            this.logger.err("This mod pack isn't available anymore on CurseForge for 3rd parties. ");
+            this.logger.err("This mod pack isn't available anymore on CurseForge for 3rd parties.");
             return null;
         }
 
         final Path outPath = this.folder.resolve(modPackFile.getName());
-        if(Files.notExists(outPath) || !FileUtils.getSHA1(outPath).equalsIgnoreCase(modPackFile.getSha1()))
+        if(Files.notExists(outPath) || (!modPackFile.getSha1().isEmpty() && !FileUtils.getSHA1(outPath).equalsIgnoreCase(modPackFile.getSha1())) || Files.size(outPath) != modPackFile.getSize())
             IOUtils.download(this.logger, new URL(modPackFile.getDownloadURL()), outPath);
 
         return outPath;
