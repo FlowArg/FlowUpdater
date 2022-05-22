@@ -1,6 +1,7 @@
 package fr.flowarg.flowupdater.download.json;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fr.flowarg.flowupdater.utils.FlowUpdaterException;
 import fr.flowarg.flowupdater.utils.IOUtils;
@@ -62,16 +63,19 @@ public class Mod
         final List<Mod> result = new ArrayList<>();
         final JsonObject object = IOUtils.readJson(jsonUrl).getAsJsonObject();
         final JsonArray mods = object.getAsJsonArray("mods");
-        mods.forEach(modElement -> {
-            final JsonObject obj = modElement.getAsJsonObject();
-            final String name = obj.get("name").getAsString();
-            final String sha1 = obj.get("sha1").getAsString();
-            final String downloadURL = obj.get("downloadURL").getAsString();
-            final long size = obj.get("size").getAsLong();
-            
-            result.add(new Mod(name, downloadURL, sha1, size));
-        });
+        mods.forEach(modElement -> result.add(fromJson(modElement)));
         return result;
+    }
+
+    public static Mod fromJson(JsonElement modElement)
+    {
+        final JsonObject obj = modElement.getAsJsonObject();
+        final String name = obj.get("name").getAsString();
+        final String downloadURL = obj.get("downloadURL").getAsString();
+        final String sha1 = obj.get("sha1").getAsString();
+        final long size = obj.get("size").getAsLong();
+
+        return new Mod(name, downloadURL, sha1, size);
     }
 
     /**

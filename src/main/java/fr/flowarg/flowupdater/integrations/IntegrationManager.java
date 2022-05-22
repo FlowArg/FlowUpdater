@@ -6,13 +6,13 @@ import fr.flowarg.flowupdater.FlowUpdater;
 import fr.flowarg.flowupdater.download.DownloadList;
 import fr.flowarg.flowupdater.download.IProgressCallback;
 import fr.flowarg.flowupdater.download.Step;
-import fr.flowarg.flowupdater.download.json.CurseFileInfo;
-import fr.flowarg.flowupdater.download.json.CurseModPackInfo;
-import fr.flowarg.flowupdater.download.json.Mod;
-import fr.flowarg.flowupdater.download.json.OptiFineInfo;
+import fr.flowarg.flowupdater.download.json.*;
 import fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseForgeIntegration;
 import fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseModPack;
 import fr.flowarg.flowupdater.integrations.curseforgeintegration.ICurseFeaturesUser;
+import fr.flowarg.flowupdater.integrations.modrinthintegration.IModrinthFeaturesUser;
+import fr.flowarg.flowupdater.integrations.modrinthintegration.ModrinthIntegration;
+import fr.flowarg.flowupdater.integrations.modrinthintegration.ModrinthModPack;
 import fr.flowarg.flowupdater.integrations.optifineintegration.OptiFine;
 import fr.flowarg.flowupdater.integrations.optifineintegration.OptiFineIntegration;
 import fr.flowarg.flowupdater.versions.AbstractForgeVersion;
@@ -119,6 +119,73 @@ public class IntegrationManager
             });
 
             curseFeaturesUser.setAllCurseMods(allCurseMods);
+        }
+        catch (Exception e)
+        {
+            this.logger.printStackTrace(e);
+        }
+    }
+
+    public void loadModrinthIntegration(Path dir, IModrinthFeaturesUser modrinthFeaturesUser)
+    {
+        try
+        {
+            final ModrinthModPackInfo modPackInfo = modrinthFeaturesUser.getModrinthModPackInfo();
+            final List<Mod> allModrinthMods = new ArrayList<>();
+
+            if(modrinthFeaturesUser.getModrinthMods().isEmpty() && modPackInfo == null)
+            {
+                modrinthFeaturesUser.setAllModrinthMods(allModrinthMods);
+                return;
+            }
+
+            final ModrinthIntegration modrinthIntegration = new ModrinthIntegration(this.logger, dir.getParent().resolve(".modrinth"));
+
+            for (ModrinthVersionInfo info : modrinthFeaturesUser.getModrinthMods())
+            {
+                final Mod mod = modrinthIntegration.fetchMod(info);
+                allModrinthMods.add(mod);
+
+                final Path filePath = dir.resolve(mod.getName());
+
+                if(Files.exists(filePath)
+                        && Files.size(filePath) == mod.getSize()
+                        && (FileUtils.getSHA1(filePath).equalsIgnoreCase(mod.getSha1())))
+                    continue;
+
+                Files.deleteIfExists(filePath);
+                this.downloadList.getMods().add(mod);
+            }
+
+            if (modPackInfo == null)
+            {
+                modrinthFeaturesUser.setAllModrinthMods(allModrinthMods);
+                return;
+            }
+
+            this.progressCallback.step(Step.MOD_PACK);
+            final ModrinthModPack modPack = modrinthIntegration.getCurseModPack(modPackInfo);
+            this.logger.info(String.format("Loading mod pack: %s (%s).", modPack.getName(), modPack.getVersion()));
+            modPack.getMods().forEach(mod -> {
+                allModrinthMods.add(mod);
+                try
+                {
+                    final Path filePath = dir.resolve(mod.getName());
+
+                    if(Files.exists(filePath)
+                            && Files.size(filePath) == mod.getSize()
+                            && (mod.getSha1().isEmpty() || FileUtils.getSHA1(filePath).equalsIgnoreCase(mod.getSha1())))
+                        return;
+
+                    Files.deleteIfExists(filePath);
+                    this.downloadList.getMods().add(mod);
+                } catch (Exception e)
+                {
+                    this.logger.printStackTrace(e);
+                }
+            });
+
+            modrinthFeaturesUser.setAllModrinthMods(allModrinthMods);
         }
         catch (Exception e)
         {

@@ -9,7 +9,9 @@ import fr.flowarg.flowupdater.download.json.CurseModPackInfo;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.integrations.Integration;
 import fr.flowarg.flowupdater.utils.IOUtils;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedOutputStream;
@@ -52,7 +54,7 @@ public class CurseForgeIntegration extends Integration
         return this.parseModFile(this.fetchModLink(curseFileInfo));
     }
 
-    public String fetchModLink(CurseFileInfo curseFileInfo)
+    public String fetchModLink(@NotNull CurseFileInfo curseFileInfo)
     {
         final String url = CF_API_URL + MOD_FILE_ENDPOINT
                 .replace("{modId}", String.valueOf(curseFileInfo.getProjectID()))
@@ -69,7 +71,7 @@ public class CurseForgeIntegration extends Integration
      * @param url the url to request.
      * @return the response of the request.
      */
-    private String makeRequest(String url)
+    private @NotNull String makeRequest(String url)
     {
         HttpsURLConnection connection = null;
         try
@@ -94,13 +96,17 @@ public class CurseForgeIntegration extends Integration
         }
     }
 
-    // Debug TODO: Remove this when CurseForge API is fixed.
-    public int bad = 0;
+    private int bad = 0;
+
+    public int getBad()
+    {
+        return this.bad;
+    }
 
     /**
      * Parse the CurseForge API to retrieve the mod file.
      */
-    private Mod parseModFile(String jsonResponse)
+    private @Nullable Mod parseModFile(String jsonResponse)
     {
         final JsonObject data = JsonParser.parseString(jsonResponse).getAsJsonObject().getAsJsonObject("data");
         final String fileName = data.get("fileName").getAsString();
@@ -139,7 +145,7 @@ public class CurseForgeIntegration extends Integration
         return this.parseMods();
     }
 
-    private Path checkForUpdate(CurseModPackInfo info) throws Exception
+    private @Nullable Path checkForUpdate(@NotNull CurseModPackInfo info) throws Exception
     {
         final String link = info.getUrl().isEmpty() ? this.fetchModLink(info) : info.getUrl();
         final Mod modPackFile = this.parseModFile(link);
@@ -206,17 +212,17 @@ public class CurseForgeIntegration extends Integration
         return new CurseModPack(modPackName, modPackVersion, modPackAuthor, mods);
     }
 
-    private List<ProjectMod> populateManifest(JsonObject manifestObj)
+    private @NotNull List<ProjectMod> populateManifest(@NotNull JsonObject manifestObj)
     {
         final List<ProjectMod> manifestFiles = new ArrayList<>();
 
         manifestObj.getAsJsonArray("files")
-                .forEach(jsonElement -> manifestFiles.add(ProjectMod.fromJsonObject(jsonElement.getAsJsonObject())));
+                .forEach(jsonElement -> manifestFiles.add(ProjectMod.fromJson(jsonElement.getAsJsonObject())));
 
         return manifestFiles;
     }
 
-    private List<CurseModPack.CurseModPackMod> processCacheFile(Path dirPath, List<ProjectMod> manifestFiles) throws Exception
+    private @NotNull List<CurseModPack.CurseModPackMod> processCacheFile(@NotNull Path dirPath, List<ProjectMod> manifestFiles) throws Exception
     {
         final Path cachePath = dirPath.resolve("manifest.cache.json");
 
@@ -235,7 +241,8 @@ public class CurseForgeIntegration extends Integration
         return this.deserializeWriteCache(json, manifestFiles, cachePath);
     }
 
-    private List<CurseModPack.CurseModPackMod> deserializeWriteCache(String json,
+    @Contract("_, _, _ -> new")
+    private @NotNull List<CurseModPack.CurseModPackMod> deserializeWriteCache(String json,
             List<ProjectMod> manifestFiles, Path cachePath) throws Exception
     {
         final JsonArray cacheArray = JsonParser.parseString(json).getAsJsonArray();
@@ -243,13 +250,10 @@ public class CurseForgeIntegration extends Integration
 
         cacheArray.forEach(jsonElement -> {
             final JsonObject object = jsonElement.getAsJsonObject();
-            final String name = object.get("name").getAsString();
-            final String downloadURL = object.get("downloadURL").getAsString();
-            final String sha1 = object.get("sha1").getAsString();
-            final long size = object.get("size").getAsLong();
-            final ProjectMod projectMod = ProjectMod.fromJsonObject(object);
+            final Mod mod = Mod.fromJson(jsonElement);
+            final ProjectMod projectMod = ProjectMod.fromJson(object);
 
-            mods.add(new CurseModPack.CurseModPackMod(name, downloadURL, sha1, size, projectMod.isRequired()));
+            mods.add(new CurseModPack.CurseModPackMod(mod, projectMod.isRequired()));
             manifestFiles.remove(projectMod);
         });
 
@@ -315,7 +319,7 @@ public class CurseForgeIntegration extends Integration
             this.required = required;
         }
 
-        private static @NotNull ProjectMod fromJsonObject(@NotNull JsonObject object)
+        private static @NotNull ProjectMod fromJson(@NotNull JsonObject object)
         {
             return new ProjectMod(object.get("projectID").getAsInt(),
                                   object.get("fileID").getAsInt(),

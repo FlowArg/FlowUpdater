@@ -26,8 +26,8 @@ public class ModrinthVersionInfo
      */
     public ModrinthVersionInfo(String projectReference, String versionNumber)
     {
-        this.projectReference = projectReference;
-        this.versionNumber = versionNumber;
+        this.projectReference = projectReference.trim();
+        this.versionNumber = versionNumber.trim();
     }
 
     /**
@@ -38,7 +38,7 @@ public class ModrinthVersionInfo
      */
     public ModrinthVersionInfo(String versionId)
     {
-        this.versionId = versionId;
+        this.versionId = versionId.trim();
     }
 
     public static @NotNull List<ModrinthVersionInfo> getModrinthVersionsFromJson(URL jsonUrl)

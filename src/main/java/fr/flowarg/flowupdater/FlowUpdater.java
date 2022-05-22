@@ -142,6 +142,7 @@ public class FlowUpdater
             final AbstractForgeVersion forgeVersion = (AbstractForgeVersion) this.modLoaderVersion;
             this.checkMods(forgeVersion, modsDirPath);
             this.integrationManager.loadCurseForgeIntegration(modsDirPath, forgeVersion);
+            this.integrationManager.loadModrinthIntegration(modsDirPath, forgeVersion);
             this.integrationManager.loadOptiFineIntegration(modsDirPath, forgeVersion);
         }
 
@@ -150,6 +151,7 @@ public class FlowUpdater
             final FabricVersion fabricVersion = (FabricVersion) this.modLoaderVersion;
             this.checkMods(fabricVersion, modsDirPath);
             this.integrationManager.loadCurseForgeIntegration(modsDirPath, fabricVersion);
+            this.integrationManager.loadModrinthIntegration(modsDirPath, fabricVersion);
         }
 
         if (Files.notExists(dir))
@@ -171,8 +173,8 @@ public class FlowUpdater
             final Path filePath = modsDir.resolve(mod.getName());
 
             if(Files.notExists(filePath) ||
-                    !FileUtils.getSHA1(filePath).equalsIgnoreCase(mod.getSha1()) ||
-                    Files.size(filePath) != mod.getSize())
+                    Files.size(filePath) != mod.getSize() ||
+                    (!mod.getSha1().isEmpty() && !FileUtils.getSHA1(filePath).equalsIgnoreCase(mod.getSha1())))
                 this.downloadList.getMods().add(mod);
         }
     }
