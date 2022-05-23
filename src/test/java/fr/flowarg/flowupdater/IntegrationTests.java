@@ -61,7 +61,7 @@ public class IntegrationTests
     {
         boolean error = false;
         final String vanilla = "1.18.2";
-        final String forge = "40.1.21";
+        final String forge = "40.1.23";
         final String vanillaForge = vanilla + "-" + forge;
 
         try
