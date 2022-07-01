@@ -43,7 +43,7 @@ dependencies {
     api 'org.jetbrains:annotations:23.0.0'
 
     // Only for internal tests
-    testImplementation 'fr.flowarg:openlauncherlib:3.2.4'
+    testImplementation 'fr.flowarg:openlauncherlib:3.2.5'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
 }
 
