@@ -1,14 +1,9 @@
 package fr.flowarg.flowupdater.versions;
 
 import fr.flowarg.flowio.FileUtils;
-import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.FlowUpdater;
-import fr.flowarg.flowupdater.download.DownloadList;
-import fr.flowarg.flowupdater.download.IProgressCallback;
 import fr.flowarg.flowupdater.download.Step;
 import fr.flowarg.flowupdater.download.json.*;
-import fr.flowarg.flowupdater.integrations.curseforgeintegration.ICurseFeaturesUser;
-import fr.flowarg.flowupdater.integrations.modrinthintegration.IModrinthFeaturesUser;
 import fr.flowarg.flowupdater.integrations.optifineintegration.OptiFine;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
@@ -29,23 +24,12 @@ import java.util.List;
  * Implemented by {@link OldForgeVersion} and {@link NewForgeVersion}
  * @author flow
  */
-public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLoaderVersion, IModrinthFeaturesUser
+public abstract class AbstractForgeVersion extends AbstractModLoaderVersion
 {
-    protected final List<Mod> mods;
-    protected final List<CurseFileInfo> curseMods;
-    protected final List<ModrinthVersionInfo> modrinthMods;
-    protected final ModFileDeleter fileDeleter;
     protected final OptiFineInfo optiFineInfo;
-    protected final CurseModPackInfo curseModPackInfo;
-    protected final ModrinthModPackInfo modrinthModPackInfo;
     protected final boolean old;
 
     protected URL installerUrl;
-    protected DownloadList downloadList;
-    protected ILogger logger;
-    protected IProgressCallback callback;
-    protected VanillaVersion vanilla;
-    protected String forgeVersion;
 
     /**
      * Use {@link ForgeVersionBuilder} to instantiate this class.
@@ -61,14 +45,8 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
             String forgeVersion, ModFileDeleter fileDeleter, OptiFineInfo optiFineInfo,
             CurseModPackInfo curseModPackInfo, ModrinthModPackInfo modrinthModPackInfo, boolean old)
     {
-        this.mods = mods;
-        this.curseMods = curseMods;
-        this.modrinthMods = modrinthMods;
-        this.forgeVersion = forgeVersion;
-        this.fileDeleter = fileDeleter;
+        super(mods, forgeVersion, curseMods, modrinthMods, fileDeleter, curseModPackInfo, modrinthModPackInfo);
         this.optiFineInfo = optiFineInfo;
-        this.curseModPackInfo = curseModPackInfo;
-        this.modrinthModPackInfo = modrinthModPackInfo;
         this.old = old;
     }
 
@@ -83,12 +61,12 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
                 .resolve("net")
                 .resolve("minecraftforge")
                 .resolve("forge")
-                .resolve(this.forgeVersion);
+                .resolve(this.modLoaderVersion);
 
         if(Files.notExists(forgeDir)) return false;
 
-        return Files.exists(forgeDir.resolve("forge-" + this.forgeVersion + ".jar")) ||
-                Files.exists(forgeDir.resolve("forge-" + this.forgeVersion + "-universal.jar"));
+        return Files.exists(forgeDir.resolve("forge-" + this.modLoaderVersion + ".jar")) ||
+                Files.exists(forgeDir.resolve("forge-" + this.modLoaderVersion + "-universal.jar"));
     }
 
     /**
@@ -98,7 +76,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     public void install(final Path dirToInstall) throws Exception
     {
         this.callback.step(Step.MOD_LOADER);
-        this.logger.info("Installing Forge, version: " + this.forgeVersion + "...");
+        this.logger.info("Installing Forge, version: " + this.modLoaderVersion + "...");
         this.checkModLoaderEnv(dirToInstall);
     }
 
@@ -206,7 +184,7 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
         boolean result = false;
         for (Path contained : FileUtils.list(forgeDirPath))
         {
-            if(contained.getFileName().toString().contains(this.forgeVersion)) continue;
+            if(contained.getFileName().toString().contains(this.modLoaderVersion)) continue;
 
             FileUtils.deleteDirectory(contained);
             result = true;
@@ -263,84 +241,21 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
      * {@inheritDoc}
      */
     @Override
-    public List<Mod> getMods()
-    {
-        return this.mods;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setAllCurseMods(List<Mod> allCurseMods)
-    {
-        this.mods.addAll(allCurseMods);
-    }
-
-    /**
-     * Get the mod file deleter assigned to this version.
-     * @return a mod file deleter.
-     */
-    public ModFileDeleter getFileDeleter()
-    {
-        return this.fileDeleter;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void attachFlowUpdater(@NotNull FlowUpdater flowUpdater)
     {
-        this.callback = flowUpdater.getCallback();
-        this.logger = flowUpdater.getLogger();
-        this.downloadList = flowUpdater.getDownloadList();
-        this.vanilla = flowUpdater.getVanillaVersion();
-        if (!this.forgeVersion.contains("-"))
-            this.forgeVersion = this.vanilla.getName() + '-' + this.forgeVersion;
-        else this.forgeVersion = this.forgeVersion.trim();
+        super.attachFlowUpdater(flowUpdater);
+        if (!this.modLoaderVersion.contains("-"))
+            this.modLoaderVersion = this.vanilla.getName() + '-' + this.modLoaderVersion;
+        else this.modLoaderVersion = this.modLoaderVersion.trim();
         try
         {
             this.installerUrl = new URL(
                     String.format("https://maven.minecraftforge.net/net/minecraftforge/forge/%s/forge-%s-installer.jar",
-                                  this.forgeVersion, this.forgeVersion));
+                                  this.modLoaderVersion, this.modLoaderVersion));
         } catch (Exception e)
         {
             this.logger.printStackTrace(e);
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public DownloadList getDownloadList()
-    {
-        return this.downloadList;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public IProgressCallback getCallback()
-    {
-        return this.callback;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<CurseFileInfo> getCurseMods()
-    {
-        return this.curseMods;
-    }
-
-    @Override
-    public List<ModrinthVersionInfo> getModrinthMods()
-    {
-        return this.modrinthMods;
     }
 
     /**
@@ -350,52 +265,5 @@ public abstract class AbstractForgeVersion implements ICurseFeaturesUser, IModLo
     public OptiFineInfo getOptiFineInfo()
     {
         return this.optiFineInfo;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public CurseModPackInfo getCurseModPackInfo()
-    {
-        return this.curseModPackInfo;
-    }
-
-    @Override
-    public ModrinthModPackInfo getModrinthModPackInfo()
-    {
-        return this.modrinthModPackInfo;
-    }
-
-    @Override
-    public void setAllModrinthMods(List<Mod> modrinthMods)
-    {
-        this.mods.addAll(modrinthMods);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public ILogger getLogger()
-    {
-        return this.logger;
-    }
-
-    /**
-     * Get the forge version.
-     * @return the forge version.
-     */
-    public String getForgeVersion()
-    {
-        return this.forgeVersion;
-    }
-
-    /**
-     * Get the url to the installer.
-     * @return the url to the installer.
-     */
-    public URL getInstallerUrl()
-    {
-        return this.installerUrl;
     }
 }

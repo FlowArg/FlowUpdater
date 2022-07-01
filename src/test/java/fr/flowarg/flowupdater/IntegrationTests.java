@@ -187,15 +187,55 @@ public class IntegrationTests
         assertTrue(Files.exists(UPDATE_DIR.resolve("libraries").resolve("org").resolve("quiltmc").resolve("quilt-loader")));
     }
 
+    @Order(6)
+    @Test
+    public void testWithFabric119() throws Exception
+    {
+        boolean error = false;
+        try
+        {
+            final VanillaVersion version = new VanillaVersion.VanillaVersionBuilder()
+                    .withName("1.19")
+                    .build();
+
+            final FabricVersion fabricVersion = new FabricVersion.FabricVersionBuilder().build();
+
+            final FlowUpdater updater = new FlowUpdater.FlowUpdaterBuilder()
+                    .withVanillaVersion(version)
+                    .withModLoaderVersion(fabricVersion)
+                    .build();
+
+            updater.update(UPDATE_DIR);
+        }
+        catch (Exception e)
+        {
+            error = true;
+            e.printStackTrace();
+        }
+
+        this.basicAssertions(error, "1.19", false);
+        assertTrue(Files.exists(UPDATE_DIR.resolve("libraries").resolve("net").resolve("fabricmc").resolve("fabric-loader")));
+    }
+
     private void basicAssertions(boolean error, String version) throws Exception
+    {
+        this.basicAssertions(error, version, true);
+    }
+
+    private void basicAssertions(boolean error, String version, boolean natives) throws Exception
     {
         assertFalse(error);
         assertTrue(Files.exists(UPDATE_DIR.resolve(version + ".json")));
         assertTrue(Files.exists(UPDATE_DIR.resolve("client.jar")));
-        final Path nativesDir = UPDATE_DIR.resolve("natives");
-        assertTrue(Files.exists(nativesDir));
-        assertTrue(Files.isDirectory(nativesDir));
-        assertTrue(FileUtils.list(nativesDir).size() > 0);
+
+        if(natives)
+        {
+            final Path nativesDir = UPDATE_DIR.resolve("natives");
+            assertTrue(Files.exists(nativesDir));
+            assertTrue(Files.isDirectory(nativesDir));
+            assertTrue(FileUtils.list(nativesDir).size() > 0);
+        }
+
         final Path librariesDir = UPDATE_DIR.resolve("libraries");
         assertTrue(Files.exists(librariesDir));
         assertTrue(Files.isDirectory(librariesDir));

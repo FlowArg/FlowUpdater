@@ -9,6 +9,7 @@ import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.integrations.IntegrationManager;
 import fr.flowarg.flowupdater.integrations.curseforgeintegration.ICurseFeaturesUser;
 import fr.flowarg.flowupdater.integrations.modrinthintegration.IModrinthFeaturesUser;
+import fr.flowarg.flowupdater.utils.FlowUpdaterException;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.UpdaterOptions;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
@@ -98,7 +99,7 @@ public class FlowUpdater
         this.integrationManager = new IntegrationManager(this);
         this.logger.info(String.format(
                 "------------------------- FlowUpdater for Minecraft %s v%s -------------------------",
-                this.vanillaVersion.getName(), "1.7.0"));
+                this.vanillaVersion.getName(), "1.7.1"));
         this.callback.init(this.logger);
     }
 
@@ -123,7 +124,20 @@ public class FlowUpdater
         this.updaterOptions.getExternalFileDeleter().delete(this.externalFiles, this.downloadList, dir);
     }
 
-    private void updateMinecraft(Path dir) throws Exception
+    private void updateMinecraft(@NotNull Path dir) throws Exception
+    {
+        this.loadVanillaStuff();
+
+        if(this.modLoaderVersion != null)
+            this.loadModLoader(dir);
+
+        this.startVanillaDownload(dir);
+
+        if(this.modLoaderVersion != null)
+            this.installModLoader(dir);
+    }
+
+    private void loadVanillaStuff() throws Exception
     {
         if(this.vanillaVersion == VanillaVersion.NULL_VERSION)
         {
@@ -133,33 +147,22 @@ public class FlowUpdater
 
         this.logger.info(String.format("Reading data about %s Minecraft version...", this.vanillaVersion.getName()));
         new VanillaReader(this).read();
+    }
 
+    private void loadModLoader(@NotNull Path dir) throws Exception
+    {
         final Path modsDirPath = dir.resolve("mods");
 
-        if(this.modLoaderVersion != null)
-        {
-            this.checkMods(this.modLoaderVersion, modsDirPath);
+        this.checkMods(this.modLoaderVersion, modsDirPath);
 
-            if(this.modLoaderVersion instanceof ICurseFeaturesUser)
-                this.integrationManager.loadCurseForgeIntegration(modsDirPath, (ICurseFeaturesUser)this.modLoaderVersion);
+        if(this.modLoaderVersion instanceof ICurseFeaturesUser)
+            this.integrationManager.loadCurseForgeIntegration(modsDirPath, (ICurseFeaturesUser)this.modLoaderVersion);
 
-            if(this.modLoaderVersion instanceof IModrinthFeaturesUser)
-                this.integrationManager.loadModrinthIntegration(modsDirPath, (IModrinthFeaturesUser)this.modLoaderVersion);
+        if(this.modLoaderVersion instanceof IModrinthFeaturesUser)
+            this.integrationManager.loadModrinthIntegration(modsDirPath, (IModrinthFeaturesUser)this.modLoaderVersion);
 
-            if(this.modLoaderVersion instanceof AbstractForgeVersion)
-                this.integrationManager.loadOptiFineIntegration(modsDirPath, (AbstractForgeVersion)this.modLoaderVersion);
-        }
-
-        if (Files.notExists(dir))
-            Files.createDirectories(dir);
-
-        new VanillaDownloader(dir, this).download();
-
-        if(this.modLoaderVersion != null)
-            this.installModLoader(this.modLoaderVersion, dir, this.modLoaderVersion instanceof AbstractForgeVersion ?
-                    "Forge" : (this.modLoaderVersion instanceof FabricVersion ?
-                    "Fabric" : (this.modLoaderVersion instanceof QuiltVersion ?
-                    "Quilt" : "Unknown")));
+        if(this.modLoaderVersion instanceof AbstractForgeVersion)
+            this.integrationManager.loadOptiFineIntegration(modsDirPath, (AbstractForgeVersion)this.modLoaderVersion);
     }
 
     private void checkMods(@NotNull IModLoaderVersion modLoader, Path modsDir) throws Exception
@@ -173,6 +176,30 @@ public class FlowUpdater
                     (!mod.getSha1().isEmpty() && !FileUtils.getSHA1(filePath).equalsIgnoreCase(mod.getSha1())))
                 this.downloadList.getMods().add(mod);
         }
+    }
+
+    private void startVanillaDownload(Path dir) throws Exception
+    {
+        if (Files.notExists(dir))
+            Files.createDirectories(dir);
+
+        new VanillaDownloader(dir, this).download();
+    }
+
+    private void installModLoader(Path dir) throws Exception
+    {
+        String name;
+        if(this.modLoaderVersion instanceof AbstractForgeVersion)
+            name = "Forge";
+        else if(this.modLoaderVersion instanceof FabricVersion)
+            name = "Fabric";
+        else if(this.modLoaderVersion instanceof QuiltVersion)
+            name = "Quilt";
+        else if(this.modLoaderVersion instanceof OtherModLoaderVersion)
+            name = ((OtherModLoaderVersion)this.modLoaderVersion).name();
+        else throw new FlowUpdaterException("Hi developer, check the OtherModLoaderVersion documentation.");
+
+        this.installModLoader(this.modLoaderVersion, dir, name);
     }
 
     private void installModLoader(IModLoaderVersion modLoader, Path dir, String name) throws Exception

@@ -6,6 +6,7 @@ import fr.flowarg.flowupdater.download.DownloadList;
 import fr.flowarg.flowupdater.download.IProgressCallback;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.utils.IOUtils;
+import fr.flowarg.flowupdater.utils.ModFileDeleter;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -49,6 +50,11 @@ public interface IModLoaderVersion
      * @throws Exception if an I/O error occurred.
      */
     void installMods(Path modsDir) throws Exception;
+
+    /**
+     * Get the mod loader version.
+     */
+    String getModLoaderVersion();
 
     /**
      * Get all processed mods / mods to process.
@@ -141,4 +147,10 @@ public interface IModLoaderVersion
             return this.tempDir;
         }
     }
+
+    /**
+     * Get the attached {@link ModFileDeleter} instance;
+     * @return this mod file deleter;
+     */
+    ModFileDeleter getFileDeleter();
 }

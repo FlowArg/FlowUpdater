@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class NewForgeVersion extends AbstractForgeVersion
 {
-    private final String[] compatibleVersions = {"1.19", "1.18", "1.17",
+    private final String[] compatibleVersions = {"1.20", "1.19", "1.18", "1.17",
             "1.16", "1.15", "1.14",
             "1.13", "1.12.2-14.23.5.285", "1.12.2-14.23.5.286"};
 
@@ -77,7 +77,7 @@ public class NewForgeVersion extends AbstractForgeVersion
     {
         for (String str : this.compatibleVersions)
         {
-            if (this.forgeVersion.startsWith(str))
+            if (this.modLoaderVersion.startsWith(str))
                 return true;
         }
         return false;
