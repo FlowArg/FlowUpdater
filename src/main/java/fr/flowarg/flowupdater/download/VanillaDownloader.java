@@ -76,13 +76,8 @@ public class VanillaDownloader
         this.logger.info("Checking library files...");
         this.callback.step(Step.DL_LIBS);
 
-        final Path vanillaJsonTarget = this.dir.resolve(this.vanillaJsonURL.substring(this.vanillaJsonURL.lastIndexOf('/') + 1));
-        final String vanillaJsonResourceName = this.vanillaJsonURL.substring(this.vanillaJsonURL.lastIndexOf('/'));
-        final String vanillaJsonPathUrl = StringUtils.empty(this.vanillaJsonURL, "https://launchermeta.mojang.com/v1/packages/");
-
-        if(Files.notExists(vanillaJsonTarget) || !FileUtils.getSHA1(vanillaJsonTarget)
-                .equals(StringUtils.empty(vanillaJsonPathUrl, vanillaJsonResourceName)))
-            IOUtils.download(this.logger, new URL(this.vanillaJsonURL), vanillaJsonTarget);
+        if(this.vanillaJsonURL != null)
+            this.downloadVanillaJson();
 
         for (Downloadable downloadable : this.downloadList.getDownloadableFiles())
         {
@@ -99,6 +94,17 @@ public class VanillaDownloader
             this.downloadList.incrementDownloaded(downloadable.getSize());
             this.callback.update(this.downloadList.getDownloadInfo());
         }
+    }
+
+    private void downloadVanillaJson() throws Exception
+    {
+        final Path vanillaJsonTarget = this.dir.resolve(this.vanillaJsonURL.substring(this.vanillaJsonURL.lastIndexOf('/') + 1));
+        final String vanillaJsonResourceName = this.vanillaJsonURL.substring(this.vanillaJsonURL.lastIndexOf('/'));
+        final String vanillaJsonPathUrl = StringUtils.empty(this.vanillaJsonURL, "https://launchermeta.mojang.com/v1/packages/");
+
+        if(Files.notExists(vanillaJsonTarget) || !FileUtils.getSHA1(vanillaJsonTarget)
+                .equals(StringUtils.empty(vanillaJsonPathUrl, vanillaJsonResourceName)))
+            IOUtils.download(this.logger, new URL(this.vanillaJsonURL), vanillaJsonTarget);
     }
 
     private void extractNatives() throws IOException
