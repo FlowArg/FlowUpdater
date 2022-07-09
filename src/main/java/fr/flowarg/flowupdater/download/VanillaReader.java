@@ -87,7 +87,7 @@ public class VanillaReader
             if(downloads == null) return;
 
             block: {
-                final String name = downloads.getAsJsonPrimitive("name").getAsString();
+                final String name = element.getAsJsonPrimitive("name").getAsString();
 
                 if(!name.contains("lwjgl") || !name.contains("natives") || !name.contains("macos"))
                     break block;
