@@ -82,8 +82,25 @@ public class VanillaReader
 
             if (element == null) return;
             if (!this.checkRules(element)) return;
+            final JsonObject downloads = element.getAsJsonObject("downloads");
 
-            final JsonObject artifact = element.getAsJsonObject("downloads").getAsJsonObject("artifact");
+            if(downloads == null) return;
+
+            block: {
+                final String name = downloads.getAsJsonPrimitive("name").getAsString();
+
+                if(!name.contains("lwjgl") || !name.contains("natives") || !name.contains("macos"))
+                    break block;
+
+                boolean platformCheck = (Platform.isOnMac() &&
+                        Platform.getArch().equals("64") &&
+                        System.getProperty("os.arch").equals("aarch64"));
+
+                if(platformCheck != name.contains("arm64"))
+                    return;
+            }
+
+            final JsonObject artifact = downloads.getAsJsonObject("artifact");
 
             if (artifact == null) return;
 
