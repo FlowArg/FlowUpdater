@@ -49,9 +49,46 @@ public class CurseForgeIntegration extends Integration
         super(logger, folder);
     }
 
-    public Mod fetchMod(CurseFileInfo curseFileInfo)
+    public Mod fetchMod(CurseFileInfo curseFileInfo) throws CurseForgeException
     {
-        return this.parseModFile(this.fetchModLink(curseFileInfo));
+        try
+        {
+            final Mod result = this.parseModFile(this.fetchModLink(curseFileInfo));
+            if(result != null )
+                return result;
+
+            throw new CurseForgeException(String.format("Failed to fetch mod project id: %d file id: %d", curseFileInfo.getProjectID(), curseFileInfo.getFileID()));
+        } catch (Exception e)
+        {
+            throw new CurseForgeException(String.format("Failed to fetch mod project id: %d file id: %d", curseFileInfo.getProjectID(), curseFileInfo.getFileID()), e);
+        }
+    }
+
+    public static class CurseForgeException extends Exception
+    {
+        public CurseForgeException()
+        {
+        }
+
+        public CurseForgeException(String message)
+        {
+            super(message);
+        }
+
+        public CurseForgeException(String message, Throwable cause)
+        {
+            super(message, cause);
+        }
+
+        public CurseForgeException(Throwable cause)
+        {
+            super(cause);
+        }
+
+        public CurseForgeException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace)
+        {
+            super(message, cause, enableSuppression, writableStackTrace);
+        }
     }
 
     public String fetchModLink(@NotNull CurseFileInfo curseFileInfo)
@@ -106,7 +143,7 @@ public class CurseForgeIntegration extends Integration
     /**
      * Parse the CurseForge API to retrieve the mod file.
      */
-    private @Nullable Mod parseModFile(String jsonResponse)
+    private @Nullable Mod parseModFile(String jsonResponse) throws Exception
     {
         final JsonObject data = JsonParser.parseString(jsonResponse).getAsJsonObject().getAsJsonObject("data");
         final String fileName = data.get("fileName").getAsString();

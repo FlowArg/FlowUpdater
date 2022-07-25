@@ -66,8 +66,18 @@ public class IntegrationManager
 
             for (CurseFileInfo info : curseFeaturesUser.getCurseMods())
             {
-                final Mod mod = curseForgeIntegration.fetchMod(info);
-                this.checkMod(mod, allCurseMods, dir);
+                try {
+                    final Mod mod = curseForgeIntegration.fetchMod(info);
+
+                    if(mod == null)
+                        break;
+
+                    this.checkMod(mod, allCurseMods, dir);
+                }
+                catch (CurseForgeIntegration.CurseForgeException e)
+                {
+                    e.printStackTrace();
+                }
             }
 
             if (modPackInfo == null)
