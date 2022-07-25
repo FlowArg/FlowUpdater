@@ -63,8 +63,8 @@ public class VanillaReader
         this.silentDebug("Parsing asset index information...");
         this.parseAssetIndex();
 
-        this.silentDebug("Parsing the information of client/server's jar...");
-        this.parseClientServer();
+        this.silentDebug("Parsing the information of client's jar...");
+        this.parseClient();
 
         this.silentDebug("Parsing natives information...");
         this.parseNatives();
@@ -133,7 +133,7 @@ public class VanillaReader
         this.downloadList.getDownloadableFiles().add(new Downloadable(url, size, sha1, name));
     }
 
-    private void parseClientServer()
+    private void parseClient()
     {
         final JsonObject client = this.version.getMinecraftClient();
         final String clientURL = client.getAsJsonPrimitive("url").getAsString();
