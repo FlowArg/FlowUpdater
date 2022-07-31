@@ -110,15 +110,16 @@ public class VanillaVersion
         try
         {
             final JsonObject launcherMeta = IOUtils.readJson(
-                    new URL("https://launchermeta.mojang.com/mc/game/version_manifest.json")
+                    new URL("https://launchermeta.mojang.com/mc/game/version_manifest_v2.json")
                             .openStream())
                     .getAsJsonObject();
 
             if (this.getName().equals("latest"))
             {
+                final JsonObject latest = launcherMeta.getAsJsonObject("latest");
                 if (this.snapshot)
-                    version.set(launcherMeta.getAsJsonObject("latest").get("snapshot").getAsString());
-                else version.set(launcherMeta.getAsJsonObject("latest").get("release").getAsString());
+                    version.set(latest.get("snapshot").getAsString());
+                else version.set(latest.get("release").getAsString());
             }
 
             launcherMeta.getAsJsonArray("versions").forEach(jsonElement ->

@@ -100,7 +100,7 @@ public class VanillaDownloader
     {
         final Path vanillaJsonTarget = this.dir.resolve(this.vanillaJsonURL.substring(this.vanillaJsonURL.lastIndexOf('/') + 1));
         final String vanillaJsonResourceName = this.vanillaJsonURL.substring(this.vanillaJsonURL.lastIndexOf('/'));
-        final String vanillaJsonPathUrl = StringUtils.empty(this.vanillaJsonURL, "https://launchermeta.mojang.com/v1/packages/");
+        final String vanillaJsonPathUrl = StringUtils.empty(StringUtils.empty(this.vanillaJsonURL, "https://launchermeta.mojang.com/v1/packages/"), "https://piston-meta.mojang.com/v1/packages/");
 
         if(Files.notExists(vanillaJsonTarget) || !FileUtils.getSHA1(vanillaJsonTarget)
                 .equals(StringUtils.empty(vanillaJsonPathUrl, vanillaJsonResourceName)))

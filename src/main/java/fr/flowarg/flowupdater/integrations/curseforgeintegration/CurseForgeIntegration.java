@@ -11,7 +11,6 @@ import fr.flowarg.flowupdater.integrations.Integration;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedOutputStream;
@@ -53,11 +52,7 @@ public class CurseForgeIntegration extends Integration
     {
         try
         {
-            final Mod result = this.parseModFile(this.fetchModLink(curseFileInfo));
-            if(result != null )
-                return result;
-
-            throw new CurseForgeException(String.format("Failed to fetch mod project id: %d file id: %d", curseFileInfo.getProjectID(), curseFileInfo.getFileID()));
+            return this.parseModFile(this.fetchModLink(curseFileInfo));
         } catch (Exception e)
         {
             throw new CurseForgeException(String.format("Failed to fetch mod project id: %d file id: %d", curseFileInfo.getProjectID(), curseFileInfo.getFileID()), e);
@@ -66,28 +61,9 @@ public class CurseForgeIntegration extends Integration
 
     public static class CurseForgeException extends Exception
     {
-        public CurseForgeException()
-        {
-        }
-
-        public CurseForgeException(String message)
-        {
-            super(message);
-        }
-
         public CurseForgeException(String message, Throwable cause)
         {
             super(message, cause);
-        }
-
-        public CurseForgeException(Throwable cause)
-        {
-            super(cause);
-        }
-
-        public CurseForgeException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace)
-        {
-            super(message, cause, enableSuppression, writableStackTrace);
         }
     }
 
@@ -102,7 +78,6 @@ public class CurseForgeIntegration extends Integration
 
     /**
      * Make a request to the CurseForge API.
-     *
      * Oh my god, fuck Java 8 HTTP API, it's so fucking bad. Hope we drop Java 8 as soon as possible.
      *
      * @param url the url to request.
@@ -143,20 +118,21 @@ public class CurseForgeIntegration extends Integration
     /**
      * Parse the CurseForge API to retrieve the mod file.
      */
-    private @Nullable Mod parseModFile(String jsonResponse) throws Exception
+    private @NotNull Mod parseModFile(String jsonResponse)
     {
         final JsonObject data = JsonParser.parseString(jsonResponse).getAsJsonObject().getAsJsonObject("data");
         final String fileName = data.get("fileName").getAsString();
         final JsonElement downloadURLElement = data.get("downloadUrl");
+        String downloadURL;
 
         if(downloadURLElement instanceof JsonNull)
         {
-            logger.debug("Mod not available: " + jsonResponse);
+            logger.warn(String.format("Mod file %s not available. The download can fail because of this! %s", data.get("displayName").getAsString(), jsonResponse));
             this.bad++;
-            return null;
+            final String id = Integer.toString(data.get("id").getAsInt());
+            downloadURL = String.format("https://mediafiles.forgecdn.net/files/%s/%s/%s", id.substring(0, 4), id.substring(4), fileName);
         }
-
-        final String downloadURL = downloadURLElement.getAsString();
+        else downloadURL = downloadURLElement.getAsString();
         final long fileLength = data.get("fileLength").getAsLong();
 
         final AtomicReference<String> sha1 = new AtomicReference<>("");
@@ -182,16 +158,10 @@ public class CurseForgeIntegration extends Integration
         return this.parseMods();
     }
 
-    private @Nullable Path checkForUpdate(@NotNull CurseModPackInfo info) throws Exception
+    private @NotNull Path checkForUpdate(@NotNull CurseModPackInfo info) throws Exception
     {
         final String link = info.getUrl().isEmpty() ? this.fetchModLink(info) : info.getUrl();
         final Mod modPackFile = this.parseModFile(link);
-
-        if(modPackFile == null)
-        {
-            this.logger.err("This mod pack isn't available anymore on CurseForge for 3rd parties.");
-            return null;
-        }
 
         final Path outPath = this.folder.resolve(modPackFile.getName());
         if(Files.notExists(outPath) || (!modPackFile.getSha1().isEmpty() && !FileUtils.getSHA1(outPath).equalsIgnoreCase(modPackFile.getSha1())) || Files.size(outPath) != modPackFile.getSize())
