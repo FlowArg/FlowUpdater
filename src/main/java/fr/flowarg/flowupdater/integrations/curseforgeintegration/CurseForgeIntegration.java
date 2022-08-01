@@ -36,6 +36,8 @@ public class CurseForgeIntegration extends Integration
     private static final String CF_API_KEY = "JDJhJDEwJHBFZjhacXFwWE4zbVdtLm5aZ2pBMC5kdm9ibnhlV3hQZWZma2Q5ZEhCRWFid2VaUWh2cUtpJDJhJ";
     private static final String MOD_FILE_ENDPOINT = "/v1/mods/{modId}/files/{fileId}";
 
+    private boolean changed = false;
+
     /**
      * Default constructor of a basic Integration.
      *
@@ -185,7 +187,10 @@ public class CurseForgeIntegration extends Integration
             if(entryName.equalsIgnoreCase("manifest.json"))
             {
                 if(Files.notExists(flPath) || entry.getCrc() != FileUtils.getCRC32(flPath))
+                {
+                    this.changed = true;
                     this.transferAndClose(flPath, zipFile, entry);
+                }
                 continue;
             }
 
@@ -234,13 +239,17 @@ public class CurseForgeIntegration extends Integration
         final Path cachePath = dirPath.resolve("manifest.cache.json");
 
         if(Files.notExists(cachePath))
+        {
+            Files.createFile(cachePath);
             Files.write(cachePath, Collections.singletonList("[]"), StandardCharsets.UTF_8);
+        }
 
         String json = StringUtils.toString(Files.readAllLines(cachePath, StandardCharsets.UTF_8));
 
-        if(json.contains("\"md5\"") || json.contains("\"length\""))
+        if(this.changed || json.contains("\"md5\"") || json.contains("\"length\""))
         {
             Files.delete(cachePath);
+            Files.createFile(cachePath);
             Files.write(cachePath, Collections.singletonList("[]"), StandardCharsets.UTF_8);
             json = StringUtils.toString(Files.readAllLines(cachePath, StandardCharsets.UTF_8));
         }
