@@ -7,7 +7,6 @@ import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
-import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -171,22 +170,10 @@ public class QuiltVersion extends FabricBasedVersion
     /**
      * Builder for {@link QuiltVersion}.
      */
-    public static class QuiltVersionBuilder implements IBuilder<QuiltVersion>
+    public static class QuiltVersionBuilder extends ModLoaderVersionBuilder<QuiltVersion, QuiltVersionBuilder>
     {
         private final BuilderArgument<String> quiltVersionArgument =
                 new BuilderArgument<>("QuiltVersion", () -> IOUtils.getLatestArtifactVersion(QUILT_VERSION_METADATA)).optional();
-        private final BuilderArgument<List<Mod>> modsArgument =
-                new BuilderArgument<List<Mod>>("Mods", ArrayList::new).optional();
-        private final BuilderArgument<List<CurseFileInfo>> curseModsArgument =
-                new BuilderArgument<List<CurseFileInfo>>("CurseMods", ArrayList::new).optional();
-        private final BuilderArgument<List<ModrinthVersionInfo>> modrinthModsArgument =
-                new BuilderArgument<List<ModrinthVersionInfo>>("ModrinthMods", ArrayList::new).optional();
-        private final BuilderArgument<ModFileDeleter> fileDeleterArgument =
-                new BuilderArgument<>("ModFileDeleter", () -> new ModFileDeleter(false)).optional();
-        private final BuilderArgument<CurseModPackInfo> curseModPackArgument =
-                new BuilderArgument<CurseModPackInfo>("CurseModPack").optional();
-        private final BuilderArgument<ModrinthModPackInfo> modrinthPackArgument =
-                new BuilderArgument<ModrinthModPackInfo>("ModrinthModPack").optional();
 
         /**
          * @param quiltVersion the Quilt version you want to install
@@ -196,73 +183,6 @@ public class QuiltVersion extends FabricBasedVersion
         public QuiltVersionBuilder withQuiltVersion(String quiltVersion)
         {
             this.quiltVersionArgument.set(quiltVersion);
-            return this;
-        }
-
-        /**
-         * Append a mods list to the version.
-         * @param mods mods to append.
-         * @return the builder.
-         */
-        public QuiltVersionBuilder withMods(List<Mod> mods)
-        {
-            this.modsArgument.set(mods);
-            return this;
-        }
-
-        /**
-         * Append a mods list to the version.
-         * @param curseMods CurseForge's mods to append.
-         * @return the builder.
-         */
-        public QuiltVersionBuilder withCurseMods(List<CurseFileInfo> curseMods)
-        {
-            this.curseModsArgument.set(curseMods);
-            return this;
-        }
-
-        /**
-         * Append a mods list to the version.
-         * @param modrinthMods Modrinth's mods to append.
-         * @return the builder.
-         */
-        public QuiltVersionBuilder withModrinthMods(List<ModrinthVersionInfo> modrinthMods)
-        {
-            this.modrinthModsArgument.set(modrinthMods);
-            return this;
-        }
-
-        /**
-         * Assign to the future forge version a mod pack.
-         * @param modPackInfo the mod pack information to assign.
-         * @return the current builder.
-         */
-        public QuiltVersionBuilder withCurseModPack(CurseModPackInfo modPackInfo)
-        {
-            this.curseModPackArgument.set(modPackInfo);
-            return this;
-        }
-
-
-        /**
-         * Assign to the future forge version a mod pack.
-         * @param modPackInfo the mod pack information to assign.
-         * @return the builder.
-         */
-        public QuiltVersionBuilder withModrinthModPack(ModrinthModPackInfo modPackInfo)
-        {
-            this.modrinthPackArgument.set(modPackInfo);
-            return this;
-        }
-
-        /**
-         * Append a file deleter to the version.
-         * @param fileDeleter the file deleter to append.
-         * @return the builder.
-         */
-        public QuiltVersionBuilder withFileDeleter(ModFileDeleter fileDeleter)
-        {
-            this.fileDeleterArgument.set(fileDeleter);
             return this;
         }
 

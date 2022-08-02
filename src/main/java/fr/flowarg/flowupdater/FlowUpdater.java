@@ -23,6 +23,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -321,6 +322,16 @@ public class FlowUpdater
         }
 
         /**
+         * Append an array object in the final FlowUpdater instance.
+         * @param externalFiles the array to append and update.
+         * @return the builder.
+         */
+        public FlowUpdaterBuilder withExternalFiles(ExternalFile... externalFiles)
+        {
+            return withExternalFiles(Arrays.asList(externalFiles));
+        }
+
+        /**
          * Append a {@link List} object in the final FlowUpdater instance.
          * @param postExecutions the {@link List} to append and run after the update.
          * @return the builder.
@@ -329,6 +340,16 @@ public class FlowUpdater
         {
             this.postExecutionsArgument.set(postExecutions);
             return this;
+        }
+
+        /**
+         * Append an array object in the final FlowUpdater instance.
+         * @param postExecutions the array to append and run after the update.
+         * @return the builder.
+         */
+        public FlowUpdaterBuilder withPostExecutions(Runnable... postExecutions)
+        {
+            return withPostExecutions(Arrays.asList(postExecutions));
         }
 
         /**
@@ -341,6 +362,17 @@ public class FlowUpdater
         {
             this.modLoaderVersionArgument.set(modLoaderVersion);
             return this;
+        }
+
+        /**
+         * Necessary if you want to install a mod loader like Forge or Fabric for instance.
+         * Append a {@link IModLoaderVersion} object in the final FlowUpdater instance.
+         * @param modLoaderVersionBuilder the {@link ModLoaderVersionBuilder} to append and install.
+         * @return the builder.
+         */
+        public FlowUpdaterBuilder withModLoaderVersion(ModLoaderVersionBuilder<?, ?> modLoaderVersionBuilder)
+        {
+            return withModLoaderVersion(modLoaderVersionBuilder.build());
         }
 
         /**
