@@ -219,6 +219,15 @@ public class VanillaVersion
         private final BuilderArgument<List<Downloadable>> anotherLibrariesArgument = new BuilderArgument<List<Downloadable>>("AnotherLibraries", ArrayList::new).optional();
         private final BuilderArgument<JsonObject> customVersionJsonArgument = new BuilderArgument<JsonObject>("CustomVersionJson").optional();
 
+        public VanillaVersionBuilder(String name)
+        {
+            this.nameArgument.set(name);
+        }
+
+        public VanillaVersionBuilder()
+        {
+        }
+
         /**
          * Define the name of the wanted Minecraft version.
          * @param name wanted Minecraft version.
