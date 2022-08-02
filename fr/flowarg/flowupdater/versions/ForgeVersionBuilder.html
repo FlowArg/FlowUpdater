@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10};
+var methods = {"i0":10,"i1":10,"i2":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -73,7 +73,7 @@ var activeTableTab = "activeTableTab";
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#fields.inherited.from.class.fr.flowarg.flowupdater.versions.ModLoaderVersionBuilder">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
@@ -98,7 +98,12 @@ var activeTableTab = "activeTableTab";
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
+<li><a href="../../../../fr/flowarg/flowupdater/versions/ModLoaderVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">fr.flowarg.flowupdater.versions.ModLoaderVersionBuilder</a>&lt;<a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html" title="class in fr.flowarg.flowupdater.versions">AbstractForgeVersion</a>,<a href="../../../../fr/flowarg/flowupdater/versions/ForgeVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">ForgeVersionBuilder</a>&gt;</li>
+<li>
+<ul class="inheritance">
 <li>fr.flowarg.flowupdater.versions.ForgeVersionBuilder</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -112,8 +117,7 @@ var activeTableTab = "activeTableTab";
 <hr>
 <br>
 <pre>public class <span class="typeNameLabel">ForgeVersionBuilder</span>
-extends java.lang.Object
-implements <a href="../../../../fr/flowarg/flowupdater/utils/builderapi/IBuilder.html" title="interface in fr.flowarg.flowupdater.utils.builderapi">IBuilder</a>&lt;<a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html" title="class in fr.flowarg.flowupdater.versions">AbstractForgeVersion</a>&gt;</pre>
+extends <a href="../../../../fr/flowarg/flowupdater/versions/ModLoaderVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">ModLoaderVersionBuilder</a>&lt;<a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html" title="class in fr.flowarg.flowupdater.versions">AbstractForgeVersion</a>,<a href="../../../../fr/flowarg/flowupdater/versions/ForgeVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">ForgeVersionBuilder</a>&gt;</pre>
 <div class="block">Builder for <a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html" title="class in fr.flowarg.flowupdater.versions"><code>AbstractForgeVersion</code></a></div>
 </li>
 </ul>
@@ -138,6 +142,21 @@ implements <a href="../../../../fr/flowarg/flowupdater/utils/builderapi/IBuilder
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/ForgeVersionBuilder.ForgeVersionType.html" title="enum in fr.flowarg.flowupdater.versions">ForgeVersionBuilder.ForgeVersionType</a></span></code>&nbsp;</td>
 </tr>
 </table>
+</li>
+</ul>
+<!-- =========== FIELD SUMMARY =========== -->
+<ul class="blockList">
+<li class="blockList"><a name="field.summary">
+<!--   -->
+</a>
+<h3>Field Summary</h3>
+<ul class="blockList">
+<li class="blockList"><a name="fields.inherited.from.class.fr.flowarg.flowupdater.versions.ModLoaderVersionBuilder">
+<!--   -->
+</a>
+<h3>Fields inherited from class&nbsp;fr.flowarg.flowupdater.versions.<a href="../../../../fr/flowarg/flowupdater/versions/ModLoaderVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">ModLoaderVersionBuilder</a></h3>
+<code><a href="../../../../fr/flowarg/flowupdater/versions/ModLoaderVersionBuilder.html#curseModPackArgument">curseModPackArgument</a>, <a href="../../../../fr/flowarg/flowupdater/versions/ModLoaderVersionBuilder.html#curseModsArgument">curseModsArgument</a>, <a href="../../../../fr/flowarg/flowupdater/versions/ModLoaderVersionBuilder.html#fileDeleterArgument">fileDeleterArgument</a>, <a href="../../../../fr/flowarg/flowupdater/versions/ModLoaderVersionBuilder.html#modrinthModsArgument">modrinthModsArgument</a>, <a href="../../../../fr/flowarg/flowupdater/versions/ModLoaderVersionBuilder.html#modrinthPackArgument">modrinthPackArgument</a>, <a href="../../../../fr/flowarg/flowupdater/versions/ModLoaderVersionBuilder.html#modsArgument">modsArgument</a></code></li>
+</ul>
 </li>
 </ul>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
@@ -177,51 +196,22 @@ implements <a href="../../../../fr/flowarg/flowupdater/utils/builderapi/IBuilder
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/versions/ForgeVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">ForgeVersionBuilder</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/ForgeVersionBuilder.html#withCurseModPack-fr.flowarg.flowupdater.download.json.CurseModPackInfo-">withCurseModPack</a></span>(<a href="../../../../fr/flowarg/flowupdater/download/json/CurseModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseModPackInfo</a>&nbsp;modPackInfo)</code>
-<div class="block">Assign to the future forge version a mod pack.</div>
-</td>
-</tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/versions/ForgeVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">ForgeVersionBuilder</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/ForgeVersionBuilder.html#withCurseMods-java.util.List-">withCurseMods</a></span>(java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/CurseFileInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseFileInfo</a>&gt;&nbsp;curseMods)</code>
-<div class="block">Append a mods list to the version.</div>
-</td>
-</tr>
-<tr id="i3" class="rowColor">
-<td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/versions/ForgeVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">ForgeVersionBuilder</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/ForgeVersionBuilder.html#withFileDeleter-fr.flowarg.flowupdater.utils.ModFileDeleter-">withFileDeleter</a></span>(<a href="../../../../fr/flowarg/flowupdater/utils/ModFileDeleter.html" title="class in fr.flowarg.flowupdater.utils">ModFileDeleter</a>&nbsp;fileDeleter)</code>
-<div class="block">Append a file deleter to the version.</div>
-</td>
-</tr>
-<tr id="i4" class="altColor">
-<td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/versions/ForgeVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">ForgeVersionBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/ForgeVersionBuilder.html#withForgeVersion-java.lang.String-">withForgeVersion</a></span>(java.lang.String&nbsp;forgeVersion)</code>&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
-<td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/versions/ForgeVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">ForgeVersionBuilder</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/ForgeVersionBuilder.html#withModrinthModPack-fr.flowarg.flowupdater.download.json.ModrinthModPackInfo-">withModrinthModPack</a></span>(<a href="../../../../fr/flowarg/flowupdater/download/json/ModrinthModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">ModrinthModPackInfo</a>&nbsp;modPackInfo)</code>
-<div class="block">Assign to the future forge version a mod pack.</div>
-</td>
-</tr>
-<tr id="i6" class="altColor">
-<td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/versions/ForgeVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">ForgeVersionBuilder</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/ForgeVersionBuilder.html#withModrinthMods-java.util.List-">withModrinthMods</a></span>(java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/ModrinthVersionInfo.html" title="class in fr.flowarg.flowupdater.download.json">ModrinthVersionInfo</a>&gt;&nbsp;modrinthMods)</code>
-<div class="block">Append a mods list to the version.</div>
-</td>
-</tr>
-<tr id="i7" class="rowColor">
-<td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/versions/ForgeVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">ForgeVersionBuilder</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/ForgeVersionBuilder.html#withMods-java.util.List-">withMods</a></span>(java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/Mod.html" title="class in fr.flowarg.flowupdater.download.json">Mod</a>&gt;&nbsp;mods)</code>
-<div class="block">Append a mods list to the version.</div>
-</td>
-</tr>
-<tr id="i8" class="altColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/versions/ForgeVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">ForgeVersionBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/ForgeVersionBuilder.html#withOptiFine-fr.flowarg.flowupdater.download.json.OptiFineInfo-">withOptiFine</a></span>(<a href="../../../../fr/flowarg/flowupdater/download/json/OptiFineInfo.html" title="class in fr.flowarg.flowupdater.download.json">OptiFineInfo</a>&nbsp;optiFineInfo)</code>
 <div class="block">Append some OptiFine download's information.</div>
 </td>
 </tr>
 </table>
+<ul class="blockList">
+<li class="blockList"><a name="methods.inherited.from.class.fr.flowarg.flowupdater.versions.ModLoaderVersionBuilder">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;fr.flowarg.flowupdater.versions.<a href="../../../../fr/flowarg/flowupdater/versions/ModLoaderVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">ModLoaderVersionBuilder</a></h3>
+<code><a href="../../../../fr/flowarg/flowupdater/versions/ModLoaderVersionBuilder.html#withCurseModPack-fr.flowarg.flowupdater.download.json.CurseModPackInfo-">withCurseModPack</a>, <a href="../../../../fr/flowarg/flowupdater/versions/ModLoaderVersionBuilder.html#withCurseMods-fr.flowarg.flowupdater.download.json.CurseFileInfo...-">withCurseMods</a>, <a href="../../../../fr/flowarg/flowupdater/versions/ModLoaderVersionBuilder.html#withCurseMods-java.util.List-">withCurseMods</a>, <a href="../../../../fr/flowarg/flowupdater/versions/ModLoaderVersionBuilder.html#withCurseMods-java.lang.String-">withCurseMods</a>, <a href="../../../../fr/flowarg/flowupdater/versions/ModLoaderVersionBuilder.html#withCurseMods-java.net.URL-">withCurseMods</a>, <a href="../../../../fr/flowarg/flowupdater/versions/ModLoaderVersionBuilder.html#withFileDeleter-fr.flowarg.flowupdater.utils.ModFileDeleter-">withFileDeleter</a>, <a href="../../../../fr/flowarg/flowupdater/versions/ModLoaderVersionBuilder.html#withModrinthModPack-fr.flowarg.flowupdater.download.json.ModrinthModPackInfo-">withModrinthModPack</a>, <a href="../../../../fr/flowarg/flowupdater/versions/ModLoaderVersionBuilder.html#withModrinthMods-java.util.List-">withModrinthMods</a>, <a href="../../../../fr/flowarg/flowupdater/versions/ModLoaderVersionBuilder.html#withModrinthMods-fr.flowarg.flowupdater.download.json.ModrinthVersionInfo...-">withModrinthMods</a>, <a href="../../../../fr/flowarg/flowupdater/versions/ModLoaderVersionBuilder.html#withModrinthMods-java.lang.String-">withModrinthMods</a>, <a href="../../../../fr/flowarg/flowupdater/versions/ModLoaderVersionBuilder.html#withModrinthMods-java.net.URL-">withModrinthMods</a>, <a href="../../../../fr/flowarg/flowupdater/versions/ModLoaderVersionBuilder.html#withMods-java.util.List-">withMods</a>, <a href="../../../../fr/flowarg/flowupdater/versions/ModLoaderVersionBuilder.html#withMods-fr.flowarg.flowupdater.download.json.Mod...-">withMods</a>, <a href="../../../../fr/flowarg/flowupdater/versions/ModLoaderVersionBuilder.html#withMods-java.lang.String-">withMods</a>, <a href="../../../../fr/flowarg/flowupdater/versions/ModLoaderVersionBuilder.html#withMods-java.net.URL-">withMods</a></code></li>
+</ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
 <!--   -->
@@ -275,102 +265,6 @@ implements <a href="../../../../fr/flowarg/flowupdater/utils/builderapi/IBuilder
 </dl>
 </li>
 </ul>
-<a name="withMods-java.util.List-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>withMods</h4>
-<pre>public&nbsp;<a href="../../../../fr/flowarg/flowupdater/versions/ForgeVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">ForgeVersionBuilder</a>&nbsp;withMods(java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/Mod.html" title="class in fr.flowarg.flowupdater.download.json">Mod</a>&gt;&nbsp;mods)</pre>
-<div class="block">Append a mods list to the version.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>mods</code> - mods to append.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>the builder.</dd>
-</dl>
-</li>
-</ul>
-<a name="withCurseMods-java.util.List-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>withCurseMods</h4>
-<pre>public&nbsp;<a href="../../../../fr/flowarg/flowupdater/versions/ForgeVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">ForgeVersionBuilder</a>&nbsp;withCurseMods(java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/CurseFileInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseFileInfo</a>&gt;&nbsp;curseMods)</pre>
-<div class="block">Append a mods list to the version.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>curseMods</code> - CurseForge's mods to append.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>the builder.</dd>
-</dl>
-</li>
-</ul>
-<a name="withModrinthMods-java.util.List-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>withModrinthMods</h4>
-<pre>public&nbsp;<a href="../../../../fr/flowarg/flowupdater/versions/ForgeVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">ForgeVersionBuilder</a>&nbsp;withModrinthMods(java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/ModrinthVersionInfo.html" title="class in fr.flowarg.flowupdater.download.json">ModrinthVersionInfo</a>&gt;&nbsp;modrinthMods)</pre>
-<div class="block">Append a mods list to the version.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>modrinthMods</code> - Modrinth's mods to append.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>the builder.</dd>
-</dl>
-</li>
-</ul>
-<a name="withCurseModPack-fr.flowarg.flowupdater.download.json.CurseModPackInfo-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>withCurseModPack</h4>
-<pre>public&nbsp;<a href="../../../../fr/flowarg/flowupdater/versions/ForgeVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">ForgeVersionBuilder</a>&nbsp;withCurseModPack(<a href="../../../../fr/flowarg/flowupdater/download/json/CurseModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">CurseModPackInfo</a>&nbsp;modPackInfo)</pre>
-<div class="block">Assign to the future forge version a mod pack.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>modPackInfo</code> - the mod pack information to assign.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>the builder.</dd>
-</dl>
-</li>
-</ul>
-<a name="withModrinthModPack-fr.flowarg.flowupdater.download.json.ModrinthModPackInfo-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>withModrinthModPack</h4>
-<pre>public&nbsp;<a href="../../../../fr/flowarg/flowupdater/versions/ForgeVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">ForgeVersionBuilder</a>&nbsp;withModrinthModPack(<a href="../../../../fr/flowarg/flowupdater/download/json/ModrinthModPackInfo.html" title="class in fr.flowarg.flowupdater.download.json">ModrinthModPackInfo</a>&nbsp;modPackInfo)</pre>
-<div class="block">Assign to the future forge version a mod pack.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>modPackInfo</code> - the mod pack information to assign.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>the builder.</dd>
-</dl>
-</li>
-</ul>
-<a name="withFileDeleter-fr.flowarg.flowupdater.utils.ModFileDeleter-">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>withFileDeleter</h4>
-<pre>public&nbsp;<a href="../../../../fr/flowarg/flowupdater/versions/ForgeVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">ForgeVersionBuilder</a>&nbsp;withFileDeleter(<a href="../../../../fr/flowarg/flowupdater/utils/ModFileDeleter.html" title="class in fr.flowarg.flowupdater.utils">ModFileDeleter</a>&nbsp;fileDeleter)</pre>
-<div class="block">Append a file deleter to the version.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>fileDeleter</code> - the file deleter to append.</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>the builder.</dd>
-</dl>
-</li>
-</ul>
 <a name="withOptiFine-fr.flowarg.flowupdater.download.json.OptiFineInfo-">
 <!--   -->
 </a>
@@ -399,6 +293,8 @@ implements <a href="../../../../fr/flowarg/flowupdater/utils/builderapi/IBuilder
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../../../../fr/flowarg/flowupdater/utils/builderapi/IBuilder.html#build--">build</a></code>&nbsp;in interface&nbsp;<code><a href="../../../../fr/flowarg/flowupdater/utils/builderapi/IBuilder.html" title="interface in fr.flowarg.flowupdater.utils.builderapi">IBuilder</a>&lt;<a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html" title="class in fr.flowarg.flowupdater.versions">AbstractForgeVersion</a>&gt;</code></dd>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../../../fr/flowarg/flowupdater/versions/ModLoaderVersionBuilder.html#build--">build</a></code>&nbsp;in class&nbsp;<code><a href="../../../../fr/flowarg/flowupdater/versions/ModLoaderVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">ModLoaderVersionBuilder</a>&lt;<a href="../../../../fr/flowarg/flowupdater/versions/AbstractForgeVersion.html" title="class in fr.flowarg.flowupdater.versions">AbstractForgeVersion</a>,<a href="../../../../fr/flowarg/flowupdater/versions/ForgeVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">ForgeVersionBuilder</a>&gt;</code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the freshly created instance.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
@@ -459,7 +355,7 @@ implements <a href="../../../../fr/flowarg/flowupdater/utils/builderapi/IBuilder
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#fields.inherited.from.class.fr.flowarg.flowupdater.versions.ModLoaderVersionBuilder">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
