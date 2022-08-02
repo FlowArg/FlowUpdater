@@ -7,7 +7,6 @@ import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
-import fr.flowarg.flowupdater.utils.builderapi.ModdedBuilder;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -175,23 +174,8 @@ public class FabricVersion extends FabricBasedVersion
     /**
      * Builder for {@link FabricVersion}.
      */
-    public static class FabricVersionBuilder extends ModdedBuilder<FabricVersion, FabricVersionBuilder>
+    public static class FabricVersionBuilder extends ModLoaderVersionBuilder<FabricVersion, FabricVersionBuilder>
     {
-        @Override
-        protected FabricVersionBuilder getThis()
-        {
-            return this;
-        }
-
-        public FabricVersionBuilder(String version)
-        {
-            this.fabricVersionArgument.set(version);
-        }
-
-        public FabricVersionBuilder()
-        {
-        }
-
         private final BuilderArgument<String> fabricVersionArgument =
                 new BuilderArgument<>("FabricVersion", () ->
                         IOUtils.getLatestArtifactVersion(FABRIC_VERSION_METADATA))

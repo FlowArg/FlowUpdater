@@ -3,31 +3,18 @@ package fr.flowarg.flowupdater.versions;
 import fr.flowarg.flowupdater.download.json.OptiFineInfo;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
-import fr.flowarg.flowupdater.utils.builderapi.ModdedBuilder;
 
 /**
  * Builder for {@link AbstractForgeVersion}
  * @author Flow Arg (FlowArg)
  */
-public class ForgeVersionBuilder extends ModdedBuilder<AbstractForgeVersion, ForgeVersionBuilder>
+public class ForgeVersionBuilder extends ModLoaderVersionBuilder<AbstractForgeVersion, ForgeVersionBuilder>
 {
     private final ForgeVersionType type;
 
     public ForgeVersionBuilder(ForgeVersionType type)
     {
         this.type = type;
-    }
-
-    public ForgeVersionBuilder(ForgeVersionType type, String forgeVersion)
-    {
-        this.type = type;
-        this.forgeVersionArgument.set(forgeVersion);
-    }
-
-    @Override
-    public ForgeVersionBuilder getThis()
-    {
-        return this;
     }
 
     private final BuilderArgument<String> forgeVersionArgument = new BuilderArgument<String>("ForgeVersion").required();

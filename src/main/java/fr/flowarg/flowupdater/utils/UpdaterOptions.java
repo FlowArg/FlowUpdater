@@ -48,7 +48,6 @@ public class UpdaterOptions
     public static class UpdaterOptionsBuilder implements IBuilder<UpdaterOptions>
     {
         private final BuilderArgument<Boolean> silentReadArgument = new BuilderArgument<>("SilentRead", () -> true).optional();
-        private final BuilderArgument<Boolean> downloadServerArgument = new BuilderArgument<>("DownloadServer", () -> false).optional();
         private final BuilderArgument<ExternalFileDeleter> externalFileDeleterArgument = new BuilderArgument<>("External FileDeleter", ExternalFileDeleter::new).optional();
 
         /**

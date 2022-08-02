@@ -1,13 +1,18 @@
-package fr.flowarg.flowupdater.utils.builderapi;
+package fr.flowarg.flowupdater.versions;
 
 import fr.flowarg.flowupdater.download.json.*;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
+import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
+import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
+import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class ModdedBuilder<T, B extends ModdedBuilder<T, B>> implements IBuilder<T>
+@SuppressWarnings("unchecked")
+public abstract class ModLoaderVersionBuilder<T extends IModLoaderVersion, B extends ModLoaderVersionBuilder<T, B>> implements IBuilder<T>
 {
     protected final BuilderArgument<List<Mod>> modsArgument = new BuilderArgument<List<Mod>>("Mods", ArrayList::new).optional();
     protected final BuilderArgument<List<CurseFileInfo>> curseModsArgument = new BuilderArgument<List<CurseFileInfo>>("CurseMods", ArrayList::new).optional();
@@ -15,8 +20,6 @@ public abstract class ModdedBuilder<T, B extends ModdedBuilder<T, B>> implements
     protected final BuilderArgument<ModFileDeleter> fileDeleterArgument = new BuilderArgument<>("ModFileDeleter", () -> new ModFileDeleter(false)).optional();
     protected final BuilderArgument<CurseModPackInfo> curseModPackArgument = new BuilderArgument<CurseModPackInfo>("CurseModPack").optional();
     protected final BuilderArgument<ModrinthModPackInfo> modrinthPackArgument = new BuilderArgument<ModrinthModPackInfo>("ModrinthModPack").optional();
-
-    protected abstract B getThis();
 
     /**
      * Append a mods list to the version.
@@ -26,17 +29,35 @@ public abstract class ModdedBuilder<T, B extends ModdedBuilder<T, B>> implements
     public B withMods(List<Mod> mods)
     {
         this.modsArgument.get().addAll(mods);
-        return getThis();
+        return (B) this;
     }
 
     /**
-     * Append a mods list to the version.
+     * Append a single mod or a mod array to the version.
      * @param mods mods to append.
      * @return the builder.
      */
     public B withMods(Mod... mods)
     {
         return withMods(Arrays.asList(mods));
+    }
+
+    /**
+     * Append mods contained in the provided JSON url.
+     * @param jsonUrl The json URL of mods to append.
+     * @return the builder.
+     */
+    public B withMods(URL jsonUrl) {
+        return withMods(Mod.getModsFromJson(jsonUrl));
+    }
+
+    /**
+     * Append mods contained in the provided JSON url.
+     * @param jsonUrl The json URL of mods to append.
+     * @return the builder.
+     */
+    public B withMods(String jsonUrl) {
+        return withMods(Mod.getModsFromJson(jsonUrl));
     }
 
     /**
@@ -47,17 +68,37 @@ public abstract class ModdedBuilder<T, B extends ModdedBuilder<T, B>> implements
     public B withCurseMods(List<CurseFileInfo> curseMods)
     {
         this.curseModsArgument.get().addAll(curseMods);
-        return getThis();
+        return (B) this;
     }
 
     /**
-     * Append a mods list to the version.
+     * Append a single mod or a mod array to the version.
      * @param curseMods CurseForge's mods to append.
      * @return the builder.
      */
     public B withCurseMods(CurseFileInfo... curseMods)
     {
         return withCurseMods(Arrays.asList(curseMods));
+    }
+
+    /**
+     * Append mods contained in the provided JSON url.
+     * @param jsonUrl The json URL of mods to append.
+     * @return the builder.
+     */
+    public B withCurseMods(URL jsonUrl)
+    {
+        return withCurseMods(CurseFileInfo.getFilesFromJson(jsonUrl));
+    }
+
+    /**
+     * Append mods contained in the provided JSON url.
+     * @param jsonUrl The json URL of mods to append.
+     * @return the builder.
+     */
+    public B withCurseMods(String jsonUrl)
+    {
+        return withCurseMods(CurseFileInfo.getFilesFromJson(jsonUrl));
     }
 
     /**
@@ -68,17 +109,37 @@ public abstract class ModdedBuilder<T, B extends ModdedBuilder<T, B>> implements
     public B withModrinthMods(List<ModrinthVersionInfo> modrinthMods)
     {
         this.modrinthModsArgument.get().addAll(modrinthMods);
-        return getThis();
+        return (B) this;
     }
 
     /**
-     * Append a mods list to the version.
+     * Append a single mod or a mod array to the version.
      * @param modrinthMods Modrinth's mods to append.
      * @return the builder.
      */
     public B withModrinthMods(ModrinthVersionInfo... modrinthMods)
     {
         return withModrinthMods(Arrays.asList(modrinthMods));
+    }
+
+    /**
+     * Append mods contained in the provided JSON url.
+     * @param jsonUrl The json URL of mods to append.
+     * @return the builder.
+     */
+    public B withModrinthMods(URL jsonUrl)
+    {
+        return withModrinthMods(ModrinthVersionInfo.getModrinthVersionsFromJson(jsonUrl));
+    }
+
+    /**
+     * Append mods contained in the provided JSON url.
+     * @param jsonUrl The json URL of mods to append.
+     * @return the builder.
+     */
+    public B withModrinthMods(String jsonUrl)
+    {
+        return withModrinthMods(ModrinthVersionInfo.getModrinthVersionsFromJson(jsonUrl));
     }
 
     /**
@@ -89,7 +150,7 @@ public abstract class ModdedBuilder<T, B extends ModdedBuilder<T, B>> implements
     public B withCurseModPack(CurseModPackInfo modPackInfo)
     {
         this.curseModPackArgument.set(modPackInfo);
-        return getThis();
+        return (B) this;
     }
 
     /**
@@ -100,7 +161,7 @@ public abstract class ModdedBuilder<T, B extends ModdedBuilder<T, B>> implements
     public B withModrinthModPack(ModrinthModPackInfo modPackInfo)
     {
         this.modrinthPackArgument.set(modPackInfo);
-        return getThis();
+        return (B) this;
     }
 
     /**
@@ -111,6 +172,9 @@ public abstract class ModdedBuilder<T, B extends ModdedBuilder<T, B>> implements
     public B withFileDeleter(ModFileDeleter fileDeleter)
     {
         this.fileDeleterArgument.set(fileDeleter);
-        return getThis();
+        return (B) this;
     }
+
+    @Override
+    public abstract T build() throws BuilderException;
 }
