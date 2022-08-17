@@ -301,16 +301,6 @@ public class FlowUpdater
         }
 
         /**
-         * Append a {@link UpdaterOptions} object in the final FlowUpdater instance.
-         * @param updaterOptions the {@link UpdaterOptions.UpdaterOptionsBuilder} to append and propagate.
-         * @return the builder.
-         */
-        public FlowUpdaterBuilder withUpdaterOptions(UpdaterOptions.UpdaterOptionsBuilder updaterOptions)
-        {
-            return withUpdaterOptions(updaterOptions.build());
-        }
-
-        /**
          * Append a {@link IProgressCallback} object in the final FlowUpdater instance.
          * @param callback the {@link IProgressCallback} to append and use.
          * @return the builder.
@@ -393,17 +383,6 @@ public class FlowUpdater
         {
             this.modLoaderVersionArgument.set(modLoaderVersion);
             return this;
-        }
-
-        /**
-         * Necessary if you want to install a mod loader like Forge or Fabric for instance.
-         * Append a {@link IModLoaderVersion} object in the final FlowUpdater instance.
-         * @param modLoaderVersionBuilder the {@link ModLoaderVersionBuilder} to append and install.
-         * @return the builder.
-         */
-        public FlowUpdaterBuilder withModLoaderVersion(ModLoaderVersionBuilder<?, ?> modLoaderVersionBuilder)
-        {
-            return withModLoaderVersion(modLoaderVersionBuilder.build());
         }
 
         /**
