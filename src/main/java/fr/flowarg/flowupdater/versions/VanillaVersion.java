@@ -245,18 +245,6 @@ public class VanillaVersion
 
         /**
          * Append a mcp object to the version
-         * @param clientUrl The <code>client.jar</code> url.
-         * @param clientSha1 The sha1 of this file.
-         * @param clientSize The size of this file.
-         * @return the builder.
-         */
-        public VanillaVersionBuilder withMCP(String clientUrl, String clientSha1, long clientSize)
-        {
-            return withMCP(new MCP(clientUrl, clientSha1, clientSize));
-        }
-
-        /**
-         * Append a mcp object to the version
          * @param mcpJsonUrl the mcp json url of mcp object to append.
          * @return the builder.
          */

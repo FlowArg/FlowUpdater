@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -291,18 +290,6 @@ public class FlowUpdater
         }
 
         /**
-         * Append a {@link ILogger} object in the final FlowUpdater instance when using the default {@link Logger}.
-         * @param prefix The prefix of the logger.
-         * @param logFile The file where are saved logs.
-         * @return the builder.
-         * @see Logger#Logger(String, Path)
-         */
-        public FlowUpdaterBuilder withLogger(String prefix, Path logFile)
-        {
-            return withLogger(new Logger(prefix, logFile));
-        }
-
-        /**
          * Append a {@link UpdaterOptions} object in the final FlowUpdater instance.
          * @param updaterOptions the {@link UpdaterOptions} to append and propagate.
          * @return the builder.
@@ -315,10 +302,10 @@ public class FlowUpdater
 
         /**
          * Append a {@link UpdaterOptions} object in the final FlowUpdater instance.
-         * @param updaterOptions the {@link UpdaterOptions.Builder} to append and propagate.
+         * @param updaterOptions the {@link UpdaterOptions.UpdaterOptionsBuilder} to append and propagate.
          * @return the builder.
          */
-        public FlowUpdaterBuilder withUpdaterOptions(UpdaterOptions.Builder updaterOptions)
+        public FlowUpdaterBuilder withUpdaterOptions(UpdaterOptions.UpdaterOptionsBuilder updaterOptions)
         {
             return withUpdaterOptions(updaterOptions.build());
         }

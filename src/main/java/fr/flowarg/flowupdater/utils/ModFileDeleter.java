@@ -24,6 +24,11 @@ public class ModFileDeleter implements IFileDeleter
         this.modsToIgnore = modsToIgnore;
     }
 
+    public ModFileDeleter(String... modsToIgnore)
+    {
+        this(true, modsToIgnore);
+    }
+
     /**
      * Delete all bad files in the provided directory.
      * @param modsDir the mod's folder.
