@@ -18,6 +18,8 @@ import org.jetbrains.annotations.NotNull;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -206,10 +208,10 @@ public class VanillaVersion
     }
 
     /**
-     * A builder for building a vanilla version like {@link fr.flowarg.flowupdater.FlowUpdater.FlowUpdaterBuilder}
+     * A builder for building a vanilla version like {@link FlowUpdater.Builder}
      * @author FlowArg
      */
-    public static class VanillaVersionBuilder implements IBuilder<VanillaVersion>
+    public static class Builder implements IBuilder<VanillaVersion>
     {
         private final BuilderArgument<String> nameArgument = new BuilderArgument<String>("Name").required();
         private final BuilderArgument<MCP> mcpArgument = new BuilderArgument<MCP>("MCP").optional();
@@ -224,7 +226,7 @@ public class VanillaVersion
          * @param name wanted Minecraft version.
          * @return the builder.
          */
-        public VanillaVersionBuilder withName(String name)
+        public Builder withName(String name)
         {
             this.nameArgument.set(name);
             return this;
@@ -235,10 +237,42 @@ public class VanillaVersion
          * @param mcp the mcp object to append.
          * @return the builder.
          */
-        public VanillaVersionBuilder withMCP(MCP mcp)
+        public Builder withMCP(MCP mcp)
         {
             this.mcpArgument.set(mcp);
             return this;
+        }
+
+        /**
+         * Append a mcp object to the version
+         * @param clientUrl The <code>client.jar</code> url.
+         * @param clientSha1 The sha1 of this file.
+         * @param clientSize The size of this file.
+         * @return the builder.
+         */
+        public Builder withMCP(String clientUrl, String clientSha1, long clientSize)
+        {
+            return withMCP(new MCP(clientUrl, clientSha1, clientSize));
+        }
+
+        /**
+         * Append a mcp object to the version
+         * @param mcpJsonUrl the mcp json url of mcp object to append.
+         * @return the builder.
+         */
+        public Builder withMCP(URL mcpJsonUrl)
+        {
+            return withMCP(MCP.getMCPFromJson(mcpJsonUrl));
+        }
+
+        /**
+         * Append a mcp object to the version
+         * @param mcpJsonUrl the mcp json url of mcp object to append.
+         * @return the builder.
+         */
+        public Builder withMCP(String mcpJsonUrl)
+        {
+            return withMCP(MCP.getMCPFromJson(mcpJsonUrl));
         }
 
         /**
@@ -246,7 +280,7 @@ public class VanillaVersion
          * @param snapshot if the version is a snapshot.
          * @return the builder.
          */
-        public VanillaVersionBuilder withSnapshot(boolean snapshot)
+        public Builder withSnapshot(boolean snapshot)
         {
             this.snapshotArgument.set(snapshot);
             return this;
@@ -257,7 +291,7 @@ public class VanillaVersion
          * @param assetIndex the custom asset index to add.
          * @return the builder.
          */
-        public VanillaVersionBuilder withCustomAssetIndex(AssetIndex assetIndex)
+        public Builder withCustomAssetIndex(AssetIndex assetIndex)
         {
             this.customAssetIndexArgument.set(assetIndex);
             return this;
@@ -268,9 +302,30 @@ public class VanillaVersion
          * @param anotherAssets custom assets to add.
          * @return the builder.
          */
-        public VanillaVersionBuilder withAnotherAssets(List<AssetDownloadable> anotherAssets)
+        public Builder withAnotherAssets(Collection<AssetDownloadable> anotherAssets)
         {
-            this.anotherAssetsArgument.set(anotherAssets);
+            this.anotherAssetsArgument.get().addAll(anotherAssets);
+            return this;
+        }
+
+        /**
+         * Add custom assets to the version.
+         * @param anotherAssets custom assets to add.
+         * @return the builder.
+         */
+        public Builder withAnotherAssets(AssetDownloadable... anotherAssets)
+        {
+            return withAnotherAssets(Arrays.asList(anotherAssets));
+        }
+
+        /**
+         * Add custom libraries to the version.
+         * @param anotherLibraries custom libraries to add.
+         * @return the builder.
+         */
+        public Builder withAnotherLibraries(Collection<Downloadable> anotherLibraries)
+        {
+            this.anotherLibrariesArgument.get().addAll(anotherLibraries);
             return this;
         }
 
@@ -279,10 +334,9 @@ public class VanillaVersion
          * @param anotherLibraries custom libraries to add.
          * @return the builder.
          */
-        public VanillaVersionBuilder withAnotherLibraries(List<Downloadable> anotherLibraries)
+        public Builder withAnotherLibraries(Downloadable... anotherLibraries)
         {
-            this.anotherLibrariesArgument.set(anotherLibraries);
-            return this;
+            return withAnotherLibraries(Arrays.asList(anotherLibraries));
         }
 
         /**
@@ -290,7 +344,7 @@ public class VanillaVersion
          * @param customVersionJson the custom version's json to set.
          * @return the builder.
          */
-        public VanillaVersionBuilder withCustomVersionJson(JsonObject customVersionJson)
+        public Builder withCustomVersionJson(JsonObject customVersionJson)
         {
             this.customVersionJsonArgument.set(customVersionJson);
             return this;

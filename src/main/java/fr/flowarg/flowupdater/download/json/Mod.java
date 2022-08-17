@@ -24,14 +24,14 @@ public class Mod
     /**
      * Construct a new Mod object.
      * @param name Name of mod file.
+     * @param downloadURL Mod download URL.
      * @param sha1 Sha1 of mod file.
      * @param size Size of mod file.
-     * @param downloadURL Mod download URL.
      */
     public Mod(String name, String downloadURL, String sha1, long size)
     {
         this.name = name;
-        this.downloadURL =  downloadURL;
+        this.downloadURL = downloadURL;
         this.sha1 = sha1;
         this.size = size;
     }
@@ -39,22 +39,24 @@ public class Mod
     /**
      * Provide a List of Mods from a JSON file.
      * Template of a JSON file :
+     * <pre>
      * {
-     *  "mods": [
-     *  {
-     *     "name": "KeyStroke",
-     *     "downloadURL": "https://url.com/launcher/mods/KeyStroke.jar",
-     *     "sha1": "70e564892989d8bbc6f45c895df56c5db9378f48",
-     *     "size": 1234
-     *  },
-     *  {
-     *     "name": "JourneyMap",
-     *     "downloadURL": "https://url.com/launcher/mods/JourneyMap.jar",
-     *     "sha1": "eef74b3fbab6400cb14b02439cf092cca3c2125c",
-     *     "size": 1234
-     *  }
-     *  ]
+     *   "mods": [
+     *     {
+     *       "name": "KeyStroke",
+     *       "downloadURL": "https://url.com/launcher/mods/KeyStroke.jar",
+     *       "sha1": "70e564892989d8bbc6f45c895df56c5db9378f48",
+     *       "size": 1234
+     *     },
+     *     {
+     *       "name": "JourneyMap",
+     *       "downloadURL": "https://url.com/launcher/mods/JourneyMap.jar",
+     *       "sha1": "eef74b3fbab6400cb14b02439cf092cca3c2125c",
+     *       "size": 1234
+     *     }
+     *   ]
      * }
+     * </pre>
      * @param jsonUrl the JSON file URL.
      * @return a Mod list.
     */
@@ -70,12 +72,13 @@ public class Mod
     public static Mod fromJson(JsonElement modElement)
     {
         final JsonObject obj = modElement.getAsJsonObject();
-        final String name = obj.get("name").getAsString();
-        final String downloadURL = obj.get("downloadURL").getAsString();
-        final String sha1 = obj.get("sha1").getAsString();
-        final long size = obj.get("size").getAsLong();
 
-        return new Mod(name, downloadURL, sha1, size);
+        return new Mod(
+                obj.get("name").getAsString(),
+                obj.get("downloadURL").getAsString(),
+                obj.get("sha1").getAsString(),
+                obj.get("size").getAsLong()
+        );
     }
 
     /**

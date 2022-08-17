@@ -31,7 +31,7 @@ public class QuiltVersion extends FabricBasedVersion
     private static final String QUILT_BASE_INSTALLER = "https://maven.quiltmc.org/repository/release/org/quiltmc/quilt-installer/%s/quilt-installer-%s.jar";
 
     /**
-     * Use {@link QuiltVersionBuilder} to instantiate this class.
+     * Use {@link QuiltVersion.Builder} to instantiate this class.
      * @param mods        {@link List<Mod>} to install.
      * @param curseMods   {@link List<CurseFileInfo>} to install.
      * @param quiltVersion to install.
@@ -170,7 +170,7 @@ public class QuiltVersion extends FabricBasedVersion
     /**
      * Builder for {@link QuiltVersion}.
      */
-    public static class QuiltVersionBuilder extends ModLoaderVersionBuilder<QuiltVersion, QuiltVersionBuilder>
+    public static class Builder extends ModLoaderVersionBuilder<QuiltVersion, Builder>
     {
         private final BuilderArgument<String> quiltVersionArgument =
                 new BuilderArgument<>("QuiltVersion", () -> IOUtils.getLatestArtifactVersion(QUILT_VERSION_METADATA)).optional();
@@ -180,7 +180,7 @@ public class QuiltVersion extends FabricBasedVersion
          * (don't use this function if you want to use the latest Quilt version).
          * @return the builder.
          */
-        public QuiltVersionBuilder withQuiltVersion(String quiltVersion)
+        public Builder withQuiltVersion(String quiltVersion)
         {
             this.quiltVersionArgument.set(quiltVersion);
             return this;

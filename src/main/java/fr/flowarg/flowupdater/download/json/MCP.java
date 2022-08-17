@@ -33,11 +33,13 @@ public class MCP
     /**
      * Provide an MCP instance from a JSON file.
      * Template of a JSON file :
+     * <pre>
      * {
-     *     "clientURL": "https://url.com/launcher/client.jar",
-     *     "clientSha1": "9b0a9d70320811e7af2e8741653f029151a6719a",
-     *     "clientSize": 1234
+     *   "clientURL": "https://url.com/launcher/client.jar",
+     *   "clientSha1": "9b0a9d70320811e7af2e8741653f029151a6719a",
+     *   "clientSize": 1234
      * }
+     * </pre>
      * @param jsonUrl the JSON file URL.
      * @return the MCP instance.
      */

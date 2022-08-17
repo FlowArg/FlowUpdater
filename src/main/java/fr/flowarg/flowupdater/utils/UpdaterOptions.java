@@ -45,7 +45,7 @@ public class UpdaterOptions
     /**
      * Builder of {@link UpdaterOptions}
      */
-    public static class UpdaterOptionsBuilder implements IBuilder<UpdaterOptions>
+    public static class Builder implements IBuilder<UpdaterOptions>
     {
         private final BuilderArgument<Boolean> silentReadArgument = new BuilderArgument<>("SilentRead", () -> true).optional();
         private final BuilderArgument<ExternalFileDeleter> externalFileDeleterArgument = new BuilderArgument<>("External FileDeleter", ExternalFileDeleter::new).optional();
@@ -55,7 +55,7 @@ public class UpdaterOptions
          * @param silentRead the value to define.
          * @return the builder.
          */
-        public UpdaterOptionsBuilder withSilentRead(boolean silentRead)
+        public Builder withSilentRead(boolean silentRead)
         {
             this.silentReadArgument.set(silentRead);
             return this;
@@ -66,7 +66,7 @@ public class UpdaterOptions
          * @param externalFileDeleter the file deleter to define.
          * @return the builder.
          */
-        public UpdaterOptionsBuilder withExternalFileDeleter(ExternalFileDeleter externalFileDeleter)
+        public Builder withExternalFileDeleter(ExternalFileDeleter externalFileDeleter)
         {
             this.externalFileDeleterArgument.set(externalFileDeleter);
             return this;

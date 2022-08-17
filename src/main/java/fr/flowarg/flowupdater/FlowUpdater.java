@@ -22,8 +22,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -74,7 +76,7 @@ public class FlowUpdater
     public static final ILogger DEFAULT_LOGGER = new Logger("[FlowUpdater]", null);
 
     /**
-     * Basic constructor for {@link FlowUpdater}, use {@link FlowUpdaterBuilder} to instantiate a new {@link FlowUpdater}.
+     * Basic constructor for {@link FlowUpdater}, use {@link FlowUpdater.Builder} to instantiate a new {@link FlowUpdater}.
      * @param vanillaVersion {@link VanillaVersion} to update.
      * @param logger {@link ILogger} used for log information.
      * @param updaterOptions {@link UpdaterOptions} for this updater
@@ -118,6 +120,11 @@ public class FlowUpdater
         this.updateExtFiles(dir);
         this.runPostExecutions();
         this.endUpdate();
+    }
+
+    public void update(String dirPath) throws Exception
+    {
+        update(Paths.get(dirPath));
     }
 
     private void checkExtFiles(Path dir) throws Exception
@@ -256,7 +263,7 @@ public class FlowUpdater
      * Builder of {@link FlowUpdater}.
      * @author Flow Arg (FlowArg)
      */
-    public static class FlowUpdaterBuilder implements IBuilder<FlowUpdater>
+    public static class Builder implements IBuilder<FlowUpdater>
     {
         private final BuilderArgument<VanillaVersion> versionArgument = new BuilderArgument<>("VanillaVersion", () -> VanillaVersion.NULL_VERSION).optional();
         private final BuilderArgument<ILogger> loggerArgument = new BuilderArgument<>("Logger", () -> DEFAULT_LOGGER).optional();
@@ -271,7 +278,7 @@ public class FlowUpdater
          * @param version the {@link VanillaVersion} to append and install.
          * @return the builder.
          */
-        public FlowUpdaterBuilder withVanillaVersion(VanillaVersion version)
+        public Builder withVanillaVersion(VanillaVersion version)
         {
             this.versionArgument.set(version);
             return this;
@@ -282,10 +289,22 @@ public class FlowUpdater
          * @param logger the {@link ILogger} to append and use.
          * @return the builder.
          */
-        public FlowUpdaterBuilder withLogger(ILogger logger)
+        public Builder withLogger(ILogger logger)
         {
             this.loggerArgument.set(logger);
             return this;
+        }
+
+        /**
+         * Append a {@link ILogger} object in the final FlowUpdater instance when using the default {@link Logger}.
+         * @param prefix The prefix of the logger.
+         * @param logFile The file where are saved logs.
+         * @return the builder.
+         * @see Logger#Logger(String, Path)
+         */
+        public Builder withLogger(String prefix, Path logFile)
+        {
+            return withLogger(new Logger(prefix, logFile));
         }
 
         /**
@@ -293,10 +312,20 @@ public class FlowUpdater
          * @param updaterOptions the {@link UpdaterOptions} to append and propagate.
          * @return the builder.
          */
-        public FlowUpdaterBuilder withUpdaterOptions(UpdaterOptions updaterOptions)
+        public Builder withUpdaterOptions(UpdaterOptions updaterOptions)
         {
             this.updaterOptionsArgument.set(updaterOptions);
             return this;
+        }
+
+        /**
+         * Append a {@link UpdaterOptions} object in the final FlowUpdater instance.
+         * @param updaterOptions the {@link UpdaterOptions.Builder} to append and propagate.
+         * @return the builder.
+         */
+        public Builder withUpdaterOptions(UpdaterOptions.Builder updaterOptions)
+        {
+            return withUpdaterOptions(updaterOptions.build());
         }
 
         /**
@@ -304,7 +333,7 @@ public class FlowUpdater
          * @param callback the {@link IProgressCallback} to append and use.
          * @return the builder.
          */
-        public FlowUpdaterBuilder withProgressCallback(IProgressCallback callback)
+        public Builder withProgressCallback(IProgressCallback callback)
         {
             this.progressCallbackArgument.set(callback);
             return this;
@@ -315,9 +344,9 @@ public class FlowUpdater
          * @param externalFiles the {@link List} to append and update.
          * @return the builder.
          */
-        public FlowUpdaterBuilder withExternalFiles(List<ExternalFile> externalFiles)
+        public Builder withExternalFiles(Collection<ExternalFile> externalFiles)
         {
-            this.externalFilesArgument.set(externalFiles);
+            this.externalFilesArgument.get().addAll(externalFiles);
             return this;
         }
 
@@ -326,9 +355,29 @@ public class FlowUpdater
          * @param externalFiles the array to append and update.
          * @return the builder.
          */
-        public FlowUpdaterBuilder withExternalFiles(ExternalFile... externalFiles)
+        public Builder withExternalFiles(ExternalFile... externalFiles)
         {
             return withExternalFiles(Arrays.asList(externalFiles));
+        }
+
+        /**
+         * Append external files in the final FlowUpdater instance.
+         * @param externalFilesJsonUrl the URL of the json of external files append and update.
+         * @return the builder.
+         */
+        public Builder withExternalFiles(URL externalFilesJsonUrl)
+        {
+            return withExternalFiles(ExternalFile.getExternalFilesFromJson(externalFilesJsonUrl));
+        }
+
+        /**
+         * Append external files in the final FlowUpdater instance.
+         * @param externalFilesJsonUrl the URL of the json of external files append and update.
+         * @return the builder.
+         */
+        public Builder withExternalFiles(String externalFilesJsonUrl)
+        {
+            return withExternalFiles(ExternalFile.getExternalFilesFromJson(externalFilesJsonUrl));
         }
 
         /**
@@ -336,9 +385,9 @@ public class FlowUpdater
          * @param postExecutions the {@link List} to append and run after the update.
          * @return the builder.
          */
-        public FlowUpdaterBuilder withPostExecutions(List<Runnable> postExecutions)
+        public Builder withPostExecutions(Collection<Runnable> postExecutions)
         {
-            this.postExecutionsArgument.set(postExecutions);
+            this.postExecutionsArgument.get().addAll(postExecutions);
             return this;
         }
 
@@ -347,7 +396,7 @@ public class FlowUpdater
          * @param postExecutions the array to append and run after the update.
          * @return the builder.
          */
-        public FlowUpdaterBuilder withPostExecutions(Runnable... postExecutions)
+        public Builder withPostExecutions(Runnable... postExecutions)
         {
             return withPostExecutions(Arrays.asList(postExecutions));
         }
@@ -358,7 +407,7 @@ public class FlowUpdater
          * @param modLoaderVersion the {@link IModLoaderVersion} to append and install.
          * @return the builder.
          */
-        public FlowUpdaterBuilder withModLoaderVersion(IModLoaderVersion modLoaderVersion)
+        public Builder withModLoaderVersion(IModLoaderVersion modLoaderVersion)
         {
             this.modLoaderVersionArgument.set(modLoaderVersion);
             return this;
@@ -370,7 +419,7 @@ public class FlowUpdater
          * @param modLoaderVersionBuilder the {@link ModLoaderVersionBuilder} to append and install.
          * @return the builder.
          */
-        public FlowUpdaterBuilder withModLoaderVersion(ModLoaderVersionBuilder<?, ?> modLoaderVersionBuilder)
+        public Builder withModLoaderVersion(ModLoaderVersionBuilder<?, ?> modLoaderVersionBuilder)
         {
             return withModLoaderVersion(modLoaderVersionBuilder.build());
         }

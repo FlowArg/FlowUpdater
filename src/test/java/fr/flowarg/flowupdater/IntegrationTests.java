@@ -36,11 +36,11 @@ public class IntegrationTests
         boolean error = false;
         try
         {
-            final VanillaVersion version = new VanillaVersion.VanillaVersionBuilder()
+            final VanillaVersion version = new VanillaVersion.Builder()
                     .withName("1.18.2")
                     .build();
 
-            final FlowUpdater updater = new FlowUpdater.FlowUpdaterBuilder()
+            final FlowUpdater updater = new FlowUpdater.Builder()
                     .withVanillaVersion(version)
                     .build();
 
@@ -66,7 +66,7 @@ public class IntegrationTests
 
         try
         {
-            final VanillaVersion version = new VanillaVersion.VanillaVersionBuilder()
+            final VanillaVersion version = new VanillaVersion.Builder()
                     .withName(vanilla)
                     .build();
 
@@ -74,7 +74,7 @@ public class IntegrationTests
                     .withForgeVersion(vanillaForge)
                     .build();
 
-            final FlowUpdater updater = new FlowUpdater.FlowUpdaterBuilder()
+            final FlowUpdater updater = new FlowUpdater.Builder()
                     .withVanillaVersion(version)
                     .withModLoaderVersion(forgeVersion)
                     .build();
@@ -101,7 +101,7 @@ public class IntegrationTests
 
         try
         {
-            final VanillaVersion version = new VanillaVersion.VanillaVersionBuilder()
+            final VanillaVersion version = new VanillaVersion.Builder()
                     .withName(vanilla)
                     .build();
 
@@ -109,7 +109,7 @@ public class IntegrationTests
                     .withForgeVersion("1.7.10-10.13.4.1614-1.7.10")
                     .build();
 
-            final FlowUpdater updater = new FlowUpdater.FlowUpdaterBuilder()
+            final FlowUpdater updater = new FlowUpdater.Builder()
                     .withVanillaVersion(version)
                     .withModLoaderVersion(forgeVersion)
                     .build();
@@ -134,13 +134,13 @@ public class IntegrationTests
         boolean error = false;
         try
         {
-            final VanillaVersion version = new VanillaVersion.VanillaVersionBuilder()
+            final VanillaVersion version = new VanillaVersion.Builder()
                     .withName("1.18.2")
                     .build();
 
             final FabricVersion fabricVersion = new FabricVersion.FabricVersionBuilder().build();
 
-            final FlowUpdater updater = new FlowUpdater.FlowUpdaterBuilder()
+            final FlowUpdater updater = new FlowUpdater.Builder()
                     .withVanillaVersion(version)
                     .withModLoaderVersion(fabricVersion)
                     .build();
@@ -164,13 +164,13 @@ public class IntegrationTests
         boolean error = false;
         try
         {
-            final VanillaVersion version = new VanillaVersion.VanillaVersionBuilder()
+            final VanillaVersion version = new VanillaVersion.Builder()
                     .withName("1.18.2")
                     .build();
 
-            final QuiltVersion quiltVersion = new QuiltVersion.QuiltVersionBuilder().build();
+            final QuiltVersion quiltVersion = new QuiltVersion.Builder().build();
 
-            final FlowUpdater updater = new FlowUpdater.FlowUpdaterBuilder()
+            final FlowUpdater updater = new FlowUpdater.Builder()
                     .withVanillaVersion(version)
                     .withModLoaderVersion(quiltVersion)
                     .build();
@@ -194,13 +194,13 @@ public class IntegrationTests
         boolean error = false;
         try
         {
-            final VanillaVersion version = new VanillaVersion.VanillaVersionBuilder()
+            final VanillaVersion version = new VanillaVersion.Builder()
                     .withName("1.19")
                     .build();
 
             final FabricVersion fabricVersion = new FabricVersion.FabricVersionBuilder().build();
 
-            final FlowUpdater updater = new FlowUpdater.FlowUpdaterBuilder()
+            final FlowUpdater updater = new FlowUpdater.Builder()
                     .withVanillaVersion(version)
                     .withModLoaderVersion(fabricVersion)
                     .build();

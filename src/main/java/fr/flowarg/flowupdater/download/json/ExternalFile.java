@@ -57,23 +57,25 @@ public class ExternalFile
     /**
      * Provide a List of external file from a JSON file.
      * Template of a JSON file :
+     * <pre>
      * {
-     *     "extfiles": [
+     *   "extfiles": [
      *     {
-     *         "path": "other/path/AnExternalFile.binpatch",
-     *         "downloadURL": "https://url.com/launcher/extern/AnExtFile.binpatch",
-     *         "sha1": "40f784892989du0fc6f45c895d4l6c5db9378f48",
-     *         "size": 25652
+     *       "path": "other/path/AnExternalFile.binpatch",
+     *       "downloadURL": "https://url.com/launcher/extern/AnExtFile.binpatch",
+     *       "sha1": "40f784892989du0fc6f45c895d4l6c5db9378f48",
+     *       "size": 25652
      *     },
      *     {
-     *         "path": "config/config.json",
-     *         "downloadURL": "https://url.com/launcher/ext/modconfig.json",
-     *         "sha1": "eef74b3fbab6400cb14b02439cf092cca3c2125c",
-     *         "size": 19683,
-     *         "update": false
+     *       "path": "config/config.json",
+     *       "downloadURL": "https://url.com/launcher/ext/modconfig.json",
+     *       "sha1": "eef74b3fbab6400cb14b02439cf092cca3c2125c",
+     *       "size": 19683,
+     *       "update": false
      *     }
-     *     ]
+     *   ]
      * }
+     * </pre>
      * @param jsonUrl the JSON file URL.
      * @return an external file list.
      */
