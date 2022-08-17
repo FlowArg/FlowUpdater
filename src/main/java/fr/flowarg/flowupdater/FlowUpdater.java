@@ -24,6 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -315,9 +316,9 @@ public class FlowUpdater
          * @param externalFiles the {@link List} to append and update.
          * @return the builder.
          */
-        public FlowUpdaterBuilder withExternalFiles(List<ExternalFile> externalFiles)
+        public FlowUpdaterBuilder withExternalFiles(Collection<ExternalFile> externalFiles)
         {
-            this.externalFilesArgument.set(externalFiles);
+            this.externalFilesArgument.get().addAll(externalFiles);
             return this;
         }
 
@@ -332,13 +333,33 @@ public class FlowUpdater
         }
 
         /**
+         * Append external files in the final FlowUpdater instance.
+         * @param externalFilesJsonUrl the URL of the json of external files append and update.
+         * @return the builder.
+         */
+        public FlowUpdaterBuilder withExternalFiles(URL externalFilesJsonUrl)
+        {
+            return withExternalFiles(ExternalFile.getExternalFilesFromJson(externalFilesJsonUrl));
+        }
+
+        /**
+         * Append external files in the final FlowUpdater instance.
+         * @param externalFilesJsonUrl the URL of the json of external files append and update.
+         * @return the builder.
+         */
+        public FlowUpdaterBuilder withExternalFiles(String externalFilesJsonUrl)
+        {
+            return withExternalFiles(ExternalFile.getExternalFilesFromJson(externalFilesJsonUrl));
+        }
+
+        /**
          * Append a {@link List} object in the final FlowUpdater instance.
          * @param postExecutions the {@link List} to append and run after the update.
          * @return the builder.
          */
-        public FlowUpdaterBuilder withPostExecutions(List<Runnable> postExecutions)
+        public FlowUpdaterBuilder withPostExecutions(Collection<Runnable> postExecutions)
         {
-            this.postExecutionsArgument.set(postExecutions);
+            this.postExecutionsArgument.get().addAll(postExecutions);
             return this;
         }
 
@@ -362,17 +383,6 @@ public class FlowUpdater
         {
             this.modLoaderVersionArgument.set(modLoaderVersion);
             return this;
-        }
-
-        /**
-         * Necessary if you want to install a mod loader like Forge or Fabric for instance.
-         * Append a {@link IModLoaderVersion} object in the final FlowUpdater instance.
-         * @param modLoaderVersionBuilder the {@link ModLoaderVersionBuilder} to append and install.
-         * @return the builder.
-         */
-        public FlowUpdaterBuilder withModLoaderVersion(ModLoaderVersionBuilder<?, ?> modLoaderVersionBuilder)
-        {
-            return withModLoaderVersion(modLoaderVersionBuilder.build());
         }
 
         /**

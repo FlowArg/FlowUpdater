@@ -9,6 +9,7 @@ import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
@@ -47,7 +48,8 @@ public abstract class ModLoaderVersionBuilder<T extends IModLoaderVersion, B ext
      * @param jsonUrl The json URL of mods to append.
      * @return the builder.
      */
-    public B withMods(URL jsonUrl) {
+    public B withMods(URL jsonUrl)
+    {
         return withMods(Mod.getModsFromJson(jsonUrl));
     }
 
@@ -56,7 +58,8 @@ public abstract class ModLoaderVersionBuilder<T extends IModLoaderVersion, B ext
      * @param jsonUrl The json URL of mods to append.
      * @return the builder.
      */
-    public B withMods(String jsonUrl) {
+    public B withMods(String jsonUrl)
+    {
         return withMods(Mod.getModsFromJson(jsonUrl));
     }
 
@@ -65,7 +68,7 @@ public abstract class ModLoaderVersionBuilder<T extends IModLoaderVersion, B ext
      * @param curseMods CurseForge's mods to append.
      * @return the builder.
      */
-    public B withCurseMods(List<CurseFileInfo> curseMods)
+    public B withCurseMods(Collection<CurseFileInfo> curseMods)
     {
         this.curseModsArgument.get().addAll(curseMods);
         return (B) this;
@@ -106,7 +109,7 @@ public abstract class ModLoaderVersionBuilder<T extends IModLoaderVersion, B ext
      * @param modrinthMods Modrinth's mods to append.
      * @return the builder.
      */
-    public B withModrinthMods(List<ModrinthVersionInfo> modrinthMods)
+    public B withModrinthMods(Collection<ModrinthVersionInfo> modrinthMods)
     {
         this.modrinthModsArgument.get().addAll(modrinthMods);
         return (B) this;

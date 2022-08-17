@@ -36,7 +36,7 @@ UpdaterOptions options = new UpdaterOptionsBuilder().build();
 ```
 Note that currently `UpdaterOptions` is useless unless you want to use a custom `ExternalFileDeleter` or you want to disable the silent reading.
 
-Then, instantiate a new FlowUpdater with ``FlowUpdaterBuilder#withXArguments#withAnotherArguemtn#build``. Check the code/[JavaDoc](https://flowarg.github.io/FlowUpdater) for more information.
+Then, instantiate a new FlowUpdater with ``FlowUpdaterBuilder#withXArguments#withAnotherArgument#build``. Check the code/[JavaDoc](https://flowarg.github.io/FlowUpdater) for more information.
 
 ```java
 FlowUpdater updater = new FlowUpdaterBuilder().withVanillaVersion(version).withUpdaterOptions(options).withLogger(someCustomLogger).build();
@@ -75,8 +75,8 @@ Then, build a forge version. For example, I will build a NewForgeVersion.
 AbstractForgeVersion forgeVersion = new ForgeVersionBuilder(ForgeVersionBuilder.ForgeVersionType.NEW)
             .withForgeVersion("31.2.29")
             .withCurseMods(modInfos)
-            .withOptiFine(new OptiFineInfo("1.16.3_HD_U_G3", false)) // installing OptiFine for 1.16.3, false = not a preview
-            .withUseFileDeleter(new ModFileDeleter(true, "jei.jar")) // delete bad mods, don't remove the file jei.jar if it's present in the mods' dir.
+            .withOptiFine(new OptiFineInfo("1.16.3_HD_U_G3")) // installing OptiFine for 1.16.3, false = not a preview
+            .withFileDeleter(new ModFileDeleter("jei.jar")) // delete bad mods, don't remove the file jei.jar if it's present in the mods' dir.
             .build();
 ```
 
@@ -92,14 +92,14 @@ That's all!
 In your vanilla version builder, change the version type to `VersionType.MCP`.
 Finally, set to vanilla version builder a MCP version :
 ```java
-.withMCP(new MCP("clientURL", "name", "clientSha1", 25008229));
+.withMCP(new MCP("clientURL", "clientSha1", 25008229));
 ```
 If you set an empty/null string in url and sha1 and 0 in size, the updater will use the default minecraft jar.
 Example on client-only mcp downloading :
 ```java
 .withMCP(new MCP("https://mighya.eu/resources/Client.jar", "f2c219e485831af2bae9464eebbe4765128c6ad6", 23005862));
 ```
-You can get an MCP object instance by providing a json link too : `.withMCP(MCP.getMCPFromJson("https://url.com/launcher/mcp.json"));`.
+You can get an MCP object instance by providing a json link too : `.withMCP("https://url.com/launcher/mcp.json");`.
 Nothing else to add :).
 
 ### Fabric
@@ -115,7 +115,7 @@ FabricVersion fabricVersion = new FabricVersionBuilder()
             .withFabricVersion("0.10.8")
             .withCurseMods(modInfos)
             .withMods(mods)
-            .withUseFileDeleter(new ModFileDeleter(true, "sodium.jar")) // delete bad mods ; but it won't remove the file sodium.jar if it's present in the mods' dir.
+            .withFileDeleter(new ModFileDeleter("sodium.jar")) // delete bad mods ; but it won't remove the file sodium.jar if it's present in the mods' dir.
             .build();
 ```
 

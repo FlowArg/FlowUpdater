@@ -18,6 +18,8 @@ import org.jetbrains.annotations.NotNull;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -206,7 +208,7 @@ public class VanillaVersion
     }
 
     /**
-     * A builder for building a vanilla version like {@link fr.flowarg.flowupdater.FlowUpdater.FlowUpdaterBuilder}
+     * A builder for building a vanilla version like {@link FlowUpdater.FlowUpdaterBuilder}
      * @author FlowArg
      */
     public static class VanillaVersionBuilder implements IBuilder<VanillaVersion>
@@ -242,6 +244,26 @@ public class VanillaVersion
         }
 
         /**
+         * Append a mcp object to the version
+         * @param mcpJsonUrl the mcp json url of mcp object to append.
+         * @return the builder.
+         */
+        public VanillaVersionBuilder withMCP(URL mcpJsonUrl)
+        {
+            return withMCP(MCP.getMCPFromJson(mcpJsonUrl));
+        }
+
+        /**
+         * Append a mcp object to the version
+         * @param mcpJsonUrl the mcp json url of mcp object to append.
+         * @return the builder.
+         */
+        public VanillaVersionBuilder withMCP(String mcpJsonUrl)
+        {
+            return withMCP(MCP.getMCPFromJson(mcpJsonUrl));
+        }
+
+        /**
          * Is the version a snapshot ?
          * @param snapshot if the version is a snapshot.
          * @return the builder.
@@ -268,9 +290,30 @@ public class VanillaVersion
          * @param anotherAssets custom assets to add.
          * @return the builder.
          */
-        public VanillaVersionBuilder withAnotherAssets(List<AssetDownloadable> anotherAssets)
+        public VanillaVersionBuilder withAnotherAssets(Collection<AssetDownloadable> anotherAssets)
         {
-            this.anotherAssetsArgument.set(anotherAssets);
+            this.anotherAssetsArgument.get().addAll(anotherAssets);
+            return this;
+        }
+
+        /**
+         * Add custom assets to the version.
+         * @param anotherAssets custom assets to add.
+         * @return the builder.
+         */
+        public VanillaVersionBuilder withAnotherAssets(AssetDownloadable... anotherAssets)
+        {
+            return withAnotherAssets(Arrays.asList(anotherAssets));
+        }
+
+        /**
+         * Add custom libraries to the version.
+         * @param anotherLibraries custom libraries to add.
+         * @return the builder.
+         */
+        public VanillaVersionBuilder withAnotherLibraries(Collection<Downloadable> anotherLibraries)
+        {
+            this.anotherLibrariesArgument.get().addAll(anotherLibraries);
             return this;
         }
 
@@ -279,10 +322,9 @@ public class VanillaVersion
          * @param anotherLibraries custom libraries to add.
          * @return the builder.
          */
-        public VanillaVersionBuilder withAnotherLibraries(List<Downloadable> anotherLibraries)
+        public VanillaVersionBuilder withAnotherLibraries(Downloadable... anotherLibraries)
         {
-            this.anotherLibrariesArgument.set(anotherLibraries);
-            return this;
+            return withAnotherLibraries(Arrays.asList(anotherLibraries));
         }
 
         /**
