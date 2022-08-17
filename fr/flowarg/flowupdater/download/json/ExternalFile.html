@@ -283,23 +283,25 @@ extends java.lang.Object</pre>
 public static&nbsp;@NotNull java.util.List&lt;<a href="../../../../../fr/flowarg/flowupdater/download/json/ExternalFile.html" title="class in fr.flowarg.flowupdater.download.json">ExternalFile</a>&gt;&nbsp;getExternalFilesFromJson(java.net.URL&nbsp;jsonUrl)</pre>
 <div class="block">Provide a List of external file from a JSON file.
  Template of a JSON file :
+ <pre>
  {
-     "extfiles": [
+   "extfiles": [
      {
-         "path": "other/path/AnExternalFile.binpatch",
-         "downloadURL": "https://url.com/launcher/extern/AnExtFile.binpatch",
-         "sha1": "40f784892989du0fc6f45c895d4l6c5db9378f48",
-         "size": 25652
+       "path": "other/path/AnExternalFile.binpatch",
+       "downloadURL": "https://url.com/launcher/extern/AnExtFile.binpatch",
+       "sha1": "40f784892989du0fc6f45c895d4l6c5db9378f48",
+       "size": 25652
      },
      {
-         "path": "config/config.json",
-         "downloadURL": "https://url.com/launcher/ext/modconfig.json",
-         "sha1": "eef74b3fbab6400cb14b02439cf092cca3c2125c",
-         "size": 19683,
-         "update": false
+       "path": "config/config.json",
+       "downloadURL": "https://url.com/launcher/ext/modconfig.json",
+       "sha1": "eef74b3fbab6400cb14b02439cf092cca3c2125c",
+       "size": 19683,
+       "update": false
      }
-     ]
- }</div>
+   ]
+ }
+ </pre></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>jsonUrl</code> - the JSON file URL.</dd>

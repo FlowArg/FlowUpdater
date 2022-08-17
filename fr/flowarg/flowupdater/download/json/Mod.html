@@ -230,9 +230,9 @@ extends java.lang.Object</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>name</code> - Name of mod file.</dd>
+<dd><code>downloadURL</code> - Mod download URL.</dd>
 <dd><code>sha1</code> - Sha1 of mod file.</dd>
 <dd><code>size</code> - Size of mod file.</dd>
-<dd><code>downloadURL</code> - Mod download URL.</dd>
 </dl>
 </li>
 </ul>
@@ -254,22 +254,24 @@ extends java.lang.Object</pre>
 public static&nbsp;@NotNull java.util.List&lt;<a href="../../../../../fr/flowarg/flowupdater/download/json/Mod.html" title="class in fr.flowarg.flowupdater.download.json">Mod</a>&gt;&nbsp;getModsFromJson(java.net.URL&nbsp;jsonUrl)</pre>
 <div class="block">Provide a List of Mods from a JSON file.
  Template of a JSON file :
+ <pre>
  {
-  "mods": [
-  {
-     "name": "KeyStroke",
-     "downloadURL": "https://url.com/launcher/mods/KeyStroke.jar",
-     "sha1": "70e564892989d8bbc6f45c895df56c5db9378f48",
-     "size": 1234
-  },
-  {
-     "name": "JourneyMap",
-     "downloadURL": "https://url.com/launcher/mods/JourneyMap.jar",
-     "sha1": "eef74b3fbab6400cb14b02439cf092cca3c2125c",
-     "size": 1234
-  }
-  ]
- }</div>
+   "mods": [
+     {
+       "name": "KeyStroke",
+       "downloadURL": "https://url.com/launcher/mods/KeyStroke.jar",
+       "sha1": "70e564892989d8bbc6f45c895df56c5db9378f48",
+       "size": 1234
+     },
+     {
+       "name": "JourneyMap",
+       "downloadURL": "https://url.com/launcher/mods/JourneyMap.jar",
+       "sha1": "eef74b3fbab6400cb14b02439cf092cca3c2125c",
+       "size": 1234
+     }
+   ]
+ }
+ </pre></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>jsonUrl</code> - the JSON file URL.</dd>

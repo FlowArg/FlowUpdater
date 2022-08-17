@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -118,7 +118,7 @@ var activeTableTab = "activeTableTab";
 <pre>public static class <span class="typeNameLabel">VanillaVersion.VanillaVersionBuilder</span>
 extends java.lang.Object
 implements <a href="../../../../fr/flowarg/flowupdater/utils/builderapi/IBuilder.html" title="interface in fr.flowarg.flowupdater.utils.builderapi">IBuilder</a>&lt;<a href="../../../../fr/flowarg/flowupdater/versions/VanillaVersion.html" title="class in fr.flowarg.flowupdater.versions">VanillaVersion</a>&gt;</pre>
-<div class="block">A builder for building a vanilla version like <a href="../../../../fr/flowarg/flowupdater/FlowUpdater.FlowUpdaterBuilder.html" title="class in fr.flowarg.flowupdater"><code>FlowUpdater.FlowUpdaterBuilder</code></a></div>
+<div class="block">A builder for building a vanilla version like <code>FlowUpdater.FlowUpdaterBuilder</code></div>
 </li>
 </ul>
 </div>
@@ -162,41 +162,65 @@ implements <a href="../../../../fr/flowarg/flowupdater/utils/builderapi/IBuilder
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/versions/VanillaVersion.VanillaVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">VanillaVersion.VanillaVersionBuilder</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/VanillaVersion.VanillaVersionBuilder.html#withAnotherAssets-java.util.List-">withAnotherAssets</a></span>(java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/AssetDownloadable.html" title="class in fr.flowarg.flowupdater.download.json">AssetDownloadable</a>&gt;&nbsp;anotherAssets)</code>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/VanillaVersion.VanillaVersionBuilder.html#withAnotherAssets-fr.flowarg.flowupdater.download.json.AssetDownloadable...-">withAnotherAssets</a></span>(<a href="../../../../fr/flowarg/flowupdater/download/json/AssetDownloadable.html" title="class in fr.flowarg.flowupdater.download.json">AssetDownloadable</a>...&nbsp;anotherAssets)</code>
 <div class="block">Add custom assets to the version.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/versions/VanillaVersion.VanillaVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">VanillaVersion.VanillaVersionBuilder</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/VanillaVersion.VanillaVersionBuilder.html#withAnotherLibraries-java.util.List-">withAnotherLibraries</a></span>(java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/Downloadable.html" title="class in fr.flowarg.flowupdater.download.json">Downloadable</a>&gt;&nbsp;anotherLibraries)</code>
-<div class="block">Add custom libraries to the version.</div>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/VanillaVersion.VanillaVersionBuilder.html#withAnotherAssets-java.util.Collection-">withAnotherAssets</a></span>(java.util.Collection&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/AssetDownloadable.html" title="class in fr.flowarg.flowupdater.download.json">AssetDownloadable</a>&gt;&nbsp;anotherAssets)</code>
+<div class="block">Add custom assets to the version.</div>
 </td>
 </tr>
 <tr id="i3" class="rowColor">
+<td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/versions/VanillaVersion.VanillaVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">VanillaVersion.VanillaVersionBuilder</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/VanillaVersion.VanillaVersionBuilder.html#withAnotherLibraries-java.util.Collection-">withAnotherLibraries</a></span>(java.util.Collection&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/Downloadable.html" title="class in fr.flowarg.flowupdater.download.json">Downloadable</a>&gt;&nbsp;anotherLibraries)</code>
+<div class="block">Add custom libraries to the version.</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/versions/VanillaVersion.VanillaVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">VanillaVersion.VanillaVersionBuilder</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/VanillaVersion.VanillaVersionBuilder.html#withAnotherLibraries-fr.flowarg.flowupdater.download.json.Downloadable...-">withAnotherLibraries</a></span>(<a href="../../../../fr/flowarg/flowupdater/download/json/Downloadable.html" title="class in fr.flowarg.flowupdater.download.json">Downloadable</a>...&nbsp;anotherLibraries)</code>
+<div class="block">Add custom libraries to the version.</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/versions/VanillaVersion.VanillaVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">VanillaVersion.VanillaVersionBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/VanillaVersion.VanillaVersionBuilder.html#withCustomAssetIndex-fr.flowarg.flowupdater.download.json.AssetIndex-">withCustomAssetIndex</a></span>(<a href="../../../../fr/flowarg/flowupdater/download/json/AssetIndex.html" title="class in fr.flowarg.flowupdater.download.json">AssetIndex</a>&nbsp;assetIndex)</code>
 <div class="block">Add custom asset index to the version.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/versions/VanillaVersion.VanillaVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">VanillaVersion.VanillaVersionBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/VanillaVersion.VanillaVersionBuilder.html#withCustomVersionJson-com.google.gson.JsonObject-">withCustomVersionJson</a></span>(com.google.gson.JsonObject&nbsp;customVersionJson)</code>
 <div class="block">Define the version's json.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/versions/VanillaVersion.VanillaVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">VanillaVersion.VanillaVersionBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/VanillaVersion.VanillaVersionBuilder.html#withMCP-fr.flowarg.flowupdater.download.json.MCP-">withMCP</a></span>(<a href="../../../../fr/flowarg/flowupdater/download/json/MCP.html" title="class in fr.flowarg.flowupdater.download.json">MCP</a>&nbsp;mcp)</code>
 <div class="block">Append a mcp object to the version</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i8" class="altColor">
+<td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/versions/VanillaVersion.VanillaVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">VanillaVersion.VanillaVersionBuilder</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/VanillaVersion.VanillaVersionBuilder.html#withMCP-java.lang.String-">withMCP</a></span>(java.lang.String&nbsp;mcpJsonUrl)</code>
+<div class="block">Append a mcp object to the version</div>
+</td>
+</tr>
+<tr id="i9" class="rowColor">
+<td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/versions/VanillaVersion.VanillaVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">VanillaVersion.VanillaVersionBuilder</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/VanillaVersion.VanillaVersionBuilder.html#withMCP-java.net.URL-">withMCP</a></span>(java.net.URL&nbsp;mcpJsonUrl)</code>
+<div class="block">Append a mcp object to the version</div>
+</td>
+</tr>
+<tr id="i10" class="altColor">
 <td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/versions/VanillaVersion.VanillaVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">VanillaVersion.VanillaVersionBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/VanillaVersion.VanillaVersionBuilder.html#withName-java.lang.String-">withName</a></span>(java.lang.String&nbsp;name)</code>
 <div class="block">Define the name of the wanted Minecraft version.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="../../../../fr/flowarg/flowupdater/versions/VanillaVersion.VanillaVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">VanillaVersion.VanillaVersionBuilder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../fr/flowarg/flowupdater/versions/VanillaVersion.VanillaVersionBuilder.html#withSnapshot-boolean-">withSnapshot</a></span>(boolean&nbsp;snapshot)</code>
 <div class="block">Is the version a snapshot ?</div>
@@ -273,6 +297,38 @@ implements <a href="../../../../fr/flowarg/flowupdater/utils/builderapi/IBuilder
 </dl>
 </li>
 </ul>
+<a name="withMCP-java.net.URL-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>withMCP</h4>
+<pre>public&nbsp;<a href="../../../../fr/flowarg/flowupdater/versions/VanillaVersion.VanillaVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">VanillaVersion.VanillaVersionBuilder</a>&nbsp;withMCP(java.net.URL&nbsp;mcpJsonUrl)</pre>
+<div class="block">Append a mcp object to the version</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>mcpJsonUrl</code> - the mcp json url of mcp object to append.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the builder.</dd>
+</dl>
+</li>
+</ul>
+<a name="withMCP-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>withMCP</h4>
+<pre>public&nbsp;<a href="../../../../fr/flowarg/flowupdater/versions/VanillaVersion.VanillaVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">VanillaVersion.VanillaVersionBuilder</a>&nbsp;withMCP(java.lang.String&nbsp;mcpJsonUrl)</pre>
+<div class="block">Append a mcp object to the version</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>mcpJsonUrl</code> - the mcp json url of mcp object to append.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the builder.</dd>
+</dl>
+</li>
+</ul>
 <a name="withSnapshot-boolean-">
 <!--   -->
 </a>
@@ -305,13 +361,13 @@ implements <a href="../../../../fr/flowarg/flowupdater/utils/builderapi/IBuilder
 </dl>
 </li>
 </ul>
-<a name="withAnotherAssets-java.util.List-">
+<a name="withAnotherAssets-java.util.Collection-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>withAnotherAssets</h4>
-<pre>public&nbsp;<a href="../../../../fr/flowarg/flowupdater/versions/VanillaVersion.VanillaVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">VanillaVersion.VanillaVersionBuilder</a>&nbsp;withAnotherAssets(java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/AssetDownloadable.html" title="class in fr.flowarg.flowupdater.download.json">AssetDownloadable</a>&gt;&nbsp;anotherAssets)</pre>
+<pre>public&nbsp;<a href="../../../../fr/flowarg/flowupdater/versions/VanillaVersion.VanillaVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">VanillaVersion.VanillaVersionBuilder</a>&nbsp;withAnotherAssets(java.util.Collection&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/AssetDownloadable.html" title="class in fr.flowarg.flowupdater.download.json">AssetDownloadable</a>&gt;&nbsp;anotherAssets)</pre>
 <div class="block">Add custom assets to the version.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -321,13 +377,45 @@ implements <a href="../../../../fr/flowarg/flowupdater/utils/builderapi/IBuilder
 </dl>
 </li>
 </ul>
-<a name="withAnotherLibraries-java.util.List-">
+<a name="withAnotherAssets-fr.flowarg.flowupdater.download.json.AssetDownloadable...-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>withAnotherAssets</h4>
+<pre>public&nbsp;<a href="../../../../fr/flowarg/flowupdater/versions/VanillaVersion.VanillaVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">VanillaVersion.VanillaVersionBuilder</a>&nbsp;withAnotherAssets(<a href="../../../../fr/flowarg/flowupdater/download/json/AssetDownloadable.html" title="class in fr.flowarg.flowupdater.download.json">AssetDownloadable</a>...&nbsp;anotherAssets)</pre>
+<div class="block">Add custom assets to the version.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>anotherAssets</code> - custom assets to add.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the builder.</dd>
+</dl>
+</li>
+</ul>
+<a name="withAnotherLibraries-java.util.Collection-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>withAnotherLibraries</h4>
-<pre>public&nbsp;<a href="../../../../fr/flowarg/flowupdater/versions/VanillaVersion.VanillaVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">VanillaVersion.VanillaVersionBuilder</a>&nbsp;withAnotherLibraries(java.util.List&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/Downloadable.html" title="class in fr.flowarg.flowupdater.download.json">Downloadable</a>&gt;&nbsp;anotherLibraries)</pre>
+<pre>public&nbsp;<a href="../../../../fr/flowarg/flowupdater/versions/VanillaVersion.VanillaVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">VanillaVersion.VanillaVersionBuilder</a>&nbsp;withAnotherLibraries(java.util.Collection&lt;<a href="../../../../fr/flowarg/flowupdater/download/json/Downloadable.html" title="class in fr.flowarg.flowupdater.download.json">Downloadable</a>&gt;&nbsp;anotherLibraries)</pre>
+<div class="block">Add custom libraries to the version.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>anotherLibraries</code> - custom libraries to add.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the builder.</dd>
+</dl>
+</li>
+</ul>
+<a name="withAnotherLibraries-fr.flowarg.flowupdater.download.json.Downloadable...-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>withAnotherLibraries</h4>
+<pre>public&nbsp;<a href="../../../../fr/flowarg/flowupdater/versions/VanillaVersion.VanillaVersionBuilder.html" title="class in fr.flowarg.flowupdater.versions">VanillaVersion.VanillaVersionBuilder</a>&nbsp;withAnotherLibraries(<a href="../../../../fr/flowarg/flowupdater/download/json/Downloadable.html" title="class in fr.flowarg.flowupdater.download.json">Downloadable</a>...&nbsp;anotherLibraries)</pre>
 <div class="block">Add custom libraries to the version.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
