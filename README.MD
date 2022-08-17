@@ -46,7 +46,7 @@ Don't forget to add a progress callback if you want to make a progress bar!
 
 Finally, call the update function :
 ```java
-updater.update("your/path/");
+updater.update(Paths.get("your/path/"));
 ```
 
 ### Forge
@@ -75,8 +75,8 @@ Then, build a forge version. For example, I will build a NewForgeVersion.
 AbstractForgeVersion forgeVersion = new ForgeVersionBuilder(ForgeVersionBuilder.ForgeVersionType.NEW)
             .withForgeVersion("31.2.29")
             .withCurseMods(modInfos)
-            .withOptiFine("1.16.3_HD_U_G3") // installing OptiFine for 1.16.3, false = not a preview
-            .withFileDeleter("jei.jar") // delete bad mods, don't remove the file jei.jar if it's present in the mods' dir.
+            .withOptiFine(new OptiFineInfo("1.16.3_HD_U_G3")) // installing OptiFine for 1.16.3, false = not a preview
+            .withFileDeleter(new ModFileDeleter("jei.jar")) // delete bad mods, don't remove the file jei.jar if it's present in the mods' dir.
             .build();
 ```
 
@@ -92,12 +92,12 @@ That's all!
 In your vanilla version builder, change the version type to `VersionType.MCP`.
 Finally, set to vanilla version builder a MCP version :
 ```java
-.withMCP("clientURL", "clientSha1", 25008229);
+.withMCP(new MCP("clientURL", "clientSha1", 25008229));
 ```
 If you set an empty/null string in url and sha1 and 0 in size, the updater will use the default minecraft jar.
 Example on client-only mcp downloading :
 ```java
-.withMCP("https://mighya.eu/resources/Client.jar", "f2c219e485831af2bae9464eebbe4765128c6ad6", 23005862);
+.withMCP(new MCP("https://mighya.eu/resources/Client.jar", "f2c219e485831af2bae9464eebbe4765128c6ad6", 23005862));
 ```
 You can get an MCP object instance by providing a json link too : `.withMCP("https://url.com/launcher/mcp.json");`.
 Nothing else to add :).
@@ -115,7 +115,7 @@ FabricVersion fabricVersion = new FabricVersionBuilder()
             .withFabricVersion("0.10.8")
             .withCurseMods(modInfos)
             .withMods(mods)
-            .withFileDeleter("sodium.jar") // delete bad mods ; but it won't remove the file sodium.jar if it's present in the mods' dir.
+            .withFileDeleter(new ModFileDeleter("sodium.jar")) // delete bad mods ; but it won't remove the file sodium.jar if it's present in the mods' dir.
             .build();
 ```
 
