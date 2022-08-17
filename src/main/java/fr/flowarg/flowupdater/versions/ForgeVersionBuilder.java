@@ -55,7 +55,6 @@ public class ForgeVersionBuilder extends ModLoaderVersionBuilder<AbstractForgeVe
     /**
      * Append some non preview OptiFine download's information.
      * @param version The OptiFine's version.
-     * @param preview If the version is a preview.
      * @return the builder.
      */
     public ForgeVersionBuilder withOptiFine(String version)

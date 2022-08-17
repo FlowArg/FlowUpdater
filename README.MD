@@ -36,7 +36,7 @@ UpdaterOptions options = new UpdaterOptionsBuilder().build();
 ```
 Note that currently `UpdaterOptions` is useless unless you want to use a custom `ExternalFileDeleter` or you want to disable the silent reading.
 
-Then, instantiate a new FlowUpdater with ``FlowUpdater.Builder#withXArguments#withAnotherArgument#build``. Check the code/[JavaDoc](https://flowarg.github.io/FlowUpdater) for more information.
+Then, instantiate a new FlowUpdater with ``FlowUpdaterBuilder#withXArguments#withAnotherArgument#build``. Check the code/[JavaDoc](https://flowarg.github.io/FlowUpdater) for more information.
 
 ```java
 FlowUpdater updater = new FlowUpdaterBuilder().withVanillaVersion(version).withUpdaterOptions(options).withLogger(someCustomLogger).build();
