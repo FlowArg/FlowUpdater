@@ -22,7 +22,6 @@ public class OptiFineInfo
     /**
      * Construct a new OptiFineInfo object, use {@link OptiFineInfo#OptiFineInfo(String, boolean)} .
      * @param version the OptiFine's version.
-     * @see  Use this if the version is a preview.
      */
     public OptiFineInfo(String version)
     {
