@@ -11,15 +11,17 @@ import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
  */
 public class UpdaterOptions
 {
-    public static final UpdaterOptions DEFAULT = new UpdaterOptions(true, new ExternalFileDeleter());
+    public static final UpdaterOptions DEFAULT = new UpdaterOptions(true, new ExternalFileDeleter(), true);
 
     private final boolean silentRead;
     private final ExternalFileDeleter externalFileDeleter;
+    private final boolean versionChecker;
 
-    private UpdaterOptions(boolean silentRead, ExternalFileDeleter externalFileDeleter)
+    private UpdaterOptions(boolean silentRead, ExternalFileDeleter externalFileDeleter, boolean versionChecker)
     {
         this.silentRead = silentRead;
         this.externalFileDeleter = externalFileDeleter;
+        this.versionChecker = versionChecker;
     }
 
     /**
@@ -43,12 +45,22 @@ public class UpdaterOptions
     }
 
     /**
+     * Should check the version of FlowUpdater.
+     * @return true or false.
+     */
+    public boolean isVersionChecker()
+    {
+        return this.versionChecker;
+    }
+
+    /**
      * Builder of {@link UpdaterOptions}
      */
     public static class UpdaterOptionsBuilder implements IBuilder<UpdaterOptions>
     {
         private final BuilderArgument<Boolean> silentReadArgument = new BuilderArgument<>("SilentRead", () -> true).optional();
         private final BuilderArgument<ExternalFileDeleter> externalFileDeleterArgument = new BuilderArgument<>("External FileDeleter", ExternalFileDeleter::new).optional();
+        private final BuilderArgument<Boolean> versionChecker = new BuilderArgument<>("VersionChecker", () -> true).optional();
 
         /**
          * Enable or disable the silent read option.
@@ -73,6 +85,17 @@ public class UpdaterOptions
         }
 
         /**
+         * Enable or disable the version checker.
+         * @param versionChecker the value to define.
+         * @return the builder.
+         */
+        public UpdaterOptionsBuilder withVersionChecker(boolean versionChecker)
+        {
+            this.versionChecker.set(versionChecker);
+            return this;
+        }
+
+        /**
          * Build an {@link UpdaterOptions} object.
          */
         @Override
@@ -80,7 +103,8 @@ public class UpdaterOptions
         {
             return new UpdaterOptions(
                     this.silentReadArgument.get(),
-                    this.externalFileDeleterArgument.get()
+                    this.externalFileDeleterArgument.get(),
+                    this.versionChecker.get()
             );
         }
     }

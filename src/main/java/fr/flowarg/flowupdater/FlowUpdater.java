@@ -12,6 +12,7 @@ import fr.flowarg.flowupdater.integrations.modrinthintegration.IModrinthFeatures
 import fr.flowarg.flowupdater.utils.FlowUpdaterException;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.UpdaterOptions;
+import fr.flowarg.flowupdater.utils.VersionChecker;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
 import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
@@ -34,6 +35,9 @@ import java.util.List;
  */
 public class FlowUpdater
 {
+    /** FlowUpdater's version string constant */
+    public static final String FU_VERSION = "1.7.2";
+
     /** Vanilla version's object to update/install */
     private final VanillaVersion vanillaVersion;
 
@@ -101,7 +105,11 @@ public class FlowUpdater
         this.integrationManager = new IntegrationManager(this);
         this.logger.info(String.format(
                 "------------------------- FlowUpdater for Minecraft %s v%s -------------------------",
-                this.vanillaVersion.getName(), "1.7.2"));
+                this.vanillaVersion.getName(), FU_VERSION));
+
+        if(this.updaterOptions.isVersionChecker())
+            VersionChecker.run(this.logger);
+
         this.callback.init(this.logger);
     }
 
