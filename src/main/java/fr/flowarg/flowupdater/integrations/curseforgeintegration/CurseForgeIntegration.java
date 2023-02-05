@@ -110,13 +110,6 @@ public class CurseForgeIntegration extends Integration
         }
     }
 
-    private int bad = 0;
-
-    public int getBad()
-    {
-        return this.bad;
-    }
-
     /**
      * Parse the CurseForge API to retrieve the mod file.
      */
@@ -130,7 +123,6 @@ public class CurseForgeIntegration extends Integration
         if(downloadURLElement instanceof JsonNull)
         {
             logger.warn(String.format("Mod file %s not available. The download can fail because of this! %s", data.get("displayName").getAsString(), jsonResponse));
-            this.bad++;
             final String id = Integer.toString(data.get("id").getAsInt());
             downloadURL = String.format("https://mediafiles.forgecdn.net/files/%s/%s/%s", id.substring(0, 4), id.substring(4), fileName);
         }

@@ -4,7 +4,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 group 'fr.flowarg'
-version '1.7.2'
+version '1.7.3'
 archivesBaseName = "flowupdater"
 
 java {
@@ -27,18 +27,18 @@ repositories {
     }
 }
 
-task sourcesJar(type: Jar) {
+tasks.register('sourcesJar', Jar) {
     classifier 'sources'
     from sourceSets.main.allSource
 }
-    
-task javadocJar(type: Jar) {
+
+tasks.register('javadocJar', Jar) {
     classifier 'javadoc'
     from javadoc
 }
 
 dependencies {
-    api 'com.google.code.gson:gson:2.9.0'
+    api 'com.google.code.gson:gson:2.10.1'
     api 'fr.flowarg:flowmultitools:1.4.0'
     api 'org.jetbrains:annotations:23.0.0'
 
