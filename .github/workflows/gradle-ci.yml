@@ -23,4 +23,6 @@ jobs:
           distribution: 'zulu'
 
       - name: Build and test project with Java ${{ matrix.jdk }}
-        run: gradle test javadoc
+        run: gradle build javadoc
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
