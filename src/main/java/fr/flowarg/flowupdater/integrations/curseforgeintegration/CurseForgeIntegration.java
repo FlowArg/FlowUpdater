@@ -154,8 +154,8 @@ public class CurseForgeIntegration extends Integration
 
     private @NotNull Path checkForUpdate(@NotNull CurseModPackInfo info) throws Exception
     {
-        final String link = info.getUrl().isEmpty() ? this.fetchModLink(info) : info.getUrl();
-        final Mod modPackFile = this.parseModFile(link);
+        final String responseData = info.getUrl().isEmpty() ? this.fetchModLink(info) : this.makeRequest(info.getUrl());
+        final Mod modPackFile = this.parseModFile(responseData);
 
         final Path outPath = this.folder.resolve(modPackFile.getName());
         if(Files.notExists(outPath) || (!modPackFile.getSha1().isEmpty() && !FileUtils.getSHA1(outPath).equalsIgnoreCase(modPackFile.getSha1())) || Files.size(outPath) != modPackFile.getSize())
