@@ -12,10 +12,10 @@ import fr.flowarg.flowupdater.utils.IOUtils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -87,10 +87,10 @@ public class CurseForgeIntegration extends Integration
      */
     private @NotNull String makeRequest(String url)
     {
-        HttpsURLConnection connection = null;
+        HttpURLConnection connection = null;
         try
         {
-            connection = (HttpsURLConnection)new URL(url).openConnection();
+            connection = (HttpURLConnection)new URL(url).openConnection();
             connection.setRequestMethod("GET");
             connection.setInstanceFollowRedirects(true);
             connection.setUseCaches(false);
