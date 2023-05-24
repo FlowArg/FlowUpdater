@@ -26,6 +26,7 @@ public abstract class AbstractModLoaderVersion implements ICurseFeaturesUser, IM
     protected VanillaVersion vanilla;
     protected DownloadList downloadList;
     protected IProgressCallback callback;
+    protected String javaPath;
 
     public AbstractModLoaderVersion(List<Mod> mods, String modLoaderVersion, List<CurseFileInfo> curseMods,
             List<ModrinthVersionInfo> modrinthMods, ModFileDeleter fileDeleter, CurseModPackInfo curseModPackInfo,
@@ -51,6 +52,7 @@ public abstract class AbstractModLoaderVersion implements ICurseFeaturesUser, IM
         this.vanilla = flowUpdater.getVanillaVersion();
         this.downloadList = flowUpdater.getDownloadList();
         this.callback = flowUpdater.getCallback();
+        this.javaPath = flowUpdater.getUpdaterOptions().getJavaPath();
     }
 
     /**

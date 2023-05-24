@@ -2,10 +2,9 @@ apply plugin: 'java-library'
 apply plugin: 'idea'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
-apply plugin: 'jacoco'
 
 group 'fr.flowarg'
-version '1.7.4'
+version '1.7.5'
 archivesBaseName = "flowupdater"
 
 java {
@@ -22,30 +21,21 @@ compileJava {
 repositories {
     mavenCentral()
     mavenLocal()
-    maven {
-        url "https://jitpack.io/"
-        name = "JitPack"
-    }
 }
 
-tasks.register('sourcesJar', Jar) {
-    classifier 'sources'
-    from sourceSets.main.allSource
-}
-
-tasks.register('javadocJar', Jar) {
-    classifier 'javadoc'
-    from javadoc
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
 
 dependencies {
     api 'com.google.code.gson:gson:2.10.1'
     api 'fr.flowarg:flowmultitools:1.4.0'
-    api 'org.jetbrains:annotations:23.0.0'
+    api 'org.jetbrains:annotations:24.0.1'
 
     // Only for internal tests
-    testImplementation 'fr.flowarg:openlauncherlib:3.2.5'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
+    testImplementation 'fr.flowarg:openlauncherlib:3.2.6'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.3'
 }
 
 artifacts {
@@ -112,12 +102,3 @@ signing {
 test {
     useJUnitPlatform()
 }
-
-jacocoTestReport {
-    reports {
-        xml.enabled true
-        html.enabled false
-    }
-}
-
-check.dependsOn jacocoTestReport

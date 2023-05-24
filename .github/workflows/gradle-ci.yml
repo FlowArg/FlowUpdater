@@ -8,21 +8,19 @@ jobs:
   testjava:
     strategy:
       matrix:
-        jdk: [8, 18]
+        jdk: [8, 17]
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up JDK ${{ matrix.jdk }}
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           java-version: ${{ matrix.jdk }}
           distribution: 'zulu'
 
       - name: Build and test project with Java ${{ matrix.jdk }}
         run: gradle build javadoc
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3

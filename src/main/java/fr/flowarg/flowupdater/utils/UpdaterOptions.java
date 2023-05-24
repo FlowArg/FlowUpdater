@@ -4,6 +4,8 @@ import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
 import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
 
+import java.nio.file.Paths;
+
 /**
  * Represent some settings for FlowUpdater
  *
@@ -11,17 +13,23 @@ import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
  */
 public class UpdaterOptions
 {
-    public static final UpdaterOptions DEFAULT = new UpdaterOptions(true, new ExternalFileDeleter(), true);
+    public static final UpdaterOptions DEFAULT = new UpdaterOptions(true, new ExternalFileDeleter(), true, System.getProperty("java.home") != null ? Paths.get(System.getProperty("java.home"))
+            .resolve("bin")
+            .resolve("java")
+            .toAbsolutePath()
+            .toString() : "java");
 
     private final boolean silentRead;
     private final ExternalFileDeleter externalFileDeleter;
     private final boolean versionChecker;
+    private final String javaPath;
 
-    private UpdaterOptions(boolean silentRead, ExternalFileDeleter externalFileDeleter, boolean versionChecker)
+    private UpdaterOptions(boolean silentRead, ExternalFileDeleter externalFileDeleter, boolean versionChecker, String javaPath)
     {
         this.silentRead = silentRead;
         this.externalFileDeleter = externalFileDeleter;
         this.versionChecker = versionChecker;
+        this.javaPath = javaPath;
     }
 
     /**
@@ -54,6 +62,15 @@ public class UpdaterOptions
     }
 
     /**
+     * The path to the java executable to use with Forge and Fabric installers.
+     * By default, it's taken from System.getProperty("java.home").
+     */
+    public String getJavaPath()
+    {
+        return this.javaPath;
+    }
+
+    /**
      * Builder of {@link UpdaterOptions}
      */
     public static class UpdaterOptionsBuilder implements IBuilder<UpdaterOptions>
@@ -61,6 +78,13 @@ public class UpdaterOptions
         private final BuilderArgument<Boolean> silentReadArgument = new BuilderArgument<>("SilentRead", () -> true).optional();
         private final BuilderArgument<ExternalFileDeleter> externalFileDeleterArgument = new BuilderArgument<>("External FileDeleter", ExternalFileDeleter::new).optional();
         private final BuilderArgument<Boolean> versionChecker = new BuilderArgument<>("VersionChecker", () -> true).optional();
+        private final BuilderArgument<String> javaPath = new BuilderArgument<>("JavaPath", () ->
+                System.getProperty("java.home") != null ? Paths.get(System.getProperty("java.home"))
+                        .resolve("bin")
+                        .resolve("java")
+                        .toAbsolutePath()
+                        .toString() : "java")
+                .optional();
 
         /**
          * Enable or disable the silent read option.
@@ -96,6 +120,21 @@ public class UpdaterOptions
         }
 
         /**
+         * Set the path to the java executable to use with Forge and Fabric installers.
+         * (Directly the java executable, not the java home)
+         * If you wish to set up the java home, use the {@link System#setProperty(String, String)} method
+         * with the "java.home" key.
+         * By default, it's taken from {@code System.getProperty("java.home")}.
+         * @param javaPath the path to the java executable.
+         * @return the builder.
+         */
+        public UpdaterOptionsBuilder withJavaPath(String javaPath)
+        {
+            this.javaPath.set(javaPath);
+            return this;
+        }
+
+        /**
          * Build an {@link UpdaterOptions} object.
          */
         @Override
@@ -104,7 +143,8 @@ public class UpdaterOptions
             return new UpdaterOptions(
                     this.silentReadArgument.get(),
                     this.externalFileDeleterArgument.get(),
-                    this.versionChecker.get()
+                    this.versionChecker.get(),
+                    this.javaPath.get()
             );
         }
     }

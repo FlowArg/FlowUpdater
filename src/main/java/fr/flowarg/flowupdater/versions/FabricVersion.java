@@ -87,7 +87,7 @@ public class FabricVersion extends FabricBasedVersion
     private @NotNull FabricBasedLauncherEnvironment makeCommand(Path tempDir, @NotNull Path install, @NotNull Path fabric)
     {
         final List<String> command = new ArrayList<>();
-        command.add("java");
+        command.add(this.javaPath);
         command.add("-Xmx256M");
         command.add("-jar");
         command.add(install.toString());

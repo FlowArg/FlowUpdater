@@ -153,7 +153,7 @@ public abstract class AbstractForgeVersion extends AbstractModLoaderVersion
     protected ModLoaderLauncherEnvironment makeCommand(@NotNull Path patchedInstaller, @NotNull Path dirToInstall, Path tempDir)
     {
         final List<String> command = new ArrayList<>();
-        command.add("java");
+        command.add(this.javaPath);
         command.add("-Xmx256M");
         command.add("-jar");
         command.add(patchedInstaller.toAbsolutePath().toString());
