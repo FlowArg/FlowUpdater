@@ -46,8 +46,6 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
-            artifact tasks.sourcesJar
-            artifact tasks.javadocJar
 
             pom {
                 groupId = project.group
