@@ -17,7 +17,8 @@ import java.util.Arrays;
 import java.util.Optional;
 
 /**
- * This integration supports the download of OptiFine in any version from the official site (https://optifine.net).
+ * This integration supports the download of OptiFine in any version from the official site
+ * (<a href="https://optifine.net">OptiFine</a>).
  */
 public class OptiFineIntegration extends Integration
 {
@@ -36,12 +37,12 @@ public class OptiFineIntegration extends Integration
     {
         try
         {
-            final String name = preview ?
-                    (optiFineVersion.contains("preview_") && optiFineVersion.contains("OptiFine_") ?
-                            optiFineVersion + ".jar" :
-                            "preview_OptiFine_" + optiFineVersion + ".jar") :
-                    "OptiFine_" + optiFineVersion + ".jar";
-            final String newUrl = this.getNewURL(name, preview, optiFineVersion);
+            final String fixedVersion = preview ? (optiFineVersion.startsWith("preview_OptiFine_") ?
+                            optiFineVersion : optiFineVersion.startsWith("OptiFine_") ?
+                    "preview_" + optiFineVersion : "preview_OptiFine_" + optiFineVersion) :
+                    optiFineVersion.startsWith("OptiFine_") ? optiFineVersion : "OptiFine_" + optiFineVersion;
+            final String name = fixedVersion + ".jar";
+            final String newUrl = this.getNewURL(name, preview, fixedVersion);
             final GetResponse getResponse = this.getResponse(new URL(newUrl));
             final int length = getResponse.contentLength;
 
@@ -52,6 +53,10 @@ public class OptiFineIntegration extends Integration
                 throw new FlowUpdaterException("Given version of OptiFine not found.");
 
             return new OptiFine(name, length);
+        }
+        catch (FlowUpdaterException e)
+        {
+            throw e;
         }
         catch (Exception e)
         {
