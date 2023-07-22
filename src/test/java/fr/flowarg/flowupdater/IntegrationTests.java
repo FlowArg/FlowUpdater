@@ -70,7 +70,7 @@ public class IntegrationTests
                     .withName(vanilla)
                     .build();
 
-            final AbstractForgeVersion forgeVersion = new ForgeVersionBuilder(ForgeVersionBuilder.ForgeVersionType.NEW)
+            final AbstractForgeVersion forgeVersion = new ForgeVersionBuilder(ForgeVersionType.NEW)
                     .withForgeVersion(vanillaForge)
                     .build();
 
@@ -105,7 +105,7 @@ public class IntegrationTests
                     .withName(vanilla)
                     .build();
 
-            final AbstractForgeVersion forgeVersion = new ForgeVersionBuilder(ForgeVersionBuilder.ForgeVersionType.OLD)
+            final AbstractForgeVersion forgeVersion = new ForgeVersionBuilder(ForgeVersionType.OLD)
                     .withForgeVersion("1.7.10-10.13.4.1614-1.7.10")
                     .build();
 
@@ -215,6 +215,43 @@ public class IntegrationTests
 
         this.basicAssertions(error, "1.19", false);
         assertTrue(Files.exists(UPDATE_DIR.resolve("libraries").resolve("net").resolve("fabricmc").resolve("fabric-loader")));
+    }
+
+    @Order(7)
+    @Test
+    public void testWithNeoForgeUsage() throws Exception
+    {
+        boolean error = false;
+        final String vanilla = "1.20.1";
+        final String forge = "47.1.28";
+        final String vanillaForge = vanilla + "-" + forge;
+
+        try
+        {
+            final VanillaVersion version = new VanillaVersion.VanillaVersionBuilder()
+                    .withName(vanilla)
+                    .build();
+
+            final AbstractForgeVersion forgeVersion = new ForgeVersionBuilder(ForgeVersionType.NEW)
+                    .withForgeVersion(vanillaForge)
+                    .build();
+
+            final FlowUpdater updater = new FlowUpdater.FlowUpdaterBuilder()
+                    .withVanillaVersion(version)
+                    .withModLoaderVersion(forgeVersion)
+                    .build();
+
+            updater.update(UPDATE_DIR);
+        }
+        catch (Exception e)
+        {
+            error = true;
+            e.printStackTrace();
+        }
+
+        this.basicAssertions(error, vanilla, false);
+        assertTrue(Files.exists(UPDATE_DIR.resolve(String.format("%s-forge-%s.json", vanilla, forge))));
+        assertTrue(Files.exists(UPDATE_DIR.resolve("libraries").resolve("net").resolve("neoforged").resolve("forge").resolve(vanillaForge).resolve("forge-" + vanillaForge + "-universal.jar")));
     }
 
     private void basicAssertions(boolean error, String version) throws Exception

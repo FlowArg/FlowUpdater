@@ -36,7 +36,7 @@ import java.util.List;
 public class FlowUpdater
 {
     /** FlowUpdater's version string constant */
-    public static final String FU_VERSION = "1.7.5";
+    public static final String FU_VERSION = "1.8.0";
 
     /** Vanilla version's object to update/install */
     private final VanillaVersion vanillaVersion;

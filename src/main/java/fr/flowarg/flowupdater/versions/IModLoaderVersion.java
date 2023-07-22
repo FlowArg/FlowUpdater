@@ -87,10 +87,9 @@ public interface IModLoaderVersion
     /**
      * Check if the minecraft installation already contains another mod loader installation not corresponding to this version.
      * @param dirToInstall Mod loader installation directory.
-     * @return true if another version of mod loader is installed. false if not.
      * @throws Exception if an error occurred.
      */
-    boolean checkModLoaderEnv(Path dirToInstall) throws Exception;
+    void checkModLoaderEnv(Path dirToInstall) throws Exception;
 
     /**
      * Get the {@link DownloadList} object.

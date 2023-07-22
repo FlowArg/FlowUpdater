@@ -51,6 +51,17 @@ public class ForgeVersionBuilder extends ModLoaderVersionBuilder<AbstractForgeVe
     {
         switch (this.type)
         {
+            case NEO_FORGE:
+                return new NeoForgeVersion(
+                        this.forgeVersionArgument.get(),
+                        this.modsArgument.get(),
+                        this.curseModsArgument.get(),
+                        this.modrinthModsArgument.get(),
+                        this.fileDeleterArgument.get(),
+                        this.optiFineArgument.get(),
+                        this.curseModPackArgument.get(),
+                        this.modrinthPackArgument.get()
+                );
             case NEW:
                 return new NewForgeVersion(
                         this.forgeVersionArgument.get(),
@@ -60,7 +71,8 @@ public class ForgeVersionBuilder extends ModLoaderVersionBuilder<AbstractForgeVe
                         this.fileDeleterArgument.get(),
                         this.optiFineArgument.get(),
                         this.curseModPackArgument.get(),
-                        this.modrinthPackArgument.get()
+                        this.modrinthPackArgument.get(),
+                        ForgeVersionType.NEW
                 );
             case OLD:
                 return new OldForgeVersion(
@@ -76,13 +88,5 @@ public class ForgeVersionBuilder extends ModLoaderVersionBuilder<AbstractForgeVe
             default:
                 return null;
         }
-    }
-
-    public enum ForgeVersionType
-    {
-        /** 1.12.2-14.23.5.2851 to 1.19 */
-        NEW,
-        /** 1.7 to 1.12.2 */
-        OLD
     }
 }

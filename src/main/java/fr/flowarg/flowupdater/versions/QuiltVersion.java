@@ -133,26 +133,18 @@ public class QuiltVersion extends FabricBasedVersion
      * {@inheritDoc}
      */
     @Override
-    public boolean checkModLoaderEnv(@NotNull Path dirToInstall) throws Exception
+    public void checkModLoaderEnv(@NotNull Path dirToInstall) throws Exception
     {
-        boolean result= false;
         final Path quiltDirPath = dirToInstall
                 .resolve("libraries")
                 .resolve("org")
                 .resolve("quiltmc")
                 .resolve("quilt-loader");
+
         if (Files.exists(quiltDirPath))
-        {
             for (Path contained : FileUtils.list(quiltDirPath))
-            {
                 if (!contained.getFileName().toString().contains(this.modLoaderVersion))
-                {
                     FileUtils.deleteDirectory(contained);
-                    result = true;
-                }
-            }
-        }
-        return result;
     }
 
     /**

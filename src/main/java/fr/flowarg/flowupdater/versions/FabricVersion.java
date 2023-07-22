@@ -136,9 +136,8 @@ public class FabricVersion extends FabricBasedVersion
      * {@inheritDoc}
      */
     @Override
-    public boolean checkModLoaderEnv(@NotNull Path dirToInstall) throws Exception
+    public void checkModLoaderEnv(@NotNull Path dirToInstall) throws Exception
     {
-        boolean result= false;
         final Path fabricDirPath = dirToInstall
                 .resolve("libraries")
                 .resolve("net")
@@ -146,17 +145,9 @@ public class FabricVersion extends FabricBasedVersion
                 .resolve("fabric-loader");
 
         if (Files.exists(fabricDirPath))
-        {
             for (Path contained : FileUtils.list(fabricDirPath))
-            {
                 if (!contained.getFileName().toString().contains(this.modLoaderVersion))
-                {
                     FileUtils.deleteDirectory(contained);
-                    result = true;
-                }
-            }
-        }
-        return result;
     }
 
     /**
