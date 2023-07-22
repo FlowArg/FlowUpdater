@@ -122,7 +122,7 @@ public class UpdaterOptions
         /**
          * Set the path to the java executable to use with Forge and Fabric installers.
          * (Directly the java executable, not the java home)
-         * If you wish to set up the java home, use the {@link System#setProperty(String, String)} method
+         * If you wish to set up the java home, you should use the {@link System#setProperty(String, String)} method
          * with the "java.home" key.
          * By default, it's taken from {@code System.getProperty("java.home")}.
          * @param javaPath the path to the java executable.

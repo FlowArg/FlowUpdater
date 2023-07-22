@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * This class represent a file in the CurseForge API.
+ * This class represents a file in the CurseForge API.
  */
 public class CurseFileInfo
 {

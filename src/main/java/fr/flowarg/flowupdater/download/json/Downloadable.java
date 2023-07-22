@@ -3,7 +3,7 @@ package fr.flowarg.flowupdater.download.json;
 import java.util.Objects;
 
 /**
- * This class represent a classic downloadable file such as a library, the client/server or natives.
+ * This class represents a classic downloadable file such as a library, the client/server or natives.
  */
 public class Downloadable
 {

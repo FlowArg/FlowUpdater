@@ -21,7 +21,7 @@ public class ModrinthVersionInfo
 
     /**
      * Construct a new ModrinthVersionInfo object.
-     * @param projectReference the project reference, can be slug or id.
+     * @param projectReference the project reference can be slug or id.
      * @param versionNumber the version number (and NOT the version name unless they are the same).
      */
     public ModrinthVersionInfo(String projectReference, String versionNumber)

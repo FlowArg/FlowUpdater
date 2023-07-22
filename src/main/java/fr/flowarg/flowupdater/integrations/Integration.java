@@ -6,8 +6,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
- * The new Integration system replaces old plugin system which had some problems such as unavailability to communicate directly with FlowUpdater.
- * This new system is more easy to use: no more annoying updater's options, no more extra-dependencies.
+ * The new Integration system replaces an old plugin system
+ * which had some problems such as unavailability to communicate directly with FlowUpdater.
+ * This new system is easier to use: no more annoying updater's options, no more extra-dependencies.
  * Polymorphism and inheritance can now be used to avoid code duplication.
  */
 public abstract class Integration

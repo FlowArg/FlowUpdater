@@ -1,7 +1,7 @@
 package fr.flowarg.flowupdater.download.json;
 
 /**
- * This class represent an OptiFineInfo object.
+ * This class represents an OptiFineInfo object.
  */
 public class OptiFineInfo
 {

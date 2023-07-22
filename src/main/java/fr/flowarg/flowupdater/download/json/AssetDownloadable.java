@@ -1,7 +1,7 @@
 package fr.flowarg.flowupdater.download.json;
 
 /**
- * This class represent an asset.
+ * This class represents an asset.
  */
 public class AssetDownloadable
 {

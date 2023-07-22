@@ -9,7 +9,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- * This class represent an MCP object.
+ * This class represents an MCP object.
  */
 public class MCP
 {

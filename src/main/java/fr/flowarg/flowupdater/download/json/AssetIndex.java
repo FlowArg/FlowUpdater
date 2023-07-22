@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * This class represent an asset index of a Minecraft version.
+ * This class represents an asset index of a Minecraft version.
  */
 public class AssetIndex
 {

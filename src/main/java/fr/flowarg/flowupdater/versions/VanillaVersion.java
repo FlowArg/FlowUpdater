@@ -163,7 +163,7 @@ public class VanillaVersion
     }
 
     /**
-     * Is the current version a snapshot ?
+     * Is the current version a snapshot?
      * @return if the current version is a snapshot.
      */
     public boolean isSnapshot()
@@ -223,7 +223,7 @@ public class VanillaVersion
 
         /**
          * Define the name of the wanted Minecraft version.
-         * @param name wanted Minecraft version.
+         * @param name wanted Minecraft's version.
          * @return the builder.
          */
         public VanillaVersionBuilder withName(String name)
@@ -264,7 +264,7 @@ public class VanillaVersion
         }
 
         /**
-         * Is the version a snapshot ?
+         * Is the version a snapshot?
          * @param snapshot if the version is a snapshot.
          * @return the builder.
          */

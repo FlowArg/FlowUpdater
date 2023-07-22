@@ -50,7 +50,7 @@ public class VanillaReader
     }
 
     /**
-     * This method calls others methods to parse each part of the given Minecraft Version.
+     * This method calls other methods to parse each part of the given Minecraft Version.
      * @throws IOException if an I/O error occurred.
      */
     public void read() throws IOException

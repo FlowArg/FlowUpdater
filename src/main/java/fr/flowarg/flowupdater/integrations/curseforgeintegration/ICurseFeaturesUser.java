@@ -7,7 +7,7 @@ import fr.flowarg.flowupdater.download.json.Mod;
 import java.util.List;
 
 /**
- * This class represent an object that using CurseForge features.
+ * This class represents an object that using CurseForge features.
  */
 public interface ICurseFeaturesUser
 {

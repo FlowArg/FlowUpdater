@@ -96,6 +96,8 @@ public class ModrinthIntegration extends Integration
     public ModrinthModPack getCurseModPack(ModrinthModPackInfo info) throws Exception
     {
         final Path modPackFile = this.checkForUpdate(info);
+        if(modPackFile == null)
+            throw new FlowUpdaterException("Can't find the mod pack file with the provided Modrinth mod pack info.");
         this.extractModPack(modPackFile, info.isInstallExtFiles());
         return this.parseMods();
     }

@@ -23,7 +23,7 @@ public abstract class ModLoaderVersionBuilder<T extends IModLoaderVersion, B ext
     protected final BuilderArgument<ModrinthModPackInfo> modrinthPackArgument = new BuilderArgument<ModrinthModPackInfo>("ModrinthModPack").optional();
 
     /**
-     * Append a mods list to the version.
+     * Append a mod list to the version.
      * @param mods mods to append.
      * @return the builder.
      */
@@ -64,7 +64,7 @@ public abstract class ModLoaderVersionBuilder<T extends IModLoaderVersion, B ext
     }
 
     /**
-     * Append a mods list to the version.
+     * Append a mod list to the version.
      * @param curseMods CurseForge's mods to append.
      * @return the builder.
      */
@@ -105,7 +105,7 @@ public abstract class ModLoaderVersionBuilder<T extends IModLoaderVersion, B ext
     }
 
     /**
-     * Append a mods list to the version.
+     * Append a mod list to the version.
      * @param modrinthMods Modrinth's mods to append.
      * @return the builder.
      */

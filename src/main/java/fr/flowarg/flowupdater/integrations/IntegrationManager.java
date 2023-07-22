@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The integration manager loads integrations stuff at the startup of FlowUpdater.
+ * The integration manager loads integration's stuff at the startup of FlowUpdater.
  */
 public class IntegrationManager
 {
@@ -46,7 +46,7 @@ public class IntegrationManager
     /**
      * This method loads the CurseForge integration and fetches some data.
      * @param dir the installation directory.
-     * @param curseFeaturesUser a version that accepts CurseForge's features stuff.
+     * @param curseFeaturesUser a version that accepts CurseForge's feature stuff.
      */
     public void loadCurseForgeIntegration(Path dir, ICurseFeaturesUser curseFeaturesUser)
     {

@@ -42,10 +42,10 @@ public abstract class FabricBasedVersion extends AbstractModLoaderVersion
                         StringUtils.toString(Files.readAllLines(jsonFilePath, StandardCharsets.UTF_8)))
                 .getAsJsonObject();
 
-        final JsonArray librariesArray = obj.getAsJsonArray("libraries");
+        final JsonArray libraryArray = obj.getAsJsonArray("libraries");
         final Path libraries = dirToInstall.resolve("libraries");
 
-        librariesArray.forEach(el -> {
+        libraryArray.forEach(el -> {
             final JsonObject artifact = el.getAsJsonObject();
             final String[] parts = artifact.get("name").getAsString().split(":");
             IOUtils.downloadArtifacts(this.logger, libraries, artifact.get("url").getAsString(), parts);

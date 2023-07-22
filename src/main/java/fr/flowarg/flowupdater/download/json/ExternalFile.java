@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class represent an external file object.
+ * This class represents an external file object.
  */
 public class ExternalFile
 {

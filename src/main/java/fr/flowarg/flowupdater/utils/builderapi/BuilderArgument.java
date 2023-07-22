@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Supplier;
 
 /**
- * Builder API ; Represent an argument for a Builder implementation.
+ * Builder API; Represent an argument for a Builder implementation.
  * @version 1.6
  * @author flow
  * 
@@ -91,7 +91,7 @@ public class BuilderArgument<T>
     }
 
     /**
-     * Indicate that provided arguments are required if this argument is builded.
+     * Indicate that provided arguments are required if this argument is built.
      * @param required required arguments.
      * @return this.
      */

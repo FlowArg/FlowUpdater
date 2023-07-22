@@ -1,7 +1,7 @@
 package fr.flowarg.flowupdater.download.json;
 
 /**
- * This class represent a mod pack file in the CurseForge API.
+ * This class represents a mod pack file in the CurseForge API.
  */
 public class CurseModPackInfo extends CurseFileInfo
 {

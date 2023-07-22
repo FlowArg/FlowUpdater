@@ -1,7 +1,7 @@
 package fr.flowarg.flowupdater.utils.builderapi;
 
 /**
- * Builder API ; This exception is thrown when an error occurred with Builder API.
+ * Builder API; This exception is thrown when an error occurred with Builder API.
  * @version 1.6
  * @author flow
  */

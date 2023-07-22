@@ -30,7 +30,7 @@ public class DownloadList
     private boolean init = false;
 
     /**
-     * This method initialize fields.
+     * This method initializes fields.
      */
     public void init()
     {

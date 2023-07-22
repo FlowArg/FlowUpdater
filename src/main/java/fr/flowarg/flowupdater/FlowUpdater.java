@@ -56,10 +56,10 @@ public class FlowUpdater
     /** Represent some settings for FlowUpdater */
     private final UpdaterOptions updaterOptions;
 
-    /** Represent a list of ExternalFile. External files are download before post executions.*/
+    /** Represent a list of ExternalFile. External files are downloaded before post-executions.*/
     private final List<ExternalFile> externalFiles;
 
-    /** Represent a list of Runnable. Post Executions are called after update. */
+    /** Represent a list of Runnable. Post-Executions are called after update. */
     private final List<Runnable> postExecutions;
 
     /** The integration manager object */
@@ -87,7 +87,7 @@ public class FlowUpdater
      * automatically assigned to {@link FlowUpdater#NULL_CALLBACK}.
      * @param externalFiles {@link List<ExternalFile>} are downloaded before postExecutions.
      * @param postExecutions {@link List<Runnable>} are called after update.
-     * @param modLoaderVersion {@link IModLoaderVersion} to install, can be null.
+     * @param modLoaderVersion {@link IModLoaderVersion} to install can be null.
      */
     private FlowUpdater(VanillaVersion vanillaVersion, ILogger logger,
             UpdaterOptions updaterOptions, IProgressCallback callback,
@@ -382,7 +382,7 @@ public class FlowUpdater
         }
 
         /**
-         * Necessary if you want to install a mod loader like Forge or Fabric for instance.
+         * Necessary if you want to install a mod loader like Forge or Fabric, for instance.
          * Append a {@link IModLoaderVersion} object in the final FlowUpdater instance.
          * @param modLoaderVersion the {@link IModLoaderVersion} to append and install.
          * @return the builder.
@@ -461,8 +461,8 @@ public class FlowUpdater
     }
 
     /**
-     * Get the list of post executions.
-     * @return all post executions
+     * Get the list of post-executions.
+     * @return all post-executions
      */
     public List<Runnable> getPostExecutions()
     {

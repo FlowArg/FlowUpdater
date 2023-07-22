@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class represent a Mod object.
+ * This class represents a Mod object.
  */
 public class Mod
 {
