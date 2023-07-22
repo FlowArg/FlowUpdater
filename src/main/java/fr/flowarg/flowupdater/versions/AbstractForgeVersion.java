@@ -188,7 +188,7 @@ public abstract class AbstractForgeVersion extends AbstractModLoaderVersion
     {
         final List<String> command = new ArrayList<>();
         command.add(this.javaPath);
-        command.add("-Xmx256M");
+        command.add("-Xmx512M");
         command.add("-jar");
         command.add(patchedInstaller.toAbsolutePath().toString());
         command.add("--installClient");

@@ -161,6 +161,12 @@ public class IntegrationTests
     @Test
     public void testWithQuilt() throws Exception
     {
+        if(Integer.parseInt(System.getProperty("java.version").split("\\.")[0]) < 17)
+        {
+            System.out.println("Skipping test with Quilt because Java version is < 17");
+            return;
+        }
+
         boolean error = false;
         try
         {
@@ -232,7 +238,7 @@ public class IntegrationTests
                     .withName(vanilla)
                     .build();
 
-            final AbstractForgeVersion forgeVersion = new ForgeVersionBuilder(ForgeVersionType.NEW)
+            final AbstractForgeVersion forgeVersion = new ForgeVersionBuilder(ForgeVersionType.NEO_FORGE)
                     .withForgeVersion(vanillaForge)
                     .build();
 
