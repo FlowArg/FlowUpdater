@@ -280,7 +280,7 @@ implements <a href="../../../../fr/flowarg/flowupdater/utils/builderapi/IBuilder
 <pre>public&nbsp;<a href="../../../../fr/flowarg/flowupdater/utils/UpdaterOptions.UpdaterOptionsBuilder.html" title="class in fr.flowarg.flowupdater.utils">UpdaterOptions.UpdaterOptionsBuilder</a>&nbsp;withJavaPath(java.lang.String&nbsp;javaPath)</pre>
 <div class="block">Set the path to the java executable to use with Forge and Fabric installers.
  (Directly the java executable, not the java home)
- If you wish to set up the java home, use the <code>System.setProperty(String, String)</code> method
+ If you wish to set up the java home, you should use the <code>System.setProperty(String, String)</code> method
  with the "java.home" key.
  By default, it's taken from <code>System.getProperty("java.home")</code>.</div>
 <dl>
@@ -306,7 +306,7 @@ implements <a href="../../../../fr/flowarg/flowupdater/utils/builderapi/IBuilder
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>a <code>T</code> object.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderException.html" title="class in fr.flowarg.flowupdater.utils.builderapi">BuilderException</a></code> - if an error occurred when building object.</dd>
+<dd><code><a href="../../../../fr/flowarg/flowupdater/utils/builderapi/BuilderException.html" title="class in fr.flowarg.flowupdater.utils.builderapi">BuilderException</a></code> - if an error occurred when building an object.</dd>
 </dl>
 </li>
 </ul>
