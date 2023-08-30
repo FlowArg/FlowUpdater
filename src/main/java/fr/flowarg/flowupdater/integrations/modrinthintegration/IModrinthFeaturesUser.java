@@ -21,6 +21,18 @@ public interface IModrinthFeaturesUser
     ModrinthModPackInfo getModrinthModPackInfo();
 
     /**
+     * Get the modrinth mod pack.
+     * @return the modrinth mod pack.
+     */
+    ModrinthModPack getModrinthModPack();
+
+    /**
+     * Define the modrinth mod pack.
+     * @param modrinthModPack the modrinth mod pack.
+     */
+    void setModrinthModPack(ModrinthModPack modrinthModPack);
+
+    /**
      * Define all modrinth mods to update.
      * @param modrinthMods modrinth mods to define.
      */

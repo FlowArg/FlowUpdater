@@ -23,6 +23,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -34,6 +35,8 @@ public class ModrinthIntegration extends Integration
     private static final String MODRINTH_URL = "https://api.modrinth.com/v2/";
     private static final String MODRINTH_VERSION_ENDPOINT = "version/{versionId}";
     private static final String MODRINTH_PROJECT_VERSION_ENDPOINT = "project/{projectId}/version";
+
+    private final List<Mod> builtInMods = new ArrayList<>();
 
     /**
      * Default constructor of a basic Integration.
@@ -130,14 +133,23 @@ public class ModrinthIntegration extends Integration
         while (entries.hasMoreElements())
         {
             final ZipEntry entry = entries.nextElement();
-            final Path flPath = dirPath.resolve(StringUtils.empty(StringUtils.empty(entry.getName(), "client-overrides/"), "overrides/"));
             final String entryName = entry.getName();
+            final Path flPath = dirPath.resolve(StringUtils.empty(StringUtils.empty(entryName, "client-overrides/"), "overrides/"));
 
             if(entryName.equalsIgnoreCase("modrinth.index.json"))
             {
                 if(Files.notExists(flPath) || entry.getCrc() != FileUtils.getCRC32(flPath))
                     this.transferAndClose(flPath, zipFile, entry);
                 continue;
+            }
+
+            final String withoutOverrides = StringUtils.empty(StringUtils.empty(entryName, "overrides/"), "client-overrides/");
+
+            if(withoutOverrides.startsWith("mods/") || withoutOverrides.startsWith("mods\\"))
+            {
+                final String modName = withoutOverrides.substring(withoutOverrides.lastIndexOf('/') + 1);
+                final Mod mod = new Mod(modName, "", "", entry.getSize());
+                this.builtInMods.add(mod);
             }
 
             if(!installExtFiles || Files.exists(flPath)) continue;
@@ -163,7 +175,7 @@ public class ModrinthIntegration extends Integration
         final String modPackVersion = manifestObj.get("versionId").getAsString();
         final List<Mod> mods = this.parseManifest(manifestObj);
 
-        return new ModrinthModPack(modPackName, modPackVersion, mods);
+        return new ModrinthModPack(modPackName, modPackVersion, mods, this.builtInMods);
     }
 
     private @NotNull List<Mod> parseManifest(@NotNull JsonObject manifestObject)
@@ -178,7 +190,7 @@ public class ModrinthIntegration extends Integration
             if(file.getAsJsonObject("env").get("client").getAsString().equals("unsupported"))
                 return;
 
-            final String name = StringUtils.empty(file.get("path").getAsString(), "mods/");
+            final String name = StringUtils.empty(StringUtils.empty(file.get("path").getAsString(), "mods/"), "mods\\");
             final String downloadURL = file.getAsJsonArray("downloads").get(0).getAsString();
             final String sha1 = file.getAsJsonObject("hashes").get("sha1").getAsString();
             final long size = file.get("fileSize").getAsLong();
@@ -194,12 +206,6 @@ public class ModrinthIntegration extends Integration
         if(Files.notExists(flPath.getParent()))
             Files.createDirectories(flPath.getParent());
 
-        try(OutputStream pathStream = Files.newOutputStream(flPath);
-            BufferedOutputStream fo = new BufferedOutputStream(pathStream);
-            InputStream is = zipFile.getInputStream(entry)) {
-
-            while (is.available() > 0)
-                fo.write(is.read());
-        }
+        Files.copy(zipFile.getInputStream(entry), flPath, StandardCopyOption.REPLACE_EXISTING);
     }
 }

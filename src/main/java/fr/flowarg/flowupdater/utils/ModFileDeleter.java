@@ -2,6 +2,7 @@ package fr.flowarg.flowupdater.utils;
 
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowupdater.download.json.Mod;
+import fr.flowarg.flowupdater.integrations.modrinthintegration.ModrinthModPack;
 import fr.flowarg.flowupdater.integrations.optifineintegration.OptiFine;
 
 import java.io.IOException;
@@ -33,16 +34,31 @@ public class ModFileDeleter implements IFileDeleter
      * Delete all bad files in the provided directory.
      * @param modsDir the mod's folder.
      * @param mods the mods list.
-     * @param optiFine the OptiFine object.
      * @throws Exception thrown if an error occurred
      */
-    public void delete(Path modsDir, List<Mod> mods, OptiFine optiFine) throws Exception
+    public void delete(Path modsDir, List<Mod> mods) throws Exception
+    {
+        this.delete(modsDir, mods, null, null);
+    }
+
+    /**
+     * Delete all bad files in the provided directory.
+     * @param modsDir the mod's folder.
+     * @param mods the mods list.
+     * @param optiFine the OptiFine object. (SPECIFIC USE CASE)
+     * @param modrinthModPack the modrinth mod pack. (SPECIFIC USE CASE)
+     * @throws Exception thrown if an error occurred
+     */
+    public void delete(Path modsDir, List<Mod> mods, OptiFine optiFine, ModrinthModPack modrinthModPack) throws Exception
     {
         if(!this.isUseFileDeleter()) return;
 
         final Set<Path> badFiles = new HashSet<>();
         final List<Path> verifiedFiles = new ArrayList<>();
         Arrays.stream(this.modsToIgnore).forEach(fileName -> verifiedFiles.add(modsDir.resolve(fileName)));
+
+        if(modrinthModPack != null)
+            modrinthModPack.getBuiltInMods().forEach(mod -> verifiedFiles.add(modsDir.resolve(mod.getName())));
 
         for(Path fileInDir : FileUtils.list(modsDir).stream().filter(path -> !Files.isDirectory(path)).collect(Collectors.toList()))
         {

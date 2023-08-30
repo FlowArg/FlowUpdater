@@ -7,6 +7,7 @@ import fr.flowarg.flowupdater.download.IProgressCallback;
 import fr.flowarg.flowupdater.download.json.*;
 import fr.flowarg.flowupdater.integrations.curseforgeintegration.ICurseFeaturesUser;
 import fr.flowarg.flowupdater.integrations.modrinthintegration.IModrinthFeaturesUser;
+import fr.flowarg.flowupdater.integrations.modrinthintegration.ModrinthModPack;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,6 +28,7 @@ public abstract class AbstractModLoaderVersion implements ICurseFeaturesUser, IM
     protected DownloadList downloadList;
     protected IProgressCallback callback;
     protected String javaPath;
+    protected ModrinthModPack modrinthModPack;
 
     public AbstractModLoaderVersion(List<Mod> mods, String modLoaderVersion, List<CurseFileInfo> curseMods,
             List<ModrinthVersionInfo> modrinthMods, ModFileDeleter fileDeleter, CurseModPackInfo curseModPackInfo,
@@ -161,5 +163,17 @@ public abstract class AbstractModLoaderVersion implements ICurseFeaturesUser, IM
     public ModFileDeleter getFileDeleter()
     {
         return this.fileDeleter;
+    }
+
+    @Override
+    public void setModrinthModPack(ModrinthModPack modrinthModPack)
+    {
+        this.modrinthModPack = modrinthModPack;
+    }
+
+    @Override
+    public ModrinthModPack getModrinthModPack()
+    {
+        return this.modrinthModPack;
     }
 }

@@ -156,6 +156,7 @@ public class IntegrationManager
             this.progressCallback.step(Step.MOD_PACK);
             final ModrinthModPack modPack = modrinthIntegration.getCurseModPack(modPackInfo);
             this.logger.info(String.format("Loading mod pack: %s (%s).", modPack.getName(), modPack.getVersion()));
+            modrinthFeaturesUser.setModrinthModPack(modPack);
 
             for (Mod mod : modPack.getMods())
                 this.checkMod(mod, allModrinthMods, dir);

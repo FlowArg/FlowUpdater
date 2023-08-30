@@ -20,6 +20,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
@@ -309,13 +310,7 @@ public class CurseForgeIntegration extends Integration
         if(Files.notExists(flPath.getParent()))
             Files.createDirectories(flPath.getParent());
 
-        try(OutputStream pathStream = Files.newOutputStream(flPath);
-            BufferedOutputStream fo = new BufferedOutputStream(pathStream);
-            InputStream is = zipFile.getInputStream(entry)) {
-
-            while (is.available() > 0)
-                fo.write(is.read());
-        }
+        Files.copy(zipFile.getInputStream(entry), flPath, StandardCopyOption.REPLACE_EXISTING);
     }
 
     private static class ProjectMod extends CurseFileInfo
