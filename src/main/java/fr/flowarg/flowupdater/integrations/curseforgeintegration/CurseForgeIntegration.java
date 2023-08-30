@@ -144,6 +144,7 @@ public class CurseForgeIntegration extends Integration
      * Get a CurseForge's mod pack object with a project identifier and a file identifier.
      * @param info CurseForge's mod pack info.
      * @return the curse's mod pack corresponding to given parameters.
+     * @throws Exception if an error occurred.
      */
     public CurseModPack getCurseModPack(CurseModPackInfo info) throws Exception
     {

@@ -53,6 +53,7 @@ public interface IModLoaderVersion
 
     /**
      * Get the mod loader version.
+     * @return the mod loader version.
      */
     String getModLoaderVersion();
 

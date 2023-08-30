@@ -64,6 +64,7 @@ public class UpdaterOptions
     /**
      * The path to the java executable to use with Forge and Fabric installers.
      * By default, it's taken from System.getProperty("java.home").
+     * @return the path to the java executable.
      */
     public String getJavaPath()
     {

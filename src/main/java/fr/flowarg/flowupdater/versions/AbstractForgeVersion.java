@@ -36,10 +36,12 @@ public abstract class AbstractForgeVersion extends AbstractModLoaderVersion
      * Use {@link ForgeVersionBuilder} to instantiate this class.
      * @param mods {@link List} to install.
      * @param curseMods {@link List} to install.
+     * @param modrinthMods {@link List} to install.
      * @param forgeVersion to install.
      * @param fileDeleter {@link ModFileDeleter} used to clean up mods' dir.
      * @param optiFineInfo OptiFine version to install.
      * @param curseModPackInfo mod pack information.
+     * @param modrinthModPackInfo mod pack information.
      * @param forgeVersionType the type of the forge version.
      */
     protected AbstractForgeVersion(List<Mod> mods, List<CurseFileInfo> curseMods, List<ModrinthVersionInfo> modrinthMods,
