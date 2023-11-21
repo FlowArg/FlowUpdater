@@ -80,7 +80,7 @@ public abstract class FabricBasedVersion extends AbstractModLoaderVersion
         }
     }
 
-    protected class FabricBasedLauncherEnvironment extends ModLoaderLauncherEnvironment
+    public class FabricBasedLauncherEnvironment extends ModLoaderLauncherEnvironment
     {
         private final Path modLoaderDir;
 

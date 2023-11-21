@@ -59,21 +59,27 @@ public abstract class AbstractForgeVersion extends AbstractModLoaderVersion
     @Override
     public boolean isModLoaderAlreadyInstalled(@NotNull Path installDir)
     {
-        final Path forgeDir = installDir
+        final Path netDir = installDir
                 .resolve("libraries")
-                .resolve("net")
+                .resolve("net");
+        final Path forgeDir = netDir
                 .resolve("minecraftforge")
                 .resolve("forge")
                 .resolve(this.modLoaderVersion);
 
-        final Path neoForgeDir = installDir
-                .resolve("libraries")
-                .resolve("net")
+        final Path neoForgeDir = netDir
                 .resolve("neoforged")
                 .resolve("forge")
                 .resolve(this.modLoaderVersion);
 
-        return this.isForgeJarAlreadyInstalled(forgeDir) || this.isForgeJarAlreadyInstalled(neoForgeDir);
+        final Path neoForgeDir2 = netDir
+                .resolve("neoforged")
+                .resolve("neoforge")
+                .resolve(this.modLoaderVersion);
+
+        return this.isForgeJarAlreadyInstalled(forgeDir) ||
+                this.isForgeJarAlreadyInstalled(neoForgeDir) ||
+                this.isForgeJarAlreadyInstalled(neoForgeDir2);
     }
 
     private boolean isForgeJarAlreadyInstalled(Path forgeDir)
@@ -82,7 +88,9 @@ public abstract class AbstractForgeVersion extends AbstractModLoaderVersion
             return false;
 
         return Files.exists(forgeDir.resolve("forge-" + this.modLoaderVersion + ".jar")) ||
-                Files.exists(forgeDir.resolve("forge-" + this.modLoaderVersion + "-universal.jar"));
+                Files.exists(forgeDir.resolve("forge-" + this.modLoaderVersion + "-universal.jar")) ||
+                Files.exists(forgeDir.resolve("neoforge-" + this.modLoaderVersion + ".jar")) ||
+                Files.exists(forgeDir.resolve("neoforge-" + this.modLoaderVersion + "-universal.jar"));
     }
 
     /**
@@ -215,12 +223,16 @@ public abstract class AbstractForgeVersion extends AbstractModLoaderVersion
     {
         final Path forgeDirPath = dirToInstall.resolve("libraries").resolve("net").resolve("minecraftforge").resolve("forge");
         final Path neoForgeDirPath = dirToInstall.resolve("libraries").resolve("net").resolve("neoforged").resolve("forge");
+        final Path neoForgeDirPath2 = dirToInstall.resolve("libraries").resolve("net").resolve("neoforged").resolve("neoforge");
 
-        if(this.isCompatible() && (this.containsOtherForgeVersion(forgeDirPath) || this.containsOtherForgeVersion(neoForgeDirPath)))
+        if(this.isCompatible() && (this.containsOtherForgeVersion(forgeDirPath) ||
+                this.containsOtherForgeVersion(neoForgeDirPath) ||
+                this.containsOtherForgeVersion(neoForgeDirPath2)))
         {
             FileUtils.deleteDirectory(dirToInstall.resolve("libraries").resolve("net").resolve("minecraft"));
             FileUtils.deleteDirectory(forgeDirPath.getParent());
             FileUtils.deleteDirectory(neoForgeDirPath.getParent());
+            FileUtils.deleteDirectory(neoForgeDirPath2.getParent());
             FileUtils.deleteDirectory(dirToInstall.resolve("libraries").resolve("de").resolve("oceanlabs"));
             FileUtils.deleteDirectory(dirToInstall.resolve("libraries").resolve("cpw"));
         }

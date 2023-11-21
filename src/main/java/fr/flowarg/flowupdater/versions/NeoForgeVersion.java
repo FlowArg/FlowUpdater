@@ -17,7 +17,18 @@ public class NeoForgeVersion extends NewForgeVersion
             OptiFineInfo optiFine, CurseModPackInfo modPack, ModrinthModPackInfo modrinthModPackInfo)
     {
         super(forgeVersion, mods, curseMods, modrinthMods, fileDeleter, optiFine, modPack, modrinthModPackInfo, ForgeVersionType.NEO_FORGE);
-        this.compatibleVersions = new String[]{"1.20"};
+        this.compatibleVersions = new String[]{"20.", "1.20.1"};
+    }
+
+    @Override
+    protected boolean isCompatible()
+    {
+        for (String str : this.compatibleVersions)
+        {
+            if (this.modLoaderVersion.startsWith(str))
+                return true;
+        }
+        return false;
     }
 
     @Override
@@ -26,9 +37,10 @@ public class NeoForgeVersion extends NewForgeVersion
         super.attachFlowUpdater(flowUpdater);
         try
         {
+            String forge = this.modLoaderVersion.startsWith("1.") ? "forge" : "neoforge";
             this.installerUrl = new URL(
-                    String.format("https://maven.neoforged.net/net/neoforged/forge/%s/forge-%s-installer.jar",
-                                  this.modLoaderVersion, this.modLoaderVersion));
+                    String.format("https://maven.neoforged.net/net/neoforged/%s/%s/%s-%s-installer.jar",
+                                  forge, this.modLoaderVersion, forge, this.modLoaderVersion));
         } catch (Exception e)
         {
             this.logger.printStackTrace(e);
