@@ -4,7 +4,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 group 'fr.flowarg'
-version '1.8.2'
+version '1.8.3'
 archivesBaseName = "flowupdater"
 
 java {

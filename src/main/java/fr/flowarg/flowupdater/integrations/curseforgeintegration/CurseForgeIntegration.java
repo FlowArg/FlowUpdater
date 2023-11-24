@@ -34,7 +34,7 @@ public class CurseForgeIntegration extends Integration
     private static final String CF_API_KEY = "JDJhJDEwJHBFZjhacXFwWE4zbVdtLm5aZ2pBMC5kdm9ibnhlV3hQZWZma2Q5ZEhCRWFid2VaUWh2cUtpJDJhJ";
     private static final String MOD_FILE_ENDPOINT = "/v1/mods/{modId}/files/{fileId}";
 
-    private boolean changed = false;
+    private boolean manifestChanged = false;
 
     /**
      * Default constructor of a basic Integration.
@@ -179,7 +179,7 @@ public class CurseForgeIntegration extends Integration
             {
                 if(Files.notExists(flPath) || entry.getCrc() != FileUtils.getCRC32(flPath))
                 {
-                    this.changed = true;
+                    this.manifestChanged = true;
                     this.transferAndClose(flPath, zipFile, entry);
                 }
                 continue;
@@ -188,7 +188,7 @@ public class CurseForgeIntegration extends Integration
             if(entryName.equals("modlist.html"))
                 continue;
 
-            if(!installExtFiles || Files.exists(flPath)) continue;
+            if(!installExtFiles || (Files.exists(flPath) && entry.getCrc() == FileUtils.getCRC32(flPath))) continue;
 
             if (flPath.getFileName().toString().endsWith(flPath.getFileSystem().getSeparator()))
                 Files.createDirectories(flPath);
@@ -237,7 +237,7 @@ public class CurseForgeIntegration extends Integration
 
         String json = StringUtils.toString(Files.readAllLines(cachePath, StandardCharsets.UTF_8));
 
-        if(this.changed || json.contains("\"md5\"") || json.contains("\"length\""))
+        if(this.manifestChanged || json.contains("\"md5\"") || json.contains("\"length\""))
         {
             Files.delete(cachePath);
             Files.createFile(cachePath);
