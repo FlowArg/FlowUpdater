@@ -36,7 +36,7 @@ import java.util.List;
 public class FlowUpdater
 {
     /** FlowUpdater's version string constant */
-    public static final String FU_VERSION = "1.8.3";
+    public static final String FU_VERSION = "1.8.4";
 
     /** Vanilla version's object to update/install */
     private final VanillaVersion vanillaVersion;
@@ -199,7 +199,9 @@ public class FlowUpdater
     private void installModLoader(Path dir) throws Exception
     {
         String name;
-        if(this.modLoaderVersion instanceof AbstractForgeVersion)
+        if(this.modLoaderVersion instanceof NeoForgeVersion)
+            name = "NeoForge";
+        else if(this.modLoaderVersion instanceof AbstractForgeVersion)
             name = "Forge";
         else if(this.modLoaderVersion instanceof FabricVersion)
             name = "Fabric";
@@ -214,7 +216,8 @@ public class FlowUpdater
 
     private void installModLoader(IModLoaderVersion modLoader, Path dir, String name) throws Exception
     {
-        if(modLoader == null) return;
+        if(modLoader == null)
+            return;
 
         modLoader.attachFlowUpdater(this);
         if(!modLoader.isModLoaderAlreadyInstalled(dir))

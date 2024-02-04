@@ -34,7 +34,11 @@ public class NeoForgeVersion extends NewForgeVersion
     @Override
     public void attachFlowUpdater(@NotNull FlowUpdater flowUpdater)
     {
-        super.attachFlowUpdater(flowUpdater);
+        this.logger = flowUpdater.getLogger();
+        this.vanilla = flowUpdater.getVanillaVersion();
+        this.downloadList = flowUpdater.getDownloadList();
+        this.callback = flowUpdater.getCallback();
+        this.javaPath = flowUpdater.getUpdaterOptions().getJavaPath();
         try
         {
             String forge = this.modLoaderVersion.startsWith("1.") ? "forge" : "neoforge";
