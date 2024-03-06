@@ -182,15 +182,26 @@ public class CurseForgeIntegration extends Integration
                     this.manifestChanged = true;
                     this.transferAndClose(flPath, zipFile, entry);
                 }
+                if(!installExtFiles)
+                    break;
                 continue;
             }
+
+            if(!installExtFiles)
+                continue;
 
             if(entryName.equals("modlist.html"))
                 continue;
 
-            if(!installExtFiles || (Files.exists(flPath) && entry.getCrc() == FileUtils.getCRC32(flPath))) continue;
-
-            if (flPath.getFileName().toString().endsWith(flPath.getFileSystem().getSeparator()))
+            if(Files.exists(flPath))
+            {
+                if(!Files.isDirectory(flPath))
+                {
+                    if(entry.getCrc() == FileUtils.getCRC32(flPath))
+                        continue;
+                }
+            }
+            else if (flPath.getFileName().toString().endsWith(flPath.getFileSystem().getSeparator()))
                 Files.createDirectories(flPath);
 
             if (entry.isDirectory()) continue;
