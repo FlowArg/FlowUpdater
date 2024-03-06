@@ -228,9 +228,8 @@ public class IntegrationTests
     public void testWithNeoForgeUsage() throws Exception
     {
         boolean error = false;
-        final String vanilla = "1.20.1";
-        final String forge = "47.1.28";
-        final String vanillaForge = vanilla + "-" + forge;
+        final String vanilla = "1.20.4";
+        final String neoForge = "20.4.194";
 
         try
         {
@@ -239,7 +238,7 @@ public class IntegrationTests
                     .build();
 
             final AbstractForgeVersion forgeVersion = new ForgeVersionBuilder(ForgeVersionType.NEO_FORGE)
-                    .withForgeVersion(vanillaForge)
+                    .withForgeVersion(neoForge)
                     .build();
 
             final FlowUpdater updater = new FlowUpdater.FlowUpdaterBuilder()
@@ -256,8 +255,8 @@ public class IntegrationTests
         }
 
         this.basicAssertions(error, vanilla, false);
-        assertTrue(Files.exists(UPDATE_DIR.resolve(String.format("%s-forge-%s.json", vanilla, forge))));
-        assertTrue(Files.exists(UPDATE_DIR.resolve("libraries").resolve("net").resolve("neoforged").resolve("forge").resolve(vanillaForge).resolve("forge-" + vanillaForge + "-universal.jar")));
+        assertTrue(Files.exists(UPDATE_DIR.resolve(String.format("neoforge-%s.json", neoForge))));
+        assertTrue(Files.exists(UPDATE_DIR.resolve("libraries").resolve("net").resolve("neoforged").resolve("neoforge").resolve(neoForge).resolve("neoforge-" + neoForge + "-universal.jar")));
     }
 
     private void basicAssertions(boolean error, String version) throws Exception
