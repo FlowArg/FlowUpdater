@@ -292,7 +292,7 @@ public abstract class AbstractForgeVersion extends AbstractModLoaderVersion
     protected void packPatchedInstaller(final @NotNull Path tempDir, final Path tempInstallerDir) throws Exception
     {
         final Path outputPath = tempDir.resolve("forge-installer-patched.zip");
-        ZipUtils.compressFiles(FileUtils.list(tempInstallerDir).toArray(new Path[0]), outputPath);
+        ZipUtils.compressFiles(FileUtils.list(tempInstallerDir), outputPath);
         Files.move(outputPath, Paths.get(outputPath.toString().replace(".zip", ".jar")),
                    StandardCopyOption.REPLACE_EXISTING);
         FileUtils.deleteDirectory(tempInstallerDir);
