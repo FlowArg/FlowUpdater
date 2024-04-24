@@ -13,6 +13,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import javax.net.ssl.SSLHandshakeException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.*;
@@ -25,6 +26,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -35,6 +38,7 @@ import java.util.function.Consumer;
 public class IOUtils
 {
     private static Path cachedMinecraftPath = null;
+    private static final Map<String, Integer> DOWNLOAD_RETRIES_CAUSED_BY_SSL_HANDSHAKE_EXCEPTION = new HashMap<>();
 
     /**
      * Download a remote file to a destination file.
@@ -44,15 +48,33 @@ public class IOUtils
      */
     public static void download(@NotNull ILogger logger, @NotNull URL in, @NotNull Path out)
     {
+        final String url = in.toExternalForm();
         try
         {
-            logger.info(String.format("Downloading %s from %s...", out.getFileName().toString(), in.toExternalForm()));
-            Files.createDirectories(out.getParent());
+            logger.info(String.format("Downloading %s from %s...", out.getFileName().toString(), url));
+            Files.createDirectories(out.toAbsolutePath().getParent());
             Files.copy(catchForbidden(in), out, StandardCopyOption.REPLACE_EXISTING);
+        }
+        catch (SSLHandshakeException e)
+        {
+            if(DOWNLOAD_RETRIES_CAUSED_BY_SSL_HANDSHAKE_EXCEPTION.getOrDefault(url, 0) > 3)
+            {
+                logger.printStackTrace(
+                        "Too many retries caused by SSLHandshakeException when downloading file from: "
+                                + url, e
+                );
+                DOWNLOAD_RETRIES_CAUSED_BY_SSL_HANDSHAKE_EXCEPTION.remove(url);
+                return;
+            }
+            download(logger, in, out);
+            DOWNLOAD_RETRIES_CAUSED_BY_SSL_HANDSHAKE_EXCEPTION.put(
+                    url,
+                    DOWNLOAD_RETRIES_CAUSED_BY_SSL_HANDSHAKE_EXCEPTION.getOrDefault(url, 0) + 1
+            );
         }
         catch (IOException e)
         {
-            logger.printStackTrace(e);
+            logger.printStackTrace("Error when downloading file from: " + url, e);
         }
     }
 

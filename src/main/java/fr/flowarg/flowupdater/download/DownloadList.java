@@ -58,7 +58,7 @@ public class DownloadList
 
         if (this.optiFine != null)
         {
-            this.downloadInfo.totalToDownloadBytes.set(this.downloadInfo.totalToDownloadBytes.get() + (long)(this.optiFine.getSize()));
+            this.downloadInfo.totalToDownloadBytes.set(this.downloadInfo.totalToDownloadBytes.get() + this.optiFine.getSize());
             this.downloadInfo.totalToDownloadFiles.incrementAndGet();
         }
         this.init = true;

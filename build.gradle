@@ -13,7 +13,7 @@ java {
     }
 }
 
-compileJava {
+tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
     sourceCompatibility = JavaVersion.VERSION_1_8
 }
@@ -30,16 +30,12 @@ java {
 
 dependencies {
     api 'com.google.code.gson:gson:2.10.1'
-    api 'fr.flowarg:flowmultitools:1.4.1'
+    api 'fr.flowarg:flowmultitools:1.4.3'
     api 'org.jetbrains:annotations:24.1.0'
 
     // Only for internal tests
     testImplementation 'fr.flowarg:openlauncherlib:3.2.9'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
-}
-
-artifacts {
-    archives sourcesJar, javadocJar
 }
 
 publishing {

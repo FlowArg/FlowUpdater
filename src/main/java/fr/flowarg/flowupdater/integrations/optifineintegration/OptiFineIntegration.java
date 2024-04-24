@@ -4,15 +4,11 @@ import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.integrations.Integration;
 import fr.flowarg.flowupdater.utils.FlowUpdaterException;
 import fr.flowarg.flowupdater.utils.IOUtils;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import javax.net.ssl.HttpsURLConnection;
-import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -43,16 +39,8 @@ public class OptiFineIntegration extends Integration
                     optiFineVersion.startsWith("OptiFine_") ? optiFineVersion : "OptiFine_" + optiFineVersion;
             final String name = fixedVersion + ".jar";
             final String newUrl = this.getNewURL(name, preview, fixedVersion);
-            final GetResponse getResponse = this.getResponse(new URL(newUrl));
-            final int length = getResponse.contentLength;
 
-            this.checkForUpdates(name, getResponse.byteStream, length, newUrl);
-            getResponse.byteStream.close();
-
-            if(length <= 40)
-                throw new FlowUpdaterException("Given version of OptiFine not found.");
-
-            return new OptiFine(name, length);
+            return new OptiFine(name, this.checkForUpdatesAndGetSize(name, newUrl));
         }
         catch (FlowUpdaterException e)
         {
@@ -72,15 +60,12 @@ public class OptiFineIntegration extends Integration
                 (preview ? this.getJsonPreview(optiFineVersion) : this.getJson(optiFineVersion));
     }
 
-    private void checkForUpdates(String name, InputStream byteStream, int length, String newUrl) throws Exception
+    private long checkForUpdatesAndGetSize(String name, String newUrl) throws Exception
     {
         final Path outputPath = this.folder.resolve(name);
-        if(Files.notExists(outputPath) || Files.size(outputPath) != length)
-        {
-            this.logger.info(String.format("Downloading %s from %s...", outputPath.getFileName().toString(), newUrl));
-            Files.copy(byteStream, outputPath, StandardCopyOption.REPLACE_EXISTING);
-        }
-        byteStream.close();
+        if(Files.notExists(outputPath))
+            IOUtils.download(this.logger, new URL(newUrl), outputPath);
+        return Files.size(outputPath);
     }
 
     private @NotNull String getJson(String optiFineVersion)
@@ -122,37 +107,6 @@ public class OptiFineIntegration extends Integration
         catch (Exception e)
         {
             throw new FlowUpdaterException(e);
-        }
-    }
-
-    @Contract("_ -> new")
-    private @NotNull GetResponse getResponse(URL url)
-    {
-        HttpsURLConnection connection;
-        try
-        {
-            connection = (HttpsURLConnection)url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.setUseCaches(false);
-            connection.addRequestProperty("User-Agent",
-                                          "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.124 Safari/537.36");
-            connection.setInstanceFollowRedirects(true);
-            return new GetResponse(Integer.parseInt(connection.getHeaderField("Content-Length")), connection.getInputStream());
-        } catch (Exception e)
-        {
-            throw new FlowUpdaterException(e);
-        }
-    }
-
-    private static class GetResponse
-    {
-        public final int contentLength;
-        public final InputStream byteStream;
-
-        public GetResponse(int contentLength, InputStream byteStream)
-        {
-            this.contentLength = contentLength;
-            this.byteStream = byteStream;
         }
     }
 }

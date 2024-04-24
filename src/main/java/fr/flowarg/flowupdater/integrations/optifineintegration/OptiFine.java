@@ -6,9 +6,9 @@ package fr.flowarg.flowupdater.integrations.optifineintegration;
 public class OptiFine
 {
     private final String name;
-    private final int size;
+    private final long size;
 
-    OptiFine(String name, int size)
+    OptiFine(String name, long size)
     {
         this.name = name;
         this.size = size;
@@ -26,7 +26,7 @@ public class OptiFine
      * Get the OptiFine file size.
      * @return the OptiFine file size.
      */
-    public int getSize() {
+    public long getSize() {
         return this.size;
     }
 }
