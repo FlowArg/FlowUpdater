@@ -28,7 +28,9 @@ public class NeoForgeVersion extends NewForgeVersion
             if (this.modLoaderVersion.startsWith(str))
                 return true;
         }
-        return false;
+
+        return Integer.parseInt(this.modLoaderVersion.split("\\.")[0]) >=
+                Integer.parseInt(this.compatibleVersions[0].substring(0, 2));
     }
 
     @Override
