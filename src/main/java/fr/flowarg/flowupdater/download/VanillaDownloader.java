@@ -159,18 +159,21 @@ public class VanillaDownloader
             natives.close();
         }
 
-        final Stream<Path> natives = FileUtils.list(this.natives).stream();
-        natives.forEach(path -> {
-            try {
-                if (path.getFileName().toString().endsWith(".git") || path.getFileName().toString().endsWith(".sha1")) Files.delete(path);
-                else if(Files.isDirectory(path)) FileUtils.deleteDirectory(path);
-            } catch (IOException e)
-            {
-                this.logger.printStackTrace(e);
-            }
-        });
-
-        natives.close();
+        try(Stream<Path> natives = Files.list(this.natives))
+        {
+            natives.forEach(path -> {
+                try
+                {
+                    if (path.getFileName().toString().endsWith(".git") || path.getFileName().toString().endsWith(".sha1"))
+                        Files.delete(path);
+                    else if(Files.isDirectory(path))
+                        FileUtils.deleteDirectory(path);
+                } catch (IOException e)
+                {
+                    this.logger.printStackTrace(e);
+                }
+            });
+        }
     }
 
     private void downloadAssets()
