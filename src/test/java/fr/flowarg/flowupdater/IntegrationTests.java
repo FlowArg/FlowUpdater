@@ -1,7 +1,7 @@
 package fr.flowarg.flowupdater;
 
 import fr.flowarg.flowio.FileUtils;
-import fr.flowarg.flowupdater.versions.*;
+import fr.flowarg.flowupdater.utils.UpdaterOptions;
 import org.junit.jupiter.api.*;
 
 import java.nio.file.Files;
@@ -16,10 +16,10 @@ public class IntegrationTests
 {
     private static final Path UPDATE_DIR = Paths.get("testing_directory");
 
-    @BeforeEach
-    public void setup() throws Exception
+    @BeforeAll
+    public static void setup() throws Exception
     {
-        FileUtils.deleteDirectory(UPDATE_DIR);
+        Updates.UPDATE_DIR = UPDATE_DIR;
         Files.createDirectory(UPDATE_DIR);
     }
 
@@ -33,131 +33,61 @@ public class IntegrationTests
     @Test
     public void testWithVanillaUsage() throws Exception
     {
-        boolean error = false;
-        try
-        {
-            final VanillaVersion version = new VanillaVersion.VanillaVersionBuilder()
-                    .withName("1.18.2")
-                    .build();
-
-            final FlowUpdater updater = new FlowUpdater.FlowUpdaterBuilder()
-                    .withVanillaVersion(version)
-                    .build();
-
-            updater.update(UPDATE_DIR);
-        }
-        catch (Exception e)
-        {
-            error = true;
-            e.printStackTrace();
-        }
-
-        this.basicAssertions(error, "1.18.2");
+        final Updates.Result result = Updates.vanillaUsage();
+        this.basicAssertions(result.updateDir, result.error, result.version);
     }
 
     @Order(2)
     @Test
     public void testWithNewForgeUsage() throws Exception
     {
-        boolean error = false;
-        final String vanilla = "1.18.2";
-        final String forge = "40.1.23";
-        final String vanillaForge = vanilla + "-" + forge;
+        final Updates.Result result = Updates.testWithNewForgeUsage();
+        final String vanillaForge = result.version + "-" + result.modLoaderVersion;
 
-        try
-        {
-            final VanillaVersion version = new VanillaVersion.VanillaVersionBuilder()
-                    .withName(vanilla)
-                    .build();
+        this.basicAssertions(result.updateDir, result.error, result.version);
 
-            final AbstractForgeVersion forgeVersion = new ForgeVersionBuilder(ForgeVersionType.NEW)
-                    .withForgeVersion(vanillaForge)
-                    .build();
-
-            final FlowUpdater updater = new FlowUpdater.FlowUpdaterBuilder()
-                    .withVanillaVersion(version)
-                    .withModLoaderVersion(forgeVersion)
-                    .build();
-
-            updater.update(UPDATE_DIR);
-        }
-        catch (Exception e)
-        {
-            error = true;
-            e.printStackTrace();
-        }
-
-        this.basicAssertions(error, vanilla);
-        assertTrue(Files.exists(UPDATE_DIR.resolve(String.format("%s-forge-%s.json", vanilla, forge))));
-        assertTrue(Files.exists(UPDATE_DIR.resolve("libraries").resolve("net").resolve("minecraftforge").resolve("forge").resolve(vanillaForge).resolve("forge-" + vanillaForge + "-universal.jar")));
+        assertTrue(Files.exists(result.updateDir.resolve(String.format("%s-forge-%s.json", result.version, result.modLoaderVersion))));
+        assertTrue(Files.exists(result.updateDir.resolve("libraries").resolve("net").resolve("minecraftforge").resolve("forge").resolve(vanillaForge).resolve("forge-" + vanillaForge + "-universal.jar")));
     }
 
     @Order(3)
     @Test
-    public void testWithOldForgeUsage() throws Exception
+    public void testWithVeryOldForgeUsage() throws Exception
     {
-        boolean error = false;
-        final String vanilla = "1.7.10";
+        final Updates.Result result = Updates.testWithVeryOldForgeUsage();
+        final String full = result.version + '-' + result.modLoaderVersion + '-' + result.version;
 
-        try
-        {
-            final VanillaVersion version = new VanillaVersion.VanillaVersionBuilder()
-                    .withName(vanilla)
-                    .build();
+        this.basicAssertions(result.updateDir, result.error, result.version);
 
-            final AbstractForgeVersion forgeVersion = new ForgeVersionBuilder(ForgeVersionType.OLD)
-                    .withForgeVersion("1.7.10-10.13.4.1614-1.7.10")
-                    .build();
-
-            final FlowUpdater updater = new FlowUpdater.FlowUpdaterBuilder()
-                    .withVanillaVersion(version)
-                    .withModLoaderVersion(forgeVersion)
-                    .build();
-
-            updater.update(UPDATE_DIR);
-        }
-        catch (Exception e)
-        {
-            error = true;
-            e.printStackTrace();
-        }
-
-        this.basicAssertions(error, vanilla);
-        assertTrue(Files.exists(UPDATE_DIR.resolve("1.7.10-Forge10.13.4.1614-1.7.10.json")));
-        assertTrue(Files.exists(UPDATE_DIR.resolve("libraries").resolve("net").resolve("minecraftforge").resolve("forge").resolve("1.7.10-10.13.4.1614-1.7.10").resolve("forge-" + "1.7.10-10.13.4.1614-1.7.10.jar")));
+        assertTrue(Files.exists(result.updateDir.resolve(result.version + "-Forge" + result.modLoaderVersion + "-" + result.version + ".json")));
+        assertTrue(Files.exists(result.updateDir.resolve("libraries").resolve("net").resolve("minecraftforge").resolve("forge").resolve(full).resolve("forge-" + full + ".jar")));
     }
 
     @Order(4)
     @Test
-    public void testWithFabric() throws Exception
+    public void testWithOldForgeUsage() throws Exception
     {
-        boolean error = false;
-        try
-        {
-            final VanillaVersion version = new VanillaVersion.VanillaVersionBuilder()
-                    .withName("1.18.2")
-                    .build();
+        final Updates.Result result = Updates.testWithOldForgeUsage();
+        final String full = result.version + '-' + result.modLoaderVersion;
 
-            final FabricVersion fabricVersion = new FabricVersion.FabricVersionBuilder().build();
+        this.basicAssertions(result.updateDir, result.error, result.version);
 
-            final FlowUpdater updater = new FlowUpdater.FlowUpdaterBuilder()
-                    .withVanillaVersion(version)
-                    .withModLoaderVersion(fabricVersion)
-                    .build();
-
-            updater.update(UPDATE_DIR);
-        }
-        catch (Exception e)
-        {
-            error = true;
-            e.printStackTrace();
-        }
-
-        this.basicAssertions(error, "1.18.2");
-        assertTrue(Files.exists(UPDATE_DIR.resolve("libraries").resolve("net").resolve("fabricmc").resolve("fabric-loader")));
+        assertTrue(Files.exists(result.updateDir.resolve(result.version + "-forge" + full + ".json")));
+        assertTrue(Files.exists(result.updateDir.resolve("libraries").resolve("net").resolve("minecraftforge").resolve("forge").resolve(full).resolve("forge-" + full + ".jar")));
     }
 
     @Order(5)
+    @Test
+    public void testWithFabric() throws Exception
+    {
+        final Updates.Result result = Updates.testWithFabric();
+
+        this.basicAssertions(result.updateDir, result.error, result.version);
+
+        assertTrue(Files.exists(result.updateDir.resolve("libraries").resolve("net").resolve("fabricmc").resolve("fabric-loader")));
+    }
+
+    @Order(6)
     @Test
     public void testWithQuilt() throws Exception
     {
@@ -167,122 +97,59 @@ public class IntegrationTests
             return;
         }
 
-        boolean error = false;
-        try
-        {
-            final VanillaVersion version = new VanillaVersion.VanillaVersionBuilder()
-                    .withName("1.18.2")
-                    .build();
+        final Updates.Result result = Updates.testWithQuilt(new UpdaterOptions.UpdaterOptionsBuilder().build());
 
-            final QuiltVersion quiltVersion = new QuiltVersion.QuiltVersionBuilder().build();
+        this.basicAssertions(result.updateDir, result.error, result.version);
 
-            final FlowUpdater updater = new FlowUpdater.FlowUpdaterBuilder()
-                    .withVanillaVersion(version)
-                    .withModLoaderVersion(quiltVersion)
-                    .build();
-
-            updater.update(UPDATE_DIR);
-        }
-        catch (Exception e)
-        {
-            error = true;
-            e.printStackTrace();
-        }
-
-        this.basicAssertions(error, "1.18.2");
-        assertTrue(Files.exists(UPDATE_DIR.resolve("libraries").resolve("org").resolve("quiltmc").resolve("quilt-loader")));
+        assertTrue(Files.exists(result.updateDir.resolve("libraries").resolve("org").resolve("quiltmc").resolve("quilt-loader")));
     }
 
     @Order(6)
     @Test
     public void testWithFabric119() throws Exception
     {
-        boolean error = false;
-        try
-        {
-            final VanillaVersion version = new VanillaVersion.VanillaVersionBuilder()
-                    .withName("1.19")
-                    .build();
+        final Updates.Result result = Updates.testWithFabric119();
 
-            final FabricVersion fabricVersion = new FabricVersion.FabricVersionBuilder().build();
-
-            final FlowUpdater updater = new FlowUpdater.FlowUpdaterBuilder()
-                    .withVanillaVersion(version)
-                    .withModLoaderVersion(fabricVersion)
-                    .build();
-
-            updater.update(UPDATE_DIR);
-        }
-        catch (Exception e)
-        {
-            error = true;
-            e.printStackTrace();
-        }
-
-        this.basicAssertions(error, "1.19", false);
-        assertTrue(Files.exists(UPDATE_DIR.resolve("libraries").resolve("net").resolve("fabricmc").resolve("fabric-loader")));
+        this.basicAssertions(result.updateDir, result.error, result.version, false);
+        assertTrue(Files.exists(result.updateDir.resolve("libraries").resolve("net").resolve("fabricmc").resolve("fabric-loader")));
     }
 
-    @Order(7)
+    @Order(8)
     @Test
     public void testWithNeoForgeUsage() throws Exception
     {
-        boolean error = false;
-        final String vanilla = "1.20.4";
-        final String neoForge = "20.4.194";
+        final Updates.Result result = Updates.testWithNeoForgeUsage();
 
-        try
-        {
-            final VanillaVersion version = new VanillaVersion.VanillaVersionBuilder()
-                    .withName(vanilla)
-                    .build();
+        this.basicAssertions(result.updateDir, result.error, result.version, false);
 
-            final AbstractForgeVersion forgeVersion = new ForgeVersionBuilder(ForgeVersionType.NEO_FORGE)
-                    .withForgeVersion(neoForge)
-                    .build();
-
-            final FlowUpdater updater = new FlowUpdater.FlowUpdaterBuilder()
-                    .withVanillaVersion(version)
-                    .withModLoaderVersion(forgeVersion)
-                    .build();
-
-            updater.update(UPDATE_DIR);
-        }
-        catch (Exception e)
-        {
-            error = true;
-            e.printStackTrace();
-        }
-
-        this.basicAssertions(error, vanilla, false);
-        assertTrue(Files.exists(UPDATE_DIR.resolve(String.format("neoforge-%s.json", neoForge))));
-        assertTrue(Files.exists(UPDATE_DIR.resolve("libraries").resolve("net").resolve("neoforged").resolve("neoforge").resolve(neoForge).resolve("neoforge-" + neoForge + "-universal.jar")));
+        assertTrue(Files.exists(result.updateDir.resolve(String.format("neoforge-%s.json", result.modLoaderVersion))));
+        assertTrue(Files.exists(result.updateDir.resolve("libraries").resolve("net").resolve("neoforged").resolve("neoforge").resolve(result.modLoaderVersion).resolve("neoforge-" + result.modLoaderVersion + "-universal.jar")));
     }
 
-    private void basicAssertions(boolean error, String version) throws Exception
+    private void basicAssertions(Path updateDir, boolean error, String version) throws Exception
     {
-        this.basicAssertions(error, version, true);
+        this.basicAssertions(updateDir, error, version, true);
     }
 
-    private void basicAssertions(boolean error, String version, boolean natives) throws Exception
+    private void basicAssertions(Path updateDir, boolean error, String version, boolean natives) throws Exception
     {
         assertFalse(error);
-        assertTrue(Files.exists(UPDATE_DIR.resolve(version + ".json")));
-        assertTrue(Files.exists(UPDATE_DIR.resolve("client.jar")));
+        assertTrue(Files.exists(updateDir.resolve(version + ".json")));
+        assertTrue(Files.exists(updateDir.resolve("client.jar")));
 
         if(natives)
         {
-            final Path nativesDir = UPDATE_DIR.resolve("natives");
+            final Path nativesDir = updateDir.resolve("natives");
             assertTrue(Files.exists(nativesDir));
             assertTrue(Files.isDirectory(nativesDir));
-            assertTrue(FileUtils.list(nativesDir).size() > 0);
+            assertFalse(FileUtils.list(nativesDir).isEmpty());
         }
 
-        final Path librariesDir = UPDATE_DIR.resolve("libraries");
+        final Path librariesDir = updateDir.resolve("libraries");
         assertTrue(Files.exists(librariesDir));
         assertTrue(Files.isDirectory(librariesDir));
-        assertTrue(FileUtils.list(librariesDir).size() > 0);
+        assertFalse(FileUtils.list(librariesDir).isEmpty());
         FileUtils.list(librariesDir).forEach(path -> assertTrue(Files.isDirectory(path)));
-        assertTrue(FileUtils.list(UPDATE_DIR.resolve("assets").resolve("objects")).size() > 200);
+        assertTrue(FileUtils.list(updateDir.resolve("assets").resolve("objects")).size() > 200);
     }
 }
