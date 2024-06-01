@@ -76,7 +76,7 @@ public class IntegrationManager
                 }
                 catch (CurseForgeIntegration.CurseForgeException e)
                 {
-                    e.printStackTrace();
+                    this.logger.printStackTrace(e);
                 }
             }
 

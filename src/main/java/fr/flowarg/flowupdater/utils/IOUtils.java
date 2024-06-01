@@ -262,7 +262,7 @@ public class IOUtils
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            FlowUpdater.DEFAULT_LOGGER.printStackTrace(e);
             return null;
         }
     }

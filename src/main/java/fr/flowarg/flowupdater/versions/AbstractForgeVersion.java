@@ -281,7 +281,7 @@ public abstract class AbstractForgeVersion extends AbstractModLoaderVersion
             this.callback.update(this.downloadList.getDownloadInfo());
         }
 
-        this.fileDeleter.delete(modsDir, this.mods, ofObj, this.modrinthModPack);
+        this.fileDeleter.delete(this.logger, modsDir, this.mods, ofObj, this.modrinthModPack);
     }
 
     /** This method packs the modified installer to a JAR file.

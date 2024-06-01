@@ -159,7 +159,7 @@ public class FabricVersion extends FabricBasedVersion
         this.callback.step(Step.MODS);
 
         this.installAllMods(modsDir);
-        this.fileDeleter.delete(modsDir, this.mods, null, this.modrinthModPack);
+        this.fileDeleter.delete(this.logger, modsDir, this.mods, null, this.modrinthModPack);
     }
 
     /**

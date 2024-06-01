@@ -1,6 +1,7 @@
 package fr.flowarg.flowupdater.utils;
 
 import fr.flowarg.flowio.FileUtils;
+import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.integrations.modrinthintegration.ModrinthModPack;
 import fr.flowarg.flowupdater.integrations.optifineintegration.OptiFine;
@@ -34,22 +35,11 @@ public class ModFileDeleter implements IFileDeleter
      * Delete all bad files in the provided directory.
      * @param modsDir the mod's folder.
      * @param mods the mods list.
-     * @throws Exception thrown if an error occurred
-     */
-    public void delete(Path modsDir, List<Mod> mods) throws Exception
-    {
-        this.delete(modsDir, mods, null, null);
-    }
-
-    /**
-     * Delete all bad files in the provided directory.
-     * @param modsDir the mod's folder.
-     * @param mods the mods list.
      * @param optiFine the OptiFine object. (SPECIFIC USE CASE)
      * @param modrinthModPack the modrinth mod pack. (SPECIFIC USE CASE)
      * @throws Exception thrown if an error occurred
      */
-    public void delete(Path modsDir, List<Mod> mods, OptiFine optiFine, ModrinthModPack modrinthModPack) throws Exception
+    public void delete(ILogger logger, Path modsDir, List<Mod> mods, OptiFine optiFine, ModrinthModPack modrinthModPack) throws Exception
     {
         if(!this.isUseFileDeleter()) return;
 
@@ -112,10 +102,10 @@ public class ModFileDeleter implements IFileDeleter
         badFiles.forEach(path -> {
             try
             {
-                Files.delete(path);
+                Files.deleteIfExists(path);
             } catch (IOException e)
             {
-                e.printStackTrace();
+                logger.printStackTrace(e);
             }
         });
         badFiles.clear();

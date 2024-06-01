@@ -112,7 +112,7 @@ public class VanillaVersion
         try
         {
             final JsonObject launcherMeta = IOUtils.readJson(
-                    new URL("https://launchermeta.mojang.com/mc/game/version_manifest_v2.json")
+                    new URL("https://piston-meta.mojang.com/mc/game/version_manifest_v2.json")
                             .openStream())
                     .getAsJsonObject();
 
@@ -133,12 +133,12 @@ public class VanillaVersion
                     result.set(new URL(this.jsonURL).openStream());
                 } catch (Exception e)
                 {
-                    e.printStackTrace();
+                    FlowUpdater.DEFAULT_LOGGER.printStackTrace(e);
                 }
             });
         } catch (Exception e)
         {
-            e.printStackTrace();
+            FlowUpdater.DEFAULT_LOGGER.printStackTrace(e);
         }
 
         return result.get();

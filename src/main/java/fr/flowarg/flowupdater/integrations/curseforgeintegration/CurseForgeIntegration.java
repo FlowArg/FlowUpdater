@@ -309,7 +309,7 @@ public class CurseForgeIntegration extends Integration
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            this.logger.printStackTrace(e);
         }
     }
 
