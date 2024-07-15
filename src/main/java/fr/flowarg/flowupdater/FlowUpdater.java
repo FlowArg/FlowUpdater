@@ -16,7 +16,8 @@ import fr.flowarg.flowupdater.utils.VersionChecker;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
 import fr.flowarg.flowupdater.utils.builderapi.IBuilder;
-import fr.flowarg.flowupdater.versions.*;
+import fr.flowarg.flowupdater.versions.IModLoaderVersion;
+import fr.flowarg.flowupdater.versions.VanillaVersion;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;

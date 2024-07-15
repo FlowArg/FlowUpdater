@@ -1,8 +1,9 @@
-package fr.flowarg.flowupdater.versions;
+package fr.flowarg.flowupdater.versions.forge;
 
 import fr.flowarg.flowupdater.download.json.OptiFineInfo;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
+import fr.flowarg.flowupdater.versions.ModLoaderVersionBuilder;
 
 /**
  * Builder for {@link AbstractForgeVersion}

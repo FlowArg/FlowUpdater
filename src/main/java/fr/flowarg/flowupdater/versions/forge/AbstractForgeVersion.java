@@ -1,4 +1,4 @@
-package fr.flowarg.flowupdater.versions;
+package fr.flowarg.flowupdater.versions.forge;
 
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowupdater.FlowUpdater;
@@ -8,6 +8,7 @@ import fr.flowarg.flowupdater.integrations.optifineintegration.IOptiFineCompatib
 import fr.flowarg.flowupdater.integrations.optifineintegration.OptiFine;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
+import fr.flowarg.flowupdater.versions.AbstractModLoaderVersion;
 import fr.flowarg.flowzipper.ZipUtils;
 import org.jetbrains.annotations.NotNull;
 

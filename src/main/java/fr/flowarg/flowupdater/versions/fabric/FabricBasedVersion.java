@@ -1,4 +1,4 @@
-package fr.flowarg.flowupdater.versions;
+package fr.flowarg.flowupdater.versions.fabric;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -8,6 +8,7 @@ import fr.flowarg.flowupdater.FlowUpdater;
 import fr.flowarg.flowupdater.download.json.*;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
+import fr.flowarg.flowupdater.versions.AbstractModLoaderVersion;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;

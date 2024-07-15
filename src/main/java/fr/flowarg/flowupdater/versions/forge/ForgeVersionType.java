@@ -1,4 +1,4 @@
-package fr.flowarg.flowupdater.versions;
+package fr.flowarg.flowupdater.versions.forge;
 
 public enum ForgeVersionType
 {

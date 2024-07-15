@@ -16,7 +16,6 @@ import fr.flowarg.flowupdater.integrations.modrinthintegration.ModrinthModPack;
 import fr.flowarg.flowupdater.integrations.optifineintegration.IOptiFineCompatible;
 import fr.flowarg.flowupdater.integrations.optifineintegration.OptiFine;
 import fr.flowarg.flowupdater.integrations.optifineintegration.OptiFineIntegration;
-import fr.flowarg.flowupdater.versions.AbstractForgeVersion;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Files;

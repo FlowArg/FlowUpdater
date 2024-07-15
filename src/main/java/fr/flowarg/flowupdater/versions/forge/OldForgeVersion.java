@@ -1,4 +1,4 @@
-package fr.flowarg.flowupdater.versions;
+package fr.flowarg.flowupdater.versions.forge;
 
 import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowupdater.download.json.*;

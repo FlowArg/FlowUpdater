@@ -2,6 +2,11 @@ package fr.flowarg.flowupdater;
 
 import fr.flowarg.flowupdater.utils.UpdaterOptions;
 import fr.flowarg.flowupdater.versions.*;
+import fr.flowarg.flowupdater.versions.fabric.FabricVersion;
+import fr.flowarg.flowupdater.versions.fabric.QuiltVersion;
+import fr.flowarg.flowupdater.versions.forge.AbstractForgeVersion;
+import fr.flowarg.flowupdater.versions.forge.ForgeVersionBuilder;
+import fr.flowarg.flowupdater.versions.forge.ForgeVersionType;
 
 import java.nio.file.Path;
 
