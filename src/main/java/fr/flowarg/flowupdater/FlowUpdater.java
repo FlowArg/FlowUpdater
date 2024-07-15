@@ -7,9 +7,9 @@ import fr.flowarg.flowupdater.download.*;
 import fr.flowarg.flowupdater.download.json.ExternalFile;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.integrations.IntegrationManager;
-import fr.flowarg.flowupdater.integrations.curseforgeintegration.ICurseFeaturesUser;
-import fr.flowarg.flowupdater.integrations.modrinthintegration.IModrinthFeaturesUser;
-import fr.flowarg.flowupdater.utils.FlowUpdaterException;
+import fr.flowarg.flowupdater.integrations.curseforgeintegration.ICurseForgeCompatible;
+import fr.flowarg.flowupdater.integrations.modrinthintegration.IModrinthCompatible;
+import fr.flowarg.flowupdater.integrations.optifineintegration.IOptiFineCompatible;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.UpdaterOptions;
 import fr.flowarg.flowupdater.utils.VersionChecker;
@@ -36,7 +36,7 @@ import java.util.List;
 public class FlowUpdater
 {
     /** FlowUpdater's version string constant */
-    public static final String FU_VERSION = "1.8.6";
+    public static final String FU_VERSION = "1.9.0";
 
     /** Vanilla version's object to update/install */
     private final VanillaVersion vanillaVersion;
@@ -165,14 +165,14 @@ public class FlowUpdater
 
         this.checkMods(this.modLoaderVersion, modsDirPath);
 
-        if(this.modLoaderVersion instanceof ICurseFeaturesUser)
-            this.integrationManager.loadCurseForgeIntegration(modsDirPath, (ICurseFeaturesUser)this.modLoaderVersion);
+        if(this.modLoaderVersion instanceof ICurseForgeCompatible)
+            this.integrationManager.loadCurseForgeIntegration(modsDirPath, (ICurseForgeCompatible)this.modLoaderVersion);
 
-        if(this.modLoaderVersion instanceof IModrinthFeaturesUser)
-            this.integrationManager.loadModrinthIntegration(modsDirPath, (IModrinthFeaturesUser)this.modLoaderVersion);
+        if(this.modLoaderVersion instanceof IModrinthCompatible)
+            this.integrationManager.loadModrinthIntegration(modsDirPath, (IModrinthCompatible)this.modLoaderVersion);
 
-        if(this.modLoaderVersion instanceof AbstractForgeVersion)
-            this.integrationManager.loadOptiFineIntegration(modsDirPath, (AbstractForgeVersion)this.modLoaderVersion);
+        if(this.modLoaderVersion instanceof IOptiFineCompatible)
+            this.integrationManager.loadOptiFineIntegration(modsDirPath, (IOptiFineCompatible)this.modLoaderVersion);
     }
 
     private void checkMods(@NotNull IModLoaderVersion modLoader, Path modsDir) throws Exception
@@ -198,32 +198,14 @@ public class FlowUpdater
 
     private void installModLoader(Path dir) throws Exception
     {
-        String name;
-        if(this.modLoaderVersion instanceof NeoForgeVersion)
-            name = "NeoForge";
-        else if(this.modLoaderVersion instanceof AbstractForgeVersion)
-            name = "Forge";
-        else if(this.modLoaderVersion instanceof FabricVersion)
-            name = "Fabric";
-        else if(this.modLoaderVersion instanceof QuiltVersion)
-            name = "Quilt";
-        else if(this.modLoaderVersion instanceof OtherModLoaderVersion)
-            name = ((OtherModLoaderVersion)this.modLoaderVersion).name();
-        else throw new FlowUpdaterException("Hi developer, check the OtherModLoaderVersion documentation.");
-
-        this.installModLoader(this.modLoaderVersion, dir, name);
-    }
-
-    private void installModLoader(IModLoaderVersion modLoader, Path dir, String name) throws Exception
-    {
-        if(modLoader == null)
+        if(this.modLoaderVersion == null)
             return;
 
-        modLoader.attachFlowUpdater(this);
-        if(!modLoader.isModLoaderAlreadyInstalled(dir))
-            modLoader.install(dir);
-        else this.logger.info(name + " is already installed! Skipping installation...");
-        modLoader.installMods(dir.resolve("mods"));
+        this.modLoaderVersion.attachFlowUpdater(this);
+        if(!this.modLoaderVersion.isModLoaderAlreadyInstalled(dir))
+            this.modLoaderVersion.install(dir);
+        else this.logger.info(this.modLoaderVersion.name() + " is already installed! Skipping installation...");
+        this.modLoaderVersion.installMods(dir.resolve("mods"));
     }
 
     private void updateExtFiles(Path dir)

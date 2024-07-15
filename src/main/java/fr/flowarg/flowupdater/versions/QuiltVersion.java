@@ -197,4 +197,10 @@ public class QuiltVersion extends FabricBasedVersion
            );
         }
     }
+
+    @Override
+    public String name()
+    {
+        return "Quilt";
+    }
 }

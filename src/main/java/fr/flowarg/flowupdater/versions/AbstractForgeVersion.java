@@ -4,6 +4,7 @@ import fr.flowarg.flowio.FileUtils;
 import fr.flowarg.flowupdater.FlowUpdater;
 import fr.flowarg.flowupdater.download.Step;
 import fr.flowarg.flowupdater.download.json.*;
+import fr.flowarg.flowupdater.integrations.optifineintegration.IOptiFineCompatible;
 import fr.flowarg.flowupdater.integrations.optifineintegration.OptiFine;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
@@ -25,7 +26,7 @@ import java.util.List;
  * Implemented by {@link OldForgeVersion} and {@link NewForgeVersion}
  * @author flow
  */
-public abstract class AbstractForgeVersion extends AbstractModLoaderVersion
+public abstract class AbstractForgeVersion extends AbstractModLoaderVersion implements IOptiFineCompatible
 {
     protected final OptiFineInfo optiFineInfo;
     protected final ForgeVersionType forgeVersionType;
@@ -325,11 +326,17 @@ public abstract class AbstractForgeVersion extends AbstractModLoaderVersion
     }
 
     /**
-     * Get given OptiFine information.
-     * @return OptiFine information.
+     * {@inheritDoc}
      */
+    @Override
     public OptiFineInfo getOptiFineInfo()
     {
         return this.optiFineInfo;
+    }
+
+    @Override
+    public String name()
+    {
+        return "Forge";
     }
 }

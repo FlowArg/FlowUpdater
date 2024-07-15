@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * This class represents an object that using CurseForge features.
  */
-public interface ICurseFeaturesUser
+public interface ICurseForgeCompatible
 {
     /**
      * Get all curse mods to update.

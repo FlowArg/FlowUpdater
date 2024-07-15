@@ -9,10 +9,11 @@ import fr.flowarg.flowupdater.download.Step;
 import fr.flowarg.flowupdater.download.json.*;
 import fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseForgeIntegration;
 import fr.flowarg.flowupdater.integrations.curseforgeintegration.CurseModPack;
-import fr.flowarg.flowupdater.integrations.curseforgeintegration.ICurseFeaturesUser;
-import fr.flowarg.flowupdater.integrations.modrinthintegration.IModrinthFeaturesUser;
+import fr.flowarg.flowupdater.integrations.curseforgeintegration.ICurseForgeCompatible;
+import fr.flowarg.flowupdater.integrations.modrinthintegration.IModrinthCompatible;
 import fr.flowarg.flowupdater.integrations.modrinthintegration.ModrinthIntegration;
 import fr.flowarg.flowupdater.integrations.modrinthintegration.ModrinthModPack;
+import fr.flowarg.flowupdater.integrations.optifineintegration.IOptiFineCompatible;
 import fr.flowarg.flowupdater.integrations.optifineintegration.OptiFine;
 import fr.flowarg.flowupdater.integrations.optifineintegration.OptiFineIntegration;
 import fr.flowarg.flowupdater.versions.AbstractForgeVersion;
@@ -46,25 +47,25 @@ public class IntegrationManager
     /**
      * This method loads the CurseForge integration and fetches some data.
      * @param dir the installation directory.
-     * @param curseFeaturesUser a version that accepts CurseForge's feature stuff.
+     * @param curseForgeCompatible a version that accepts CurseForge's feature stuff.
      */
-    public void loadCurseForgeIntegration(Path dir, ICurseFeaturesUser curseFeaturesUser)
+    public void loadCurseForgeIntegration(Path dir, ICurseForgeCompatible curseForgeCompatible)
     {
         this.progressCallback.step(Step.INTEGRATION);
         try
         {
-            final CurseModPackInfo modPackInfo = curseFeaturesUser.getCurseModPackInfo();
+            final CurseModPackInfo modPackInfo = curseForgeCompatible.getCurseModPackInfo();
             final List<Mod> allCurseMods = new ArrayList<>();
 
-            if(curseFeaturesUser.getCurseMods().isEmpty() && modPackInfo == null)
+            if(curseForgeCompatible.getCurseMods().isEmpty() && modPackInfo == null)
             {
-                curseFeaturesUser.setAllCurseMods(allCurseMods);
+                curseForgeCompatible.setAllCurseMods(allCurseMods);
                 return;
             }
 
             final CurseForgeIntegration curseForgeIntegration = new CurseForgeIntegration(this.logger, dir.getParent().resolve(".cfp"));
 
-            for (CurseFileInfo info : curseFeaturesUser.getCurseMods())
+            for (CurseFileInfo info : curseForgeCompatible.getCurseMods())
             {
                 try {
                     final Mod mod = curseForgeIntegration.fetchMod(info);
@@ -82,7 +83,7 @@ public class IntegrationManager
 
             if (modPackInfo == null)
             {
-                curseFeaturesUser.setAllCurseMods(allCurseMods);
+                curseForgeCompatible.setAllCurseMods(allCurseMods);
                 return;
             }
 
@@ -118,7 +119,7 @@ public class IntegrationManager
                 }
             });
 
-            curseFeaturesUser.setAllCurseMods(allCurseMods);
+            curseForgeCompatible.setAllCurseMods(allCurseMods);
         }
         catch (Exception e)
         {
@@ -126,22 +127,22 @@ public class IntegrationManager
         }
     }
 
-    public void loadModrinthIntegration(Path dir, IModrinthFeaturesUser modrinthFeaturesUser)
+    public void loadModrinthIntegration(Path dir, IModrinthCompatible modrinthCompatible)
     {
         try
         {
-            final ModrinthModPackInfo modPackInfo = modrinthFeaturesUser.getModrinthModPackInfo();
+            final ModrinthModPackInfo modPackInfo = modrinthCompatible.getModrinthModPackInfo();
             final List<Mod> allModrinthMods = new ArrayList<>();
 
-            if(modrinthFeaturesUser.getModrinthMods().isEmpty() && modPackInfo == null)
+            if(modrinthCompatible.getModrinthMods().isEmpty() && modPackInfo == null)
             {
-                modrinthFeaturesUser.setAllModrinthMods(allModrinthMods);
+                modrinthCompatible.setAllModrinthMods(allModrinthMods);
                 return;
             }
 
             final ModrinthIntegration modrinthIntegration = new ModrinthIntegration(this.logger, dir.getParent().resolve(".modrinth"));
 
-            for (ModrinthVersionInfo info : modrinthFeaturesUser.getModrinthMods())
+            for (ModrinthVersionInfo info : modrinthCompatible.getModrinthMods())
             {
                 final Mod mod = modrinthIntegration.fetchMod(info);
                 this.checkMod(mod, allModrinthMods, dir);
@@ -149,19 +150,19 @@ public class IntegrationManager
 
             if (modPackInfo == null)
             {
-                modrinthFeaturesUser.setAllModrinthMods(allModrinthMods);
+                modrinthCompatible.setAllModrinthMods(allModrinthMods);
                 return;
             }
 
             this.progressCallback.step(Step.MOD_PACK);
             final ModrinthModPack modPack = modrinthIntegration.getCurseModPack(modPackInfo);
             this.logger.info(String.format("Loading mod pack: %s (%s).", modPack.getName(), modPack.getVersion()));
-            modrinthFeaturesUser.setModrinthModPack(modPack);
+            modrinthCompatible.setModrinthModPack(modPack);
 
             for (Mod mod : modPack.getMods())
                 this.checkMod(mod, allModrinthMods, dir);
 
-            modrinthFeaturesUser.setAllModrinthMods(allModrinthMods);
+            modrinthCompatible.setAllModrinthMods(allModrinthMods);
         }
         catch (Exception e)
         {
@@ -172,11 +173,11 @@ public class IntegrationManager
     /**
      * This method loads the OptiFine integration and fetches OptiFine data.
      * @param dir the installation directory.
-     * @param forgeVersion the current Forge version.
+     * @param optiFineCompatible the current Forge version.
      */
-    public void loadOptiFineIntegration(Path dir, @NotNull AbstractForgeVersion forgeVersion)
+    public void loadOptiFineIntegration(Path dir, @NotNull IOptiFineCompatible optiFineCompatible)
     {
-        final OptiFineInfo info = forgeVersion.getOptiFineInfo();
+        final OptiFineInfo info = optiFineCompatible.getOptiFineInfo();
 
         if(info == null)
             return;

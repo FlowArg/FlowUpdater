@@ -5,15 +5,15 @@ import fr.flowarg.flowupdater.FlowUpdater;
 import fr.flowarg.flowupdater.download.DownloadList;
 import fr.flowarg.flowupdater.download.IProgressCallback;
 import fr.flowarg.flowupdater.download.json.*;
-import fr.flowarg.flowupdater.integrations.curseforgeintegration.ICurseFeaturesUser;
-import fr.flowarg.flowupdater.integrations.modrinthintegration.IModrinthFeaturesUser;
+import fr.flowarg.flowupdater.integrations.curseforgeintegration.ICurseForgeCompatible;
+import fr.flowarg.flowupdater.integrations.modrinthintegration.IModrinthCompatible;
 import fr.flowarg.flowupdater.integrations.modrinthintegration.ModrinthModPack;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public abstract class AbstractModLoaderVersion implements ICurseFeaturesUser, IModLoaderVersion, IModrinthFeaturesUser
+public abstract class AbstractModLoaderVersion implements ICurseForgeCompatible, IModLoaderVersion, IModrinthCompatible
 {
     protected final List<Mod> mods;
     protected final List<CurseFileInfo> curseMods;

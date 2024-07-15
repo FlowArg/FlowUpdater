@@ -60,4 +60,10 @@ public class NeoForgeVersion extends NewForgeVersion
         Files.deleteIfExists(tempInstallerDir.resolve("META-INF").resolve("NEOFORGE.DSA"));
         Files.deleteIfExists(tempInstallerDir.resolve("META-INF").resolve("NEOFORGE.SF"));
     }
+
+    @Override
+    public String name()
+    {
+        return "NeoForge";
+    }
 }

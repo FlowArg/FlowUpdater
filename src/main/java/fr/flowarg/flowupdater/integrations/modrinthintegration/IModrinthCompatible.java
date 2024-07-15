@@ -6,7 +6,7 @@ import fr.flowarg.flowupdater.download.json.ModrinthVersionInfo;
 
 import java.util.List;
 
-public interface IModrinthFeaturesUser
+public interface IModrinthCompatible
 {
     /**
      * Get all modrinth mods to update.

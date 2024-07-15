@@ -258,7 +258,7 @@ public class Updates
                     .build();
 
             final AbstractForgeVersion forgeVersion = new ForgeVersionBuilder(ForgeVersionType.NEO_FORGE)
-                    .withForgeVersion(neoForge)
+                    .withForgeVersion(vanilla + '-' + neoForge)
                     .build();
 
             final FlowUpdater updater = new FlowUpdater.FlowUpdaterBuilder()

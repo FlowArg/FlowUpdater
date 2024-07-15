@@ -202,4 +202,10 @@ public class FabricVersion extends FabricBasedVersion
            );
         }
     }
+
+    @Override
+    public String name()
+    {
+        return "Fabric";
+    }
 }

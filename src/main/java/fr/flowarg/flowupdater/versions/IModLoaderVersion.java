@@ -111,6 +111,18 @@ public interface IModLoaderVersion
     IProgressCallback getCallback();
 
     /**
+     * Get the attached {@link ModFileDeleter} instance;
+     * @return this mod file deleter;
+     */
+    ModFileDeleter getFileDeleter();
+
+    /**
+     * Get the mod loader name.
+     * @return the mod loader name.
+     */
+    String name();
+
+    /**
      * This class represents a process' environment with a working directory and the launch command.
      */
     class ModLoaderLauncherEnvironment
@@ -147,10 +159,4 @@ public interface IModLoaderVersion
             return this.tempDir;
         }
     }
-
-    /**
-     * Get the attached {@link ModFileDeleter} instance;
-     * @return this mod file deleter;
-     */
-    ModFileDeleter getFileDeleter();
 }
