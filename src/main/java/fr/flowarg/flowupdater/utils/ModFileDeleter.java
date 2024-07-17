@@ -33,6 +33,7 @@ public class ModFileDeleter implements IFileDeleter
 
     /**
      * Delete all bad files in the provided directory.
+     * @param logger the logger.
      * @param modsDir the mod's folder.
      * @param mods the mods list.
      * @param optiFine the OptiFine object. (SPECIFIC USE CASE)

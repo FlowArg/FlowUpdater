@@ -11,8 +11,6 @@ import fr.flowarg.flowupdater.utils.ModFileDeleter;
 import fr.flowarg.flowupdater.versions.AbstractModLoaderVersion;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -26,11 +24,11 @@ public abstract class FabricBasedVersion extends AbstractModLoaderVersion
 
     private final String baseInstallerUrl;
 
-    public FabricBasedVersion(List<Mod> mods, String modLoaderVersion, List<CurseFileInfo> curseMods,
+    public FabricBasedVersion(String modLoaderVersion, List<Mod> mods, List<CurseFileInfo> curseMods,
             List<ModrinthVersionInfo> modrinthMods, ModFileDeleter fileDeleter, CurseModPackInfo curseModPackInfo,
             ModrinthModPackInfo modrinthModPackInfo, String installerVersion, String baseInstallerUrl)
     {
-        super(mods, modLoaderVersion, curseMods, modrinthMods, fileDeleter, curseModPackInfo, modrinthModPackInfo);
+        super(modLoaderVersion, mods, curseMods, modrinthMods, fileDeleter, curseModPackInfo, modrinthModPackInfo);
         this.installerVersion = installerVersion;
         this.baseInstallerUrl = baseInstallerUrl;
     }
@@ -78,41 +76,6 @@ public abstract class FabricBasedVersion extends AbstractModLoaderVersion
         catch (Exception e)
         {
             this.logger.printStackTrace(e);
-        }
-    }
-
-    public class FabricBasedLauncherEnvironment extends ModLoaderLauncherEnvironment
-    {
-        private final Path modLoaderDir;
-
-        public FabricBasedLauncherEnvironment(List<String> command, Path tempDir, Path modLoaderDir)
-        {
-            super(command, tempDir);
-            this.modLoaderDir = modLoaderDir;
-        }
-
-        public Path getModLoaderDir()
-        {
-            return this.modLoaderDir;
-        }
-
-        public void launchInstaller() throws Exception
-        {
-            final ProcessBuilder processBuilder = new ProcessBuilder(this.getCommand());
-
-            processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
-            final Process process = processBuilder.start();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
-
-            while ((line = reader.readLine()) != null) FabricBasedVersion.this.logger.info(line);
-
-            reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-            while ((line = reader.readLine()) != null) FabricBasedVersion.this.logger.info(line);
-
-            process.waitFor();
-
-            reader.close();
         }
     }
 }

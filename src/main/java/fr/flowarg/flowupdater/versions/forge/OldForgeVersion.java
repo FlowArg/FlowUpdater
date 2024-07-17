@@ -17,9 +17,9 @@ public class OldForgeVersion extends AbstractForgeVersion
 {
     OldForgeVersion(String forgeVersion, List<Mod> mods,
             List<CurseFileInfo> curseMods, List<ModrinthVersionInfo> modrinthMods, ModFileDeleter fileDeleter,
-            OptiFineInfo optiFine, CurseModPackInfo modPack, ModrinthModPackInfo modrinthModPackInfo)
+            CurseModPackInfo modPack, ModrinthModPackInfo modrinthModPackInfo, OptiFineInfo optiFine)
     {
-        super(mods, curseMods, modrinthMods, forgeVersion, fileDeleter, optiFine, modPack, modrinthModPackInfo, ForgeVersionType.OLD);
+        super(forgeVersion, mods, curseMods, modrinthMods, fileDeleter, modPack, modrinthModPackInfo, optiFine, ForgeVersionType.OLD);
     }
 
     /**

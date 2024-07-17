@@ -5,9 +5,6 @@ import fr.flowarg.flowupdater.download.Step;
 import fr.flowarg.flowupdater.download.json.*;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
-import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
-import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
-import fr.flowarg.flowupdater.versions.ModLoaderVersionBuilder;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,8 +24,6 @@ public class QuiltVersion extends FabricBasedVersion
 {
     private static final String QUILT_INSTALLER_METADATA =
             "https://maven.quiltmc.org/repository/release/org/quiltmc/quilt-installer/maven-metadata.xml";
-    private static final String QUILT_VERSION_METADATA =
-            "https://maven.quiltmc.org/repository/release/org/quiltmc/quilt-loader/maven-metadata.xml";
     private static final String QUILT_BASE_INSTALLER = "https://maven.quiltmc.org/repository/release/org/quiltmc/quilt-installer/%s/quilt-installer-%s.jar";
 
     /**
@@ -39,11 +34,11 @@ public class QuiltVersion extends FabricBasedVersion
      * @param fileDeleter {@link ModFileDeleter} used to clean up mods' dir.
      * @param curseModPackInfo {@link CurseModPackInfo} the mod pack you want to install.
      */
-    private QuiltVersion(List<Mod> mods, List<CurseFileInfo> curseMods, List<ModrinthVersionInfo> modrinthMods,
-            String quiltVersion, ModFileDeleter fileDeleter, CurseModPackInfo curseModPackInfo,
+    QuiltVersion(String quiltVersion, List<Mod> mods, List<CurseFileInfo> curseMods,
+            List<ModrinthVersionInfo> modrinthMods, ModFileDeleter fileDeleter, CurseModPackInfo curseModPackInfo,
             ModrinthModPackInfo modrinthModPackInfo)
     {
-        super(mods, quiltVersion, curseMods,
+        super(quiltVersion, mods, curseMods,
               modrinthMods, fileDeleter, curseModPackInfo,
               modrinthModPackInfo, IOUtils.getLatestArtifactVersion(QUILT_INSTALLER_METADATA), QUILT_BASE_INSTALLER);
     }
@@ -63,10 +58,6 @@ public class QuiltVersion extends FabricBasedVersion
                         .resolve("quilt-loader-" + this.modLoaderVersion + ".jar"));
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public FabricBasedLauncherEnvironment prepareModLoaderLauncher(@NotNull Path dirToInstall, InputStream stream) throws IOException
     {
         this.logger.info("Downloading quilt installer...");
@@ -97,7 +88,7 @@ public class QuiltVersion extends FabricBasedVersion
         command.add(this.modLoaderVersion);
         command.add("--no-profile");
         command.add("--install-dir=" + quilt);
-        return new FabricBasedLauncherEnvironment(command, tempDir, quilt);
+        return new FabricBasedLauncherEnvironment(command, tempDir, this.logger, quilt);
     }
 
     /**
@@ -130,10 +121,6 @@ public class QuiltVersion extends FabricBasedVersion
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void checkModLoaderEnv(@NotNull Path dirToInstall) throws Exception
     {
         final Path quiltDirPath = dirToInstall
@@ -158,45 +145,6 @@ public class QuiltVersion extends FabricBasedVersion
 
         this.installAllMods(modsDir);
         this.fileDeleter.delete(this.logger, modsDir, this.mods, null, this.modrinthModPack);
-    }
-
-    /**
-     * Builder for {@link QuiltVersion}.
-     */
-    public static class QuiltVersionBuilder extends ModLoaderVersionBuilder<QuiltVersion, QuiltVersionBuilder>
-    {
-        private final BuilderArgument<String> quiltVersionArgument =
-                new BuilderArgument<>("QuiltVersion", () -> IOUtils.getLatestArtifactVersion(QUILT_VERSION_METADATA)).optional();
-
-        /**
-         * @param quiltVersion the Quilt version you want to install
-         * (don't use this function if you want to use the latest Quilt version).
-         * @return the builder.
-         */
-        public QuiltVersionBuilder withQuiltVersion(String quiltVersion)
-        {
-            this.quiltVersionArgument.set(quiltVersion);
-            return this;
-        }
-
-        /**
-         * Build a new {@link QuiltVersion} instance with provided arguments.
-         * @return the freshly created instance.
-         * @throws BuilderException if an error occurred.
-         */
-        @Override
-        public QuiltVersion build() throws BuilderException
-        {
-            return new QuiltVersion(
-                    this.modsArgument.get(),
-                    this.curseModsArgument.get(),
-                    this.modrinthModsArgument.get(),
-                    this.quiltVersionArgument.get(),
-                    this.fileDeleterArgument.get(),
-                    this.curseModPackArgument.get(),
-                    this.modrinthPackArgument.get()
-           );
-        }
     }
 
     @Override

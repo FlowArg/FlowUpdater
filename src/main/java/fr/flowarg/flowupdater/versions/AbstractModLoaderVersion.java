@@ -30,12 +30,12 @@ public abstract class AbstractModLoaderVersion implements ICurseForgeCompatible,
     protected String javaPath;
     protected ModrinthModPack modrinthModPack;
 
-    public AbstractModLoaderVersion(List<Mod> mods, String modLoaderVersion, List<CurseFileInfo> curseMods,
+    public AbstractModLoaderVersion(String modLoaderVersion, List<Mod> mods, List<CurseFileInfo> curseMods,
             List<ModrinthVersionInfo> modrinthMods, ModFileDeleter fileDeleter, CurseModPackInfo curseModPackInfo,
             ModrinthModPackInfo modrinthModPackInfo)
     {
-        this.mods = mods;
         this.modLoaderVersion = modLoaderVersion;
+        this.mods = mods;
         this.curseMods = curseMods;
         this.modrinthMods = modrinthMods;
         this.fileDeleter = fileDeleter;

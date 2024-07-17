@@ -9,6 +9,7 @@ import fr.flowarg.flowupdater.integrations.optifineintegration.OptiFine;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
 import fr.flowarg.flowupdater.versions.AbstractModLoaderVersion;
+import fr.flowarg.flowupdater.versions.ModLoaderLauncherEnvironment;
 import fr.flowarg.flowzipper.ZipUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -46,11 +47,11 @@ public abstract class AbstractForgeVersion extends AbstractModLoaderVersion impl
      * @param modrinthModPackInfo mod pack information.
      * @param forgeVersionType the type of the forge version.
      */
-    protected AbstractForgeVersion(List<Mod> mods, List<CurseFileInfo> curseMods, List<ModrinthVersionInfo> modrinthMods,
-            String forgeVersion, ModFileDeleter fileDeleter, OptiFineInfo optiFineInfo,
-            CurseModPackInfo curseModPackInfo, ModrinthModPackInfo modrinthModPackInfo, ForgeVersionType forgeVersionType)
+    protected AbstractForgeVersion(String forgeVersion, List<Mod> mods, List<CurseFileInfo> curseMods,
+            List<ModrinthVersionInfo> modrinthMods, ModFileDeleter fileDeleter, CurseModPackInfo curseModPackInfo,
+            ModrinthModPackInfo modrinthModPackInfo, OptiFineInfo optiFineInfo, ForgeVersionType forgeVersionType)
     {
-        super(mods, forgeVersion, curseMods, modrinthMods, fileDeleter, curseModPackInfo, modrinthModPackInfo);
+        super(forgeVersion, mods, curseMods, modrinthMods, fileDeleter, curseModPackInfo, modrinthModPackInfo);
         this.optiFineInfo = optiFineInfo;
         this.forgeVersionType = forgeVersionType;
     }
@@ -69,30 +70,11 @@ public abstract class AbstractForgeVersion extends AbstractModLoaderVersion impl
                 .resolve("forge")
                 .resolve(this.modLoaderVersion);
 
-        final Path neoForgeDir = netDir
-                .resolve("neoforged")
-                .resolve("forge")
-                .resolve(this.modLoaderVersion);
-
-        final Path neoForgeDir2 = netDir
-                .resolve("neoforged")
-                .resolve("neoforge")
-                .resolve(this.modLoaderVersion);
-
-        return this.isForgeJarAlreadyInstalled(forgeDir) ||
-                this.isForgeJarAlreadyInstalled(neoForgeDir) ||
-                this.isForgeJarAlreadyInstalled(neoForgeDir2);
-    }
-
-    private boolean isForgeJarAlreadyInstalled(Path forgeDir)
-    {
         if(Files.notExists(forgeDir))
             return false;
 
         return Files.exists(forgeDir.resolve("forge-" + this.modLoaderVersion + ".jar")) ||
-                Files.exists(forgeDir.resolve("forge-" + this.modLoaderVersion + "-universal.jar")) ||
-                Files.exists(forgeDir.resolve("neoforge-" + this.modLoaderVersion + ".jar")) ||
-                Files.exists(forgeDir.resolve("neoforge-" + this.modLoaderVersion + "-universal.jar"));
+                Files.exists(forgeDir.resolve("forge-" + this.modLoaderVersion + "-universal.jar"));
     }
 
     /**
@@ -102,7 +84,7 @@ public abstract class AbstractForgeVersion extends AbstractModLoaderVersion impl
     public void install(final Path dirToInstall) throws Exception
     {
         this.callback.step(Step.MOD_LOADER);
-        this.logger.info("Installing Forge, version: " + this.modLoaderVersion + "...");
+        this.logger.info("Installing " + this.name() + ", version: " + this.modLoaderVersion + "...");
         this.checkModLoaderEnv(dirToInstall);
 
         if (!this.isCompatible()) return;
@@ -117,7 +99,7 @@ public abstract class AbstractForgeVersion extends AbstractModLoaderVersion impl
             final Process process = processBuilder.start();
             process.waitFor();
 
-            this.logger.info("Successfully installed Forge!");
+            this.logger.info("Successfully installed " + this.name() + "!");
             FileUtils.deleteDirectory(forgeLauncherEnvironment.getTempDir());
         }
         catch (Exception e)
@@ -126,10 +108,6 @@ public abstract class AbstractForgeVersion extends AbstractModLoaderVersion impl
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public ModLoaderLauncherEnvironment prepareModLoaderLauncher(@NotNull Path dirToInstall, InputStream stream) throws Exception
     {
         final Path tempDirPath = dirToInstall.resolve(".flowupdater");
@@ -189,12 +167,12 @@ public abstract class AbstractForgeVersion extends AbstractModLoaderVersion impl
     }
 
     /**
-     * This method makes a new {@link fr.flowarg.flowupdater.versions.IModLoaderVersion.ModLoaderLauncherEnvironment}
+     * This method makes a new {@link fr.flowarg.flowupdater.versions.ModLoaderLauncherEnvironment}
      * to launch the mod loader's launcher.
      * @param patchedInstaller the patched installer path.
      * @param dirToInstall the installation directory.
      * @param tempDir the temporary directory where is the installer stuff.
-     * @return the fresh {@link fr.flowarg.flowupdater.versions.IModLoaderVersion.ModLoaderLauncherEnvironment}.
+     * @return the fresh {@link fr.flowarg.flowupdater.versions.ModLoaderLauncherEnvironment}.
      */
     protected ModLoaderLauncherEnvironment makeCommand(@NotNull Path patchedInstaller, @NotNull Path dirToInstall, Path tempDir)
     {
@@ -217,24 +195,14 @@ public abstract class AbstractForgeVersion extends AbstractModLoaderVersion impl
      */
     protected abstract void cleanInstaller(Path tempInstallerDir) throws Exception;
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void checkModLoaderEnv(@NotNull Path dirToInstall) throws Exception
     {
         final Path forgeDirPath = dirToInstall.resolve("libraries").resolve("net").resolve("minecraftforge").resolve("forge");
-        final Path neoForgeDirPath = dirToInstall.resolve("libraries").resolve("net").resolve("neoforged").resolve("forge");
-        final Path neoForgeDirPath2 = dirToInstall.resolve("libraries").resolve("net").resolve("neoforged").resolve("neoforge");
 
-        if(this.isCompatible() && (this.containsOtherForgeVersion(forgeDirPath) ||
-                this.containsOtherForgeVersion(neoForgeDirPath) ||
-                this.containsOtherForgeVersion(neoForgeDirPath2)))
+        if(this.isCompatible() && (this.containsOtherForgeVersion(forgeDirPath)))
         {
             FileUtils.deleteDirectory(dirToInstall.resolve("libraries").resolve("net").resolve("minecraft"));
             FileUtils.deleteDirectory(forgeDirPath.getParent());
-            FileUtils.deleteDirectory(neoForgeDirPath.getParent());
-            FileUtils.deleteDirectory(neoForgeDirPath2.getParent());
             FileUtils.deleteDirectory(dirToInstall.resolve("libraries").resolve("de").resolve("oceanlabs"));
             FileUtils.deleteDirectory(dirToInstall.resolve("libraries").resolve("cpw"));
         }

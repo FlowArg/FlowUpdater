@@ -1,12 +1,16 @@
 package fr.flowarg.flowupdater;
 
 import fr.flowarg.flowupdater.utils.UpdaterOptions;
-import fr.flowarg.flowupdater.versions.*;
+import fr.flowarg.flowupdater.versions.VanillaVersion;
 import fr.flowarg.flowupdater.versions.fabric.FabricVersion;
+import fr.flowarg.flowupdater.versions.fabric.FabricVersionBuilder;
 import fr.flowarg.flowupdater.versions.fabric.QuiltVersion;
+import fr.flowarg.flowupdater.versions.fabric.QuiltVersionBuilder;
 import fr.flowarg.flowupdater.versions.forge.AbstractForgeVersion;
 import fr.flowarg.flowupdater.versions.forge.ForgeVersionBuilder;
 import fr.flowarg.flowupdater.versions.forge.ForgeVersionType;
+import fr.flowarg.flowupdater.versions.neoforge.NeoForgeVersion;
+import fr.flowarg.flowupdater.versions.neoforge.NeoForgeVersionBuilder;
 
 import java.nio.file.Path;
 
@@ -157,7 +161,7 @@ public class Updates
                     .withName(version)
                     .build();
 
-            final FabricVersion fabricVersion = new FabricVersion.FabricVersionBuilder()
+            final FabricVersion fabricVersion = new FabricVersionBuilder()
                     .build();
 
             fabric = fabricVersion.getModLoaderVersion();
@@ -192,7 +196,7 @@ public class Updates
                     .withName(version)
                     .build();
 
-            final QuiltVersion quiltVersion = new QuiltVersion.QuiltVersionBuilder()
+            final QuiltVersion quiltVersion = new QuiltVersionBuilder()
                     .build();
 
             quilt = quiltVersion.getModLoaderVersion();
@@ -228,7 +232,7 @@ public class Updates
                     .withName(version)
                     .build();
 
-            final FabricVersion fabricVersion = new FabricVersion.FabricVersionBuilder()
+            final FabricVersion fabricVersion = new FabricVersionBuilder()
                     .build();
 
             fabric = fabricVersion.getModLoaderVersion();
@@ -262,13 +266,13 @@ public class Updates
                     .withName(vanilla)
                     .build();
 
-            final AbstractForgeVersion forgeVersion = new ForgeVersionBuilder(ForgeVersionType.NEO_FORGE)
-                    .withForgeVersion(vanilla + '-' + neoForge)
+            final NeoForgeVersion neoForgeVersion = new NeoForgeVersionBuilder()
+                    .withNeoForgeVersion(neoForge)
                     .build();
 
             final FlowUpdater updater = new FlowUpdater.FlowUpdaterBuilder()
                     .withVanillaVersion(version)
-                    .withModLoaderVersion(forgeVersion)
+                    .withModLoaderVersion(neoForgeVersion)
                     .build();
 
             updater.update(updateDir);

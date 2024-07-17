@@ -59,10 +59,8 @@ public class IOUtils
         {
             if(DOWNLOAD_RETRIES_CAUSED_BY_SSL_HANDSHAKE_EXCEPTION.getOrDefault(url, 0) > 3)
             {
-                logger.printStackTrace(
-                        "Too many retries caused by SSLHandshakeException when downloading file from: "
-                                + url, e
-                );
+                logger.err("Too many retries caused by SSLHandshakeException when downloading file from: " + url);
+                logger.printStackTrace(e);
                 DOWNLOAD_RETRIES_CAUSED_BY_SSL_HANDSHAKE_EXCEPTION.remove(url);
                 return;
             }
@@ -74,7 +72,7 @@ public class IOUtils
         }
         catch (IOException e)
         {
-            logger.printStackTrace("Error when downloading file from: " + url, e);
+            logger.printStackTrace(e);
         }
     }
 

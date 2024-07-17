@@ -52,17 +52,6 @@ public class ForgeVersionBuilder extends ModLoaderVersionBuilder<AbstractForgeVe
     {
         switch (this.type)
         {
-            case NEO_FORGE:
-                return new NeoForgeVersion(
-                        this.forgeVersionArgument.get(),
-                        this.modsArgument.get(),
-                        this.curseModsArgument.get(),
-                        this.modrinthModsArgument.get(),
-                        this.fileDeleterArgument.get(),
-                        this.optiFineArgument.get(),
-                        this.curseModPackArgument.get(),
-                        this.modrinthPackArgument.get()
-                );
             case NEW:
                 return new NewForgeVersion(
                         this.forgeVersionArgument.get(),
@@ -70,10 +59,9 @@ public class ForgeVersionBuilder extends ModLoaderVersionBuilder<AbstractForgeVe
                         this.curseModsArgument.get(),
                         this.modrinthModsArgument.get(),
                         this.fileDeleterArgument.get(),
-                        this.optiFineArgument.get(),
                         this.curseModPackArgument.get(),
                         this.modrinthPackArgument.get(),
-                        ForgeVersionType.NEW
+                        this.optiFineArgument.get()
                 );
             case OLD:
                 return new OldForgeVersion(
@@ -82,9 +70,9 @@ public class ForgeVersionBuilder extends ModLoaderVersionBuilder<AbstractForgeVe
                         this.curseModsArgument.get(),
                         this.modrinthModsArgument.get(),
                         this.fileDeleterArgument.get(),
-                        this.optiFineArgument.get(),
                         this.curseModPackArgument.get(),
-                        this.modrinthPackArgument.get()
+                        this.modrinthPackArgument.get(),
+                        this.optiFineArgument.get()
                 );
             default:
                 return null;

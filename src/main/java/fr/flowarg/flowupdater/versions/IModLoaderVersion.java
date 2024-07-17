@@ -8,7 +8,6 @@ import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
 
-import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.List;
@@ -34,15 +33,6 @@ public interface IModLoaderVersion
      * @throws Exception if an I/O error occurred.
      */
     void install(Path dirToInstall) throws Exception;
-
-    /**
-     * Various setup before mod loader's installer launch.
-     * @param dirToInstall folder where the mod loader is going to be installed.
-     * @param stream Installer download stream.
-     * @return a new {@link ModLoaderLauncherEnvironment} object.
-     * @throws Exception is an I/O error occurred.
-     */
-    ModLoaderLauncherEnvironment prepareModLoaderLauncher(Path dirToInstall, InputStream stream) throws Exception;
 
     /**
      * Install all mods in the mods' directory.
@@ -86,13 +76,6 @@ public interface IModLoaderVersion
     }
 
     /**
-     * Check if the minecraft installation already contains another mod loader installation not corresponding to this version.
-     * @param dirToInstall Mod loader installation directory.
-     * @throws Exception if an error occurred.
-     */
-    void checkModLoaderEnv(Path dirToInstall) throws Exception;
-
-    /**
      * Get the {@link DownloadList} object.
      * @return download info.
      */
@@ -121,42 +104,4 @@ public interface IModLoaderVersion
      * @return the mod loader name.
      */
     String name();
-
-    /**
-     * This class represents a process' environment with a working directory and the launch command.
-     */
-    class ModLoaderLauncherEnvironment
-    {
-        private final List<String> command;
-        private final Path tempDir;
-
-        /**
-         * Construct a new {@link ModLoaderLauncherEnvironment} object.
-         * @param command the process' command.
-         * @param tempDir the working directory.
-         */
-        public ModLoaderLauncherEnvironment(List<String> command, Path tempDir)
-        {
-            this.command = command;
-            this.tempDir = tempDir;
-        }
-
-        /**
-         * Get the process' command.
-         * @return the process' command.
-         */
-        public List<String> getCommand()
-        {
-            return this.command;
-        }
-
-        /**
-         * Get the working directory.
-         * @return the working directory.
-         */
-        public Path getTempDir()
-        {
-            return this.tempDir;
-        }
-    }
 }

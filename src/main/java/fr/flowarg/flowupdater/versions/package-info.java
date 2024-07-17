@@ -1,4 +1,4 @@
 /**
- * This package contains all the classes related to the versions.
+ * This package contains all common classes to the versions system.
  */
 package fr.flowarg.flowupdater.versions;

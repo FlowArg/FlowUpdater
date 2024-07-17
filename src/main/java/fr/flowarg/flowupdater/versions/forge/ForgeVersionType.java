@@ -2,8 +2,6 @@ package fr.flowarg.flowupdater.versions.forge;
 
 public enum ForgeVersionType
 {
-    /** 1.20.1 to ?? */
-    NEO_FORGE("NeoForge", ""),
     /** 1.12.2-14.23.5.2851 to 1.20 */
     NEW("new Forge", ""),
     /** 1.7 to 1.12.2 */

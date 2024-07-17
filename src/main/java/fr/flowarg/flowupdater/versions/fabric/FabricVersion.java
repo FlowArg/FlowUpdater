@@ -5,9 +5,6 @@ import fr.flowarg.flowupdater.download.Step;
 import fr.flowarg.flowupdater.download.json.*;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
-import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
-import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
-import fr.flowarg.flowupdater.versions.ModLoaderVersionBuilder;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,8 +25,7 @@ public class FabricVersion extends FabricBasedVersion
 {
     private static final String FABRIC_INSTALLER_METADATA =
             "https://maven.fabricmc.net/net/fabricmc/fabric-installer/maven-metadata.xml";
-    private static final String FABRIC_VERSION_METADATA =
-            "https://maven.fabricmc.net/net/fabricmc/fabric-loader/maven-metadata.xml";
+
     private static final String FABRIC_BASE_INSTALLER = "https://maven.fabricmc.net/net/fabricmc/fabric-installer/%s/fabric-installer-%s.jar";
 
     /**
@@ -40,11 +36,11 @@ public class FabricVersion extends FabricBasedVersion
      * @param fileDeleter {@link ModFileDeleter} used to clean up mods' dir.
      * @param curseModPackInfo {@link CurseModPackInfo} the mod pack you want to install.
      */
-    private FabricVersion(List<Mod> mods, List<CurseFileInfo> curseMods, List<ModrinthVersionInfo> modrinthMods,
-            String fabricVersion, ModFileDeleter fileDeleter, CurseModPackInfo curseModPackInfo,
+    FabricVersion(String fabricVersion, List<Mod> mods, List<CurseFileInfo> curseMods,
+            List<ModrinthVersionInfo> modrinthMods, ModFileDeleter fileDeleter, CurseModPackInfo curseModPackInfo,
             ModrinthModPackInfo modrinthModPackInfo)
     {
-        super(mods, fabricVersion, curseMods,
+        super(fabricVersion, mods, curseMods,
               modrinthMods, fileDeleter, curseModPackInfo,
               modrinthModPackInfo, IOUtils.getLatestArtifactVersion(FABRIC_INSTALLER_METADATA), FABRIC_BASE_INSTALLER);
     }
@@ -64,10 +60,6 @@ public class FabricVersion extends FabricBasedVersion
                         .resolve("fabric-loader-" + this.modLoaderVersion + ".jar"));
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public FabricBasedLauncherEnvironment prepareModLoaderLauncher(@NotNull Path dirToInstall, InputStream stream) throws IOException
     {
         this.logger.info("Downloading fabric installer...");
@@ -100,7 +92,7 @@ public class FabricVersion extends FabricBasedVersion
         command.add("-loader");
         command.add(this.modLoaderVersion);
         command.add("-noprofile");
-        return new FabricBasedLauncherEnvironment(command, tempDir, fabric);
+        return new FabricBasedLauncherEnvironment(command, tempDir, this.logger, fabric);
     }
 
     /**
@@ -133,10 +125,6 @@ public class FabricVersion extends FabricBasedVersion
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void checkModLoaderEnv(@NotNull Path dirToInstall) throws Exception
     {
         final Path fabricDirPath = dirToInstall
@@ -161,47 +149,6 @@ public class FabricVersion extends FabricBasedVersion
 
         this.installAllMods(modsDir);
         this.fileDeleter.delete(this.logger, modsDir, this.mods, null, this.modrinthModPack);
-    }
-
-    /**
-     * Builder for {@link FabricVersion}.
-     */
-    public static class FabricVersionBuilder extends ModLoaderVersionBuilder<FabricVersion, FabricVersionBuilder>
-    {
-        private final BuilderArgument<String> fabricVersionArgument =
-                new BuilderArgument<>("FabricVersion", () ->
-                        IOUtils.getLatestArtifactVersion(FABRIC_VERSION_METADATA))
-                        .optional();
-
-        /**
-         * @param fabricVersion the Fabric version you want to install
-         * (don't use this function if you want to use the latest fabric version).
-         * @return the builder.
-         */
-        public FabricVersionBuilder withFabricVersion(String fabricVersion)
-        {
-            this.fabricVersionArgument.set(fabricVersion);
-            return this;
-        }
-
-        /**
-         * Build a new {@link FabricVersion} instance with provided arguments.
-         * @return the freshly created instance.
-         * @throws BuilderException if an error occurred.
-         */
-        @Override
-        public FabricVersion build() throws BuilderException
-        {
-            return new FabricVersion(
-                    this.modsArgument.get(),
-                    this.curseModsArgument.get(),
-                    this.modrinthModsArgument.get(),
-                    this.fabricVersionArgument.get(),
-                    this.fileDeleterArgument.get(),
-                    this.curseModPackArgument.get(),
-                    this.modrinthPackArgument.get()
-           );
-        }
     }
 
     @Override

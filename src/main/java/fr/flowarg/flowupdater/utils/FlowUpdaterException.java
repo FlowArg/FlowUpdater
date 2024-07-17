@@ -1,7 +1,7 @@
 package fr.flowarg.flowupdater.utils;
 
 /**
- * A simple exception class that represents a FlowUpdater error.
+ * A simple runtime exception class that represents a fatal FlowUpdater error.
  */
 public class FlowUpdaterException extends RuntimeException
 {
