@@ -29,13 +29,13 @@ java {
 }
 
 dependencies {
-    api 'com.google.code.gson:gson:2.10.1'
+    api 'com.google.code.gson:gson:2.11.0'
     api 'fr.flowarg:flowmultitools:1.4.4'
     api 'org.jetbrains:annotations:24.1.0'
 
     // Only for internal tests
     testImplementation 'fr.flowarg:openlauncherlib:3.2.10'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.3'
 }
 
 publishing {
