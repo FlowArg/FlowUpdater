@@ -204,7 +204,10 @@ public class FlowUpdater
 
         this.modLoaderVersion.attachFlowUpdater(this);
         if(!this.modLoaderVersion.isModLoaderAlreadyInstalled(dir))
+        {
             this.modLoaderVersion.install(dir);
+            this.logger.info(this.modLoaderVersion.name() + ", version: " + this.modLoaderVersion.getModLoaderVersion() + " has been successfully installed!");
+        }
         else this.logger.info(this.modLoaderVersion.name() + " is already installed! Skipping installation...");
         this.modLoaderVersion.installMods(dir.resolve("mods"));
     }

@@ -9,7 +9,6 @@ import fr.flowarg.flowupdater.integrations.optifineintegration.OptiFine;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
 import fr.flowarg.flowupdater.versions.AbstractModLoaderVersion;
-import fr.flowarg.flowupdater.versions.ModLoaderLauncherEnvironment;
 import fr.flowarg.flowzipper.ZipUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -81,25 +80,23 @@ public abstract class AbstractForgeVersion extends AbstractModLoaderVersion impl
      * {@inheritDoc}
      */
     @Override
-    public void install(final Path dirToInstall) throws Exception
+    public void install(final Path installDir) throws Exception
     {
-        this.callback.step(Step.MOD_LOADER);
-        this.logger.info("Installing " + this.name() + ", version: " + this.modLoaderVersion + "...");
-        this.checkModLoaderEnv(dirToInstall);
+        super.install(installDir);
+        this.checkModLoaderEnv(installDir);
 
         if (!this.isCompatible()) return;
 
         try (BufferedInputStream stream = new BufferedInputStream(IOUtils.catchForbidden(this.installerUrl)))
         {
-            final ModLoaderLauncherEnvironment forgeLauncherEnvironment = this.prepareModLoaderLauncher(dirToInstall, stream);
+            final ModLoaderLauncherEnvironment forgeLauncherEnvironment = this.prepareModLoaderLauncher(installDir, stream);
             final ProcessBuilder processBuilder = new ProcessBuilder(forgeLauncherEnvironment.getCommand());
 
             processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
-            processBuilder.directory(dirToInstall.toFile());
+            processBuilder.directory(installDir.toFile());
             final Process process = processBuilder.start();
             process.waitFor();
 
-            this.logger.info("Successfully installed " + this.name() + "!");
             FileUtils.deleteDirectory(forgeLauncherEnvironment.getTempDir());
         }
         catch (Exception e)
@@ -167,12 +164,12 @@ public abstract class AbstractForgeVersion extends AbstractModLoaderVersion impl
     }
 
     /**
-     * This method makes a new {@link fr.flowarg.flowupdater.versions.ModLoaderLauncherEnvironment}
+     * This method makes a new {@link ModLoaderLauncherEnvironment}
      * to launch the mod loader's launcher.
      * @param patchedInstaller the patched installer path.
      * @param dirToInstall the installation directory.
      * @param tempDir the temporary directory where is the installer stuff.
-     * @return the fresh {@link fr.flowarg.flowupdater.versions.ModLoaderLauncherEnvironment}.
+     * @return the fresh {@link ModLoaderLauncherEnvironment}.
      */
     protected ModLoaderLauncherEnvironment makeCommand(@NotNull Path patchedInstaller, @NotNull Path dirToInstall, Path tempDir)
     {

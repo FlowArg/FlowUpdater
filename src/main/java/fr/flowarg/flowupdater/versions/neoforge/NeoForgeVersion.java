@@ -101,18 +101,17 @@ public class NeoForgeVersion extends AbstractModLoaderVersion implements IOptiFi
     }
 
     @Override
-    public void install(Path dirToInstall) throws Exception
+    public void install(Path installDir) throws Exception
     {
-        this.callback.step(Step.MOD_LOADER);
-        this.logger.info("Installing " + this.name() + ", version: " + this.modLoaderVersion + "...");
+        super.install(installDir);
 
         final String installerUrl = String.format("https://maven.neoforged.net/net/neoforged/%s/%s/%s-installer.jar",
                 this.isOldNeoForge ? "forge" : "neoforge", this.modLoaderVersion, this.versionId);
 
-        this.fakeContext(dirToInstall);
+        this.fakeContext(installDir);
 
         final String[] installerUrlParts = installerUrl.split("/");
-        final Path installerFile = dirToInstall.resolve(installerUrlParts[installerUrlParts.length - 1]);
+        final Path installerFile = installDir.resolve(installerUrlParts[installerUrlParts.length - 1]);
 
         IOUtils.download(this.logger, new URL(installerUrl), installerFile);
 
@@ -121,27 +120,26 @@ public class NeoForgeVersion extends AbstractModLoaderVersion implements IOptiFi
         command.add("-jar");
         command.add(installerFile.toAbsolutePath().toString());
         command.add("--installClient");
-        command.add(dirToInstall.toAbsolutePath().toString());
+        command.add(installDir.toAbsolutePath().toString());
 
         final ProcessBuilder processBuilder = new ProcessBuilder(command);
 
-        processBuilder.directory(dirToInstall.toFile());
+        processBuilder.directory(installDir.toFile());
         processBuilder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
 
         final Process process = processBuilder.start();
         process.waitFor();
 
         Files.copy(
-                dirToInstall.resolve("versions")
+                installDir.resolve("versions")
                         .resolve(this.versionId)
                         .resolve(this.versionId + ".json"),
-                dirToInstall.resolve(this.versionId + ".json"),
+                installDir.resolve(this.versionId + ".json"),
                 StandardCopyOption.REPLACE_EXISTING
         );
 
         Files.deleteIfExists(installerFile);
-        this.removeFakeContext(dirToInstall);
-        this.logger.info("Successfully installed " + this.name() + ", version: " + this.modLoaderVersion + ".");
+        this.removeFakeContext(installDir);
     }
 
     private void fakeContext(@NotNull Path dirToInstall) throws Exception

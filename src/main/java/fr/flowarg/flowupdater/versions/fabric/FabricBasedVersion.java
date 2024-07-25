@@ -1,81 +1,142 @@
 package fr.flowarg.flowupdater.versions.fabric;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import fr.flowarg.flowstringer.StringUtils;
-import fr.flowarg.flowupdater.FlowUpdater;
+import fr.flowarg.flowio.FileUtils;
+import fr.flowarg.flowupdater.download.Step;
 import fr.flowarg.flowupdater.download.json.*;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
 import fr.flowarg.flowupdater.versions.AbstractModLoaderVersion;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 public abstract class FabricBasedVersion extends AbstractModLoaderVersion
 {
-    protected final String installerVersion;
-    protected URL installerUrl;
-
-    private final String baseInstallerUrl;
+    protected final String metaApi;
+    protected String versionId;
 
     public FabricBasedVersion(String modLoaderVersion, List<Mod> mods, List<CurseFileInfo> curseMods,
             List<ModrinthVersionInfo> modrinthMods, ModFileDeleter fileDeleter, CurseModPackInfo curseModPackInfo,
-            ModrinthModPackInfo modrinthModPackInfo, String installerVersion, String baseInstallerUrl)
+            ModrinthModPackInfo modrinthModPackInfo, String metaApi)
     {
         super(modLoaderVersion, mods, curseMods, modrinthMods, fileDeleter, curseModPackInfo, modrinthModPackInfo);
-        this.installerVersion = installerVersion;
-        this.baseInstallerUrl = baseInstallerUrl;
+        this.metaApi = metaApi;
     }
 
-    protected void parseAndMoveJson(@NotNull Path dirToInstall, @NotNull Path versionDir) throws Exception
+    @Override
+    public boolean isModLoaderAlreadyInstalled(@NotNull Path installDir)
     {
-        final Path jsonFilePath = versionDir.resolve(versionDir.getFileName().toString() + ".json");
+        final Path versionJsonFile = installDir.resolve(this.versionId + ".json");
 
-        final JsonObject obj = JsonParser.parseString(
-                        StringUtils.toString(Files.readAllLines(jsonFilePath, StandardCharsets.UTF_8)))
-                .getAsJsonObject();
+        if(Files.notExists(versionJsonFile))
+            return false;
 
-        final JsonArray libraryArray = obj.getAsJsonArray("libraries");
-        final Path libraries = dirToInstall.resolve("libraries");
-
-        libraryArray.forEach(el -> {
-            final JsonObject artifact = el.getAsJsonObject();
-            final String[] parts = artifact.get("name").getAsString().split(":");
-            IOUtils.downloadArtifacts(this.logger, libraries, artifact.get("url").getAsString(), parts);
-        });
-
-        final Path newJsonFilePath = dirToInstall.resolve(jsonFilePath.getFileName());
-
-        if(Files.notExists(newJsonFilePath))
-            Files.move(jsonFilePath, newJsonFilePath);
-        else if(Files.size(newJsonFilePath) != Files.size(jsonFilePath))
+        try {
+            return this.parseLibraries(versionJsonFile, installDir).stream().allMatch(ParsedLibrary::isInstalled);
+        }
+        catch (Exception e)
         {
-            Files.delete(newJsonFilePath);
-            Files.move(jsonFilePath, newJsonFilePath);
+            this.logger.warn("An error occurred while checking if the mod loader is already installed.");
+            return false;
         }
     }
-
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void attachFlowUpdater(@NotNull FlowUpdater flowUpdater)
+    public void install(final Path installDir) throws Exception
     {
-        super.attachFlowUpdater(flowUpdater);
-        try
-        {
-            this.installerUrl = new URL(String.format(this.baseInstallerUrl, this.installerVersion, this.installerVersion));
+        super.install(installDir);
+
+        final Path versionJsonFile = installDir.resolve(this.versionId + ".json");
+
+        IOUtils.download(this.logger, new URL(String.format(this.metaApi, this.vanilla.getName(), this.modLoaderVersion)), versionJsonFile);
+
+        try {
+            final List<ParsedLibrary> parsedLibraries = this.parseLibraries(versionJsonFile, installDir);
+            parsedLibraries.stream()
+                    .filter(parsedLibrary -> !parsedLibrary.isInstalled())
+                    .forEach(parsedLibrary -> parsedLibrary.download(this.logger));
         }
         catch (Exception e)
         {
-            this.logger.printStackTrace(e);
+            this.logger.warn("An error occurred while installing the mod loader.");
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void installMods(Path modsDir) throws Exception
+    {
+        this.callback.step(Step.MODS);
+
+        this.installAllMods(modsDir);
+        this.fileDeleter.delete(this.logger, modsDir, this.mods, null, this.modrinthModPack);
+    }
+
+    protected List<ParsedLibrary> parseLibraries(Path versionJsonFile, Path installDir) throws Exception
+    {
+        final List<ParsedLibrary> parsedLibraries = new ArrayList<>();
+        final JsonObject object = JsonParser.parseReader(Files.newBufferedReader(versionJsonFile))
+                .getAsJsonObject();
+        final JsonArray libraries = object.getAsJsonArray("libraries");
+
+        for (final JsonElement libraryElement : libraries)
+        {
+            final JsonObject library = libraryElement.getAsJsonObject();
+            final String url = library.get("url").getAsString();
+            final String[] name = library.get("name").getAsString().split(":");
+
+            final String group = name[0];
+            final String artifact = name[1];
+            final String version = name[2];
+
+            final String builtJarUrl = this.buildJarUrl(url, group, artifact, version);
+            final Path builtLibaryPath = this.buildLibraryPath(installDir, group, artifact, version);
+            final Callable<String> sha1 = this.getSha1FromLibrary(library, builtJarUrl);
+            final boolean installed = Files.exists(builtLibaryPath) &&
+                    FileUtils.getSHA1(builtLibaryPath).equalsIgnoreCase(sha1.call());
+
+            parsedLibraries.add(new ParsedLibrary(builtLibaryPath, new URL(builtJarUrl), installed));
+        }
+        return parsedLibraries;
+    }
+
+    protected Path buildLibraryPath(Path installDir, String group, String artifact, String version)
+    {
+        final Path libraries = installDir.resolve("libraries");
+        return libraries
+                .resolve(group.replace(".", libraries.getFileSystem().getSeparator()))
+                .resolve(artifact)
+                .resolve(version)
+                .resolve(artifact + "-" + version + ".jar");
+    }
+
+    @Contract(pure = true)
+    protected @NotNull String buildJarUrl(String baseUrl, @NotNull String group, String artifact, String version)
+    {
+        return baseUrl + group.replace(".", "/") + "/" + artifact + "/" + version + "/" + artifact + "-" + version + ".jar";
+    }
+
+    protected Callable<String> getSha1FromLibrary(@NotNull JsonObject library, String builtJarUrl)
+    {
+        final JsonElement sha1Elem = library.get("sha1");
+        if (sha1Elem != null)
+            return sha1Elem::getAsString;
+
+        return () -> IOUtils.getContent(new URL(builtJarUrl + ".sha1"));
     }
 }

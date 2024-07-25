@@ -4,6 +4,7 @@ import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.FlowUpdater;
 import fr.flowarg.flowupdater.download.DownloadList;
 import fr.flowarg.flowupdater.download.IProgressCallback;
+import fr.flowarg.flowupdater.download.Step;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
@@ -29,10 +30,14 @@ public interface IModLoaderVersion
 
     /**
      * Install the current mod loader in a specified directory.
-     * @param dirToInstall folder where the mod loader is going to be installed.
+     * @param installDir folder where the mod loader is going to be installed.
      * @throws Exception if an I/O error occurred.
      */
-    void install(Path dirToInstall) throws Exception;
+    default void install(Path installDir) throws Exception
+    {
+        this.getCallback().step(Step.MOD_LOADER);
+        this.getLogger().info("Installing " + this.name() + ", version: " + this.getModLoaderVersion() + "...");
+    }
 
     /**
      * Install all mods in the mods' directory.

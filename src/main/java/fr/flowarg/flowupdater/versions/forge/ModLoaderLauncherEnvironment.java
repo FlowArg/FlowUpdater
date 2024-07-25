@@ -1,4 +1,4 @@
-package fr.flowarg.flowupdater.versions;
+package fr.flowarg.flowupdater.versions.forge;
 
 import java.nio.file.Path;
 import java.util.List;

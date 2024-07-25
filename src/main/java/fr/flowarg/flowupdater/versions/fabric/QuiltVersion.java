@@ -1,20 +1,10 @@
 package fr.flowarg.flowupdater.versions.fabric;
 
-import fr.flowarg.flowio.FileUtils;
-import fr.flowarg.flowupdater.download.Step;
+import fr.flowarg.flowupdater.FlowUpdater;
 import fr.flowarg.flowupdater.download.json.*;
-import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,9 +12,7 @@ import java.util.List;
  */
 public class QuiltVersion extends FabricBasedVersion
 {
-    private static final String QUILT_INSTALLER_METADATA =
-            "https://maven.quiltmc.org/repository/release/org/quiltmc/quilt-installer/maven-metadata.xml";
-    private static final String QUILT_BASE_INSTALLER = "https://maven.quiltmc.org/repository/release/org/quiltmc/quilt-installer/%s/quilt-installer-%s.jar";
+    private static final String QUILT_META_API = "https://meta.quiltmc.org/v3/versions/loader/%s/%s/profile/json";
 
     /**
      * Use {@link QuiltVersionBuilder} to instantiate this class.
@@ -38,113 +26,14 @@ public class QuiltVersion extends FabricBasedVersion
             List<ModrinthVersionInfo> modrinthMods, ModFileDeleter fileDeleter, CurseModPackInfo curseModPackInfo,
             ModrinthModPackInfo modrinthModPackInfo)
     {
-        super(quiltVersion, mods, curseMods,
-              modrinthMods, fileDeleter, curseModPackInfo,
-              modrinthModPackInfo, IOUtils.getLatestArtifactVersion(QUILT_INSTALLER_METADATA), QUILT_BASE_INSTALLER);
+        super(quiltVersion, mods, curseMods, modrinthMods, fileDeleter, curseModPackInfo, modrinthModPackInfo, QUILT_META_API);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public boolean isModLoaderAlreadyInstalled(@NotNull Path installDir)
+    public void attachFlowUpdater(@NotNull FlowUpdater flowUpdater)
     {
-        return Files.exists(
-                installDir.resolve("libraries")
-                        .resolve("org")
-                        .resolve("quiltmc")
-                        .resolve("quilt-loader")
-                        .resolve(this.modLoaderVersion)
-                        .resolve("quilt-loader-" + this.modLoaderVersion + ".jar"));
-    }
-
-    public FabricBasedLauncherEnvironment prepareModLoaderLauncher(@NotNull Path dirToInstall, InputStream stream) throws IOException
-    {
-        this.logger.info("Downloading quilt installer...");
-
-        final Path tempDirPath = dirToInstall.resolve(".flowupdater");
-        FileUtils.deleteDirectory(tempDirPath);
-        final Path quiltPath = tempDirPath.resolve("tempquilt");
-        final Path installPath = tempDirPath.resolve(String.format("quilt-installer-%s.jar", installerVersion));
-
-        Files.createDirectories(tempDirPath);
-        Files.createDirectories(quiltPath);
-
-        Files.copy(stream, installPath, StandardCopyOption.REPLACE_EXISTING);
-        return this.makeCommand(tempDirPath, installPath, quiltPath);
-    }
-
-    @Contract("_, _, _ -> new")
-    private @NotNull FabricBasedLauncherEnvironment makeCommand(Path tempDir, @NotNull Path install, @NotNull Path quilt)
-    {
-        final List<String> command = new ArrayList<>();
-        command.add(this.javaPath);
-        command.add("-Xmx256M");
-        command.add("-jar");
-        command.add(install.toString());
-        command.add("install");
-        command.add("client");
-        command.add(this.vanilla.getName());
-        command.add(this.modLoaderVersion);
-        command.add("--no-profile");
-        command.add("--install-dir=" + quilt);
-        return new FabricBasedLauncherEnvironment(command, tempDir, this.logger, quilt);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void install(final Path dirToInstall) throws Exception
-    {
-        this.callback.step(Step.MOD_LOADER);
-        this.logger.info("Installing Quilt, version: " + this.modLoaderVersion + "...");
-        this.checkModLoaderEnv(dirToInstall);
-
-        try (BufferedInputStream stream = new BufferedInputStream(this.installerUrl.openStream()))
-        {
-            final FabricBasedLauncherEnvironment quiltLauncherEnvironment = this.prepareModLoaderLauncher(dirToInstall, stream);
-            this.logger.info("Launching quilt installer...");
-            quiltLauncherEnvironment.launchInstaller();
-
-            final Path versionDir = quiltLauncherEnvironment.getModLoaderDir()
-                    .resolve("versions")
-                    .resolve(String.format("quilt-loader-%s-%s", this.modLoaderVersion, this.vanilla.getName()));
-
-            this.parseAndMoveJson(dirToInstall, versionDir);
-
-            this.logger.info("Successfully installed Quilt!");
-            FileUtils.deleteDirectory(quiltLauncherEnvironment.getTempDir());
-        } catch (Exception e)
-        {
-            this.logger.printStackTrace(e);
-        }
-    }
-
-    public void checkModLoaderEnv(@NotNull Path dirToInstall) throws Exception
-    {
-        final Path quiltDirPath = dirToInstall
-                .resolve("libraries")
-                .resolve("org")
-                .resolve("quiltmc")
-                .resolve("quilt-loader");
-
-        if (Files.exists(quiltDirPath))
-            for (Path contained : FileUtils.list(quiltDirPath))
-                if (!contained.getFileName().toString().contains(this.modLoaderVersion))
-                    FileUtils.deleteDirectory(contained);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void installMods(Path modsDir) throws Exception
-    {
-        this.callback.step(Step.MODS);
-
-        this.installAllMods(modsDir);
-        this.fileDeleter.delete(this.logger, modsDir, this.mods, null, this.modrinthModPack);
+        super.attachFlowUpdater(flowUpdater);
+        this.versionId = "quilt-loader-" + this.modLoaderVersion + "-" + this.vanilla.getName();
     }
 
     @Override
