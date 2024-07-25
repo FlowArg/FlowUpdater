@@ -40,7 +40,7 @@ public abstract class ModLoaderVersionBuilder<T extends IModLoaderVersion, B ext
      */
     public B withMods(Mod... mods)
     {
-        return withMods(Arrays.asList(mods));
+        return this.withMods(Arrays.asList(mods));
     }
 
     /**
@@ -50,7 +50,7 @@ public abstract class ModLoaderVersionBuilder<T extends IModLoaderVersion, B ext
      */
     public B withMods(URL jsonUrl)
     {
-        return withMods(Mod.getModsFromJson(jsonUrl));
+        return this.withMods(Mod.getModsFromJson(jsonUrl));
     }
 
     /**
@@ -60,7 +60,7 @@ public abstract class ModLoaderVersionBuilder<T extends IModLoaderVersion, B ext
      */
     public B withMods(String jsonUrl)
     {
-        return withMods(Mod.getModsFromJson(jsonUrl));
+        return this.withMods(Mod.getModsFromJson(jsonUrl));
     }
 
     /**
@@ -81,7 +81,7 @@ public abstract class ModLoaderVersionBuilder<T extends IModLoaderVersion, B ext
      */
     public B withCurseMods(CurseFileInfo... curseMods)
     {
-        return withCurseMods(Arrays.asList(curseMods));
+        return this.withCurseMods(Arrays.asList(curseMods));
     }
 
     /**
@@ -91,7 +91,7 @@ public abstract class ModLoaderVersionBuilder<T extends IModLoaderVersion, B ext
      */
     public B withCurseMods(URL jsonUrl)
     {
-        return withCurseMods(CurseFileInfo.getFilesFromJson(jsonUrl));
+        return this.withCurseMods(CurseFileInfo.getFilesFromJson(jsonUrl));
     }
 
     /**
@@ -101,7 +101,7 @@ public abstract class ModLoaderVersionBuilder<T extends IModLoaderVersion, B ext
      */
     public B withCurseMods(String jsonUrl)
     {
-        return withCurseMods(CurseFileInfo.getFilesFromJson(jsonUrl));
+        return this.withCurseMods(CurseFileInfo.getFilesFromJson(jsonUrl));
     }
 
     /**
@@ -122,7 +122,7 @@ public abstract class ModLoaderVersionBuilder<T extends IModLoaderVersion, B ext
      */
     public B withModrinthMods(ModrinthVersionInfo... modrinthMods)
     {
-        return withModrinthMods(Arrays.asList(modrinthMods));
+        return this.withModrinthMods(Arrays.asList(modrinthMods));
     }
 
     /**
@@ -132,7 +132,7 @@ public abstract class ModLoaderVersionBuilder<T extends IModLoaderVersion, B ext
      */
     public B withModrinthMods(URL jsonUrl)
     {
-        return withModrinthMods(ModrinthVersionInfo.getModrinthVersionsFromJson(jsonUrl));
+        return this.withModrinthMods(ModrinthVersionInfo.getModrinthVersionsFromJson(jsonUrl));
     }
 
     /**
@@ -142,7 +142,7 @@ public abstract class ModLoaderVersionBuilder<T extends IModLoaderVersion, B ext
      */
     public B withModrinthMods(String jsonUrl)
     {
-        return withModrinthMods(ModrinthVersionInfo.getModrinthVersionsFromJson(jsonUrl));
+        return this.withModrinthMods(ModrinthVersionInfo.getModrinthVersionsFromJson(jsonUrl));
     }
 
     /**
