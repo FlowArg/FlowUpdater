@@ -10,6 +10,7 @@ import fr.flowarg.flowupdater.download.json.*;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
 import fr.flowarg.flowupdater.versions.AbstractModLoaderVersion;
+import fr.flowarg.flowupdater.versions.ParsedLibrary;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -46,7 +47,7 @@ public abstract class FabricBasedVersion extends AbstractModLoaderVersion
         }
         catch (Exception e)
         {
-            this.logger.warn("An error occurred while checking if the mod loader is already installed.");
+            this.logger.err("An error occurred while checking if the mod loader is already installed.");
             return false;
         }
     }
@@ -71,7 +72,7 @@ public abstract class FabricBasedVersion extends AbstractModLoaderVersion
         }
         catch (Exception e)
         {
-            this.logger.warn("An error occurred while installing the mod loader.");
+            this.logger.err("An error occurred while installing the mod loader.");
         }
     }
 
@@ -115,11 +116,10 @@ public abstract class FabricBasedVersion extends AbstractModLoaderVersion
         return parsedLibraries;
     }
 
-    protected Path buildLibraryPath(Path installDir, String group, String artifact, String version)
+    protected Path buildLibraryPath(@NotNull Path installDir, @NotNull String group, String artifact, String version)
     {
-        final Path libraries = installDir.resolve("libraries");
-        return libraries
-                .resolve(group.replace(".", libraries.getFileSystem().getSeparator()))
+        return installDir.resolve("libraries")
+                .resolve(group.replace(".", installDir.getFileSystem().getSeparator()))
                 .resolve(artifact)
                 .resolve(version)
                 .resolve(artifact + "-" + version + ".jar");

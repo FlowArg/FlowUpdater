@@ -6,9 +6,7 @@ import fr.flowarg.flowupdater.versions.fabric.FabricVersion;
 import fr.flowarg.flowupdater.versions.fabric.FabricVersionBuilder;
 import fr.flowarg.flowupdater.versions.fabric.QuiltVersion;
 import fr.flowarg.flowupdater.versions.fabric.QuiltVersionBuilder;
-import fr.flowarg.flowupdater.versions.forge.AbstractForgeVersion;
-import fr.flowarg.flowupdater.versions.forge.ForgeVersionBuilder;
-import fr.flowarg.flowupdater.versions.forge.ForgeVersionType;
+import fr.flowarg.flowupdater.versions.forge.*;
 import fr.flowarg.flowupdater.versions.neoforge.NeoForgeVersion;
 import fr.flowarg.flowupdater.versions.neoforge.NeoForgeVersionBuilder;
 
@@ -60,7 +58,7 @@ public class Updates
                     .withName(vanilla)
                     .build();
 
-            final AbstractForgeVersion forgeVersion = new ForgeVersionBuilder(ForgeVersionType.NEW)
+            final AbstractForgeVersion forgeVersion = new OldForgeVersionBuilder(ForgeVersionType.NEW)
                     .withForgeVersion(vanillaForge)
                     .build();
 
@@ -94,7 +92,7 @@ public class Updates
                     .withName(vanilla)
                     .build();
 
-            final AbstractForgeVersion forgeVersion = new ForgeVersionBuilder(ForgeVersionType.OLD)
+            final ForgeVersion forgeVersion = new ForgeVersionBuilder()
                     .withForgeVersion(full)
                     .build();
 
@@ -127,7 +125,7 @@ public class Updates
                     .withName(vanilla)
                     .build();
 
-            final AbstractForgeVersion forgeVersion = new ForgeVersionBuilder(ForgeVersionType.OLD)
+            final ForgeVersion forgeVersion = new ForgeVersionBuilder()
                     .withForgeVersion(vanilla + '-' + forge)
                     .build();
 

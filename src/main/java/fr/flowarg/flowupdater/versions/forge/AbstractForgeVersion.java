@@ -35,7 +35,7 @@ public abstract class AbstractForgeVersion extends AbstractModLoaderVersion impl
     protected URL installerUrl;
 
     /**
-     * Use {@link ForgeVersionBuilder} to instantiate this class.
+     * Use {@link OldForgeVersionBuilder} to instantiate this class.
      * @param mods {@link List} to install.
      * @param curseMods {@link List} to install.
      * @param modrinthMods {@link List} to install.

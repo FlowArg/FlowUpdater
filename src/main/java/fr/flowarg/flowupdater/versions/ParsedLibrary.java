@@ -1,4 +1,4 @@
-package fr.flowarg.flowupdater.versions.fabric;
+package fr.flowarg.flowupdater.versions;
 
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.utils.IOUtils;

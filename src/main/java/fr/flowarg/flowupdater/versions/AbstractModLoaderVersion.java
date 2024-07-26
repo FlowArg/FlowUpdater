@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public abstract class AbstractModLoaderVersion implements ICurseForgeCompatible, IModLoaderVersion, IModrinthCompatible
+public abstract class AbstractModLoaderVersion implements IModLoaderVersion, ICurseForgeCompatible, IModrinthCompatible
 {
     protected final List<Mod> mods;
     protected final List<CurseFileInfo> curseMods;

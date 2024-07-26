@@ -2,7 +2,6 @@ package fr.flowarg.flowupdater.utils;
 
 import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.FlowUpdater;
-import org.jetbrains.annotations.NotNull;
 
 public class VersionChecker
 {
@@ -29,34 +28,5 @@ public class VersionChecker
             if(compare < 0)
                 logger.warn(String.format("Detected a new version of FlowUpdater (%s). You should update!", version));
         }).start();
-    }
-
-    private static class Version implements Comparable<Version>
-    {
-        private final int major;
-        private final int minor;
-        private final int patch;
-
-        private Version(int major, int minor, int patch)
-        {
-            this.major = major;
-            this.minor = minor;
-            this.patch = patch;
-        }
-
-        private static @NotNull Version gen(@NotNull String version)
-        {
-            final String[] parts = version.split("\\.");
-
-            return new Version(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));
-        }
-
-        @Override
-        public int compareTo(@NotNull VersionChecker.Version o)
-        {
-            final int majorCompare = Integer.compare(this.major, o.major);
-            final int minorCompare = Integer.compare(this.minor, o.minor);
-            return majorCompare != 0 ? majorCompare : minorCompare != 0 ? minorCompare : Integer.compare(this.patch, o.patch);
-        }
     }
 }
