@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class VersionTest
 {
@@ -44,5 +44,24 @@ public class VersionTest
         assertEquals(1, version.compareTo(version5));
         assertEquals(1, version.compareTo(version6));
         assertEquals(-1, version.compareTo(version7));
+    }
+
+    @Test
+    public void testVersionBetween()
+    {
+        final Version version = Version.gen("1.0.0");
+        final Version version2 = Version.gen("1.1");
+        final Version version3 = Version.gen("1.0");
+        final Version version4 = Version.gen("1.0.1");
+        final Version version5 = Version.gen("1.0.2");
+
+        assertTrue(version.isBetweenOrEqual(version3, version2));
+        assertTrue(version4.isBetweenOrEqual(version, version5));
+    }
+
+    @Test
+    public void testVersionEmpty()
+    {
+        assertThrows(IllegalArgumentException.class, () -> Version.gen(""));
     }
 }

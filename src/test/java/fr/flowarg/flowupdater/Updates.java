@@ -6,7 +6,8 @@ import fr.flowarg.flowupdater.versions.fabric.FabricVersion;
 import fr.flowarg.flowupdater.versions.fabric.FabricVersionBuilder;
 import fr.flowarg.flowupdater.versions.fabric.QuiltVersion;
 import fr.flowarg.flowupdater.versions.fabric.QuiltVersionBuilder;
-import fr.flowarg.flowupdater.versions.forge.*;
+import fr.flowarg.flowupdater.versions.forge.ForgeVersion;
+import fr.flowarg.flowupdater.versions.forge.ForgeVersionBuilder;
 import fr.flowarg.flowupdater.versions.neoforge.NeoForgeVersion;
 import fr.flowarg.flowupdater.versions.neoforge.NeoForgeVersionBuilder;
 
@@ -58,7 +59,7 @@ public class Updates
                     .withName(vanilla)
                     .build();
 
-            final AbstractForgeVersion forgeVersion = new OldForgeVersionBuilder(ForgeVersionType.NEW)
+            final ForgeVersion forgeVersion = new ForgeVersionBuilder()
                     .withForgeVersion(vanillaForge)
                     .build();
 
@@ -306,5 +307,73 @@ public class Updates
             this.version = version;
             this.modLoaderVersion = null;
         }
+    }
+
+    public static Result testWithLast1122Forge()
+    {
+        boolean error = false;
+        final String vanilla = "1.12.2";
+        final String forge = "14.23.5.2860";
+        final String vanillaForge = vanilla + "-" + forge;
+        final Path updateDir = UPDATE_DIR.resolve("last_1122_forge-" + vanillaForge);
+
+        try
+        {
+            final VanillaVersion version = new VanillaVersion.VanillaVersionBuilder()
+                    .withName(vanilla)
+                    .build();
+
+            final ForgeVersion forgeVersion = new ForgeVersionBuilder()
+                    .withForgeVersion(vanillaForge)
+                    .build();
+
+            final FlowUpdater updater = new FlowUpdater.FlowUpdaterBuilder()
+                    .withVanillaVersion(version)
+                    .withModLoaderVersion(forgeVersion)
+                    .build();
+
+            updater.update(updateDir);
+        }
+        catch (Exception e)
+        {
+            error = true;
+            e.printStackTrace();
+        }
+
+        return new Result(updateDir, error, vanilla, forge);
+    }
+
+    public static Result testWith121Forge()
+    {
+        boolean error = false;
+        final String vanilla = "1.21";
+        final String forge = "51.0.29";
+        final String vanillaForge = vanilla + "-" + forge;
+        final Path updateDir = UPDATE_DIR.resolve("121_forge-" + vanillaForge);
+
+        try
+        {
+            final VanillaVersion version = new VanillaVersion.VanillaVersionBuilder()
+                    .withName(vanilla)
+                    .build();
+
+            final ForgeVersion forgeVersion = new ForgeVersionBuilder()
+                    .withForgeVersion(vanillaForge)
+                    .build();
+
+            final FlowUpdater updater = new FlowUpdater.FlowUpdaterBuilder()
+                    .withVanillaVersion(version)
+                    .withModLoaderVersion(forgeVersion)
+                    .build();
+
+            updater.update(updateDir);
+        }
+        catch (Exception e)
+        {
+            error = true;
+            e.printStackTrace();
+        }
+
+        return new Result(updateDir, error, vanilla, forge);
     }
 }

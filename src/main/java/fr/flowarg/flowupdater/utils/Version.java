@@ -19,6 +19,8 @@ public class Version implements Comparable<Version>
     @Contract("_ -> new")
     public static @NotNull Version gen(@NotNull String version)
     {
+        if(version.isEmpty())
+            throw new IllegalArgumentException("Version cannot be empty.");
         final String[] parts = version.split("\\.");
         final List<Integer> versionList = new ArrayList<>();
         for (String part : parts)
@@ -75,5 +77,10 @@ public class Version implements Comparable<Version>
     public boolean isEqualTo(@NotNull Version o)
     {
         return this.compareTo(o) == 0;
+    }
+
+    public boolean isBetweenOrEqual(@NotNull Version min, @NotNull Version max)
+    {
+        return this.isNewerOrEqualTo(min) && this.isOlderOrEqualTo(max);
     }
 }

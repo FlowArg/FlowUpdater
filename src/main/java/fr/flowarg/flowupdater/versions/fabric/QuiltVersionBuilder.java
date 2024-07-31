@@ -1,5 +1,6 @@
 package fr.flowarg.flowupdater.versions.fabric;
 
+import fr.flowarg.flowupdater.download.json.OptiFineInfo;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
@@ -12,6 +13,7 @@ public class QuiltVersionBuilder extends ModLoaderVersionBuilder<QuiltVersion, Q
 
     private final BuilderArgument<String> quiltVersionArgument =
             new BuilderArgument<>("QuiltVersion", () -> IOUtils.getLatestArtifactVersion(QUILT_VERSION_METADATA)).optional();
+    private final BuilderArgument<OptiFineInfo> optiFineArgument = new BuilderArgument<OptiFineInfo>("OptiFine").optional();
 
     /**
      * @param quiltVersion the Quilt version you want to install
@@ -21,6 +23,17 @@ public class QuiltVersionBuilder extends ModLoaderVersionBuilder<QuiltVersion, Q
     public QuiltVersionBuilder withQuiltVersion(String quiltVersion)
     {
         this.quiltVersionArgument.set(quiltVersion);
+        return this;
+    }
+
+    /**
+     * Append some OptiFine download's information.
+     * @param optiFineInfo OptiFine info.
+     * @return the builder.
+     */
+    public QuiltVersionBuilder withOptiFine(OptiFineInfo optiFineInfo)
+    {
+        this.optiFineArgument.set(optiFineInfo);
         return this;
     }
 
@@ -39,7 +52,8 @@ public class QuiltVersionBuilder extends ModLoaderVersionBuilder<QuiltVersion, Q
                 this.modrinthModsArgument.get(),
                 this.fileDeleterArgument.get(),
                 this.curseModPackArgument.get(),
-                this.modrinthPackArgument.get()
+                this.modrinthPackArgument.get(),
+                this.optiFineArgument.get()
         );
     }
 }

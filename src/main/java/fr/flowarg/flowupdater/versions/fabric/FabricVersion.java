@@ -24,9 +24,9 @@ public class FabricVersion extends FabricBasedVersion
      */
     FabricVersion(String fabricVersion, List<Mod> mods, List<CurseFileInfo> curseMods,
             List<ModrinthVersionInfo> modrinthMods, ModFileDeleter fileDeleter, CurseModPackInfo curseModPackInfo,
-            ModrinthModPackInfo modrinthModPackInfo)
+            ModrinthModPackInfo modrinthModPackInfo, OptiFineInfo optiFineInfo)
     {
-        super(fabricVersion, mods, curseMods, modrinthMods, fileDeleter, curseModPackInfo, modrinthModPackInfo, FABRIC_META_API);
+        super(fabricVersion, mods, curseMods, modrinthMods, fileDeleter, curseModPackInfo, modrinthModPackInfo, optiFineInfo, FABRIC_META_API);
     }
 
     @Override

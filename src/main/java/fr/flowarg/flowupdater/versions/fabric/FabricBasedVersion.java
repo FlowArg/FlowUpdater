@@ -5,13 +5,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import fr.flowarg.flowio.FileUtils;
-import fr.flowarg.flowupdater.download.Step;
 import fr.flowarg.flowupdater.download.json.*;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
 import fr.flowarg.flowupdater.versions.AbstractModLoaderVersion;
+import fr.flowarg.flowupdater.versions.ModLoaderUtils;
 import fr.flowarg.flowupdater.versions.ParsedLibrary;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URL;
@@ -28,9 +27,9 @@ public abstract class FabricBasedVersion extends AbstractModLoaderVersion
 
     public FabricBasedVersion(String modLoaderVersion, List<Mod> mods, List<CurseFileInfo> curseMods,
             List<ModrinthVersionInfo> modrinthMods, ModFileDeleter fileDeleter, CurseModPackInfo curseModPackInfo,
-            ModrinthModPackInfo modrinthModPackInfo, String metaApi)
+            ModrinthModPackInfo modrinthModPackInfo, OptiFineInfo optiFineInfo, String metaApi)
     {
-        super(modLoaderVersion, mods, curseMods, modrinthMods, fileDeleter, curseModPackInfo, modrinthModPackInfo);
+        super(modLoaderVersion, mods, curseMods, modrinthMods, fileDeleter, curseModPackInfo, modrinthModPackInfo, optiFineInfo);
         this.metaApi = metaApi;
     }
 
@@ -56,7 +55,7 @@ public abstract class FabricBasedVersion extends AbstractModLoaderVersion
      * {@inheritDoc}
      */
     @Override
-    public void install(final Path installDir) throws Exception
+    public void install(final @NotNull Path installDir) throws Exception
     {
         super.install(installDir);
 
@@ -76,18 +75,6 @@ public abstract class FabricBasedVersion extends AbstractModLoaderVersion
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void installMods(Path modsDir) throws Exception
-    {
-        this.callback.step(Step.MODS);
-
-        this.installAllMods(modsDir);
-        this.fileDeleter.delete(this.logger, modsDir, this.mods, null, this.modrinthModPack);
-    }
-
     protected List<ParsedLibrary> parseLibraries(Path versionJsonFile, Path installDir) throws Exception
     {
         final List<ParsedLibrary> parsedLibraries = new ArrayList<>();
@@ -99,36 +86,21 @@ public abstract class FabricBasedVersion extends AbstractModLoaderVersion
         {
             final JsonObject library = libraryElement.getAsJsonObject();
             final String url = library.get("url").getAsString();
-            final String[] name = library.get("name").getAsString().split(":");
-
+            final String completeArtifact = library.get("name").getAsString();
+            final String[] name = completeArtifact.split(":");
             final String group = name[0];
             final String artifact = name[1];
             final String version = name[2];
 
-            final String builtJarUrl = this.buildJarUrl(url, group, artifact, version);
-            final Path builtLibaryPath = this.buildLibraryPath(installDir, group, artifact, version);
+            final String builtJarUrl = ModLoaderUtils.buildJarUrl(url, group, artifact, version);
+            final Path builtLibaryPath = ModLoaderUtils.buildLibraryPath(installDir, group, artifact, version);
             final Callable<String> sha1 = this.getSha1FromLibrary(library, builtJarUrl);
             final boolean installed = Files.exists(builtLibaryPath) &&
                     FileUtils.getSHA1(builtLibaryPath).equalsIgnoreCase(sha1.call());
 
-            parsedLibraries.add(new ParsedLibrary(builtLibaryPath, new URL(builtJarUrl), installed));
+            parsedLibraries.add(new ParsedLibrary(builtLibaryPath, new URL(builtJarUrl), completeArtifact, installed));
         }
         return parsedLibraries;
-    }
-
-    protected Path buildLibraryPath(@NotNull Path installDir, @NotNull String group, String artifact, String version)
-    {
-        return installDir.resolve("libraries")
-                .resolve(group.replace(".", installDir.getFileSystem().getSeparator()))
-                .resolve(artifact)
-                .resolve(version)
-                .resolve(artifact + "-" + version + ".jar");
-    }
-
-    @Contract(pure = true)
-    protected @NotNull String buildJarUrl(String baseUrl, @NotNull String group, String artifact, String version)
-    {
-        return baseUrl + group.replace(".", "/") + "/" + artifact + "/" + version + "/" + artifact + "-" + version + ".jar";
     }
 
     protected Callable<String> getSha1FromLibrary(@NotNull JsonObject library, String builtJarUrl)

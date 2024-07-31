@@ -24,9 +24,9 @@ public class QuiltVersion extends FabricBasedVersion
      */
     QuiltVersion(String quiltVersion, List<Mod> mods, List<CurseFileInfo> curseMods,
             List<ModrinthVersionInfo> modrinthMods, ModFileDeleter fileDeleter, CurseModPackInfo curseModPackInfo,
-            ModrinthModPackInfo modrinthModPackInfo)
+            ModrinthModPackInfo modrinthModPackInfo, OptiFineInfo optiFineInfo)
     {
-        super(quiltVersion, mods, curseMods, modrinthMods, fileDeleter, curseModPackInfo, modrinthModPackInfo, QUILT_META_API);
+        super(quiltVersion, mods, curseMods, modrinthMods, fileDeleter, curseModPackInfo, modrinthModPackInfo, optiFineInfo, QUILT_META_API);
     }
 
     @Override

@@ -8,8 +8,9 @@
 [ ![discord-shield][] ][discord-invite]
 
 # FlowUpdater
-Check the [Wiki](https://github.com/FlowArg/FlowUpdater/wiki) to know how to use **FlowUpdater** and more information.
-Currently, all the documentation (only on GitHub, the documentation in the code is up-to-date) isn't up-to-date because I don't have the time currently to make the tutorial.
+Welcome on FlowUpdater's repository. FlowUpdater is a free and open source solution to update Minecraft in Java.
+It was mainly designed for launcher's purposes but can be used for other usages as well. FlowUpdater focuses on customization and reliability.
+The best documentation is the JavaDoc included in FlowUpdater's source code. The rest of the documentation (for instance this readme or the wiki tab on GitHub) has a chance of not being updated.
 
 ## Legal and fork notices :warning:
 The CurseForge integration works with an API Key which is mine at the moment. **You CAN'T use this key for other purposes outside FlowUpdater.**
@@ -23,31 +24,29 @@ If you wish to fork this project, **you HAVE TO use your own API Key**.
 First, create a new VanillaVersion, specify arguments.
 Then build the version :
 ```java
-VanillaVersion version = new VanillaVersionBuilder().withName("1.15.2").build();
+VanillaVersion version = new VanillaVersion.VanillaVersionBuilder().withName("1.20.4").build();
 ```
-NOTE : Builders are all static classes except `ForgeVersionBuilder`.
+`VanillaVersion` accepts some arguments to add more libraries, assets or to reach snapshots or custom version of the game.
+All accepted arguments are available in the `VanillaVersionBuilder` class.
 
-You have to put the version you want as parameter, you can set a snapshot (you must set the `withSnapshot` parameter to `true`) if you want or `latest`.
-The most of FlowUpdater objects are buildable:
-Build a new UpdaterOptions object:
-I'm not enabling the re-extracting of natives at each update (`withReExtractNatives(true)`) because `FlowUpdater` know which natives must be extracted.
+Add the version to a new `FlowUpdater` instance and build it:
 ```java
-UpdaterOptions options = new UpdaterOptionsBuilder().build();
-```
-Note that currently `UpdaterOptions` is useless unless you want to use a custom `ExternalFileDeleter` or you want to disable the silent reading.
-
-Then, instantiate a new FlowUpdater with ``FlowUpdaterBuilder#withXArguments#withAnotherArgument#build``. Check the code/[JavaDoc](https://flowarg.github.io/FlowUpdater) for more information.
-
-```java
-FlowUpdater updater = new FlowUpdaterBuilder().withVanillaVersion(version).withUpdaterOptions(options).withLogger(someCustomLogger).build();
+FlowUpdater updater = new FlowUpdater.FlowUpdaterBuilder()
+        .withVanillaVersion(version)
+        .build();
 ```
 
-Don't forget to add a progress callback if you want to make a progress bar!
+In the same way, `FlowUpdater` accepts many arguments that you can use as you want.
+The more important ones to know about are: the logger, the progress callback, the vanilla version, possibly a mod loader version. The full list is available in the `FlowUpdaterBuilder` class.
 
-Finally, call the update function :
+
+Finally, call the update function:
 ```java
 updater.update(Paths.get("your/path/"));
 ```
+This `update` method will start the whole checks-and-download pipeline and will return when all the work is done.
+You usually need to put this method in a new `Thread` / `ExecutorService` because apart from the assets part, all actions are run on the same thread.
+
 
 ### Forge
 

@@ -1,5 +1,6 @@
 package fr.flowarg.flowupdater.versions.fabric;
 
+import fr.flowarg.flowupdater.download.json.OptiFineInfo;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderArgument;
 import fr.flowarg.flowupdater.utils.builderapi.BuilderException;
@@ -14,6 +15,8 @@ public class FabricVersionBuilder extends ModLoaderVersionBuilder<FabricVersion,
             new BuilderArgument<>("FabricVersion", () ->
                     IOUtils.getLatestArtifactVersion(FABRIC_VERSION_METADATA))
                     .optional();
+    private final BuilderArgument<OptiFineInfo> optiFineArgument = new BuilderArgument<OptiFineInfo>("OptiFine").optional();
+
 
     /**
      * @param fabricVersion the Fabric version you want to install
@@ -23,6 +26,17 @@ public class FabricVersionBuilder extends ModLoaderVersionBuilder<FabricVersion,
     public FabricVersionBuilder withFabricVersion(String fabricVersion)
     {
         this.fabricVersionArgument.set(fabricVersion);
+        return this;
+    }
+
+    /**
+     * Append some OptiFine download's information.
+     * @param optiFineInfo OptiFine info.
+     * @return the builder.
+     */
+    public FabricVersionBuilder withOptiFine(OptiFineInfo optiFineInfo)
+    {
+        this.optiFineArgument.set(optiFineInfo);
         return this;
     }
 
@@ -41,7 +55,8 @@ public class FabricVersionBuilder extends ModLoaderVersionBuilder<FabricVersion,
                 this.modrinthModsArgument.get(),
                 this.fileDeleterArgument.get(),
                 this.curseModPackArgument.get(),
-                this.modrinthPackArgument.get()
+                this.modrinthPackArgument.get(),
+                this.optiFineArgument.get()
         );
     }
 }

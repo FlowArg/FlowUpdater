@@ -8,6 +8,7 @@ import fr.flowarg.flowupdater.download.Step;
 import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
+import org.jetbrains.annotations.NotNull;
 
 import java.net.URL;
 import java.nio.file.Path;
@@ -19,21 +20,21 @@ public interface IModLoaderVersion
      * Attach {@link FlowUpdater} object to mod loaders, allow them to retrieve some information.
      * @param flowUpdater flow updater object.
      */
-    void attachFlowUpdater(FlowUpdater flowUpdater);
+    void attachFlowUpdater(@NotNull FlowUpdater flowUpdater);
 
     /**
      * Check if the current mod loader is already installed.
      * @param installDir the dir to check.
      * @return if the current mod loader is already installed.
      */
-    boolean isModLoaderAlreadyInstalled(Path installDir);
+    boolean isModLoaderAlreadyInstalled(@NotNull Path installDir);
 
     /**
      * Install the current mod loader in a specified directory.
      * @param installDir folder where the mod loader is going to be installed.
      * @throws Exception if an I/O error occurred.
      */
-    default void install(Path installDir) throws Exception
+    default void install(@NotNull Path installDir) throws Exception
     {
         this.getCallback().step(Step.MOD_LOADER);
         this.getLogger().info("Installing " + this.name() + ", version: " + this.getModLoaderVersion() + "...");
@@ -44,7 +45,7 @@ public interface IModLoaderVersion
      * @param modsDir mods directory.
      * @throws Exception if an I/O error occurred.
      */
-    void installMods(Path modsDir) throws Exception;
+    void installMods(@NotNull Path modsDir) throws Exception;
 
     /**
      * Get the mod loader version.
@@ -62,7 +63,7 @@ public interface IModLoaderVersion
      * Download mods in the mods' folder.
      * @param modsDir mods' folder
      */
-    default void installAllMods(Path modsDir)
+    default void installAllMods(@NotNull Path modsDir)
     {
         this.getDownloadList().getMods().forEach(mod -> {
             try

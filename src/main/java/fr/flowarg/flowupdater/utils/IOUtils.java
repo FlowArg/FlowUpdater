@@ -211,7 +211,7 @@ public class IOUtils
      * @param runnable the task to execute.
      * @param <T> the type of the items.
      */
-    public static <T> void executeAsyncForEach(Iterable<T> iterable, ExecutorService service, Consumer<T> runnable)
+    public static <T> void executeAsyncForEach(@NotNull Iterable<T> iterable, @NotNull ExecutorService service, Consumer<T> runnable)
     {
         try
         {
@@ -221,30 +221,6 @@ public class IOUtils
         } catch (InterruptedException e)
         {
             throw new FlowUpdaterException(e);
-        }
-    }
-
-    public static void downloadArtifacts(ILogger logger, Path dir, String repositoryUrl, String[] metadata)
-    {
-        final String group = metadata[0];
-        final String name = metadata[1];
-        final String version = metadata[2];
-
-        final String groupSlash = group.replace('.', '/');
-        final String groupDir = group.replace(".", dir.getFileSystem().getSeparator());
-
-        try
-        {
-            IOUtils.download(logger,
-                             new URL(repositoryUrl + groupSlash + '/' + name + '/' + version + '/' +
-                                             String.format("%s-%s.jar", name, version)),
-                             dir.resolve(groupDir)
-                                     .resolve(name)
-                                     .resolve(version)
-                                     .resolve(String.format("%s-%s.jar", name, version)));
-        } catch (Exception e)
-        {
-            logger.printStackTrace(e);
         }
     }
 
