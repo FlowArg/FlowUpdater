@@ -8,3 +8,6 @@ fr.flowarg.flowupdater.integrations.optifineintegration
 fr.flowarg.flowupdater.utils
 fr.flowarg.flowupdater.utils.builderapi
 fr.flowarg.flowupdater.versions
+fr.flowarg.flowupdater.versions.fabric
+fr.flowarg.flowupdater.versions.forge
+fr.flowarg.flowupdater.versions.neoforge
