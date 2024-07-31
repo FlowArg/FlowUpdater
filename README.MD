@@ -21,8 +21,7 @@ If you wish to fork this project, **you HAVE TO use your own API Key**.
 
 ### Vanilla
 
-First, create a new VanillaVersion, specify arguments.
-Then build the version :
+First, create a new VanillaVersion, and build the version:
 ```java
 VanillaVersion version = new VanillaVersion.VanillaVersionBuilder().withName("1.20.4").build();
 ```
@@ -50,16 +49,15 @@ You usually need to put this method in a new `Thread` / `ExecutorService` becaus
 
 ### Forge
 
-(You need to setup a vanilla updater !)
+(You need to setup a vanilla version like above!)
 
-First, in your vanilla version builder, change the version type to `VersionType.FORGE`.
-Next, make a List of Mod objects (except if you have no mods to install).
+Next, make a List of Mod objects (except if you don't need some).
 ```java
 List<Mod> mods = new ArrayList<>();
-mods.add(new Mod("OneMod.jar", "sha1ofmod", 85120, "https://link/of/mod.jar"));
-mods.add(new Mod("AnotherMod.jar", "sha1ofanothermod", 86120, "https://link/of/another/mod.jar"));
+mods.add(new Mod("OneMod.jar", "sha1ofmod", 85120, "https://link.com/of/mod.jar"));
+mods.add(new Mod("AnotherMod.jar", "sha1ofanothermod", 86120, "https://link.com/of/another/mod.jar"));
 ```
-You can also get a list of mods by providing a json link : `List<Mod> mods = Mod.getModsFromJson("https://url.com/launcher/mods.json");`. A template is available in Mod class.
+You can also get a list of mods by providing a json link: `List<Mod> mods = Mod.getModsFromJson("https://url.com/launcher/mods.json");`. A template is available in Mod class.
 
 You can get mods from CurseForge too:
 ```java
@@ -67,75 +65,88 @@ List<CurseFileInfo> modInfos = new ArrayList<>();
 // project ID and file ID
 modInfos.add(new CurseFileInfo(238222, 2988823));
 ```
-You can also get a list of curse mods by providing a json link : `List<CurseFileInfo> mods = CurseFileInfo.getFilesFromJson("https://url.com/launcher/cursemods.json");`.
+You can also get a list of curse mods by providing a json link: `List<CurseFileInfo> mods = CurseFileInfo.getFilesFromJson("https://url.com/launcher/cursemods.json");`.
+
+On the same pattern, you can get mods from Modrinth.
 
 Then, build a forge version. For example, I will build a NewForgeVersion.
 ```java
-AbstractForgeVersion forgeVersion = new ForgeVersionBuilder(ForgeVersionBuilder.ForgeVersionType.NEW)
-            .withForgeVersion("31.2.29")
-            .withCurseMods(modInfos)
-            .withOptiFine(new OptiFineInfo("1.16.3_HD_U_G3")) // installing OptiFine for 1.16.3, false = not a preview
-            .withFileDeleter(new ModFileDeleter("jei.jar")) // delete bad mods, don't remove the file jei.jar if it's present in the mods' dir.
+ForgeVersion forgeVersion = new ForgeVersionBuilder()
+            .withForgeVersion("1.20.6-50.1.12") // mandatory
+            .withCurseMods(modInfos) // optional
+            .withOptiFine(new OptiFineInfo("preview_OptiFine_1.20.6_HD_U_I9_pre1")) // installing OptiFine (optional)
+            .withFileDeleter(new ModFileDeleter("jei.jar")) // (optional, but recommended) delete bad mods, don't remove the file jei.jar if it's present in mods directory.
             .build();
 ```
 
-Finally, set the Forge version corresponding to the wanted Forge version :
+Finally, set the Forge version object to your `FlowUpdaterBuilder`:
 ```java
 .withModLoaderVersion(forgeVersion);
 ```
-That's all!
 
 ### MCP
 
-(You need to setup a vanilla updater !)
-In your vanilla version builder, change the version type to `VersionType.MCP`.
-Finally, set to vanilla version builder a MCP version :
+(You need to setup a vanilla updater!)
+
+There are two ways to setup an MCP version. You can either (1) provide an MCP object (for a simple client for example) or (2) a JSON link to a custom json version which can contains custom assets, custom libraries etc...
+
+(1) set to vanilla version builder a MCP version:
 ```java
 .withMCP(new MCP("clientURL", "clientSha1", 25008229));
 ```
 If you set an empty/null string in url and sha1 and 0 in size, the updater will use the default minecraft jar.
-Example on client-only mcp downloading :
+Example for a client-only mcp downloading:
 ```java
 .withMCP(new MCP("https://mighya.eu/resources/Client.jar", "f2c219e485831af2bae9464eebbe4765128c6ad6", 23005862));
 ```
-You can get an MCP object instance by providing a json link too : `.withMCP("https://url.com/launcher/mcp.json");`.
-Nothing else to add :).
+You can get an MCP object instance by providing a json link too: `.withMCP("https://url.com/launcher/mcp.json");`.
+
+(2)
+Still in the vanilla version builder, set a json link to a custom MCP version:
+```java
+.withCustomVersionJson(new URL("https://url.com/launcher/mcp.json"));
+```
+
+You can also provide some more additional libraries or assets with all methods in the `VanillaVersionBuilder` class
+(`withAnotherLibraries`, `withAnotherAssets`, `withCustomAssetIndex`).
 
 ### Fabric
 
-(You need to setup a vanilla updater !)
+(You need to setup a vanilla updater!)
 
-First, in your vanilla version builder, change the version type to `VersionType.FABRIC`.
-Next, make a List of Mod objects like for a ForgeVersion.
+Next, make a List of Mod objects like for a ForgeVersion if you need some.
 
 Then, build a Fabric version.
 ```java
 FabricVersion fabricVersion = new FabricVersionBuilder()
-            .withFabricVersion("0.10.8")
-            .withCurseMods(modInfos)
-            .withMods(mods)
-            .withFileDeleter(new ModFileDeleter("sodium.jar")) // delete bad mods ; but it won't remove the file sodium.jar if it's present in the mods' dir.
+            .withFabricVersion("0.10.8") // optional, if you don't set one, it will take the latest fabric loader version available.
+            .withCurseMods(modInfos) // optional
+            .withMods(mods) // optional
+            .withFileDeleter(new ModFileDeleter("sodium.jar")) // (optional but recommended) delete bad mods ; but it won't remove the file sodium.jar if it's present in the mods' dir.
             .build();
 ```
 
-Finally, set the Fabric version corresponding to the wanted Fabric version :
+Finally, set the Fabric version to your `FlowUpdaterBuilder`:
 ```java
 .withModLoaderVersion(fabricVersion);
 ```
-That's all!
 
 ## External Files
 
-With FlowUpdater, you can download other files in your update dir!
-In your FlowUpdaterBuilder, precise an array list of ExternalFile (can be got by `ExternalFile#getExternalFilesFromJson`).
+With FlowUpdater, you can download other files in your update dir! This system is designed mainly for configs, resource packs.
+You can also configure a keep-policy for these files (should the updater download the file again if it is modified?).
+In your FlowUpdaterBuilder, define an array list of ExternalFile (by `ExternalFile#getExternalFilesFromJson` for more convenience).
 
 ### About json files...
 
-All json files can be generated by the [FlowUpdaterJsonCreator](https://github.com/FlowArg/FlowUpdaterJsonCreator) !
+**Deprecated**: All json files can be generated by the [FlowUpdaterJsonCreator](https://github.com/FlowArg/FlowUpdaterJsonCreator)!
+
+There are new tools made by the community that can help you generate some JSON files:
+- [FlowJsonCreator by Paulem79](https://github.com/Paulem79/FlowJsonCreator) (Java)
+- [FUJC-API by Zuygui](https://github.com/zuygui/flowupdater-json-creator) (Rust)
 
 ## Post executions
 
 With FlowUpdater, you can execute some actions after update, like patch a file, kill a process, launch a process, review a config etc...
-In your FlowUpdaterBuilder, precise a list of Runnable.
-
-And all it's done !
+In your FlowUpdaterBuilder, you have to set a list of Runnable.
+It's not always relevant to use this feature, but it can be useful in some specific cases.

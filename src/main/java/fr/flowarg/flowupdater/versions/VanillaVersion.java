@@ -264,7 +264,7 @@ public class VanillaVersion
         }
 
         /**
-         * Is the version a snapshot?
+         * Required if you want the latest snapshot version. Otherwise, it's unnecessary.
          * @param snapshot if the version is a snapshot.
          * @return the builder.
          */
@@ -339,6 +339,17 @@ public class VanillaVersion
         }
 
         /**
+         * Define the version's json.
+         * @param customVersionJsonUrl the custom version's json url to set.
+         * @return the builder.
+         */
+        public VanillaVersionBuilder withCustomVersionJson(URL customVersionJsonUrl)
+        {
+            this.customVersionJsonArgument.set(IOUtils.readJson(customVersionJsonUrl).getAsJsonObject());
+            return this;
+        }
+
+        /**
          * Build a new {@link VanillaVersion} instance with provided arguments.
          * @return the freshly created instance.
          * @throws BuilderException if an error occurred.
@@ -346,10 +357,15 @@ public class VanillaVersion
         @Override
         public VanillaVersion build() throws BuilderException
         {
-            return new VanillaVersion(this.nameArgument.get(), this.mcpArgument.get(),
-                                      this.snapshotArgument.get(),
-                                      this.customAssetIndexArgument.get(), this.anotherAssetsArgument.get(),
-                                      this.anotherLibrariesArgument.get(), this.customVersionJsonArgument.get());
+            return new VanillaVersion(
+                    this.nameArgument.get(),
+                    this.mcpArgument.get(),
+                    this.snapshotArgument.get(),
+                    this.customAssetIndexArgument.get(),
+                    this.anotherAssetsArgument.get(),
+                    this.anotherLibrariesArgument.get(),
+                    this.customVersionJsonArgument.get()
+            );
         }
     }
 }

@@ -25,7 +25,7 @@ public class OptiFineInfo
      */
     public OptiFineInfo(String version)
     {
-        this(version, false);
+        this(version, version.startsWith("preview_"));
     }
 
     /**
