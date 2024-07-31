@@ -16,6 +16,10 @@ The best documentation is the JavaDoc included in FlowUpdater's source code. The
 The CurseForge integration works with an API Key which is mine at the moment. **You CAN'T use this key for other purposes outside FlowUpdater.**
 If you wish to fork this project, **you HAVE TO use your own API Key**.
 
+## Alternatives
+If you are a developer or know a developer that has made a similar library in another programming language,
+feel free to ask to appear in this list:
+- [Rust Launcher Lib](https://github.com/knightmar/rust_launcher_lib) (Rust)
 
 ## Usage
 
