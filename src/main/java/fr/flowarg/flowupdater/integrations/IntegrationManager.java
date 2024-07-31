@@ -16,6 +16,7 @@ import fr.flowarg.flowupdater.integrations.modrinthintegration.ModrinthModPack;
 import fr.flowarg.flowupdater.integrations.optifineintegration.IOptiFineCompatible;
 import fr.flowarg.flowupdater.integrations.optifineintegration.OptiFine;
 import fr.flowarg.flowupdater.integrations.optifineintegration.OptiFineIntegration;
+import fr.flowarg.flowupdater.utils.FlowUpdaterException;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Files;
@@ -74,7 +75,7 @@ public class IntegrationManager
 
                     this.checkMod(mod, allCurseMods, dir);
                 }
-                catch (CurseForgeIntegration.CurseForgeException e)
+                catch (Exception e)
                 {
                     this.logger.printStackTrace(e);
                 }
@@ -122,7 +123,7 @@ public class IntegrationManager
         }
         catch (Exception e)
         {
-            this.logger.printStackTrace(e);
+            throw new FlowUpdaterException(e);
         }
     }
 
@@ -165,7 +166,7 @@ public class IntegrationManager
         }
         catch (Exception e)
         {
-            this.logger.printStackTrace(e);
+            throw new FlowUpdaterException(e);
         }
     }
 
@@ -188,11 +189,11 @@ public class IntegrationManager
             this.downloadList.setOptiFine(optifine);
         } catch (Exception e)
         {
-            this.logger.printStackTrace(e);
+            throw new FlowUpdaterException(e);
         }
     }
 
-    private void checkMod(Mod mod, List<Mod> allMods, Path dir) throws Exception
+    private void checkMod(Mod mod, @NotNull List<Mod> allMods, @NotNull Path dir) throws Exception
     {
         allMods.add(mod);
 

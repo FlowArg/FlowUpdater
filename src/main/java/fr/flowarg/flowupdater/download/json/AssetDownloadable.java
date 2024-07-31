@@ -74,7 +74,7 @@ public class AssetDownloadable
     public int hashCode()
     {
         int result = this.hash.hashCode();
-        result = 31 * result + (int)(this.size ^ (this.size >>> 32));
+        result = 31 * result + Long.hashCode(this.size);
         result = 31 * result + this.url.hashCode();
         return result;
     }

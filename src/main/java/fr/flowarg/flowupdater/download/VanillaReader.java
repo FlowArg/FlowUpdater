@@ -12,7 +12,6 @@ import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.versions.VanillaVersion;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
@@ -40,9 +39,9 @@ public class VanillaReader
 
     /**
      * This method calls other methods to parse each part of the given Minecraft Version.
-     * @throws IOException if an I/O error occurred.
+     * @throws Exception if an I/O error occurred.
      */
-    public void read() throws IOException
+    public void read() throws Exception
     {
         this.callback.step(Step.READ);
         this.parseLibraries();
@@ -169,7 +168,7 @@ public class VanillaReader
         this.downloadList.getDownloadableFiles().add(new Downloadable(url, size, sha1, name));
     }
 
-    private void parseAssets() throws IOException
+    private void parseAssets() throws Exception
     {
         final Set<AssetDownloadable> toDownload = new HashSet<>(this.version.getAnotherAssets());
         final AssetIndex assetIndex;

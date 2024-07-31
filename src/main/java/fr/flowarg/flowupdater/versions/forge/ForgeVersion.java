@@ -16,7 +16,6 @@ import fr.flowarg.flowupdater.versions.ModLoaderUtils;
 import fr.flowarg.flowupdater.versions.ParsedLibrary;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.nio.file.*;
@@ -195,7 +194,7 @@ public class ForgeVersion extends AbstractModLoaderVersion implements IOptiFineC
         return gameArguments.get(gameArguments.indexOf("--fml.mcpVersion") + 1);
     }
 
-    private boolean isSlimOrExtraSha1Wrong(Path extraJar, Path extraJarCache, Path slimJar, Path slimJarCache, Path srgJar) throws IOException
+    private boolean isSlimOrExtraSha1Wrong(Path extraJar, Path extraJarCache, Path slimJar, Path slimJarCache, Path srgJar) throws Exception
     {
         if(Files.notExists(extraJar) ||
                 Files.notExists(extraJarCache) ||
@@ -293,7 +292,7 @@ public class ForgeVersion extends AbstractModLoaderVersion implements IOptiFineC
                                             classifier = "-" + name[3];
                                         Files.createDirectories(parsedLibrary.getPath().getParent());
                                         Files.copy(zipFs.getPath("maven/" + group + '/' + artifact + '/' + version + '/' + artifact + "-" + version + classifier + "." + extension), parsedLibrary.getPath(), StandardCopyOption.REPLACE_EXISTING);
-                                    } catch (IOException e)
+                                    } catch (Exception e)
                                     {
                                         this.logger.printStackTrace(e);
                                     }

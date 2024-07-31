@@ -59,7 +59,7 @@ public class MCP
         try
         {
             return getMCPFromJson(new URL(jsonUrl));
-        } catch (MalformedURLException e)
+        } catch (Exception e)
         {
             throw new FlowUpdaterException(e);
         }

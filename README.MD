@@ -75,7 +75,7 @@ ForgeVersion forgeVersion = new ForgeVersionBuilder()
             .withForgeVersion("1.20.6-50.1.12") // mandatory
             .withCurseMods(modInfos) // optional
             .withOptiFine(new OptiFineInfo("preview_OptiFine_1.20.6_HD_U_I9_pre1")) // installing OptiFine (optional)
-            .withFileDeleter(new ModFileDeleter("jei.jar")) // (optional, but recommended) delete bad mods, don't remove the file jei.jar if it's present in mods directory.
+            .withFileDeleter(new ModFileDeleter("jei.jar")) // (optional, but recommended) delete bad mods, don't remove the file jei.jar if it's present in mods directory. You can also provide A `Pattern` with a regex rule.
             .build();
 ```
 

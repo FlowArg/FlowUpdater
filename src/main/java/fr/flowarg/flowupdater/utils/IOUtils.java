@@ -70,7 +70,7 @@ public class IOUtils
                     DOWNLOAD_RETRIES_CAUSED_BY_SSL_HANDSHAKE_EXCEPTION.getOrDefault(url, 0) + 1
             );
         }
-        catch (IOException e)
+        catch (Exception e)
         {
             logger.printStackTrace(e);
         }
@@ -90,7 +90,7 @@ public class IOUtils
             Files.createDirectories(out.getParent());
             Files.copy(in, out, StandardCopyOption.REPLACE_EXISTING);
         }
-        catch (IOException e)
+        catch (Exception e)
         {
             logger.printStackTrace(e);
         }
@@ -106,7 +106,7 @@ public class IOUtils
         try
         {
             return getContent(catchForbidden(url));
-        } catch (IOException e)
+        } catch (Exception e)
         {
             FlowUpdater.DEFAULT_LOGGER.printStackTrace(e);
             return "";
@@ -135,7 +135,7 @@ public class IOUtils
             enclosedReader.close();
             rbc.close();
 
-        } catch (IOException e)
+        } catch (Exception e)
         {
             FlowUpdater.DEFAULT_LOGGER.printStackTrace(e);
         }
@@ -152,7 +152,7 @@ public class IOUtils
         try
         {
             return readJson(catchForbidden(jsonURL));
-        } catch (IOException e)
+        } catch (Exception e)
         {
             FlowUpdater.DEFAULT_LOGGER.printStackTrace(e);
         }
@@ -182,7 +182,7 @@ public class IOUtils
             reader.close();
             enclosedReader.close();
             rbc.close();
-        } catch (IOException e)
+        } catch (Exception e)
         {
             FlowUpdater.DEFAULT_LOGGER.printStackTrace(e);
         }
@@ -194,9 +194,9 @@ public class IOUtils
      * A trick to avoid some forbidden response.
      * @param url the destination url.
      * @return the opened connection.
-     * @throws IOException if an I/O error occurred.
+     * @throws Exception if an I/O error occurred.
      */
-    public static InputStream catchForbidden(@NotNull URL url) throws IOException
+    public static InputStream catchForbidden(@NotNull URL url) throws Exception
     {
         final HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.addRequestProperty("User-Agent", "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.124 Safari/537.36");

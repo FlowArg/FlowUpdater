@@ -9,7 +9,6 @@ import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowzipper.ZipUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -38,9 +37,9 @@ public class VanillaDownloader
      * Construct a new VanillaDownloader object.
      * @param dir the installation directory.
      * @param flowUpdater the flow updater object.
-     * @throws IOException if an I/O error occurred.
+     * @throws Exception if an I/O error occurred.
      */
-    public VanillaDownloader(Path dir, @NotNull FlowUpdater flowUpdater) throws IOException
+    public VanillaDownloader(Path dir, @NotNull FlowUpdater flowUpdater) throws Exception
     {
         this.dir = dir;
         this.logger = flowUpdater.getLogger();
@@ -107,7 +106,7 @@ public class VanillaDownloader
             IOUtils.download(this.logger, new URL(this.vanillaJsonURL), vanillaJsonTarget);
     }
 
-    private void extractNatives() throws IOException
+    private void extractNatives() throws Exception
     {
         boolean flag = false;
         final List<Path> existingNatives = FileUtils.list(this.natives);
@@ -151,7 +150,7 @@ public class VanillaDownloader
                         try
                         {
                             ZipUtils.unzipJar(this.natives, file, "ignoreMetaInf");
-                        } catch (IOException e)
+                        } catch (Exception e)
                         {
                             this.logger.printStackTrace(e);
                         }
@@ -168,7 +167,7 @@ public class VanillaDownloader
                         Files.delete(path);
                     else if(Files.isDirectory(path))
                         FileUtils.deleteDirectory(path);
-                } catch (IOException e)
+                } catch (Exception e)
                 {
                     this.logger.printStackTrace(e);
                 }

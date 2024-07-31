@@ -62,7 +62,7 @@ public class ModrinthVersionInfo
         try
         {
             return getModrinthVersionsFromJson(new URL(jsonUrl));
-        } catch (MalformedURLException e)
+        } catch (Exception e)
         {
             throw new FlowUpdaterException(e);
         }

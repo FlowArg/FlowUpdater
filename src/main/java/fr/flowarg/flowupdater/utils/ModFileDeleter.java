@@ -6,10 +6,10 @@ import fr.flowarg.flowupdater.download.json.Mod;
 import fr.flowarg.flowupdater.integrations.modrinthintegration.ModrinthModPack;
 import fr.flowarg.flowupdater.integrations.optifineintegration.OptiFine;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -19,16 +19,30 @@ public class ModFileDeleter implements IFileDeleter
 {
     private final boolean useFileDeleter;
     private final String[] modsToIgnore;
+    private final Pattern modsToIgnorePattern;
 
     public ModFileDeleter(boolean useFileDeleter, String... modsToIgnore)
     {
         this.useFileDeleter = useFileDeleter;
         this.modsToIgnore = modsToIgnore;
+        this.modsToIgnorePattern = null;
     }
 
     public ModFileDeleter(String... modsToIgnore)
     {
         this(true, modsToIgnore);
+    }
+
+    public ModFileDeleter(boolean useFileDeleter, Pattern modsToIgnorePattern)
+    {
+        this.useFileDeleter = useFileDeleter;
+        this.modsToIgnore = null;
+        this.modsToIgnorePattern = modsToIgnorePattern;
+    }
+
+    public ModFileDeleter(Pattern modsToIgnorePattern)
+    {
+        this(true, modsToIgnorePattern);
     }
 
     /**
@@ -42,11 +56,21 @@ public class ModFileDeleter implements IFileDeleter
      */
     public void delete(ILogger logger, Path modsDir, List<Mod> mods, OptiFine optiFine, ModrinthModPack modrinthModPack) throws Exception
     {
-        if(!this.isUseFileDeleter()) return;
+        if(!this.isUseFileDeleter())
+            return;
 
         final Set<Path> badFiles = new HashSet<>();
         final List<Path> verifiedFiles = new ArrayList<>();
-        Arrays.stream(this.modsToIgnore).forEach(fileName -> verifiedFiles.add(modsDir.resolve(fileName)));
+
+        if(this.modsToIgnore != null)
+            Arrays.stream(this.modsToIgnore).forEach(fileName -> verifiedFiles.add(modsDir.resolve(fileName)));
+        else if(this.modsToIgnorePattern != null)
+        {
+            FileUtils.list(modsDir).stream().filter(path -> !Files.isDirectory(path)).forEach(path -> {
+                if(this.modsToIgnorePattern.matcher(path.getFileName().toString()).matches())
+                    verifiedFiles.add(path);
+            });
+        }
 
         if(modrinthModPack != null)
             modrinthModPack.getBuiltInMods().forEach(mod -> verifiedFiles.add(modsDir.resolve(mod.getName())));
@@ -104,7 +128,7 @@ public class ModFileDeleter implements IFileDeleter
             try
             {
                 Files.deleteIfExists(path);
-            } catch (IOException e)
+            } catch (Exception e)
             {
                 logger.printStackTrace(e);
             }

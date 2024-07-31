@@ -20,7 +20,6 @@ import fr.flowarg.flowupdater.versions.IModLoaderVersion;
 import fr.flowarg.flowupdater.versions.VanillaVersion;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -117,9 +116,10 @@ public class FlowUpdater
     /**
      * This method updates the Minecraft Installation in the given directory.
      * If the {@link #vanillaVersion} is {@link VanillaVersion#NULL_VERSION}, the updater will
-     * only run external files and post executions.
+     * only run external files and post-executions.
      * @param dir Directory where is the Minecraft installation.
-     * @throws IOException if an I/O problem occurred.
+     * @throws Exception if an I/O problem occurred.
+     * @throws fr.flowarg.flowupdater.utils.FlowUpdaterException if an important error occurred during the update.
      */
     public void update(Path dir) throws Exception
     {
@@ -225,7 +225,7 @@ public class FlowUpdater
                 IOUtils.download(this.logger, new URL(extFile.getDownloadURL()), filePath);
                 this.callback.onFileDownloaded(filePath);
             }
-            catch (IOException e)
+            catch (Exception e)
             {
                 this.logger.printStackTrace(e);
             }
