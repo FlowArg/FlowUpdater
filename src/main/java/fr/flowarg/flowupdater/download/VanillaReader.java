@@ -4,7 +4,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fr.flowarg.flowcompat.Platform;
-import fr.flowarg.flowlogger.ILogger;
 import fr.flowarg.flowupdater.FlowUpdater;
 import fr.flowarg.flowupdater.download.json.AssetDownloadable;
 import fr.flowarg.flowupdater.download.json.AssetIndex;
@@ -25,8 +24,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class VanillaReader
 {
     private final VanillaVersion version;
-    private final ILogger logger;
-    private final boolean shouldLog;
     private final IProgressCallback callback;
     private final DownloadList downloadList;
 
@@ -37,16 +34,8 @@ public class VanillaReader
     public VanillaReader(@NotNull FlowUpdater flowUpdater)
     {
         this.version = flowUpdater.getVanillaVersion();
-        this.logger = flowUpdater.getLogger();
-        this.shouldLog = !flowUpdater.getUpdaterOptions().isSilentRead();
         this.callback = flowUpdater.getCallback();
         this.downloadList = flowUpdater.getDownloadList();
-    }
-
-    private void silentDebug(String message)
-    {
-        if (this.shouldLog)
-            this.logger.debug(message);
     }
 
     /**
@@ -56,23 +45,11 @@ public class VanillaReader
     public void read() throws IOException
     {
         this.callback.step(Step.READ);
-        this.silentDebug("Parsing libraries information...");
-        long start = System.currentTimeMillis();
         this.parseLibraries();
-
-        this.silentDebug("Parsing asset index information...");
         this.parseAssetIndex();
-
-        this.silentDebug("Parsing the information of client's jar...");
         this.parseClient();
-
-        this.silentDebug("Parsing natives information...");
         this.parseNatives();
-
-        this.silentDebug("Parsing assets information...");
         this.parseAssets();
-
-        this.silentDebug("Parsing of the json file took " + (System.currentTimeMillis() - start) + " milliseconds...");
     }
 
     private void parseLibraries()
@@ -80,11 +57,13 @@ public class VanillaReader
         this.version.getMinecraftLibrariesJson().forEach(jsonElement -> {
             final JsonObject element = jsonElement.getAsJsonObject();
 
-            if (element == null) return;
-            if (!this.checkRules(element)) return;
+            if (element == null || !this.checkRules(element))
+                return;
+
             final JsonObject downloads = element.getAsJsonObject("downloads");
 
-            if(downloads == null) return;
+            if(downloads == null)
+                return;
 
             block: {
                 final String name = element.getAsJsonPrimitive("name").getAsString();
@@ -102,15 +81,13 @@ public class VanillaReader
 
             final JsonObject artifact = downloads.getAsJsonObject("artifact");
 
-            if (artifact == null) return;
+            if (artifact == null)
+                return;
 
             final String url = artifact.getAsJsonPrimitive("url").getAsString();
             final int size = artifact.getAsJsonPrimitive("size").getAsInt();
             final String path = "libraries/" + artifact.getAsJsonPrimitive("path").getAsString();
             final String sha1 = artifact.getAsJsonPrimitive("sha1").getAsString();
-
-            this.silentDebug("Reading " + path + " from " + url + "... SHA1 is : " + sha1);
-
             final Downloadable downloadable = new Downloadable(url, size, sha1, path);
 
             if(!this.downloadList.getDownloadableFiles().contains(downloadable))
@@ -121,7 +98,8 @@ public class VanillaReader
 
     private void parseAssetIndex()
     {
-        if(this.version.getCustomAssetIndex() != null) return;
+        if(this.version.getCustomAssetIndex() != null)
+            return;
 
         final JsonObject assetIndex = this.version.getMinecraftAssetIndex();
         final String url = assetIndex.getAsJsonPrimitive("url").getAsString();
@@ -129,7 +107,6 @@ public class VanillaReader
         final String name = "assets/indexes/" + url.substring(url.lastIndexOf('/') + 1);
         final String sha1 = assetIndex.getAsJsonPrimitive("sha1").getAsString();
 
-        this.silentDebug("Reading assets index from " + url + "... SHA1 is : " + sha1);
         this.downloadList.getDownloadableFiles().add(new Downloadable(url, size, sha1, name));
     }
 
@@ -141,16 +118,18 @@ public class VanillaReader
         final String clientName = clientURL.substring(clientURL.lastIndexOf('/') + 1);
         final String clientSha1 = client.getAsJsonPrimitive("sha1").getAsString();
 
-        this.silentDebug("Reading client jar from " + clientURL + "... SHA1 is : " + clientSha1);
         this.downloadList.getDownloadableFiles().add(new Downloadable(clientURL, clientSize, clientSha1, clientName));
     }
 
     private void parseNatives()
     {
         this.version.getMinecraftLibrariesJson().forEach(jsonElement -> {
-            final JsonObject obj = jsonElement.getAsJsonObject().getAsJsonObject("downloads").getAsJsonObject("classifiers");
+            final JsonObject obj = jsonElement.getAsJsonObject()
+                    .getAsJsonObject("downloads")
+                    .getAsJsonObject("classifiers");
 
-            if (obj == null) return;
+            if (obj == null)
+                return;
 
             final JsonObject macObj = obj.getAsJsonObject("natives-macos");
             final JsonObject osxObj = obj.getAsJsonObject("natives-osx");
@@ -179,12 +158,14 @@ public class VanillaReader
 
         if(!os.equals("mac"))
         {
-            if (name.contains("-3.2.1-") && name.contains("lwjgl")) return;
-            if (name.contains("-2.9.2-") && name.contains("lwjgl")) return;
+            if (name.contains("-3.2.1-") && name.contains("lwjgl"))
+                return;
+            if (name.contains("-2.9.2-") && name.contains("lwjgl"))
+                return;
         }
-        else if(name.contains("-3.2.2-") && name.contains("lwjgl")) return;
+        else if(name.contains("-3.2.2-") && name.contains("lwjgl"))
+            return;
 
-        this.silentDebug("Reading " + name + " from " + url + "... SHA1 is : " + sha1);
         this.downloadList.getDownloadableFiles().add(new Downloadable(url, size, sha1, name));
     }
 
@@ -210,7 +191,9 @@ public class VanillaReader
     private boolean checkRules(@NotNull JsonObject obj)
     {
         final JsonElement rulesElement = obj.get("rules");
-        if (rulesElement == null) return true;
+
+        if (rulesElement == null)
+            return true;
 
         final AtomicBoolean canDownload = new AtomicBoolean(true);
 

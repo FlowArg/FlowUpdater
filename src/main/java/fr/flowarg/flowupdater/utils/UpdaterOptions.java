@@ -13,33 +13,21 @@ import java.nio.file.Paths;
  */
 public class UpdaterOptions
 {
-    public static final UpdaterOptions DEFAULT = new UpdaterOptions(true, new ExternalFileDeleter(), true, System.getProperty("java.home") != null ? Paths.get(System.getProperty("java.home"))
+    public static final UpdaterOptions DEFAULT = new UpdaterOptions(new ExternalFileDeleter(), true, System.getProperty("java.home") != null ? Paths.get(System.getProperty("java.home"))
             .resolve("bin")
             .resolve("java")
             .toAbsolutePath()
             .toString() : "java");
 
-    private final boolean silentRead;
     private final ExternalFileDeleter externalFileDeleter;
     private final boolean versionChecker;
     private final String javaPath;
 
-    private UpdaterOptions(boolean silentRead, ExternalFileDeleter externalFileDeleter, boolean versionChecker, String javaPath)
+    private UpdaterOptions(ExternalFileDeleter externalFileDeleter, boolean versionChecker, String javaPath)
     {
-        this.silentRead = silentRead;
         this.externalFileDeleter = externalFileDeleter;
         this.versionChecker = versionChecker;
         this.javaPath = javaPath;
-    }
-
-    /**
-     * Disable some debug logs on Minecraft JSON's parsing.
-     * Default: true
-     * @return silentRead value.
-     */
-    public boolean isSilentRead()
-    {
-        return this.silentRead;
     }
 
     /**
@@ -76,7 +64,6 @@ public class UpdaterOptions
      */
     public static class UpdaterOptionsBuilder implements IBuilder<UpdaterOptions>
     {
-        private final BuilderArgument<Boolean> silentReadArgument = new BuilderArgument<>("SilentRead", () -> true).optional();
         private final BuilderArgument<ExternalFileDeleter> externalFileDeleterArgument = new BuilderArgument<>("External FileDeleter", ExternalFileDeleter::new).optional();
         private final BuilderArgument<Boolean> versionChecker = new BuilderArgument<>("VersionChecker", () -> true).optional();
         private final BuilderArgument<String> javaPath = new BuilderArgument<>("JavaPath", () ->
@@ -86,17 +73,6 @@ public class UpdaterOptions
                         .toAbsolutePath()
                         .toString() : "java")
                 .optional();
-
-        /**
-         * Enable or disable the silent read option.
-         * @param silentRead the value to define.
-         * @return the builder.
-         */
-        public UpdaterOptionsBuilder withSilentRead(boolean silentRead)
-        {
-            this.silentReadArgument.set(silentRead);
-            return this;
-        }
 
         /**
          * Append an {@link ExternalFileDeleter} object.
@@ -142,7 +118,6 @@ public class UpdaterOptions
         public UpdaterOptions build() throws BuilderException
         {
             return new UpdaterOptions(
-                    this.silentReadArgument.get(),
                     this.externalFileDeleterArgument.get(),
                     this.versionChecker.get(),
                     this.javaPath.get()
