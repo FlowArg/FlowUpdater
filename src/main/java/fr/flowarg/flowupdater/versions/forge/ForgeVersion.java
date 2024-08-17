@@ -264,7 +264,7 @@ public class ForgeVersion extends AbstractModLoaderVersion implements IOptiFineC
             else
             {
                 this.logger.info("Installing libraries...");
-                final URI uri = URI.create("jar:file:" + installerFile.toAbsolutePath());
+                final URI uri = URI.create("jar:" + installerFile.toAbsolutePath().toUri());
                 try (final FileSystem zipFs = FileSystems.newFileSystem(uri, new HashMap<>()))
                 {
                     final Path versionFile = zipFs.getPath("version.json");
@@ -307,7 +307,7 @@ public class ForgeVersion extends AbstractModLoaderVersion implements IOptiFineC
         else
         {
             this.logger.info("Installing libraries...");
-            final URI uri = URI.create("jar:file:" + installerFile.toAbsolutePath());
+            final URI uri = URI.create("jar:" + installerFile.toAbsolutePath().toUri());
             try (final FileSystem zipFs = FileSystems.newFileSystem(uri, new HashMap<>()))
             {
                 final Path installProfileFile = zipFs.getPath("install_profile.json");
