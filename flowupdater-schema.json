@@ -1,0 +1,159 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "",
+    "type": "object",
+    "properties": {
+        "curseFiles": {
+            "type": "array",
+            "uniqueItems": true,
+            "minItems": 1,
+            "items": {
+                "required": [
+                    "projectID",
+                    "fileID"
+                ],
+                "properties": {
+                    "projectID": {
+                        "type": "number",
+                        "description": "Project ID of the mod on CurseForge"
+                    },
+                    "fileID": {
+                        "type": "number",
+                        "description": "File ID of the mod on CurseForge"
+                    },
+                    "required": {
+                        "type": "boolean",
+                        "description": "If true, the mod is required to be present in the mod folder."
+                    }
+                }
+            }
+        },
+        "modrinthMods": {
+            "type": "array",
+            "uniqueItems": true,
+            "minItems": 1,
+            "items": {
+                "required": [
+                    "versionId",
+                    "projectReference",
+                    "versionNumber"
+                ],
+                "oneOf": [
+                    {
+                        "required": [
+                            "versionId"
+                        ],
+                        "properties": {
+                            "versionId": {
+                                "type": "number",
+                                "description": "Mod version file ID"
+                            }
+                        }
+                    },
+                    {
+                        "required": [
+                            "projectReference",
+                            "versionNumber"
+                        ],
+                        "properties": {
+                            "projectReference": {
+                                "type": "number",
+                                "description": "Projet ID of the mod on Modrinth"
+                            },
+                            "versionNumber": {
+                                "type": "number",
+                                "description": "Version ID of the mod on Modrinth"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        "mods": {
+            "type": "array",
+            "uniqueItems": true,
+            "minItems": 1,
+            "items": {
+                "required": [
+                    "name",
+                    "downloadURL",
+                    "sha1",
+                    "size"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Name of mod file"
+                    },
+                    "downloadURL": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Mod download URL"
+                    },
+                    "sha1": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Sha1 of mod file"
+                    },
+                    "size": {
+                        "type": "number",
+                        "description": "Size of mod file (in bytes)"
+                    }
+                }
+            }
+        },
+        "extfiles": {
+            "type": "array",
+            "uniqueItems": true,
+            "minItems": 1,
+            "items": {
+                "required": [
+                    "path",
+                    "downloadURL",
+                    "sha1",
+                    "size"
+                ],
+                "properties": {
+                    "path": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Path of external file"
+                    },
+                    "downloadURL": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "external file URL"
+                    },
+                    "sha1": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Sha1 of external file"
+                    },
+                    "size": {
+                        "type": "number",
+                        "description": "Size of external file (in bytes)"
+                    },
+                    "update": {
+                        "type": "boolean",
+                        "description": "If false, the file will not be checked again if the file is valid."
+                    }
+                }
+            }
+        },
+        "clientURL": {
+            "type": "string",
+            "minLength": 1,
+            "description": "URL of client.jar"
+        },
+        "clientSha1": {
+            "type": "string",
+            "minLength": 1,
+            "description": "SHA1 of client.jar"
+        },
+        "clientSize": {
+            "type": "number",
+            "description": "Size of client.jar (in bytes)"
+        }
+    }
+}
