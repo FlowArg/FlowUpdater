@@ -122,7 +122,7 @@ public class CurseForgeIntegration extends Integration
         {
             logger.warn(String.format("Mod file %s not available. The download can fail because of this! %s", data.get("displayName").getAsString(), jsonResponse));
             final String id = Integer.toString(data.get("id").getAsInt());
-            downloadURL = String.format("https://mediafiles.forgecdn.net/files/%s/%s/%s", id.substring(0, 4), id.substring(4), fileName);
+            downloadURL = String.format("https://edge.forgecdn.net/files/%s/%s/%s", id.substring(0, 4), id.substring(4), fileName);
         }
         else downloadURL = downloadURLElement.getAsString();
         final long fileLength = data.get("fileLength").getAsLong();

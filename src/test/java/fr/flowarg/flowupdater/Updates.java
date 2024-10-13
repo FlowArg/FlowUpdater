@@ -285,6 +285,39 @@ public class Updates
         return new Result(updateDir, error, vanilla, neoForge);
     }
 
+    public static Result testWithNeoForgeUsage2()
+    {
+        boolean error = false;
+        final String vanilla = "1.21.1";
+        final String neoForge = "21.1.18";
+        final Path updateDir = UPDATE_DIR.resolve("neo_forge-" + vanilla);
+
+        try
+        {
+            final VanillaVersion version = new VanillaVersion.VanillaVersionBuilder()
+                    .withName(vanilla)
+                    .build();
+
+            final NeoForgeVersion neoForgeVersion = new NeoForgeVersionBuilder()
+                    .withNeoForgeVersion(neoForge)
+                    .build();
+
+            final FlowUpdater updater = new FlowUpdater.FlowUpdaterBuilder()
+                    .withVanillaVersion(version)
+                    .withModLoaderVersion(neoForgeVersion)
+                    .build();
+
+            updater.update(updateDir);
+        }
+        catch (Exception e)
+        {
+            error = true;
+            e.printStackTrace();
+        }
+
+        return new Result(updateDir, error, vanilla, neoForge);
+    }
+
     public static class Result
     {
         public final Path updateDir;
