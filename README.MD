@@ -17,7 +17,7 @@ The CurseForge integration works with an API Key which is mine at the moment. **
 If you wish to fork this project, **you HAVE TO use your own API Key**.
 
 ## Alternatives
-If you are a developer or know a developer that has made a similar library in another programming language,
+If you are a developer or know a developer who has made a similar library in another programming language,
 feel free to ask to appear in this list:
 - [Rust Launcher Lib](https://github.com/knightmar/rust_launcher_lib) (Rust)
 
@@ -147,7 +147,7 @@ In your FlowUpdaterBuilder, define an array list of ExternalFile (by `ExternalFi
 
 There are new tools made by the community that can help you generate some JSON files:
 - [FlowJsonCreator by Paulem79](https://github.com/Paulem79/FlowJsonCreator) (Java)
-- [FUJC-API by Zuygui](https://github.com/zuygui/flowupdater-json-creator) (Rust)
+- [FUJC by Zuygui](https://github.com/zuygui/flowupdater-json-creator) (Rust)
 
 ## Post executions
 

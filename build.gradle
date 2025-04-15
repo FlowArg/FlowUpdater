@@ -3,8 +3,8 @@ apply plugin: 'idea'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
-group 'fr.flowarg'
-version '1.9.2'
+group = 'fr.flowarg'
+version = '1.9.3'
 archivesBaseName = "flowupdater"
 
 java {
@@ -29,13 +29,13 @@ java {
 }
 
 dependencies {
-    api 'com.google.code.gson:gson:2.11.0'
+    api 'com.google.code.gson:gson:2.13.0'
     api 'fr.flowarg:flowmultitools:1.4.4'
-    api 'org.jetbrains:annotations:26.0.0'
+    api 'org.jetbrains:annotations:26.0.2'
 
     // Only for internal tests
     testImplementation 'fr.flowarg:openlauncherlib:3.2.11'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.12.2'
 }
 
 publishing {
