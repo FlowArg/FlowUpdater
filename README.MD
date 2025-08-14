@@ -88,6 +88,32 @@ Finally, set the Forge version object to your `FlowUpdaterBuilder`:
 .withModLoaderVersion(forgeVersion);
 ```
 
+### NeoForge
+Works almost the same way as Forge, but you need to use `NeoForgeVersion` instead of `ForgeVersion` and `NeoForgeVersionBuilder` instead of `ForgeVersionBuilder`.
+Be careful when passing the neoforge version, it must be in the forge format for 1.20.1 (1.20.1-47.1.5 for example) ; but you should only pass the neoforge version for versions >= 1.21 (21.8.31 for example).
+
+
+### Fabric
+
+(You need to setup a vanilla updater!)
+
+Next, make a List of Mod objects like for a ForgeVersion if you need some.
+
+Then, build a Fabric version.
+```java
+FabricVersion fabricVersion = new FabricVersionBuilder()
+            .withFabricVersion("0.10.8") // optional, if you don't set one, it will take the latest fabric loader version available.
+            .withCurseMods(modInfos) // optional
+            .withMods(mods) // optional
+            .withFileDeleter(new ModFileDeleter("sodium.jar")) // (optional but recommended) delete bad mods ; but it won't remove the file sodium.jar if it's present in the mods' dir.
+            .build();
+```
+
+Finally, set the Fabric version to your `FlowUpdaterBuilder`:
+```java
+.withModLoaderVersion(fabricVersion);
+```
+
 ### MCP
 
 (You need to setup a vanilla updater!)
@@ -113,27 +139,6 @@ Still in the vanilla version builder, set a json link to a custom MCP version:
 
 You can also provide some more additional libraries or assets with all methods in the `VanillaVersionBuilder` class
 (`withAnotherLibraries`, `withAnotherAssets`, `withCustomAssetIndex`).
-
-### Fabric
-
-(You need to setup a vanilla updater!)
-
-Next, make a List of Mod objects like for a ForgeVersion if you need some.
-
-Then, build a Fabric version.
-```java
-FabricVersion fabricVersion = new FabricVersionBuilder()
-            .withFabricVersion("0.10.8") // optional, if you don't set one, it will take the latest fabric loader version available.
-            .withCurseMods(modInfos) // optional
-            .withMods(mods) // optional
-            .withFileDeleter(new ModFileDeleter("sodium.jar")) // (optional but recommended) delete bad mods ; but it won't remove the file sodium.jar if it's present in the mods' dir.
-            .build();
-```
-
-Finally, set the Fabric version to your `FlowUpdaterBuilder`:
-```java
-.withModLoaderVersion(fabricVersion);
-```
 
 ## External Files
 
