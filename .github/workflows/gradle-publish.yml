@@ -12,11 +12,11 @@ jobs:
       packages: write
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up JDK 8
+    - uses: actions/checkout@v5
+    - name: Set up JDK 21
       uses: actions/setup-java@v4
       with:
-        java-version: '8'
+        java-version: '21'
         distribution: 'zulu'
 
     - name: Publish FlowUpdater to MavenCentral
@@ -28,3 +28,5 @@ jobs:
         SONATYPE_TOKEN: ${{ secrets.SONATYPE_TOKEN }}
         GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+        NEW_CENTRAL_ID: ${{ secrets.NEW_CENTRAL_ID }}
+        NEW_CENTRAL_TOKEN: ${{ secrets.NEW_CENTRAL_TOKEN }}

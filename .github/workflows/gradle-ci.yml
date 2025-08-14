@@ -8,14 +8,14 @@ jobs:
   testjava:
     strategy:
       matrix:
-        jdk: [8, 17, 21]
+        jdk: [17, 21]
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Set up JDK ${{ matrix.jdk }}
         uses: actions/setup-java@v4
         with:

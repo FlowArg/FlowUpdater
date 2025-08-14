@@ -80,8 +80,12 @@ public class NeoForgeVersion extends AbstractModLoaderVersion
     {
         super.install(installDir);
 
-        final String installerUrl = String.format("https://maven.neoforged.net/net/neoforged/%s/%s/%s-installer.jar",
-                this.isOldNeoForge ? "forge" : "neoforge", this.modLoaderVersion, this.versionId);
+        final String installerUrl = String.format(
+                "https://maven.neoforged.net/net/neoforged/%s/%s/%s-installer.jar",
+                this.isOldNeoForge ? "forge" : "neoforge",
+                this.modLoaderVersion,
+                this.isOldNeoForge ? "forge-" + this.modLoaderVersion : this.versionId
+        );
 
         ModLoaderUtils.fakeContext(installDir, this.vanilla.getName());
 

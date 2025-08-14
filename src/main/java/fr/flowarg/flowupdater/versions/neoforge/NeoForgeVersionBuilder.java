@@ -12,6 +12,8 @@ public class NeoForgeVersionBuilder extends ModLoaderVersionBuilder<NeoForgeVers
 
     /**
      * @param neoForgeVersion the NeoForge version you want to install.
+     * For 1.20.1, it should be in the format "1.20.1-47.1.x" (vanilla version-NeoForge version). (forge format)
+     * For 1.21 and above, it should only be the NeoForge version (for example: 21.8.31) (NeoForge version only).
      * @return the builder.
      */
     public NeoForgeVersionBuilder withNeoForgeVersion(String neoForgeVersion)
