@@ -6,11 +6,11 @@ plugins {
 }
 
 group = 'fr.flowarg'
-version = '1.9.3'
+version = '1.9.4'
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(8)
+        languageVersion = JavaLanguageVersion.of(17)
     }
     withJavadocJar()
     withSourcesJar()
@@ -18,7 +18,10 @@ java {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
-    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+tasks.named("compileJava").configure {
+    options.release.set(8)
 }
 
 repositories {
@@ -27,13 +30,13 @@ repositories {
 }
 
 dependencies {
-    api 'com.google.code.gson:gson:2.13.1'
-    api 'fr.flowarg:flowmultitools:1.4.5'
-    api 'org.jetbrains:annotations:26.0.2'
+    api libs.gson
+    api libs.flowmultitools
+    api libs.annotations
 
     // Only for internal tests
-    testImplementation 'fr.flowarg:openlauncherlib:3.2.11'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.13.4'
+    testImplementation libs.oll
+    testImplementation libs.junit.jupiter
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 

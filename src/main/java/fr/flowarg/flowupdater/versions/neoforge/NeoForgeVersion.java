@@ -5,6 +5,7 @@ import com.google.gson.JsonParser;
 import fr.flowarg.flowupdater.download.json.*;
 import fr.flowarg.flowupdater.utils.IOUtils;
 import fr.flowarg.flowupdater.utils.ModFileDeleter;
+import fr.flowarg.flowupdater.utils.Version;
 import fr.flowarg.flowupdater.versions.AbstractModLoaderVersion;
 import fr.flowarg.flowupdater.versions.ModLoaderUtils;
 import fr.flowarg.flowupdater.versions.ParsedLibrary;
@@ -70,9 +71,21 @@ public class NeoForgeVersion extends AbstractModLoaderVersion
                 .resolve(this.modLoaderVersion);
 
         final Path universalNeoForgeJar = neoForgeDirectory.resolve(this.versionId + "-universal.jar");
+        final Path minecraftClientPatchedJar = installDir.resolve("libraries")
+                .resolve("net")
+                .resolve("neoforged")
+                .resolve("minecraft-client-patched")
+                .resolve(this.modLoaderVersion)
+                .resolve("minecraft-client-patched-" + this.modLoaderVersion + ".jar"); // starting from 21.10.37-beta
         final Path clientNeoForgeJar = neoForgeDirectory.resolve(this.versionId + "-client.jar");
 
-        return Files.exists(universalNeoForgeJar) && Files.exists(clientNeoForgeJar);
+        final Version modLoaderVer = Version.gen(this.modLoaderVersion.split("-")[0]); // skip -beta/alpha etc strings
+
+        return Files.exists(universalNeoForgeJar) && (
+                Files.exists(
+                        modLoaderVer.isNewerOrEqualTo(Version.gen("21.10.37")) ? minecraftClientPatchedJar : clientNeoForgeJar
+                )
+        );
     }
 
     @Override

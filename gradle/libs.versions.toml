@@ -1,0 +1,15 @@
+[versions]
+gson = "2.13.2"
+flowmultitools = "1.4.5"
+
+annotations = "26.0.2"
+
+oll = "3.2.11"
+junit = "6.0.1"
+
+[libraries]
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+flowmultitools = { module = "fr.flowarg:flowmultitools", version.ref = "flowmultitools" }
+annotations = { module = "org.jetbrains:annotations", version.ref = "annotations" }
+oll = { module = "fr.flowarg:openlauncherlib", version.ref = "oll" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
