@@ -120,18 +120,23 @@ implements <a href="builderapi/IBuilder.html" title="interface in fr.flowarg.flo
 <div class="block">Build an <a href="UpdaterOptions.html" title="class in fr.flowarg.flowupdater.utils"><code>UpdaterOptions</code></a> object.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="UpdaterOptions.UpdaterOptionsBuilder.html" title="class in fr.flowarg.flowupdater.utils">UpdaterOptions.UpdaterOptionsBuilder</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withExternalFileDeleter(fr.flowarg.flowupdater.utils.ExternalFileDeleter)" class="member-name-link">withExternalFileDeleter</a><wbr>(<a href="ExternalFileDeleter.html" title="class in fr.flowarg.flowupdater.utils">ExternalFileDeleter</a>&nbsp;externalFileDeleter)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withDisableExtFilesAsyncDownload(boolean)" class="member-name-link">withDisableExtFilesAsyncDownload</a><wbr>(boolean&nbsp;disableExtFilesAsyncDownload)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Append an <a href="ExternalFileDeleter.html" title="class in fr.flowarg.flowupdater.utils"><code>ExternalFileDeleter</code></a> object.</div>
+<div class="block">Disable asynchronous downloading of external files.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="UpdaterOptions.UpdaterOptionsBuilder.html" title="class in fr.flowarg.flowupdater.utils">UpdaterOptions.UpdaterOptionsBuilder</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withJavaPath(java.lang.String)" class="member-name-link">withJavaPath</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;javaPath)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withExternalFileDeleter(fr.flowarg.flowupdater.utils.ExternalFileDeleter)" class="member-name-link">withExternalFileDeleter</a><wbr>(<a href="ExternalFileDeleter.html" title="class in fr.flowarg.flowupdater.utils">ExternalFileDeleter</a>&nbsp;externalFileDeleter)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Set the path to the java executable to use with Forge and Fabric installers.</div>
+<div class="block">Append an <a href="ExternalFileDeleter.html" title="class in fr.flowarg.flowupdater.utils"><code>ExternalFileDeleter</code></a> object.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="UpdaterOptions.UpdaterOptionsBuilder.html" title="class in fr.flowarg.flowupdater.utils">UpdaterOptions.UpdaterOptionsBuilder</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withVersionChecker(boolean)" class="member-name-link">withVersionChecker</a><wbr>(boolean&nbsp;versionChecker)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withJavaPath(java.lang.String)" class="member-name-link">withJavaPath</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;javaPath)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Set the path to the java executable to use with Forge and Fabric installers.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="UpdaterOptions.UpdaterOptionsBuilder.html" title="class in fr.flowarg.flowupdater.utils">UpdaterOptions.UpdaterOptionsBuilder</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#withVersionChecker(boolean)" class="member-name-link">withVersionChecker</a><wbr>(boolean&nbsp;versionChecker)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Enable or disable the version checker.</div>
 </div>
 </div>
@@ -203,6 +208,19 @@ implements <a href="builderapi/IBuilder.html" title="interface in fr.flowarg.flo
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>javaPath</code> - the path to the java executable.</dd>
+<dt>Returns:</dt>
+<dd>the builder.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="withDisableExtFilesAsyncDownload(boolean)">
+<h3>withDisableExtFilesAsyncDownload</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="UpdaterOptions.UpdaterOptionsBuilder.html" title="class in fr.flowarg.flowupdater.utils">UpdaterOptions.UpdaterOptionsBuilder</a></span>&nbsp;<span class="element-name">withDisableExtFilesAsyncDownload</span><wbr><span class="parameters">(boolean&nbsp;disableExtFilesAsyncDownload)</span></div>
+<div class="block">Disable asynchronous downloading of external files. See <a href="UpdaterOptions.html#shouldDisableExtFilesAsyncDownload()"><code>UpdaterOptions.shouldDisableExtFilesAsyncDownload()</code></a> for more information.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>disableExtFilesAsyncDownload</code> - true to disable asynchronous downloading of external files. False otherwise.</dd>
 <dt>Returns:</dt>
 <dd>the builder.</dd>
 </dl>

@@ -139,6 +139,11 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Should check the version of FlowUpdater.</div>
 </div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#shouldDisableExtFilesAsyncDownload()" class="member-name-link">shouldDisableExtFilesAsyncDownload</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">If set to true, external files will be downloaded 1 by 1 (as it always been).</div>
+</div>
 </div>
 </div>
 </div>
@@ -202,6 +207,19 @@ loadScripts(document, 'script');</script>
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>the path to the java executable.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="shouldDisableExtFilesAsyncDownload()">
+<h3>shouldDisableExtFilesAsyncDownload</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">shouldDisableExtFilesAsyncDownload</span>()</div>
+<div class="block">If set to true, external files will be downloaded 1 by 1 (as it always been). Asynchronous downloading of
+ external files has been introduced in 1.9.4 in order to fasten the downloading step when a project
+ needs many external files.</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>true if asynchronous downloading of external files is disabled. False otherwise.</dd>
 </dl>
 </section>
 </li>
