@@ -17,17 +17,20 @@ public class UpdaterOptions
             .resolve("bin")
             .resolve("java")
             .toAbsolutePath()
-            .toString() : "java");
+            .toString() : "java"
+            , false);
 
     private final ExternalFileDeleter externalFileDeleter;
     private final boolean versionChecker;
     private final String javaPath;
+    private final boolean disableExtFilesAsyncDownload;
 
-    private UpdaterOptions(ExternalFileDeleter externalFileDeleter, boolean versionChecker, String javaPath)
+    private UpdaterOptions(ExternalFileDeleter externalFileDeleter, boolean versionChecker, String javaPath, boolean disableExtFilesAsyncDownload)
     {
         this.externalFileDeleter = externalFileDeleter;
         this.versionChecker = versionChecker;
         this.javaPath = javaPath;
+        this.disableExtFilesAsyncDownload = disableExtFilesAsyncDownload;
     }
 
     /**
@@ -60,6 +63,17 @@ public class UpdaterOptions
     }
 
     /**
+     * If set to true, external files will be downloaded 1 by 1 (as it always been). Asynchronous downloading of
+     * external files has been introduced in 1.9.4 in order to fasten the downloading step when a project
+     * needs many external files.
+     * @return true if asynchronous downloading of external files is disabled. False otherwise.
+     */
+    public boolean shouldDisableExtFilesAsyncDownload()
+    {
+        return this.disableExtFilesAsyncDownload;
+    }
+
+    /**
      * Builder of {@link UpdaterOptions}
      */
     public static class UpdaterOptionsBuilder implements IBuilder<UpdaterOptions>
@@ -73,6 +87,7 @@ public class UpdaterOptions
                         .toAbsolutePath()
                         .toString() : "java")
                 .optional();
+        private final BuilderArgument<Boolean> disableExtFilesAsyncDownload = new BuilderArgument<>("DisableExtFilesAsyncDownload", () -> false).optional();
 
         /**
          * Append an {@link ExternalFileDeleter} object.
@@ -112,6 +127,17 @@ public class UpdaterOptions
         }
 
         /**
+         * Disable asynchronous downloading of external files. See {@link UpdaterOptions#shouldDisableExtFilesAsyncDownload()} for more information.
+         * @param disableExtFilesAsyncDownload true to disable asynchronous downloading of external files. False otherwise.
+         * @return the builder.
+         */
+        public UpdaterOptionsBuilder withDisableExtFilesAsyncDownload(boolean disableExtFilesAsyncDownload)
+        {
+            this.disableExtFilesAsyncDownload.set(disableExtFilesAsyncDownload);
+            return this;
+        }
+
+        /**
          * Build an {@link UpdaterOptions} object.
          */
         @Override
@@ -120,7 +146,8 @@ public class UpdaterOptions
             return new UpdaterOptions(
                     this.externalFileDeleterArgument.get(),
                     this.versionChecker.get(),
-                    this.javaPath.get()
+                    this.javaPath.get(),
+                    this.disableExtFilesAsyncDownload.get()
             );
         }
     }

@@ -27,6 +27,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 
 /**
  * Represent the base class of the updater.<br>
@@ -218,7 +221,8 @@ public class FlowUpdater
 
         this.callback.step(Step.EXTERNAL_FILES);
         this.logger.info("Downloading external file(s)...");
-        this.downloadList.getExtFiles().forEach(extFile -> {
+
+        final Consumer<ExternalFile> extFileDownloadConsumer = extFile -> {
             try
             {
                 final Path filePath = dir.resolve(extFile.getPath());
@@ -231,7 +235,11 @@ public class FlowUpdater
             }
             this.downloadList.incrementDownloaded(extFile.getSize());
             this.callback.update(this.downloadList.getDownloadInfo());
-        });
+        };
+
+        if(this.updaterOptions.shouldDisableExtFilesAsyncDownload())
+            this.downloadList.getExtFiles().forEach(extFileDownloadConsumer);
+        else IOUtils.executeAsyncForEach(this.downloadList.getExtFiles(), Executors.newWorkStealingPool(), extFileDownloadConsumer);
     }
 
     private void runPostExecutions()
