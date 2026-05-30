@@ -9,8 +9,8 @@
 
 # FlowUpdater
 Welcome on FlowUpdater's repository. FlowUpdater is a free and open source solution to update Minecraft in Java.
-It was mainly designed for launcher's purposes but can be used for other usages as well. FlowUpdater focuses on customization and reliability.
-The best documentation is the JavaDoc included in FlowUpdater's source code. The rest of the documentation (for instance this readme or the wiki tab on GitHub) has a chance of not being updated.
+It is mainly designed for launcher's purposes but `can` be used for other usages as well. FlowUpdater focuses on customization and reliability.
+The best documentation is the JavaDoc included in FlowUpdater's source code. The rest of the documentation (for instance this readme or the wiki tab on GitHub) may not be up to date.
 
 ## Legal and fork notices :warning:
 The CurseForge integration works with an API Key which is mine at the moment. **You CAN'T use this key for other purposes outside FlowUpdater.**
@@ -19,18 +19,19 @@ If you wish to fork this project, **you HAVE TO use your own API Key**.
 ## Alternatives
 If you are a developer or know a developer who has made a similar library in another programming language,
 feel free to ask to appear in this list:
+- [LightyLauncherLib](https://github.com/Lighty-Launcher/LightyLauncherLib) (Rust, recommended)
 - [Rust Launcher Lib](https://github.com/knightmar/rust_launcher_lib) (Rust)
 
 ## Usage
 
-### Vanilla
+### Vanilla (needed even if you want to use a mod loader)
 
 First, create a new VanillaVersion, and build the version:
 ```java
 VanillaVersion version = new VanillaVersion.VanillaVersionBuilder().withName("1.20.4").build();
 ```
-`VanillaVersion` accepts some arguments to add more libraries, assets or to reach snapshots or custom version of the game.
-All accepted arguments are available in the `VanillaVersionBuilder` class.
+`VanillaVersion` accepts some arguments to add more libraries, assets or to reach snapshots or custom versions of the game.
+All accepted arguments are available in the `VanillaVersionBuilder` subclass.
 
 Add the version to a new `FlowUpdater` instance and build it:
 ```java
@@ -39,29 +40,29 @@ FlowUpdater updater = new FlowUpdater.FlowUpdaterBuilder()
         .build();
 ```
 
-In the same way, `FlowUpdater` accepts many arguments that you can use as you want.
-The more important ones to know about are: the logger, the progress callback, the vanilla version, possibly a mod loader version. The full list is available in the `FlowUpdaterBuilder` class.
+Similarly, `FlowUpdater` accepts many other arguments that you can use as needed. The most important ones are: the logger, the progress callback (for a progreses bar for instance) and the mod loader version.
+The full list is available in the `FlowUpdaterBuilder` subclass.
 
 
 Finally, call the update function:
 ```java
 updater.update(Paths.get("your/path/"));
 ```
-This `update` method will start the whole checks-and-download pipeline and will return when all the work is done.
-You usually need to put this method in a new `Thread` / `ExecutorService` because apart from the assets part, all actions are run on the same thread.
+This `update` method will start the whole check-and-download pipeline and will return when all the work is done.
+You usually need to put this method in a new `Thread` / `ExecutorService` because apart from some specific download cases, all actions are run on the same thread.
 
 
 ### Forge
 
 (You need to setup a vanilla version like above!)
 
-Next, make a List of Mod objects (except if you don't need some).
+Next, make a List of `Mod` objects (except if you don't need some).
 ```java
 List<Mod> mods = new ArrayList<>();
 mods.add(new Mod("OneMod.jar", "sha1ofmod", 85120, "https://link.com/of/mod.jar"));
 mods.add(new Mod("AnotherMod.jar", "sha1ofanothermod", 86120, "https://link.com/of/another/mod.jar"));
 ```
-You can also get a list of mods by providing a json link: `List<Mod> mods = Mod.getModsFromJson("https://url.com/launcher/mods.json");`. A template is available in Mod class.
+You can also get a list of mods by providing a json link: `List<Mod> mods = Mod.getModsFromJson("https://url.com/launcher/mods.json");`. A template is available in `Mod` class.
 
 You can get mods from CurseForge too:
 ```java
@@ -79,7 +80,7 @@ ForgeVersion forgeVersion = new ForgeVersionBuilder()
             .withForgeVersion("1.20.6-50.1.12") // mandatory
             .withCurseMods(modInfos) // optional
             .withOptiFine(new OptiFineInfo("preview_OptiFine_1.20.6_HD_U_I9_pre1")) // installing OptiFine (optional)
-            .withFileDeleter(new ModFileDeleter("jei.jar")) // (optional, but recommended) delete bad mods, don't remove the file jei.jar if it's present in mods directory. You can also provide A `Pattern` with a regex rule.
+            .withFileDeleter(new ModFileDeleter(true, "jei.jar")) // (optional, but recommended) delete bad mods, don't remove the file jei.jar if it's present in mods directory. You can also provide A `Pattern` with a regex rule.
             .build();
 ```
 
@@ -99,7 +100,7 @@ Be careful when passing the neoforge version, it must be in the forge format for
 
 Next, make a List of Mod objects like for a ForgeVersion if you need some.
 
-Then, build a Fabric version.
+Then, build a Fabric version:
 ```java
 FabricVersion fabricVersion = new FabricVersionBuilder()
             .withFabricVersion("0.10.8") // optional, if you don't set one, it will take the latest fabric loader version available.
@@ -114,7 +115,7 @@ Finally, set the Fabric version to your `FlowUpdaterBuilder`:
 .withModLoaderVersion(fabricVersion);
 ```
 
-### MCP
+### MCP (not very recommended, but it can be useful for some specific cases)
 
 (You need to setup a vanilla updater!)
 
@@ -137,14 +138,14 @@ Still in the vanilla version builder, set a json link to a custom MCP version:
 .withCustomVersionJson(new URL("https://url.com/launcher/mcp.json"));
 ```
 
-You can also provide some more additional libraries or assets with all methods in the `VanillaVersionBuilder` class
+You can also provide some more additional libraries or assets with all methods in the `VanillaVersionBuilder` subclass
 (`withAnotherLibraries`, `withAnotherAssets`, `withCustomAssetIndex`).
 
 ## External Files
 
-With FlowUpdater, you can download other files in your update dir! This system is designed mainly for configs, resource packs.
+With FlowUpdater, you can download other files in your update dir! This system is mainly designed for configs, resource packs.
 You can also configure a keep-policy for these files (should the updater download the file again if it is modified?).
-In your FlowUpdaterBuilder, define an array list of ExternalFile (by `ExternalFile#getExternalFilesFromJson` for more convenience).
+In your FlowUpdaterBuilder, define an array list of ExternalFile (with `ExternalFile#getExternalFilesFromJson` for more convenience).
 
 ### About json files...
 
@@ -156,6 +157,6 @@ There are new tools made by the community that can help you generate some JSON f
 
 ## Post executions
 
-With FlowUpdater, you can execute some actions after update, like patch a file, kill a process, launch a process, review a config etc...
+With FlowUpdater, you can execute some actions after the update, like patch a file, kill a process, launch a process, review a config etc...
 In your FlowUpdaterBuilder, you have to set a list of Runnable.
-It's not always relevant to use this feature, but it can be useful in some specific cases.
+It's not always relevant to use this feature, but it can be useful in some specific cases where you want to stay on the update thread.
