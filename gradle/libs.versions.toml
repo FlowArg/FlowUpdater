@@ -1,11 +1,11 @@
 [versions]
-gson = "2.13.2"
+gson = "2.14.0"
 flowmultitools = "1.4.5"
 
 annotations = "26.1.0"
 
 oll = "3.2.11"
-junit = "6.0.3"
+junit = "6.1.0"
 
 [libraries]
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
